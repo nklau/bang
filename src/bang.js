@@ -1,5 +1,5 @@
 console.log("bang.js")
 
-function add(x, y) {
+export function add(x, y) {
   return x + y
 }
