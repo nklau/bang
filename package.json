@@ -22,5 +22,12 @@
   "bugs": {
     "url": "https://github.com/abemo/bang/issues"
   },
-  "homepage": "https://github.com/abemo/bang#readme"
+  "homepage": "https://github.com/abemo/bang#readme",
+  "devDependencies": {
+    "c8": "^7.12.0",
+    "mocha": "^10.2.0"
+  },
+  "dependencies": {
+    "ohm-js": "^16.6.0"
+  }
 }
