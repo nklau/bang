@@ -1,0 +1,26 @@
+{
+  "name": "bang",
+  "version": "1.0.0",
+  "description": "A compiler for the programming language bang!",
+  "main": "bang.js",
+  "type": "module",
+  "scripts": {
+    "test": "c8 mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abemo/bang.git"
+  },
+  "keywords": [
+    "comiler",
+    "bang",
+    "bang!",
+    "homework"
+  ],
+  "author": "Abraham Moore Odell, Aidan Srouji, Natalie Lau",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/abemo/bang/issues"
+  },
+  "homepage": "https://github.com/abemo/bang#readme"
+}
