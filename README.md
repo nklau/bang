@@ -8,9 +8,9 @@ A compiler for the programming language "bang!"
 
 ## Example
 
-| bang!                           | javascript                                                 |
-| ------------------------------- | ---------------------------------------------------------- |
-| `5.times(print("hello world"))` | `for(let \_ = 0; i < 5; i++){console.log("hello world")} ` |
+| bang!                           | javascript                                                |
+| ------------------------------- | --------------------------------------------------------- |
+| `5.times(print("hello world"))` | `for(let _ = 0; i < 5; i++){console.log("hello world")} ` |
 
 TODO!: need many more examples
 
