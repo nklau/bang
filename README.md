@@ -8,14 +8,14 @@ A compiler for the programming language "bang!"
 
 ## Example
 
-| bang!                                                          | javascript                                                                               |
-| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `x = 17 \nstring greeting = "hello" \n const decayRate = 0.05` | TODO!:                                                                                   |
-| `sum = (x, y) -> x + y`                                        | `function sum(x, y) {return x + y}`                                                      |
-| `5.times(print("hello world"))`                                | `for(let _ = 0; _ < 5; _++){console.log("hello world")} `                                |
-| `5.times(print(i), i)`                                         | `for(let i = 0; i < 5; i++){console.log(i)} `                                            |
-| `enoughDogs ? print("there are enough dogs")`                  | `if (enoughDogs) {console.log("there are enough dogs)}`                                  |
-| `enoughDogs ? print("enough dogs") : print("not enough dogs")` | `if (enoughDogs) {console.log("enough dogs)} \n\t else {console.log("not enough dogs")}` |
+| bang!                                                             | javascript                                                                              |
+| ----------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `x = 17 <br>string greeting = "hello" <br>const decayRate = 0.05` | TODO!:                                                                                  |
+| `sum = (x, y) -> x + y`                                           | `function sum(x, y) {return x + y}`                                                     |
+| `5.times(print("hello world"))`                                   | `for(let _ = 0; _ < 5; _++){console.log("hello world")} `                               |
+| `5.times(print(i), i)`                                            | `for(let i = 0; i < 5; i++){console.log(i)} `                                           |
+| `enoughDogs ? print("there are enough dogs")`                     | `if (enoughDogs) {console.log("there are enough dogs)}`                                 |
+| `enoughDogs ? print("enough dogs") : print("not enough dogs")`    | `if (enoughDogs) {console.log("enough dogs)} <br>else {console.log("not enough dogs")}` |
 
 ## About the Authors
 
