@@ -10,7 +10,7 @@ A compiler for the programming language "bang!"
 
 | bang!                           | javascript                                                |
 | ------------------------------- | --------------------------------------------------------- |
-| `5.times(print("hello world"))` | `for(let _ = 0; i < 5; i++){console.log("hello world")} ` |
+| `5.times(print("hello world"))` | `for(let _ = 0; _ < 5; _++){console.log("hello world")} ` |
 
 TODO!: need many more examples
 
