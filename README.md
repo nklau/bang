@@ -335,15 +335,21 @@ switch (season) {
 <tr>
 <td>
 
-```
-// TODO: string interpolation
+```cs
+firstName = "John"
+lastName = "Doe"
+
+print($"Hello, {firstName} {lastName}!")
 ```
 
 </td>
 <td>
 
 ```javascript
-// TODO: js equivalent
+let firstName = 'John'
+let lastName = 'Doe'
+
+console.log(`Hello, ${firstName} ${lastName}!`)
 ```
 
 </td>
