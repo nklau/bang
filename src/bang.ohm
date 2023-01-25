@@ -1,0 +1,66 @@
+Bang {
+  Program         = Statement+
+  Statement       = const? id "=" Exp
+                  | print "(" Exp ")"
+  Exp             = function | object
+  Block           = "{" Statement* "}"
+  Var             = Var "[" Exp "]"
+                  | Var "." id
+                  | id
+  -- TODO: Literal = nil (?)
+  
+  -- function stuff
+  function        = "(" Params ")" arrow Block
+                  | Block
+  arrow           = "->"
+  print           = "print" ~idchar     -- TODO: is this redundant
+
+  -- objects
+  -- TODO: how to differentiate b/n objects and functions?
+  -- need to disallow statements with ":" in Block
+  -- can contain functions, key assignment using ":"
+  -- can't contain statements
+
+  -- TODO: objKeyVals = Block | Var | Literal
+
+  -- lists
+
+  -- literals
+  str             = formattedStr
+                  | "'" singleStrChars "'"
+                  | "\"" doubleStrChars "\""
+  formattedStr    = "$'" formattedSubstr* "'"                       -- single quotes
+                  | "$\"" formattedSubstr* "\""                     -- double quotes
+  formattedSubstr = strChars? "{" id "}"
+  
+
+  -- special chars
+  strChars        = singleStrChars | doubleStrChars
+  singleStrChars  = ~("'" | "\\" | lineTerminator) any*             -- nonEscaped
+                  | "\\" escapeChar                                 -- escaped
+                  | lineContinuation
+  doubleStrChars  = ~("\"" | "\\" | lineTerminator) any*            -- nonEscaped
+                  | "\\" escapeChar                                 -- escaped
+                  | lineContinuation
+  escapeChar      = "'" | "\"" | "\\" | "n" | "t" | "r" | "u"
+  char            = ~(escapeChar | lineTerminator) any
+  lineTerminator  = "\n" | "\r" | "\u2028" | "\u2029"
+
+  -- variables
+  const           = "const" ~idchar     -- TODO: isn't the ~idchar redundant? wouldn't it not match regardless?
+  id              = ~keyword (letter | "_") idchar*
+  idchar          = letter | digit | "_"
+
+  -- booleans
+
+  -- numbers
+
+  -- operators
+
+  -- other
+  keyword         = const | print | true | false | nil
+
+  -- TODO: bools (0 and 1 also work), nums, and, or, not, equals, comments, break, nil, lists, objects
+
+
+}

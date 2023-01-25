@@ -16,7 +16,7 @@ export class FunctionDeclaration {
   }
 }
 
-// TODO: is this needed?
+// TODO: is this needed? think this belongs to number class
 export class Repeat {
   constructor(times, body) {
     Object.assign(this, { times, body })
@@ -49,8 +49,8 @@ export class Conditional {
 }
 
 export class BinaryExpression {
-  constructor(op, lhs, rhs) {
-    Object.assign(this, { op, lhs, rhs })
+  constructor(op, left, right) {
+    Object.assign(this, { op, left, right })
   }
 }
 
