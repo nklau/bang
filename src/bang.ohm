@@ -10,12 +10,15 @@ Bang {
                         | id
   Lit                   = nil       | str       | Obj       | numLit
                         | boolLit 
-  // TODO: Literal = nil (?)
   
   // function stuff
   Function              = "(" Params ")" arrow Block                        -- arrowFunc
                         | Block
-  Params                = (id ("," id)*)? // TODO how to do keyword args
+  Params                = (Arg ("," Arg)*)?
+  Arg                   = PositionalArg | KeywordArg
+  PositionalArg         = ArgVal
+  KeywordArg            = id "=" ArgVal
+  ArgVal                = id | Lit
 // TODO may need FunctionObj = Block
   arrow                 = "->"
   print                 = "print" // TODO: test for `x = 5`//`printx(x)`
