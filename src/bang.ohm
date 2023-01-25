@@ -1,6 +1,7 @@
 Bang {
   Program               = Statement+
-  Statement             = const? id "=" Exp                                 -- varAssignment
+  // TODO const can currently be used on existing vars
+  Statement             = const? Var "=" Exp                                -- varAssignment
                         | print "(" Exp ")"                                 -- print
                         | Exp
   Exp                   = Function | Lit | Var
@@ -66,6 +67,10 @@ Bang {
   numLit                = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
 
   // operators
+
+  // switch statements
+
+  // ternaries
 
   // other
   keyword               = const     | print     | boolLit     | switch    
