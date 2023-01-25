@@ -16,7 +16,7 @@ Bang {
   Params          = (id ("," id)*)?
 // TODO may need FunctionObj = Block
   arrow           = "->"
-  print           = "print" ~idchar     // TODO: is this redundant
+  print           = "print" // TODO: test for `x = 5`//`printx(x)`
 
   // objects
   // need to disallow statements with ":" in Block
@@ -25,33 +25,37 @@ Bang {
   Obj             = "{" ObjField* "}"
   ObjField        = key ":" ObjVal
   ObjVal          = Block | Var | Literal
-  key             = ~keyword idchar*
+  key             = ~keyword strlit
 
   // lists
 
   // literals
-  str             = formattedStr
-                  | "'" singleStrChars "'"
-                  | "\"" doubleStrChars "\""
+  str             = strlit | formattedStr
+  strlit          = "'" singleStrChar* "'"
+                  | "\"" doubleStrChar* "\""
   formattedStr    = "$'" formattedSubstr* "'"                       -- singleQuotes
                   | "$\"" formattedSubstr* "\""                     -- doubleQuotes
-  formattedSubstr = strChars? "{" id "}"
+  formattedSubstr = (strChar*)? "{" id "}"
   
 
   // special chars
-  strChars        = singleStrChars | doubleStrChars
-  singleStrChars  = ~("'" | "\\" | lineTerminator) any*             -- nonEscaped
-                  | "\\" escapeChar                                 -- escaped
-                  | lineContinuation
-  doubleStrChars  = ~("\"" | "\\" | lineTerminator) any*            -- nonEscaped
-                  | "\\" escapeChar                                 -- escaped
-                  | lineContinuation
-  escapeChar      = "'" | "\"" | "\\" | "n" | "t" | "r" | "u"
-  char            = ~(escapeChar | lineTerminator) any
-  lineTerminator  = "\n" | "\r" | "\u2028" | "\u2029"
+  strChar          
+    = singleStrChar | doubleStrChar
+  singleStrChar   
+    = ~("'" | "\\" | lineTerminator) any              -- nonEscaped
+    | "\\" escapeChar                                 -- escaped
+    | lineContinuation
+  doubleStrChar    
+    = ~("\"" | "\\" | lineTerminator) any             -- nonEscaped
+    | "\\" escapeChar                                 -- escaped
+    | lineContinuation
+  escapeChar        = "'" | "\"" | "\\" | "n" | "t" | "r" | "u"
+  char              = ~(escapeChar | lineTerminator) any
+  lineTerminator    = "\n" | "\r" ~"\n" | "\u2028" | "\u2029"
+  lineContinuation  = "\\" lineTerminator
 
   // variables
-  const           = "const" ~idchar     // TODO: isn't the ~idchar redundant? wouldn't it not match regardless?
+  const           = "const" ~idchar
   id              = ~keyword (letter | "_") idchar*
   idchar          = letter | digit | "_"
 
