@@ -121,27 +121,6 @@ range(1, 6).forEach(print)
 <td>
 
 ```
-optional = isValid
-  ? { return object }
-  : { print("invalid") }
-
-// TODO: function to demonstrate immediate return does not require return keyword
-```
-
-</td>
-<td>
-
-```javascript
-// TODO: js equivalent
-```
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-```
 isValid ? print("valid!")
 ```
 
