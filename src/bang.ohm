@@ -65,8 +65,20 @@ Bang {
   // todo hex? "0x" hexNum
   // numbers
   numLit                = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
+  // TODO negative numbers
 
+  // TODO bitwise ops?
   // operators
+  and                   = "&&"
+  or                    = "||"
+  not                   = "!"
+  equality              = "=="
+  plus                  = "+"
+  minus                 = "-"
+  multiply              = "*"
+  power                 = "**"
+  divide                = "/"
+  modulus               = "%"
 
   // switch statements
 
