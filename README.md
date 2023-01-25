@@ -336,16 +336,18 @@ console.log(Season.spring)
 <td>
 
 ```swift
-season = Season.spring
+season = Season.fall
 result = match season {
   case .spring: "spring!"
   case .summer: { "summer!" }
   case .fall, .winter: {
     str = "is cold!"
-    return str
+    str
   }
   default: "California!"
 }
+print(result)
+// prints "is cold!"
 ```
 
 </td>
@@ -369,6 +371,8 @@ switch (season) {
   default:
     result = "California!"
 }
+console.log(result)
+// prints "is cold!"
 ```
 
 </td>
