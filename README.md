@@ -62,6 +62,25 @@ console.log(`Hello, ${firstName} ${lastName}!`)
 <tr>
 <td>
 
+```javascript
+-2**2
+// syntax error
+```
+
+</td>
+<td>
+
+```javascript
+-2**2
+// syntax error
+```
+
+</td>
+</tr>
+<tr></tr>
+<tr>
+<td>
+
 ```
 sum = (x, y) -> { x + y }
 sum = (x, y) -> x + y
