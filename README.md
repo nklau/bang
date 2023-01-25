@@ -6,7 +6,7 @@ A compiler for the programming language "bang!"
 
 "Bang!" is a dynamically typed, highly concise language focused on prioritizing the features used in fast coding for interviews and competitions.
 
-## Example
+## Sample Code
 
 <table>
 <tr>
@@ -16,7 +16,7 @@ A compiler for the programming language "bang!"
 <tr>
 <td>
 
-```
+```swift
 x = 17
 greeting = "hello"
 greeting = 'bye'
@@ -58,7 +58,7 @@ let sum = (x, y) => x + y
 <tr>
 <td>
 
-```
+```swift
 5.times(() -> { print("hello world") })
 5.times(() -> print("hello world"))
 5.times({ print("hello world") })
@@ -78,7 +78,7 @@ for (let _ = 0; _ < 5; _++) console.log("hello world")
 <tr>
 <td>
 
-```
+```swift
 5.times(i -> { print(i)) })
 5.times(i -> print(i))
 5.times(print)
@@ -97,7 +97,7 @@ for(let i = 0; i < 5; i++) console.log(i)
 <tr>
 <td>
 
-```
+```swift
 range(5).forEach((i) -> { print(i) })
 range(5).forEach((i) -> print(i))
 range(5).forEach(print)
@@ -111,7 +111,11 @@ range(1, 6).forEach(print)
 <td>
 
 ```javascript
-// TODO: js equivalent
+for (let i = 0; i < 5; i++) console.log(i)
+// prints 0-4 on separate lines
+
+for (let i = 1; i < 6; i++) console.log(i)
+// prints 1-5 on separate lines
 ```
 
 </td>
@@ -120,7 +124,7 @@ range(1, 6).forEach(print)
 <tr>
 <td>
 
-```
+```swift
 isValid ? print("valid!")
 ```
 
@@ -137,7 +141,7 @@ if (isValid) { console.log("valid!") }
 <tr>
 <td>
 
-```
+```swift
 isValid ? print("valid!") : print("invalid!")
 ```
 
@@ -155,7 +159,7 @@ else { console.log("invalid!") }
 <tr>
 <td>
 
-```
+```swift
 optional = isValid
   ? { object }
   : { print("invalid") }
@@ -180,7 +184,7 @@ const objectField = optional?.fieldName
 <tr>
 <td>
 
-```
+```swift
 const isValid = false
 optional = isValid ? object : print("invalid")
 // prints "invalid"
@@ -209,7 +213,7 @@ const objectField = optional?.fieldName
 <tr>
 <td>
 
-```
+```swift
 isValid = false
 optional = isValid
   ? object
@@ -234,7 +238,7 @@ optional() // prints "invalid"
 <tr>
 <td>
 
-```
+```swift
 enum Season { spring, summer, fall, winter }
 ```
 
@@ -242,7 +246,12 @@ enum Season { spring, summer, fall, winter }
 <td>
 
 ```javascript
-// TODO: js equivalent
+const Season = Object.freeze({
+  spring: "spring",
+  summer: "summer",
+  fall: "fall",
+  winter: "winter"
+})
 ```
 
 </td>
@@ -251,7 +260,7 @@ enum Season { spring, summer, fall, winter }
 <tr>
 <td>
 
-```
+```swift
 enum Season { 
   spring = '🌷'
   summer = '☀️'
@@ -267,7 +276,15 @@ print(Season.spring.rawTextVal)
 <td>
 
 ```javascript
-// TODO: js equivalent
+const Season = Object.freeze({
+  spring: "🌷",
+  summer: "☀️",
+  fall: "🍁",
+  winter: "❄️"
+})
+
+console.log(Season.spring)
+// prints "🌷"
 ```
 
 </td>
@@ -276,7 +293,7 @@ print(Season.spring.rawTextVal)
 <tr>
 <td>
 
-```
+```swift
 season = Season.spring
 result = match season {
   case .spring: "spring!"
@@ -287,6 +304,39 @@ result = match season {
   }
   default: "California!"
 }
+```
+
+</td>
+<td>
+
+```javascript
+let season = Season.spring
+let result
+switch (season) {
+  case 'spring':
+    result = "spring!"
+    break
+  case 'summer':
+    result = "summer!"
+    break
+  case 'fall':
+  case 'winter':
+    let str = "is cold!"
+    result = str
+    break
+  default:
+    result = "California!"
+}
+```
+
+</td>
+</tr>
+<tr></tr>
+<tr>
+<td>
+
+```
+// TODO: string interpolation
 ```
 
 </td>
