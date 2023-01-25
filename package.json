@@ -5,7 +5,7 @@
   "main": "bang.js",
   "type": "module",
   "scripts": {
-    "test": "c8 mocha"
+    "test": "c8 node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",
