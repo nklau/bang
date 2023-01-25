@@ -4,7 +4,7 @@
 
 A compiler for the programming language "bang!"
 
-Aidan Srjoui, Nat Lau, and Abe Moore Odell have competed as a team in the LMU GitGud coding competition for the past two years. After losing to the professors by 0.3 points in the last competition, the team decided to create a programming language specifically designed for the type of decoding done in limited time competitions and interviews."bang!" is a dynamically typed language that makes use of concise, yet still clear syntax such as ternaries and arrow functions. By treating everything as an object bang! gives programmers time saving options such as invoking an integer’s for loop function. The mission, minimize typing to maximize winning. 
+Aidan Srjoui, Nat Lau, and Abe Moore Odell have competed as a team in the LMU GitGud coding competition for the past two years. After losing to the professors by 0.3 points in the last competition, the team decided to create a programming language specifically designed for the type of coding done in limited time competitions and interviews."bang!" is a dynamically typed language that makes use of concise, yet still clear syntax such as ternaries and arrow functions. By treating everything as an object bang! gives programmers time saving options such as invoking an integer’s for loop function. The mission, minimize typing to maximize winning. 
 
 ## Sample Code
 
