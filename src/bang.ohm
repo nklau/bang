@@ -3,35 +3,33 @@ Bang {
   Statement             = const? id "=" Exp                                 -- varAssignment
                         | print "(" Exp ")"                                 -- print
                         | Exp
-  Exp                   = Function | Obj | Literal
+  Exp                   = Function | Lit | Var
   Block                 = "{" Statement* "}"
   Var                   = Var "[" Exp "]"                                   -- subscript
                         | Var "." id                                        -- select
                         | id
+  Lit                   = nil       | str       | Obj       | numLit
+                        | boolLit 
   // TODO: Literal = nil (?)
   
   // function stuff
   Function              = "(" Params ")" arrow Block                        -- arrowFunc
                         | Block
-  Params                = (id ("," id)*)?
+  Params                = (id ("," id)*)? // TODO how to do keyword args
 // TODO may need FunctionObj = Block
   arrow                 = "->"
   print                 = "print" // TODO: test for `x = 5`//`printx(x)`
 
   // objects
-  // need to disallow statements with ":" in Block
-  // can contain functions, key assignment using ":"
-  // can't contain statements
   Obj                   = "{" ObjField* "}"
-  ObjField              = key ":" ObjVal
-  ObjVal                = Block | Var | Literal
-  key                   = ~keyword strlit
+  ObjField              = key ":" Exp
+  key                   = ~keyword strLit
 
   // lists
 
-  // literals
-  str                   = strlit | formattedStr
-  strlit                = "'" singleStrChar* "'"
+  // strings
+  str                   = strLit | formattedStr
+  strLit                = "'" singleStrChar* "'"
                         | "\"" doubleStrChar* "\""
   formattedStr          = "$'" formattedSubstr* "'"                         -- singleQuotes
                         | "$\"" formattedSubstr* "\""                       -- doubleQuotes
@@ -56,13 +54,20 @@ Bang {
   idchar                = letter | digit | "_"
 
   // booleans
+  boolLit               = true | false
+  true                  = "true" ~idchar
+  false                 = "false" ~idchar
 
+  // todo hex? "0x" hexNum
   // numbers
+  numLit                = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
 
   // operators
 
   // other
-  keyword               = const | print | true | false | nil
+  keyword               = const     | print     | boolLit     | switch    
+                        | nil
+  nil                   = "nil" ~idchar
 
   // TODO: bools (0 and 1 also work), nums, and, or, not, equals, comments, break, nil, lists, objects
 
