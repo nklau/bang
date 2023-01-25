@@ -8,21 +8,318 @@ A compiler for the programming language "bang!"
 
 ## Example
 
-| Bang!                                                                                                                                                                                                                                                        | javascript                                                                                                                                                                                      |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <pre>`x = 17`<br>`greeting = "hello"`<br>`greeting = 'bye'`<br>`const decayRate = 0.05`</pre> | <pre>`let x = 17`<br>`let greeting = "hello"`<br>`greeting = 'bye'`<br>`const decayRate = 0.05`</pre>
-| <pre>`sum = (x, y) -> { x + y }`<br>`sum = (x, y) -> x + y`</pre> | <pre>`let sum = function (x, y) { return x + y }`<br>`let sum = (x, y) => x + y`</pre> 
-| <pre>`5.times(() -> { print("hello world") })`<br>`5.times(() -> print("hello world"))`<br>`5.times({ print("hello world") })`<br>`5.times(print("hello world"))`</pre> | <pre>`for (let _ = 0; _ < 5; _++) console.log("hello world")`</pre>
-| <pre>`5.times(i -> { print(i)) })`<br>`5.times(i -> print(i))`<br>`5.times(print)`</pre> | <pre>`for(let i = 0; i < 5; i++) console.log(i)`</pre>
-| <pre>`range(5).forEach((i) -> { print(i) })`<br>`range(5).forEach((i) -> print(i))`<br>`range(5).forEach(print)`<br>`// prints 0-4 on separate lines`<br>`range(1, 6).forEach(print)`<br>`// prints 1-5 on separate lines`</pre> | <pre>`// TODO: js equivalent`</pre>
-| <pre>`isValid ? print("valid!")`</pre> | <pre>`if (isValid) { console.log("valid!") }`</pre>
-| <pre>`isValid ? print("valid!") : print("invalid!")`</pre> | <pre>`if (isValid) { console.log("valid!") }`<br>`else { console.log("invalid!") }`</pre>
-| <pre>`optional = isValid`<br>`  ? { return object }`<br>`  : { print("invalid") }`<br><br>`optional = isValid`<br>`  ? { object }`<br>`  : { print("invalid") }`<br><br>`optional = isValid ? object : print("invalid")`<br>`const objectField = optional?.fieldName`<br></pre> | <pre>`let optional`<br>`if (isValid) { optional = object }`<br>`else { console.log("invalid") }`<br>`const objectField = optional?.fieldName`</pre>
-| <pre>`const isValid = false`<br>`optional = isValid ? object : print("invalid")`<br>`// prints "invalid"`<br><br>`const objectField = optional?.fieldName`<br>`// objectField = nil`</pre> | <pre>`const isValid = false`<br>`let optional`<br>`if (isValid) { optional = object }`<br>`else { console.log("invalid") }`<br>`const objectField = optional?.fieldName`<br>`// objectField is undefined`</pre>
-| <pre>`isValid = false`<br>`optional = isValid`<br>`  ? object`<br>`  : () -> print("invalid")`<br>`optional?() // prints "invalid"`</pre> | <pre>`let isValid = false`<br>`let optional = isValid`<br>`  ? object`<br>`  : () => console.log("invalid")`<br>`optional() // prints "invalid"`</pre>
-| <pre>`enum Season { spring, summer, fall, winter }`</pre> | <pre>`// TODO js equivalent`</pre>
-| <pre>`enum Season { `<br>`  spring = '🌷'`<br>`  summer = '☀️'`<br>`  fall = '🍁'`<br>`  winter = '❄️'`<br>`}`<br>`print(Season.spring.rawTextVal) // prints "🌷"`</pre> | <pre>`// TODO: js equivalent`</pre>
-| <pre>`season = Season.spring`<br>`result = match season {`<br>`  case .spring: "spring!"`<br>`  case .summer: { "summer!" }`<br>`  case .fall, .winter: {`<br>`    str = "is cold!"`<br>`    return str`<br>`  }`<br>`  default: "California!"`<br>`}`</pre> | <pre>`// TODO: js equivalent`</pre>
+<table>
+<tr>
+<th>Bang!</th>
+<th>javascript</th>
+</tr>
+<tr>
+<td>
+
+```
+x = 17
+greeting = "hello"
+greeting = 'bye'
+const decayRate = 0.05
+```
+
+</td>
+<td>
+
+```javascript
+let x = 17
+let greeting = "hello"
+greeting = 'bye'
+const decayRate = 0.05
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+```
+sum = (x, y) -> { x + y }
+sum = (x, y) -> x + y
+```
+
+</td>
+<td>
+
+```javascript
+let sum = function (x, y) { return x + y }
+let sum = (x, y) => x + y
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+```
+5.times(() -> { print("hello world") })
+5.times(() -> print("hello world"))
+5.times({ print("hello world") })
+5.times(print("hello world"))
+```
+
+</td>
+<td>
+
+```javascript
+for (let _ = 0; _ < 5; _++) console.log("hello world")
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+```
+5.times(i -> { print(i)) })
+5.times(i -> print(i))
+5.times(print)
+```
+
+</td>
+<td>
+
+```javascript
+for(let i = 0; i < 5; i++) console.log(i)
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+```
+range(5).forEach((i) -> { print(i) })
+range(5).forEach((i) -> print(i))
+range(5).forEach(print)
+// prints 0-4 on separate lines
+
+range(1, 6).forEach(print)
+// prints 1-5 on separate lines
+```
+
+</td>
+<td>
+
+```javascript
+// TODO: js equivalent
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+```
+optional = isValid
+  ? { return object }
+  : { print("invalid") }
+
+// TODO: function to demonstrate immediate return does not require return keyword
+```
+
+</td>
+<td>
+
+```javascript
+// TODO: js equivalent
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+```
+isValid ? print("valid!")
+```
+
+</td>
+<td>
+
+```javascript
+if (isValid) { console.log("valid!") }
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+```
+isValid ? print("valid!") : print("invalid!")
+```
+
+</td>
+<td>
+
+```javascript
+if (isValid) { console.log("valid!") }
+else { console.log("invalid!") }
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+```
+optional = isValid
+  ? { object }
+  : { print("invalid") }
+optional = isValid ? object : print("invalid")
+
+const objectField = optional?.fieldName
+```
+
+</td>
+<td>
+
+```javascript
+let optional
+if (isValid) { optional = object }
+else { console.log("invalid") }
+const objectField = optional?.fieldName
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+```
+const isValid = false
+optional = isValid ? object : print("invalid")
+// prints "invalid"
+
+const objectField = optional?.fieldName
+// objectField = nil
+```
+
+</td>
+<td>
+
+```javascript
+const isValid = false
+let optional
+if (isValid) { optional = object }
+else { console.log("invalid") }
+// prints "invalid"
+
+const objectField = optional?.fieldName
+// objectField is undefined
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+```
+isValid = false
+optional = isValid
+  ? object
+  : () -> print("invalid")
+optional?() // prints "invalid"
+```
+
+</td>
+<td>
+
+```javascript
+let isValid = false
+let optional = isValid
+  ? object
+  : () => console.log("invalid")
+optional() // prints "invalid"
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+```
+enum Season { spring, summer, fall, winter }
+```
+
+</td>
+<td>
+
+```javascript
+// TODO: js equivalent
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+```
+enum Season { 
+  spring = '🌷'
+  summer = '☀️'
+  fall = '🍁'
+  winter = '❄️'
+}
+
+print(Season.spring.rawTextVal) 
+// prints "🌷"
+```
+
+</td>
+<td>
+
+```javascript
+// TODO: js equivalent
+```
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+```
+season = Season.spring
+result = match season {
+  case .spring: "spring!"
+  case .summer: { "summer!" }
+  case .fall, .winter: {
+    str = "is cold!"
+    return str
+  }
+  default: "California!"
+}
+```
+
+</td>
+<td>
+
+```javascript
+// TODO: js equivalent
+```
+
+</td>
+</tr>
+</table>
 
 Natalie "nat" Lau is a third-year CS student at Loyola Marymount University interested in language scemantics and design, mobile app development, and video game development. Some of her past projects include implementing Linux kernel modules using sockets, and a mobile app companion for the game Breath of the Wild.
 
