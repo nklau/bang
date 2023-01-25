@@ -16,7 +16,7 @@ A compiler for the programming language "bang!"
 <tr>
 <td>
 
-```swift
+```javascript
 x = 17
 greeting = "hello"
 greeting = 'bye'
@@ -31,6 +31,29 @@ let x = 17
 let greeting = "hello"
 greeting = 'bye'
 const decayRate = 0.05
+```
+
+</td>
+</tr>
+<tr></tr>
+<tr>
+<td>
+
+```cs
+firstName = "John"
+lastName = "Doe"
+
+print($"Hello, {firstName} {lastName}!")
+```
+
+</td>
+<td>
+
+```javascript
+let firstName = 'John'
+let lastName = 'Doe'
+
+console.log(`Hello, ${firstName} ${lastName}!`)
 ```
 
 </td>
@@ -58,7 +81,7 @@ let sum = (x, y) => x + y
 <tr>
 <td>
 
-```swift
+```javascript
 5.times(() -> { print("hello world") })
 5.times(() -> print("hello world"))
 5.times({ print("hello world") })
@@ -78,7 +101,7 @@ for (let _ = 0; _ < 5; _++) console.log("hello world")
 <tr>
 <td>
 
-```swift
+```javascript
 5.times(i -> { print(i)) })
 5.times(i -> print(i))
 5.times(print)
@@ -97,7 +120,7 @@ for(let i = 0; i < 5; i++) console.log(i)
 <tr>
 <td>
 
-```swift
+```javascript
 range(5).forEach((i) -> { print(i) })
 range(5).forEach((i) -> print(i))
 range(5).forEach(print)
@@ -327,29 +350,6 @@ switch (season) {
   default:
     result = "California!"
 }
-```
-
-</td>
-</tr>
-<tr></tr>
-<tr>
-<td>
-
-```cs
-firstName = "John"
-lastName = "Doe"
-
-print($"Hello, {firstName} {lastName}!")
-```
-
-</td>
-<td>
-
-```javascript
-let firstName = 'John'
-let lastName = 'Doe'
-
-console.log(`Hello, ${firstName} ${lastName}!`)
 ```
 
 </td>
