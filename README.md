@@ -35,7 +35,7 @@ const decayRate = 0.05
 
 </td>
 </tr>
-
+<tr></tr>
 <tr>
 <td>
 
@@ -54,7 +54,7 @@ let sum = (x, y) => x + y
 
 </td>
 </tr>
-
+<tr></tr>
 <tr>
 <td>
 
@@ -74,7 +74,7 @@ for (let _ = 0; _ < 5; _++) console.log("hello world")
 
 </td>
 </tr>
-
+<tr></tr>
 <tr>
 <td>
 
@@ -93,7 +93,7 @@ for(let i = 0; i < 5; i++) console.log(i)
 
 </td>
 </tr>
-
+<tr></tr>
 <tr>
 <td>
 
@@ -116,7 +116,7 @@ range(1, 6).forEach(print)
 
 </td>
 </tr>
-
+<tr></tr>
 <tr>
 <td>
 
@@ -133,7 +133,7 @@ if (isValid) { console.log("valid!") }
 
 </td>
 </tr>
-
+<tr></tr>
 <tr>
 <td>
 
@@ -151,7 +151,7 @@ else { console.log("invalid!") }
 
 </td>
 </tr>
-
+<tr></tr>
 <tr>
 <td>
 
@@ -176,7 +176,7 @@ const objectField = optional?.fieldName
 
 </td>
 </tr>
-
+<tr></tr>
 <tr>
 <td>
 
@@ -205,7 +205,7 @@ const objectField = optional?.fieldName
 
 </td>
 </tr>
-
+<tr></tr>
 <tr>
 <td>
 
@@ -230,7 +230,7 @@ optional() // prints "invalid"
 
 </td>
 </tr>
-
+<tr></tr>
 <tr>
 <td>
 
@@ -247,7 +247,7 @@ enum Season { spring, summer, fall, winter }
 
 </td>
 </tr>
-
+<tr></tr>
 <tr>
 <td>
 
@@ -272,7 +272,7 @@ print(Season.spring.rawTextVal)
 
 </td>
 </tr>
-
+<tr></tr>
 <tr>
 <td>
 
