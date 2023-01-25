@@ -1,63 +1,59 @@
 Bang {
-  Program         = Statement+
-  Statement       = const? id "=" Exp                               -- varAssignment
-                  | print "(" Exp ")"                               -- print
-                  | Exp
-  Exp             = Function | Obj | Literal
-  Block           = "{" Statement* "}"
-  Var             = Var "[" Exp "]"                                 -- subscript
-                  | Var "." id                                      -- select
-                  | id
+  Program               = Statement+
+  Statement             = const? id "=" Exp                                 -- varAssignment
+                        | print "(" Exp ")"                                 -- print
+                        | Exp
+  Exp                   = Function | Obj | Literal
+  Block                 = "{" Statement* "}"
+  Var                   = Var "[" Exp "]"                                   -- subscript
+                        | Var "." id                                        -- select
+                        | id
   // TODO: Literal = nil (?)
   
   // function stuff
-  Function        = "(" Params ")" arrow Block                      -- arrowFunc
-                  | Block
-  Params          = (id ("," id)*)?
+  Function              = "(" Params ")" arrow Block                        -- arrowFunc
+                        | Block
+  Params                = (id ("," id)*)?
 // TODO may need FunctionObj = Block
-  arrow           = "->"
-  print           = "print" // TODO: test for `x = 5`//`printx(x)`
+  arrow                 = "->"
+  print                 = "print" // TODO: test for `x = 5`//`printx(x)`
 
   // objects
   // need to disallow statements with ":" in Block
   // can contain functions, key assignment using ":"
   // can't contain statements
-  Obj             = "{" ObjField* "}"
-  ObjField        = key ":" ObjVal
-  ObjVal          = Block | Var | Literal
-  key             = ~keyword strlit
+  Obj                   = "{" ObjField* "}"
+  ObjField              = key ":" ObjVal
+  ObjVal                = Block | Var | Literal
+  key                   = ~keyword strlit
 
   // lists
 
   // literals
-  str             = strlit | formattedStr
-  strlit          = "'" singleStrChar* "'"
-                  | "\"" doubleStrChar* "\""
-  formattedStr    = "$'" formattedSubstr* "'"                       -- singleQuotes
-                  | "$\"" formattedSubstr* "\""                     -- doubleQuotes
-  formattedSubstr = (strChar*)? "{" id "}"
+  str                   = strlit | formattedStr
+  strlit                = "'" singleStrChar* "'"
+                        | "\"" doubleStrChar* "\""
+  formattedStr          = "$'" formattedSubstr* "'"                         -- singleQuotes
+                        | "$\"" formattedSubstr* "\""                       -- doubleQuotes
+  formattedSubstr       = (strChar*)? "{" id "}"
   
-
   // special chars
-  strChar          
-    = singleStrChar | doubleStrChar
-  singleStrChar   
-    = ~("'" | "\\" | lineTerminator) any              -- nonEscaped
-    | "\\" escapeChar                                 -- escaped
-    | lineContinuation
-  doubleStrChar    
-    = ~("\"" | "\\" | lineTerminator) any             -- nonEscaped
-    | "\\" escapeChar                                 -- escaped
-    | lineContinuation
-  escapeChar        = "'" | "\"" | "\\" | "n" | "t" | "r" | "u"
-  char              = ~(escapeChar | lineTerminator) any
-  lineTerminator    = "\n" | "\r" ~"\n" | "\u2028" | "\u2029"
-  lineContinuation  = "\\" lineTerminator
+  strChar               = singleStrChar | doubleStrChar
+  singleStrChar         = ~("'" | "\\" | lineTerminator) any                -- nonEscaped
+                        | "\\" escapeChar                                   -- escaped
+                        | lineContinuation
+  doubleStrChar         = ~("\"" | "\\" | lineTerminator) any               -- nonEscaped
+                        | "\\" escapeChar                                   -- escaped
+                        | lineContinuation
+  escapeChar            = "'" | "\"" | "\\" | "n" | "t" | "r" | "u"
+  char                  = ~(escapeChar | lineTerminator) any
+  lineTerminator        = "\n" | "\r" ~"\n" | "\u2028" | "\u2029"
+  lineContinuation      = "\\" lineTerminator
 
   // variables
-  const           = "const" ~idchar
-  id              = ~keyword (letter | "_") idchar*
-  idchar          = letter | digit | "_"
+  const                 = "const" ~idchar
+  id                    = ~keyword (letter | "_") idchar*
+  idchar                = letter | digit | "_"
 
   // booleans
 
@@ -66,7 +62,7 @@ Bang {
   // operators
 
   // other
-  keyword         = const | print | true | false | nil
+  keyword               = const | print | true | false | nil
 
   // TODO: bools (0 and 1 also work), nums, and, or, not, equals, comments, break, nil, lists, objects
 
