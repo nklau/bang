@@ -5,7 +5,7 @@ Bang {
   Statement             = const? Var assignmentOp Exp                       -- varAssignment
                         | print "(" Exp ")"                                 -- print
                         | Exp
-  Exp                   = Function | Lit | Var
+  Exp                   = Function | Lit | Var | MatchExp
   Block                 = "{" Statement* "}"
   Var                   = Var "[" Exp "]"                                   -- subscript
                         | Var "." id                                        -- select
@@ -35,7 +35,6 @@ Bang {
   // strings
   Str                   = (Str | id) (plus (Str | id))+                     -- concatenation
                         | strLit | formattedStr
-  // TODO what if it's print(num + "str") instead of print("str" + num)
   strLit                = "'" singleStrChar* "'"
                         | "\"" doubleStrChar* "\""
   formattedStr          = "$'" formattedSubstr* "'"                         -- singleQuotes
@@ -86,12 +85,19 @@ Bang {
   assignmentOp          = "=" | "+=" | "-=" | "*=" | "/=" | "%="
 
   // switch statements
-  switch                = "switch" ~idchar
+  MatchExp              = match id "{" MatchCase+ DefaultCase "}" lineTerminator?
+  MatchCase             = case Lit ":" Statement lineTerminator?
+  DefaultCase           = default ":" Statement lineTerminator?
+  match                 = "match" ~idchar
+  case                  = "case" ~idchar
+  default               = "default"
 
   // ternaries
 
+  // enums
+
   // other
-  keyword               = const     | print     | boolLit     | switch    
+  keyword               = const     | print     | boolLit     | match    
                         | nil
   nil                   = "nil" ~idchar
 
