@@ -1,6 +1,7 @@
 Bang {
   Program               = Statement+
   // TODO const can currently be used on existing vars
+  // TODO statements can be stuck together on one line ex. `num = 5 str = "test"`
   Statement             = const? Var "=" Exp                                -- varAssignment
                         | print "(" Exp ")"                                 -- print
                         | Exp
@@ -9,7 +10,7 @@ Bang {
   Var                   = Var "[" Exp "]"                                   -- subscript
                         | Var "." id                                        -- select
                         | id
-  Lit                   = nil       | str       | Obj       | numLit
+  Lit                   = nil       | Str       | Obj       | numLit
                         | boolLit 
   
   // function stuff
@@ -32,7 +33,9 @@ Bang {
   // lists
 
   // strings
-  str                   = strLit | formattedStr
+  Str                   = (Str | id) (plus (Str | id))+                     -- concatenation
+                        | strLit | formattedStr
+  // TODO what if it's print(num + "str") instead of print("str" + num)
   strLit                = "'" singleStrChar* "'"
                         | "\"" doubleStrChar* "\""
   formattedStr          = "$'" formattedSubstr* "'"                         -- singleQuotes
@@ -68,6 +71,7 @@ Bang {
   // TODO negative numbers
 
   // TODO bitwise ops?
+  // TODO combining op w/ "=" (ex. "+=")
   // operators
   and                   = "&&"
   or                    = "||"
@@ -81,6 +85,7 @@ Bang {
   modulus               = "%"
 
   // switch statements
+  switch                = "switch" ~idchar
 
   // ternaries
 
