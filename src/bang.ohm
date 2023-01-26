@@ -14,8 +14,8 @@ Bang {
                         | boolLit 
   
   // function stuff
-  Function              = "(" Params ")" arrow Block                        -- arrowFunc
-                        | Block
+  Function              = FunctionObj | Block
+  FunctionObj           = "(" Params ")" arrow Block
   Params                = (Arg ("," Arg)*)?
   Arg                   = PositionalArg | KeywordArg
   PositionalArg         = ArgVal
