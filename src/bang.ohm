@@ -2,7 +2,7 @@ Bang {
   Program               = Statement+
   // TODO const can currently be used on existing vars
   // TODO statements can be stuck together on one line ex. `num = 5 str = "test"`
-  Statement             = const? Var "=" Exp                                -- varAssignment
+  Statement             = const? Var assignmentOp Exp                       -- varAssignment
                         | print "(" Exp ")"                                 -- print
                         | Exp
   Exp                   = Function | Lit | Var
@@ -71,7 +71,7 @@ Bang {
   // TODO negative numbers
 
   // TODO bitwise ops?
-  // TODO combining op w/ "=" (ex. "+=")
+  // TODO can currently do num += 1 even if num doesn't exist
   // operators
   and                   = "&&"
   or                    = "||"
@@ -83,6 +83,7 @@ Bang {
   power                 = "**"
   divide                = "/"
   modulus               = "%"
+  assignmentOp          = "=" | "+=" | "-=" | "*=" | "/=" | "%="
 
   // switch statements
   switch                = "switch" ~idchar
