@@ -1,9 +1,10 @@
 Bang {
   space := "\n" | " " | "\t" | "\r" | multiLineComment | comment
   Program               = Statement*
-  Closure               = "{" Statement* "}"                                -- multiLine
+  Closure               = "{" (Statement | LocalVar)* "}"                   -- multiLine
                         | Statement
   // TODO statements can be stuck together on one line ex. `float = 5 str = "test"`
+  LocalVar              = local const? Exp (assignmentOp Exp)?
   Statement             = const? Exp assignmentOp Exp                       -- varAssignment
                         | print "(" Exp ")"                                 -- print
                         | return Exp                                        -- return
@@ -110,14 +111,14 @@ Bang {
 
   // todo what about while loops?
 
-  // todo vars inside smaller scopes should be global by default
-
   multiLineComment      = "/*" (~"*/" any)* "*/"
   comment               = "//" (~lineTerminator any)*
 
   // other
   keyword               = const     | print     | boolLit   | match    
                         | nil       | enum      | break     | return
+                        | local
   nil                   = "nil" ~idchar
   break                 = "break" ~idchar
+  local                 = "local" ~idchar
 }
