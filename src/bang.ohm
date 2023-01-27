@@ -1,5 +1,5 @@
 Bang {
-  space := "\n" | " " | "\t" | "\r" // add multiline comments
+  space := "\n" | " " | "\t" | "\r" | multiLineComment | comment
   Program               = Statement*
   Closure               = "{" Statement* "}"                                -- multiLine
                         | Statement
@@ -105,14 +105,14 @@ Bang {
   enumCases             = id (("," | lineTerminator) spaces id)*
   enum                  = "enum" ~idchar
 
-  // todo return statement
   return                = "return" ~idchar
 
   // todo what about while loops?
 
   // todo vars inside smaller scopes should be global by default
 
-  // todo comments, multi-line comments
+  multiLineComment      = "/*" (~"*/" any)* "*/"
+  comment               = "//" (~lineTerminator any)*
 
   // other
   keyword               = const     | print     | boolLit     | match    
