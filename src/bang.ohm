@@ -1,17 +1,19 @@
 Bang {
-  Program               = lineTerminator? Statement* lineTerminator?
+//   space := ~"\n" "\x00".."\x20" s, t, r
+  space := "\n" | " " | "\t" | "\r" // add multiline comments
+  Program               = Statement*
   // TODO const can currently be used on existing vars
   // TODO statements can be stuck together on one line ex. `float = 5 str = "test"`
   Statement             = const? Var assignmentOp Exp                       -- varAssignment
                         | print "(" Exp ")"                                 -- print
                         | Exp
-  Exp                   = Function | Lit | Var | MatchExp
+  Exp                   = Enum | Function | Lit | Var | MatchExp
   Block                 = "{" Statement* "}"
   Var                   = Var "[" Exp "]"                                   -- subscript
                         | Var "." id                                        -- select
                         | id
   Lit                   = nil       | Str       | Obj       | Num
-                        | Bool   
+                        | Bool      
   
   // function stuff
   Function              = FunctionObj | Block
@@ -57,7 +59,7 @@ Bang {
   // variables
   const                 = "const" ~idchar
   id                    = ~keyword (letter | "_") idchar*
-  idchar                = letter | digit | "_"
+  idchar                = alnum | "_"
 
   // booleans
   Bool                  = Ternary | BoolCheck | boolLit
@@ -106,10 +108,15 @@ Bang {
   Ternary               = "("? BoolCheck ")"? "?" Exp (":" Exp)?
 
   // enums
+  Enum                  = enum id "{" EnumBlock "}"
+  EnumBlock             = EnumCaseAssignment+ | enumCases
+  EnumCaseAssignment    = id "=" Exp
+  enumCases             = id (("," | lineTerminator) spaces id)*
+  enum                  = "enum" ~idchar
 
   // other
   keyword               = const     | print     | boolLit     | match    
-                        | nil
+                        | nil       | enum
   nil                   = "nil" ~idchar
 
   // TODO: bools (0 and 1 also work), nums, and, or, not, equals, comments, break, nil, lists, objects
