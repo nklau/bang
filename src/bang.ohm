@@ -11,7 +11,7 @@ Bang {
                         | Var "." id                                        -- select
                         | id
   Lit                   = nil       | Str       | Obj       | Num
-                        | boolLit   
+                        | Bool   
   
   // function stuff
   Function              = FunctionObj | Block
@@ -60,7 +60,9 @@ Bang {
   idchar                = letter | digit | "_"
 
   // booleans
+  Bool                  = Ternary | BoolCheck | boolLit
   boolLit               = true | false
+  BoolCheck             = Exp (boolOp Exp)?
   true                  = "true" ~idchar
   false                 = "false" ~idchar
 
@@ -74,7 +76,7 @@ Bang {
   // TODO negative numbers
 
   // TODO bitwise ops?
-  // TODO can currently do float += 1 even if float doesn't exist
+  // TODO can currently do num += 1 even if num doesn't exist
   // operators
   arithmeticOp          = plus | minus | multiply | divide | modulus
   strOp                 = plus | multiply // TODO how to multiply strings?
@@ -101,6 +103,7 @@ Bang {
   default               = "default"
 
   // ternaries
+  Ternary               = "("? BoolCheck ")"? "?" Exp (":" Exp)?
 
   // enums
 
