@@ -1,29 +1,44 @@
 Bang {
-//   space := ~"\n" "\x00".."\x20" s, t, r
   space := "\n" | " " | "\t" | "\r" // add multiline comments
   Program               = Statement*
-  // TODO const can currently be used on existing vars
+  Closure               = "{" Statement* "}"                                -- multiLine
+                        | Statement
   // TODO statements can be stuck together on one line ex. `float = 5 str = "test"`
-  Statement             = const? Var assignmentOp Exp                       -- varAssignment
+  Statement             = const? Exp assignmentOp Exp                       -- varAssignment
                         | print "(" Exp ")"                                 -- print
                         | Exp
-  Exp                   = Enum | Function | Lit | Var | MatchExp
-  Block                 = "{" Statement* "}"
-  Var                   = Var "[" Exp "]"                                   -- subscript
-                        | Var "." id                                        -- select
-                        | id
-  Lit                   = nil       | Str       | Obj       | Num
-                        | Bool      
+  Exp                   = Exp (("=" | "!") "=" | ("<" | ">") "="?) Exp1     -- equality
+                        | "(" Exp1 ")"                                      -- enclosed
+                        | Ternary
+                        | Exp1
+  Exp1                  = Exp1 "||" Exp2                                    -- or
+                        | Exp2
+  Exp2                  = Exp2 "&&" Exp3                                    -- and
+                        | Exp3
+  Exp3                  = "!" Exp4                                          -- not
+                        | Exp4
+  Exp4                  = Exp4 ("+" | "-") Exp5                             -- addSubtract
+                        | Exp5
+  Exp5                  = Exp5 ("*" | "/" | "%") Exp6                       -- multiplyDivideMod
+                        | Exp6
+  Exp6                  = Exp7 "**" Exp6                                    -- exponent
+                        | "-"? Exp7                                         -- negative
+  Exp7                  = id
+                        | Exp8 "[" Exp "]"                                  -- subscript
+                        | Exp8? "." id                                      -- select
+                        | Exp8
+  Exp8                  = nil       | Str       | Num       | Obj       
+                        | boolLit   | Closure   | Enum      | MatchExp
+
+  // ternaries
+  Ternary               = Exp "?" Closure (":" Closure)?
   
   // function stuff
-  Function              = FunctionObj | Block
-  FunctionObj           = "(" Params ")" arrow Block
+  FuncLit               = "(" Params ")" arrow Closure
   Params                = (Arg ("," Arg)*)?
   Arg                   = PositionalArg | KeywordArg
-  PositionalArg         = ArgVal
-  KeywordArg            = id "=" ArgVal
-  ArgVal                = id | Lit
-// TODO may need FunctionObj = Block
+  PositionalArg         = Exp
+  KeywordArg            = id "=" Exp
   arrow                 = "->"
   print                 = "print" // TODO: test for `x = 5`//`printx(x)`
 
@@ -35,7 +50,7 @@ Bang {
   // lists
 
   // strings
-  Str                   = (Str | id) (plus (Str | id))+                     -- concatenation
+  Str                   = (Str | id) ("+" (Str | id))+                      -- concatenation
                         | strLit | formattedStr
   strLit                = "'" singleStrChar* "'"
                         | "\"" doubleStrChar* "\""
@@ -62,50 +77,25 @@ Bang {
   idchar                = alnum | "_"
 
   // booleans
-  Bool                  = Ternary | BoolCheck | boolLit
   boolLit               = true | false
-  BoolCheck             = Exp (boolOp Exp)?
   true                  = "true" ~idchar
   false                 = "false" ~idchar
 
   // todo hex? "0x" hexNum
   // numbers
-  Num                   = NumExp | Exponent | numLit
-  NumExp                = (numLit | Var) arithmeticOp (numLit | Var)
-  numLit                = minus? float
-  float                 = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
-  Exponent              = (float | Var) power (numLit | Var)
-  // TODO negative numbers
+  Num                   = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
 
   // TODO bitwise ops?
-  // TODO can currently do num += 1 even if num doesn't exist
   // operators
-  arithmeticOp          = plus | minus | multiply | divide | modulus
-  strOp                 = plus | multiply // TODO how to multiply strings?
-  boolOp                = equality | inequality
   assignmentOp          = "=" | "+=" | "-=" | "*=" | "/=" | "%="
-  and                   = "&&"
-  or                    = "||"
-  not                   = "!"
-  equality              = "=="
-  inequality            = "!="
-  plus                  = "+"
-  minus                 = "-"
-  multiply              = "*"
-  power                 = "**"
-  divide                = "/"
-  modulus               = "%"
 
   // switch statements
-  MatchExp              = match id "{" MatchCase+ DefaultCase "}" lineTerminator?
-  MatchCase             = case Lit ":" Statement lineTerminator?
-  DefaultCase           = default ":" Statement lineTerminator?
+  MatchExp              = match id "{" MatchCase+ DefaultCase "}"
+  MatchCase             = case Exp ("," Exp)* ":" Closure
+  DefaultCase           = default ":" Closure
   match                 = "match" ~idchar
   case                  = "case" ~idchar
   default               = "default"
-
-  // ternaries
-  Ternary               = "("? BoolCheck ")"? "?" Exp (":" Exp)?
 
   // enums
   Enum                  = enum id "{" EnumBlock "}"
@@ -114,12 +104,18 @@ Bang {
   enumCases             = id (("," | lineTerminator) spaces id)*
   enum                  = "enum" ~idchar
 
+  // todo return statement
+
+  // todo what about while loops?
+
+  // todo vars inside smaller scopes should be global by default
+
+  // todo comments, multi-line comments
+
   // other
   keyword               = const     | print     | boolLit     | match    
                         | nil       | enum
   nil                   = "nil" ~idchar
 
-  // TODO: bools (0 and 1 also work), nums, and, or, not, equals, comments, break, nil, lists, objects
-
-
+  // TODO: break
 }
