@@ -116,8 +116,8 @@ Bang {
   comment               = "//" (~lineTerminator any)*
 
   // other
-  keyword               = const     | print     | boolLit     | match    
-                        | nil       | enum
+  keyword               = const     | print     | boolLit   | match    
+                        | nil       | enum      | break     | return
   nil                   = "nil" ~idchar
   break                 = "break" ~idchar
 }
