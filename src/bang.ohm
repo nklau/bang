@@ -7,6 +7,7 @@ Bang {
   Statement             = const? Exp assignmentOp Exp                       -- varAssignment
                         | print "(" Exp ")"                                 -- print
                         | return Exp                                        -- return
+                        | break
                         | Exp
   Exp                   = Exp (("=" | "!") "=" | ("<" | ">") "="?) Exp1     -- equality
                         | "(" Exp1 ")"                                      -- enclosed
@@ -118,6 +119,5 @@ Bang {
   keyword               = const     | print     | boolLit     | match    
                         | nil       | enum
   nil                   = "nil" ~idchar
-
-  // TODO: break
+  break                 = "break" ~idchar
 }
