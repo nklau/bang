@@ -6,6 +6,7 @@ Bang {
   // TODO statements can be stuck together on one line ex. `float = 5 str = "test"`
   Statement             = const? Exp assignmentOp Exp                       -- varAssignment
                         | print "(" Exp ")"                                 -- print
+                        | return Exp                                        -- return
                         | Exp
   Exp                   = Exp (("=" | "!") "=" | ("<" | ">") "="?) Exp1     -- equality
                         | "(" Exp1 ")"                                      -- enclosed
@@ -105,6 +106,7 @@ Bang {
   enum                  = "enum" ~idchar
 
   // todo return statement
+  return                = "return" ~idchar
 
   // todo what about while loops?
 
