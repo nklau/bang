@@ -1,7 +1,7 @@
 Bang {
   space := "\n" | " " | "\t" | "\r" | multiLineComment | comment
   Program               = Statement*
-  Closure               = "{" (Statement | LocalVar)* "}"                   -- multiLine
+  BangFunc               = "{" (Statement | LocalVar)* "}"                  -- multiLine
                         | Statement
   // TODO statements can be stuck together on one line ex. `float = 5 str = "test"`
   LocalVar              = local const? Exp (assignmentOp Exp)?
@@ -31,13 +31,13 @@ Bang {
                         | Exp8? "." id                                      -- select
                         | Exp8
   Exp8                  = nil       | Str       | Num       | Obj       
-                        | boolLit   | Closure   | Enum      | MatchExp
+                        | boolLit   | BangFunc   | Enum      | MatchExp
 
   // ternaries
-  Ternary               = Exp "?" Closure (":" Closure)?
+  Ternary               = Exp "?" BangFunc (":" BangFunc)?
   
   // function stuff
-  FuncLit               = "(" Params ")" arrow Closure
+  FuncLit               = "(" Params ")" arrow BangFunc
   Params                = (Arg ("," Arg)*)?
   Arg                   = PositionalArg | KeywordArg
   PositionalArg         = Exp
@@ -94,8 +94,8 @@ Bang {
 
   // switch statements
   MatchExp              = match id "{" MatchCase+ DefaultCase "}"
-  MatchCase             = case Exp ("," Exp)* ":" Closure
-  DefaultCase           = default ":" Closure
+  MatchCase             = case Exp ("," Exp)* ":" BangFunc
+  DefaultCase           = default ":" BangFunc
   match                 = "match" ~idchar
   case                  = "case" ~idchar
   default               = "default"
