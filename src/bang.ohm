@@ -32,6 +32,7 @@ Bang {
                         | Exp8
   Exp8                  = nil       | Str       | Num       | Obj       
                         | boolLit   | BangFunc   | Enum      | MatchExp
+                        | ListLit
 
   // ternaries
   Ternary               = Exp "?" BangFunc (":" BangFunc)?
@@ -51,6 +52,7 @@ Bang {
   key                   = ~keyword strLit
 
   // lists
+  ListLit               = "[" ListOf<Exp, ","> "]"
 
   // strings
   Str                   = (Str | id) ("+" (Str | id))+                      -- concatenation
