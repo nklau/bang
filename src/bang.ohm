@@ -4,8 +4,8 @@ Bang {
   BangFunc              = "{" (Statement | LocalVar)* "}"                  -- multiLine
                         | Statement
   // TODO statements can be stuck together on one line ex. `float = 5 str = "test"`
-  LocalVar              = local const? Exp (assignmentOp Exp)?
-  Statement             = const? Exp assignmentOp Exp                       -- varAssignment
+  LocalVar              = local const? VarSelect (assignmentOp Exp)?
+  Statement             = const? VarSelect assignmentOp Exp                       -- varAssignment
                         | print "(" Exp ")"                                 -- print
                         | return Exp                                        -- return
                         | break
@@ -27,12 +27,14 @@ Bang {
   Exp6                  = Exp7 "**" Exp6                                    -- exponent
                         | "-"? Exp7                                         -- negative
   Exp7                  = id Params?                                        -- unwrapCall
-                        | Exp8 "[" Exp "]"                                  -- subscript
-                        | Exp8? "." id                                      -- select
+                        | VarSelect
                         | Exp8
   Exp8                  = nil       | Str       | Num       | Obj       
                         | boolLit   | BangFunc   | Enum      | MatchExp
                         | ListLit
+  VarSelect             = Exp8 "[" Exp "]"                                  -- subscript
+                        | Exp8? "." id                                      -- select
+                        | id
 
   // ternaries
   Ternary               = Exp "?" BangFunc (":" BangFunc)?
