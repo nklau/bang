@@ -30,10 +30,10 @@ Bang {
                         | VarSelect
                         | Exp8
   Exp8                  = nil       | Str       | Num       | Obj       
-                        | boolLit   | BangFunc   | Enum      | MatchExp
+                        | boolLit   | BangFunc  | Enum      | MatchExp
                         | ListLit
-  VarSelect             = Exp8 "[" Exp "]"                                  -- subscript
-                        | Exp8? "." id                                      -- select
+  VarSelect             = (Exp8 | id) "[" Exp "]"                           -- subscript
+                        | (Exp8 | id)? "." id                               -- select
                         | id
 
   // ternaries
