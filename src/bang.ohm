@@ -38,7 +38,7 @@ Bang {
   
   // function stuff
   FuncLit               = Params arrow BangFunc
-  Params                = "(" (Arg ("," Arg)*)? ")"
+  Params                = "(" ListOf<Arg, ","> ")"
   Arg                   = PositionalArg | KeywordArg
   PositionalArg         = Exp
   KeywordArg            = id "=" Exp
@@ -96,7 +96,7 @@ Bang {
   MatchExp              = match id CaseBlock
   CaseBlock             = "{" CaseClause+ DefaultClause CaseClause* "}"     -- withDefault
                         | "{" CaseClause+                           "}"     -- withoutDefault
-  CaseClause            = case Exp ("," Exp)* ":" BangFunc
+  CaseClause            = case ListOf<Exp, ","> ":" BangFunc
   DefaultClause         = default ":" BangFunc
   match                 = "match" ~idchar
   case                  = "case" ~idchar
