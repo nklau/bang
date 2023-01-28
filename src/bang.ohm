@@ -1,13 +1,13 @@
 Bang {
   space := "\n" | " " | "\t" | "\r" | multiLineComment | comment
   Program               = Statement*
-  BangFunc              = "{" (Statement | LocalVar)* "}"                  -- multiLine
+  BangFunc              = "{" (Statement | LocalVar)* "}"                   -- multiLine
                         | Statement
   // TODO statements can be stuck together on one line ex. `float = 5 str = "test"`
   LocalVar              = local const? VarSelect (assignmentOp Exp)?
-  Statement             = const? VarSelect assignmentOp Exp                       -- varAssignment
+  Statement             = const? VarSelect assignmentOp Exp                 -- varAssignment
                         | print "(" Exp ")"                                 -- print
-                        | return Exp                                        -- return
+                        | return Exp?                                       -- return
                         | break
                         | Exp
   Exp                   = Exp (("=" | "!") "=" | ("<" | ">") "="?) Exp1     -- equality
