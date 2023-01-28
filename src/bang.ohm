@@ -37,8 +37,7 @@ Bang {
                         | id
 
   // ternaries
-  Ternary               = Exp "?" BangFunc (":" BangFunc)?                  -- withElse
-                        | Exp "?" BangFunc                                  -- withoutElse
+  Ternary               = Exp "?" BangFunc (":" BangFunc)?
   
   // function stuff
   FuncLit               = Params arrow BangFunc
