@@ -1,7 +1,7 @@
 Bang {
   space := "\n" | " " | "\t" | "\r" | multiLineComment | comment
   Program               = Statement*
-  BangFunc               = "{" (Statement | LocalVar)* "}"                  -- multiLine
+  BangFunc              = "{" (Statement | LocalVar)* "}"                  -- multiLine
                         | Statement
   // TODO statements can be stuck together on one line ex. `float = 5 str = "test"`
   LocalVar              = local const? Exp (assignmentOp Exp)?
@@ -26,7 +26,7 @@ Bang {
                         | Exp6
   Exp6                  = Exp7 "**" Exp6                                    -- exponent
                         | "-"? Exp7                                         -- negative
-  Exp7                  = id
+  Exp7                  = id Params?                                        -- unwrapCall
                         | Exp8 "[" Exp "]"                                  -- subscript
                         | Exp8? "." id                                      -- select
                         | Exp8
@@ -37,8 +37,8 @@ Bang {
   Ternary               = Exp "?" BangFunc (":" BangFunc)?
   
   // function stuff
-  FuncLit               = "(" Params ")" arrow BangFunc
-  Params                = (Arg ("," Arg)*)?
+  FuncLit               = Params arrow BangFunc
+  Params                = "(" (Arg ("," Arg)*)? ")"
   Arg                   = PositionalArg | KeywordArg
   PositionalArg         = Exp
   KeywordArg            = id "=" Exp
@@ -76,7 +76,7 @@ Bang {
 
   // variables
   const                 = "const" ~idchar
-  id                    = ~keyword (letter | "_") idchar*
+  id                    = ~keyword (letter | "_") idchar* "?"?
   idchar                = alnum | "_"
 
   // booleans
