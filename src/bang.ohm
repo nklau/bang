@@ -93,9 +93,11 @@ Bang {
   assignmentOp          = "=" | "+=" | "-=" | "*=" | "/=" | "%="
 
   // switch statements
-  MatchExp              = match id "{" MatchCase+ DefaultCase "}"
-  MatchCase             = case Exp ("," Exp)* ":" BangFunc
-  DefaultCase           = default ":" BangFunc
+  MatchExp              = match id CaseBlock
+  CaseBlock             = "{" CaseClause+ DefaultClause CaseClause* "}"     -- withDefault
+                        | "{" CaseClause+                           "}"     -- withoutDefault
+  CaseClause            = case Exp ("," Exp)* ":" BangFunc
+  DefaultClause         = default ":" BangFunc
   match                 = "match" ~idchar
   case                  = "case" ~idchar
   default               = "default"
