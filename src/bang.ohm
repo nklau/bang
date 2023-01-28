@@ -31,9 +31,9 @@ Bang {
                         | Exp8
   Exp8                  = nil       | Str       | Num       | Obj       
                         | boolLit   | BangFunc  | Enum      | MatchExp
-                        | ListLit
+                        | ListLit   | Range
   VarSelect             = (Exp8 | id) "[" Exp "]"                           -- subscript
-                        | (Exp8 | id)? "." id                               -- select
+                        | (Exp8 | id)? "." id Params?                       -- select
                         | id
 
   // ternaries
@@ -55,6 +55,10 @@ Bang {
 
   // lists
   ListLit               = "[" ListOf<Exp, ","> "]"
+
+  // range
+  Range                 = range "(" digit+ "," digit+ ")"
+  range                 = "range" ~idchar
 
   // strings
   Str                   = (Str | id) ("+" (Str | id))+                      -- concatenation
@@ -123,7 +127,7 @@ Bang {
   // other
   keyword               = const     | print     | boolLit   | match    
                         | nil       | enum      | break     | return
-                        | local
+                        | local     | range
   nil                   = "nil" ~idchar
   break                 = "break" ~idchar
   local                 = "local" ~idchar
