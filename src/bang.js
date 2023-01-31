@@ -6,7 +6,7 @@ import compile from "./compiler.js"
 
 const help = `Bang compiler
 
-Syntax: node bella.js <filename> <outputType>
+Syntax: node bang.js <filename> <outputType>
 
 Prints to stdout according to <outputType>, which must be one of:
 

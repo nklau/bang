@@ -17,7 +17,7 @@ function check(condition, message, node) {
 }
 
 export default function analyze(sourceCode) {
-  const analyzer = bellaGrammar.createSemantics().addOperation("rep", {
+  const analyzer = bangGrammar.createSemantics().addOperation("rep", {
     Program(body) {
       return new core.Program(body.rep())
     },
