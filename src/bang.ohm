@@ -108,8 +108,8 @@ Bang {
   assignmentOp          = "=" | "+=" | "-=" | "*=" | "/=" | "%="
 
   // switch statements
-  MatchExp              = match id CaseBlock
-  CaseBlock             = "{" CaseClause+ DefaultClause CaseClause* "}"     -- withDefault
+  MatchExp              = match id MatchBlock
+  MatchBlock             = "{" CaseClause+ DefaultClause CaseClause* "}"    -- withDefault
                         | "{" CaseClause+                           "}"     -- withoutDefault
   CaseClause            = case ListOf<Exp, ","> ":" BangFunc
   DefaultClause         = default ":" BangFunc
