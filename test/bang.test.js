@@ -1,5 +1,5 @@
 import assert from "assert"
-import { add, subtract } from "../src/bang.js"
+import { add, subtract } from "./bang.js"
 
 describe("The compiler", () => {
   it("gives the correct values for the add function", function () {
