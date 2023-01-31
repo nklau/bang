@@ -10,8 +10,9 @@ Bang {
                         | Statement
   // TODO statements can be stuck together on one line ex. `float = 5 str = "test"`
   LocalStatement        = local VarSelect (assignmentOp Exp)?               -- localVar
+                        | local const VarSelect assignmentOp Exp            -- localConst
                         | Statement
-  Statement             = const? VarSelect assignmentOp Exp                 -- constantVar
+  Statement             = const? VarSelect assignmentOp Exp                 -- varAssignment
                         | print "(" Exp ")"                                 -- print
                         | return Exp?                                       -- return
                         | break
