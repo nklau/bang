@@ -1,11 +1,16 @@
 Bang {
+  // remove "\n" from space
   space := "\n" | " " | "\t" | "\r" | multiLineComment | comment
+  /*
+  program = block
+  block = "\n"* (statement "\n"+)* statement "\n"*
+  */
   Program               = Statement*
-  BangFunc              = "{" (Statement | LocalVar)* "}"                   -- multiLine
+  BangFunc              = "{" Statement* "}"                   -- multiLine
                         | Statement
   // TODO statements can be stuck together on one line ex. `float = 5 str = "test"`
-  LocalVar              = local const? VarSelect (assignmentOp Exp)?
-  Statement             = const? VarSelect assignmentOp Exp                 -- varAssignment
+  Statement             = local const? VarSelect (assignmentOp Exp)?        -- localVar
+                        | const? VarSelect assignmentOp Exp                 -- varAssignment
                         | print "(" Exp ")"                                 -- print
                         | return Exp?                                       -- return
                         | break
@@ -26,17 +31,17 @@ Bang {
                         | Exp6
   Exp6                  = Exp7 "**" Exp6                                    -- exponent
                         | "-"? Exp7                                         -- negative
-  Exp7                  = id Params?                                        -- unwrapCall
-                        | VarSelect
+  Exp7                  = VarSelect Params?                                 -- call
                         | Exp8
   Exp8                  = nil       | Str       | Num       | Obj       
                         | boolLit   | BangFunc  | Enum      | MatchExp
                         | ListLit   | Range
   VarSelect             = (Exp8 | id) "[" Exp "]"                           -- subscript
-                        | (Exp8 | id)? "." id Params?                       -- select
+                        | (Exp8 | id)? "." id                               -- select
                         | id
 
   // ternaries
+  // todo Exp lineTerminator* "?" BangFunc (lineTerminator* ":" BangFunc)?
   Ternary               = Exp "?" BangFunc (":" BangFunc)?
   
   // function stuff
@@ -57,20 +62,22 @@ Bang {
   ListLit               = "[" ListOf<Exp, ","> "]"
 
   // range
-  Range                 = range "(" digit+ "," digit+ ")"
-  range                 = "range" ~idchar
+  Range                 = range "("( digit+ ",")? digit+ ")"
+  range                 = "range"
 
   // strings
-  Str                   = (Str | id) ("+" (Str | id))+                      -- concatenation
-                        | strLit | formattedStr
+  Str                   = strLit | FormattedStr
   strLit                = "'" singleStrChar* "'"
                         | "\"" doubleStrChar* "\""
-  formattedStr          = "$'" formattedSubstr* "'"                         -- singleQuotes
-                        | "$\"" formattedSubstr* "\""                       -- doubleQuotes
-  formattedSubstr       = (strChar*)? "{" id "}"
+  FormattedStr          = "$'" FSingleSubstr* "'"                           -- singleQuotes
+                        | "$\"" FDoubleSubstr* "\""                         -- doubleQuotes
+  FSingleSubstr         = fSingleStrChar | FStrExp
+  FDoubleSubstr         = fDoubleStrChar | FStrExp
+  FStrExp               = "{" Exp "}"
   
   // special chars
-  strChar               = singleStrChar | doubleStrChar
+  fSingleStrChar        = ~"{" singleStrChar
+  fDoubleStrChar        = ~"{" doubleStrChar
   singleStrChar         = ~("'" | "\\" | lineTerminator) any                -- nonEscaped
                         | "\\" escapeChar                                   -- escaped
                         | lineContinuation
@@ -118,8 +125,6 @@ Bang {
   enum                  = "enum" ~idchar
 
   return                = "return" ~idchar
-
-  // todo what about while loops?
 
   multiLineComment      = "/*" (~"*/" any)* "*/"
   comment               = "//" (~lineTerminator any)*
