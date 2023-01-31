@@ -28,6 +28,13 @@ export class ReturnStatement {
   }
 }
 
+export class Call {
+  constructor(id, args) {
+    this.id = id
+    this.args = args
+  }
+}
+
 export class Conditional {
   constructor(cond, block, alternative) {
     Object.assign(this, { cond, block, alternative })
@@ -61,17 +68,23 @@ export class VarSelect {
   }
 }
 
-export class FuncDec {
+export class FuncLit {
   constructor(params, block) {
     this.params = params
     this.block = block
   }
 }
 
-export class FuncLit {
-  constructor(args, block) {
-    this.args = args
-    this.block = block
+export class Params {
+  constructor(params) {
+    this.params = params
+  }
+}
+
+export class KeywordParam {
+  constructor(id, val) {
+    this.id = id
+    this.val = val
   }
 }
 
@@ -81,15 +94,46 @@ export class Object {
   }
 }
 
+export class ObjField {
+  constructor(key, val) {
+    this.key = key
+    this.val = val
+  }
+}
+
 export class List {
   constructor(exps) {
     this.exps = exps
   }
 }
 
-export class Var {
-  constructor(name, exp) {
-    this.name = name
+export class Range {
+  constructor(start = 0, end) {
+    this.start = start
+    this.end = end
+  }
+}
+
+export class StrLit {
+  constructor(chars) {
+    this.chars = chars
+  }
+}
+
+export class FormattedStr {
+  constructor(substrs) {
+    this.substrs = substrs
+  }
+}
+
+export class FormattedSubstr {
+  constructor(exp) {
+    this.exp = exp
+  }
+}
+
+export class UnwrapExp {
+  constructor(exp) {
     this.exp = exp
   }
 }
@@ -102,8 +146,8 @@ export class MatchExp {
 }
 
 export class MatchClause {
-  constructor(isDefault, matchCase, block) {
-    Object.assign(this, { isDefault, matchCase, block })
+  constructor(isDefault, matchCases, block) {
+    Object.assign(this, { isDefault, matchCases, block })
   }
 }
 
@@ -114,10 +158,9 @@ export class Enum {
   }
 }
 
-// TODO: this could probably just be Var?
-export class EnumVal {
-  constructor(name, exp) {
-    this.name = name
-    this.exp = exp
+export class Token {
+  constructor(category, src) {
+    this.category = category
+    this.src = src
   }
 }
