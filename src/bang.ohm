@@ -6,16 +6,18 @@ Bang {
   block = "\n"* (statement "\n"+)* statement "\n"*
   */
   Program               = Statement*
-  BangFunc              = "{" Statement* "}"                   -- multiLine
+  BangFunc              = "{" LocalStatement* "}"                           -- multiLine
                         | Statement
   // TODO statements can be stuck together on one line ex. `float = 5 str = "test"`
-  Statement             = local const? VarSelect (assignmentOp Exp)?        -- localVar
-                        | const? VarSelect assignmentOp Exp                 -- varAssignment
+  LocalStatement        = local VarSelect (assignmentOp Exp)?               -- localVar
+                        | Statement
+  Statement             = const? VarSelect assignmentOp Exp                 -- constantVar
                         | print "(" Exp ")"                                 -- print
                         | return Exp?                                       -- return
                         | break
                         | Exp
-  Exp                   = Exp (("=" | "!") "=" | ("<" | ">") "="?) Exp1     -- equality
+  Exp                   = FuncLit
+                        | Exp (("=" | "!") "=" | ("<" | ">") "="?) Exp1     -- equality
                         | "(" Exp1 ")"                                      -- enclosed
                         | Ternary
                         | Exp1
@@ -35,7 +37,7 @@ Bang {
                         | Exp8
   Exp8                  = nil       | Str       | Num       | Obj       
                         | boolLit   | BangFunc  | Enum      | MatchExp
-                        | ListLit   | Range     | FuncLit
+                        | ListLit   | Range     
   VarSelect             = (Exp8 | id) "[" Exp "]"                           -- subscript
                         | (Exp8 | id)? "." id                               -- select
                         | id
