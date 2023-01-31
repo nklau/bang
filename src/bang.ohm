@@ -11,11 +11,11 @@ Bang {
   // TODO statements can be stuck together on one line ex. `float = 5 str = "test"`
   LocalStatement        = local VarSelect (assignmentOp Exp)?               -- localVar
                         | local const VarSelect assignmentOp Exp            -- localConst
+                        | return Exp?                                       -- return
+                        | break
                         | Statement
   Statement             = const? VarSelect assignmentOp Exp                 -- varAssignment
                         | print "(" Exp ")"                                 -- print
-                        | return Exp?                                       -- return
-                        | break
                         | Exp
   Exp                   = FuncLit
                         | Exp (("=" | "!") "=" | ("<" | ">") "="?) Exp1     -- equality
