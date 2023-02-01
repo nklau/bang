@@ -34,14 +34,14 @@ Bang {
                         | Exp6
   Exp6                  = Exp7 "**" Exp6                                    -- exponent
                         | "-"? Exp7                                         -- negative
-  Exp7                  = (VarSelect | id) Params?                          -- call
+  Exp7                  = VarSelect Params?                                 -- call
                         | Exp8
   Exp8                  = nil       | Str       | Num       | Obj       
                         | boolLit   | BangFunc  | Enum      | MatchExp
                         | ListLit   | Range     
-  VarSelect             = (Exp8 | id) "[" Exp "]"                           -- subscript
+  VarSelect             = id
+                        | (Exp8 | id) "[" Exp "]"                           -- subscript
                         | (Exp8 | id)? "." id                               -- select
-                        | id
 
   // ternaries
   // todo Exp lineTerminator* "?" BangFunc (lineTerminator* ":" BangFunc)?
