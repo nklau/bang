@@ -312,10 +312,16 @@ const syntaxChecks = [
   ['boolean exp >= with match exps', 'match x { case y: z } >= match y { case x: z }'],
   ['boolean exp >= with lists', '[x] >= [y]'],
   ['boolean exp >= with ranges', 'range(5) >= range(1, 6)'],
-
-  // Exp tests
-    // (x == y) == z
-    // x == (y == z)
+  ['lhs parentheses', '(x == y) == z'],
+  ['rhs parentheses', 'x == (y == z)'],
+  ['parenthesized exp with newlines', '(\nx\n\t+ y\n)'],
+  // ['or exp with ternaries', 'x ? y : z || a ? b : c'],
+  // ['or exp with ternaries', '(x ? y : z) || ( a ? b : c)'],
+  // x && y || z
+  // x || y && z
+  // x && y && z
+  // x || y || z
+  // (x && y || z) ? a
 
   // Exps
     // x || y (all literals)
@@ -350,6 +356,8 @@ const syntaxChecks = [
     // y ? "str" : "alt"
     // x = y ? "str" : "alt"
     // x = y ? "str" : "alt"
+    // nested ternary on left x ? (a ? b : c) : y
+    // nested ternary on right x ? y : (a ? b : c)
 
   // function lits
     // () -> print('hi')

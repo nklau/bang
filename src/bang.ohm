@@ -23,22 +23,20 @@ Bang {
                         | Exp2
   Exp2                  = Exp2 "&&" Exp3                                    -- and
                         | Exp3
-  Exp3                  = "!" Exp4                                          -- not
+  Exp3                  = Exp3 ("+" | "-") Exp4                             -- addSubtract
                         | Exp4
-  Exp4                  = Exp4 ("+" | "-") Exp5                             -- addSubtract
+  Exp4                  = Exp4 ("*" | "/" | "%") Exp5                       -- multiplyDivideMod
                         | Exp5
-  Exp5                  = Exp5 ("*" | "/" | "%") Exp6                       -- multiplyDivideMod
+  Exp5                  = Exp6 "**" Exp5                                    -- exponent
+                        | ("-" | "!") Exp6                                  -- negate
                         | Exp6
-  Exp6                  = Exp7 "**" Exp6                                    -- exponent
-                        | "-"? Exp7                                         -- negative
-  Exp7                  = (VarSelect | id) Params?                          -- call
-                        | Exp8
-  Exp8                  = nil       | Str       | Num       | Obj       
+  Exp6                  = (VarSelect | id) Params?                          -- call
+                        | Exp7
+  Exp7                  = nil       | Str       | Num       | Obj       
                         | boolLit   | BangFunc  | MatchExp  | ListLit   
                         | Range     
-                        // TODO: && is having trouble with subscript/select on rhs
-  VarSelect             = (Exp8 | id) "[" Exp "]"                           -- subscript
-                        | (Exp8 | id)? "." id                               -- select
+  VarSelect             = (Exp7 | id) "[" Exp "]"                           -- subscript
+                        | (Exp7 | id)? "." id                               -- select
                         | id
 
   Ternary               = Exp "?" BangFunc (":" BangFunc)?
