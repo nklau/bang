@@ -15,7 +15,7 @@ Bang {
                         | break
                         | Statement
   Statement             = const? VarSelect assignmentOp Exp                 -- varAssignment
-                        | print "(" Exp ")"                                 -- print
+                        | print "(" Exp? ")"                                -- print
                         | Exp
                         | Enum      
   Exp                   = FuncLit

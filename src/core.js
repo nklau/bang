@@ -17,7 +17,7 @@ export class VariableDec {
 }
 
 export class PrintStatement {
-  constructor(exp) {
+  constructor(exp = '\n') {
     this.exp = exp
   }
 }
