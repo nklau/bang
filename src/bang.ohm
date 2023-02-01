@@ -30,7 +30,7 @@ Bang {
   Exp5                  = Exp6 "**" Exp5                                    -- exponent
                         | ("-" | "!") Exp6                                  -- negate
                         | Exp6
-  Exp6                  = (VarSelect | id) Params?                          -- call
+  Exp6                  = (VarSelect | id) Params*                          -- call
                         | Exp7
   Exp7                  = nil       | Str       | Num       | Obj       
                         | boolLit   | BangFunc  | MatchExp  | ListLit   
