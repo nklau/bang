@@ -4,7 +4,7 @@
 
 A compiler for the programming language "bang!"
 
-Aidan Srjoui, Nat Lau, and Abe Moore Odell have competed as a team in the LMU GitGud coding competition for the past two years. After losing to the professors by 0.3 points in the last competition, the team decided to create a programming language specifically designed for the type of coding done in limited time competitions and interviews."bang!" is a dynamically typed language that makes use of concise, yet still clear syntax such as ternaries and arrow functions. By treating everything as an object bang! gives programmers time saving options such as invoking an integer’s for loop function. The mission, minimize typing to maximize winning. 
+Aidan Srjoui, Natalie Lau, and Abe Moore Odell have competed as a team in the LMU Git Gud programming competition for the past two years. After losing to the professors by 0.3 points in the last competition, the team decided to create a programming language specifically designed for the type of coding done in limited time competitions and interviews. Their creation, known as "Bang!", is a dynamically typed language that makes use of concise and clear syntax to create a pleasant and swift programming experience. By treating everything as an object, Bang! gives programmers many time-saving options, such as the ability to create loops from numbers and its signature "bang functions". The mission? Minimize typing, and maximize winning.
 
 ## Sample Code
 
@@ -19,7 +19,7 @@ Aidan Srjoui, Nat Lau, and Abe Moore Odell have competed as a team in the LMU Gi
 ```javascript
 x = 17
 greeting = "hello"
-greeting = 'bye'
+greeting = "bye"
 const decayRate = 0.05
 ```
 
@@ -29,7 +29,7 @@ const decayRate = 0.05
 ```javascript
 let x = 17
 let greeting = "hello"
-greeting = 'bye'
+greeting = "bye"
 const decayRate = 0.05
 ```
 
@@ -50,8 +50,8 @@ print($"Hello, {firstName} {lastName}!")
 <td>
 
 ```javascript
-let firstName = 'John'
-let lastName = 'Doe'
+let firstName = "John"
+let lastName = "Doe"
 
 console.log(`Hello, ${firstName} ${lastName}!`)
 ```
@@ -90,7 +90,9 @@ sum = (x, y) -> x + y
 <td>
 
 ```javascript
-let sum = function (x, y) { return x + y }
+let sum = function (x, y) {
+  return x + y
+}
 let sum = (x, y) => x + y
 ```
 
@@ -101,10 +103,10 @@ let sum = (x, y) => x + y
 <td>
 
 ```javascript
-5.times(() -> { print("hello world") })
-5.times(() -> print("hello world"))
-5.times({ print("hello world") })
-5.times(print("hello world"))
+5.loop(() -> { print("hello world") })
+5.loop(() -> print("hello world"))
+5.loop({ print("hello world") })
+5.loop(print("hello world"))
 ```
 
 </td>
@@ -121,16 +123,16 @@ for (let _ = 0; _ < 5; _++) console.log("hello world")
 <td>
 
 ```javascript
-5.times(i -> { print(i)) })
-5.times(i -> print(i))
-5.times(print)
+5.loop(i -> { print(i)) })
+5.loop(i -> print(i))
+5.loop(print)
 ```
 
 </td>
 <td>
 
 ```javascript
-for(let i = 0; i < 5; i++) console.log(i)
+for (let i = 0; i < 5; i++) console.log(i)
 ```
 
 </td>
@@ -140,12 +142,12 @@ for(let i = 0; i < 5; i++) console.log(i)
 <td>
 
 ```javascript
-range(5).forEach((i) -> { print(i) })
-range(5).forEach((i) -> print(i))
-range(5).forEach(print)
+range(5).loop((i) -> { print(i) })
+range(5).loop((i) -> print(i))
+range(5).loop(print)
 // prints 0-4 on separate lines
 
-range(1, 6).forEach(print)
+range(1, 6).loop(print)
 // prints 1-5 on separate lines
 ```
 
@@ -154,9 +156,11 @@ range(1, 6).forEach(print)
 
 ```javascript
 for (let i = 0; i < 5; i++) console.log(i)
+[...Array(5).keys()].forEach(i => console.log(i))
 // prints 0-4 on separate lines
 
 for (let i = 1; i < 6; i++) console.log(i)
+[...Array(5).keys()].map(i => i + 1).forEach(i => console.log(i))
 // prints 1-5 on separate lines
 ```
 
@@ -174,7 +178,9 @@ isValid ? print("valid!")
 <td>
 
 ```javascript
-if (isValid) { console.log("valid!") }
+if (isValid) {
+  console.log("valid!")
+}
 ```
 
 </td>
@@ -191,8 +197,11 @@ isValid ? print("valid!") : print("invalid!")
 <td>
 
 ```javascript
-if (isValid) { console.log("valid!") }
-else { console.log("invalid!") }
+if (isValid) {
+  console.log("valid!")
+} else {
+  console.log("invalid!")
+}
 ```
 
 </td>
@@ -215,8 +224,11 @@ const objectField = optional?.fieldName
 
 ```javascript
 let optional
-if (isValid) { optional = object }
-else { console.log("invalid") }
+if (isValid) {
+  optional = object
+} else {
+  console.log("invalid")
+}
 const objectField = optional?.fieldName
 ```
 
@@ -241,8 +253,11 @@ const objectField = optional?.fieldName
 ```javascript
 const isValid = false
 let optional
-if (isValid) { optional = object }
-else { console.log("invalid") }
+if (isValid) {
+  optional = object
+} else {
+  console.log("invalid")
+}
 // prints "invalid"
 
 const objectField = optional?.fieldName
@@ -268,9 +283,7 @@ optional?() // prints "invalid"
 
 ```javascript
 let isValid = false
-let optional = isValid
-  ? object
-  : () => console.log("invalid")
+let optional = isValid ? object : () => console.log("invalid")
 optional() // prints "invalid"
 ```
 
@@ -292,7 +305,7 @@ const Season = Object.freeze({
   spring: "spring",
   summer: "summer",
   fall: "fall",
-  winter: "winter"
+  winter: "winter",
 })
 ```
 
@@ -303,14 +316,14 @@ const Season = Object.freeze({
 <td>
 
 ```swift
-enum Season { 
+enum Season {
   spring = '🌷'
   summer = '☀️'
   fall = '🍁'
   winter = '❄️'
 }
 
-print(Season.spring.rawTextVal) 
+print(Season.spring.rawTextVal)
 // prints "🌷"
 ```
 
@@ -322,7 +335,7 @@ const Season = Object.freeze({
   spring: "🌷",
   summer: "☀️",
   fall: "🍁",
-  winter: "❄️"
+  winter: "❄️",
 })
 
 console.log(Season.spring)
@@ -357,14 +370,14 @@ print(result)
 let season = Season.spring
 let result
 switch (season) {
-  case 'spring':
+  case "spring":
     result = "spring!"
     break
-  case 'summer':
+  case "summer":
     result = "summer!"
     break
-  case 'fall':
-  case 'winter':
+  case "fall":
+  case "winter":
     let str = "is cold!"
     result = str
     break
