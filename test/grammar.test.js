@@ -79,9 +79,11 @@ const syntaxChecks = [
   ['variable of type match exp', 'x = match y { case z: 1 }'],
   ['variable of type list', 'x = []'],
   ['variable of type range', 'x = range(5)'],
-
-  // var dec tests
-    // x = y (all assignment ops)
+  ['assignment operator +=', 'x += y'],
+  ['assignment operator -=', 'x -= y'],
+  ['assignment operator *=', 'x *= y'],
+  ['assignment operator /=', 'x /= y'],
+  ['assignment operator %=', 'x %= y'],
 
   // print tests
     // can print str lits
