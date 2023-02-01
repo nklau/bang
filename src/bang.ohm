@@ -20,7 +20,7 @@ Bang {
                         | Enum      
   Exp                   = FuncLit
                         | Exp (("=" | "!") "=" | ("<" | ">") "="?) Exp1     -- equality
-                        | "(" Exp1 ")"                                      -- enclosed
+                        | "(" Exp ")"                                       -- enclosed
                         | Ternary
                         | Exp1
   Exp1                  = Exp1 "||" Exp2                                    -- or
