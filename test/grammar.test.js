@@ -50,12 +50,37 @@ const syntaxChecks = [
   ['bang function that returns a range', '{ return range(5) }'],
   ['bang function that returns a function literal', '{ return () -> { } }'],
   ['bang function that returns without the return keyword', '{ x }'],
+  ['variable declaration', 'x = 1'],
+  ['constant variable declaration', 'const x = 1'],
+  ['variable of type bang function', 'x = { y = 5 }'],
+  ['variable of type function literal', 'x = () -> {}'],
+  ['variable of type boolean exp', 'x = y == z'],
+  ['variable of type parenthesized exp', 'x = (1 + 2)'],
+  ['variable of type ternary', 'x = y ? "str" : "alt"'],
+  ['variable of type or exp', 'x = y || z'],
+  ['variable of type and exp', 'x = y && z'],
+  ['variable of type negated exp', 'x = !x'],
+  ['variable of type addition exp', 'x = y + z'],
+  ['variable of type subtraction exp', 'x = y - z'],
+  ['variable of type multiplication exp', 'x = y * z'],
+  ['variable of type division exp', 'x = y / z'],
+  ['variable of type modulus exp', 'x = y % z'],
+  ['variable of type exponential exp', 'x = y ** z'],
+  ['variable of type negative exp', 'x = -y'],
+  ['setting one variable equal to another', 'x = y'],
+  ['setting one variable equal to another variable field', 'x = y.z'],
+  ['setting one variable equal to the result of another variable method call', 'x = y.z()'],
+  ['variable of type nil', 'x = nil'],
+  ['variable of type string', 'x = "str"'],
+  ['variable of type number', 'x = 1'],
+  ['variable of type object', 'x = {}'],
+  ['variable with value false', 'x = false'],
+  ['variable with value true', 'x = true'],
+  ['variable of type match exp', 'x = match y { case z: 1 }'],
+  ['variable of type list', 'x = []'],
+  ['variable of type range', 'x = range(5)'],
 
   // var dec tests
-    // constant with value
-    // var dec with value
-    // x = !x
-    // x = (all literal types)
     // x = y (all assignment ops)
 
   // print tests
@@ -235,6 +260,7 @@ const syntaxErrors = [
     // const without value
     // var dec with hanging assignment op
     // var dec without value
+    // x = y = 5
 
   // print tests
     // requires parentheses
