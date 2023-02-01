@@ -35,8 +35,8 @@ Bang {
   Exp7                  = nil       | Str       | Num       | Obj       
                         | boolLit   | BangFunc  | MatchExp  | ListLit   
                         | Range     
-  VarSelect             = (Exp7 | id) "[" Exp "]"                           -- subscript
-                        | (Exp7 | id)? "." id                               -- select
+  VarSelect             = (Exp7 | VarSelect) "[" Exp "]"                    -- subscript
+                        | (Exp7 | VarSelect)? "." id                        -- select
                         | id
 
   Ternary               = Exp "?" BangFunc (":" BangFunc)?
