@@ -1,68 +1,62 @@
 Bang {
   space := "\n" | " " | "\t" | "\r" | multiLineComment | comment
   Program               = Block
-  Block                 = #newLine* (Statement #newLine+)* Statement? #newLine*
-  LocalBlock            = #newLine* (LocalStatement #newLine+)* LocalStatement? #newLine*
-  BangFunc              = "{" LocalBlock "}"                                -- multiLine
-                        | Statement
-  LocalStatement        = local VarSelect (assignmentOp Exp)?               -- localVar
-                        | local const VarSelect assignmentOp Exp            -- localConst
-                        | return Exp?                                       -- return
-                        | break
-                        | Statement
-  Statement             = const? VarSelect assignmentOp Exp                 -- varAssignment
-                        | print "(" Exp? ")"                                -- print
+  Block                 = #newLine* (Statement #(~newLine space)* #newLine+)* Statement? #newLine*  
+  // todo test 'local x'
+  Statement             = local? const? VarAssignment assignmentOp Exp                      -- varAssignment
+                        | local VarAssignment                                               -- localVar
+                        | return Exp?                                                       -- return
                         | Exp
                         | Enum      
-  Exp                   = FuncLit
-                        | Exp (("=" | "!") "=" | ("<" | ">") "="?) Exp1     -- equality
-                        | "(" Exp ")"                                       -- enclosed
-                        | Ternary
+                        | break
+  Exp                   = Exp1 "?" (BangFunc | Statement) (":" (BangFunc | Statement))?     -- ternary
                         | Exp1
-  Exp1                  = Exp1 "||" Exp2                                    -- or
+  Exp1                  = Exp1 (("=" | "!") "=" | ("<" | ">") "="?) Exp2                    -- equality
                         | Exp2
-  Exp2                  = Exp2 "&&" Exp3                                    -- and
+  Exp2                  = Exp2 "||" Exp3                                                    -- or
                         | Exp3
-  Exp3                  = Exp3 ("+" | "-") Exp4                             -- addSubtract
+  Exp3                  = Exp3 "&&" Exp4                                                    -- and
                         | Exp4
-  Exp4                  = Exp4 ("*" | "/" | "%") Exp5                       -- multiplyDivideMod
+  Exp4                  = Exp4 ("+" | "-") Exp5                                             -- addSubtract
                         | Exp5
-  Exp5                  = Exp6 "**" Exp5                                    -- exponent
-                        | ("-" | "!") Exp6                                  -- negate
+  Exp5                  = Exp5 ("*" | "/" | "%") Exp6                                       -- multiplyDivideMod
                         | Exp6
-  Exp6                  = (VarSelect | id) Params*                          -- call
+  Exp6                  = Exp7 "**" Exp6                                                    -- exponent
+                        | ("-" | "!") Exp7                                                  -- negate
                         | Exp7
-  Exp7                  = nil       | Str       | Num       | Obj       
+  Exp7                  = Exp7 Params                                                       -- call
+                        | Exp7 "[" Exp "]"                                                  -- subscript
+                        | Exp7? "." id                                                      -- select
+                        | Exp7 #"?"                                                         -- unwrap
+                        | Exp8
+  Exp8                  = nil       | Str       | Num       | Obj       
                         | boolLit   | BangFunc  | MatchExp  | ListLit   
-                        | Range     
-  VarSelect             = (Exp7 | VarSelect) "[" Exp "]"                    -- subscript
-                        | (Exp7 | VarSelect)? "." id                        -- select
-                        | id
+                        | FuncLit   | id
+                        | "(" Exp ")"                                                       -- enclosed
 
-  Ternary               = Exp "?" BangFunc (":" BangFunc)?
+  BangFunc              = "{" Block "}"                                                     -- multiLine
+  VarAssignment         = VarAssignment "[" Exp "]"                                         -- subscript
+                        | VarAssignment "." VarAssignment                                   -- select
+                        | id
   
-  FuncLit               = Params arrow BangFunc
+  FuncLit               = (Params | id) arrow (BangFunc | Statement)
   Params                = "(" ListOf<Arg, ","> ")"
   Arg                   = PositionalArg | KeywordArg
   PositionalArg         = Exp
   KeywordArg            = id "=" Exp
   arrow                 = "->"
-  print                 = "print"
 
-  Obj                   = "{" ObjField* "}"
+  Obj                   = "{" ListOf<ObjField, ","> "}"
   ObjField              = key ":" Exp
   key                   = strLit
 
   ListLit               = "[" ListOf<Exp, ","> "]"
 
-  Range                 = range "("( digit+ ",")? digit+ ")"
-  range                 = "range"
-
   Str                   = strLit | FormattedStr
   strLit                = "'" singleStrChar* "'"
                         | "\"" doubleStrChar* "\""
-  FormattedStr          = "$'" FSingleSubstr* "'"                           -- singleQuotes
-                        | "$\"" FDoubleSubstr* "\""                         -- doubleQuotes
+  FormattedStr          = "$'" FSingleSubstr* "'"                                           -- singleQuotes
+                        | "$\"" FDoubleSubstr* "\""                                         -- doubleQuotes
   FSingleSubstr         = fSingleStrChar | FStrExp
   FDoubleSubstr         = fDoubleStrChar | FStrExp
   FStrExp               = "{" Exp "}"
@@ -70,11 +64,11 @@ Bang {
   // special chars
   fSingleStrChar        = ~"{" singleStrChar
   fDoubleStrChar        = ~"{" doubleStrChar
-  singleStrChar         = ~("'" | "\\" | newLine) any                       -- nonEscaped
-                        | "\\" escapeChar                                   -- escaped
+  singleStrChar         = ~("'" | "\\" | newLine) any                                       -- nonEscaped
+                        | "\\" escapeChar                                                   -- escaped
                         | lineContinuation
-  doubleStrChar         = ~("\"" | "\\" | newLine) any                      -- nonEscaped
-                        | "\\" escapeChar                                   -- escaped
+  doubleStrChar         = ~("\"" | "\\" | newLine) any                                      -- nonEscaped
+                        | "\\" escapeChar                                                   -- escaped
                         | lineContinuation
   escapeChar            = "'" | "\"" | "\\" | "n" | "t" | "r" | "u"
   char                  = ~(escapeChar | newLine) any
@@ -82,7 +76,7 @@ Bang {
   lineContinuation      = "\\" newLine
 
   const                 = "const" ~idchar
-  id                    = ~keyword (letter | "_") idchar* "?"?
+  id                    = ~keyword (letter | "_") idchar*
   idchar                = alnum | "_"
 
   boolLit               = true | false
@@ -94,10 +88,9 @@ Bang {
   assignmentOp          = "=" | "+=" | "-=" | "*=" | "/=" | "%="
 
   MatchExp              = match id MatchBlock
-  MatchBlock             = "{" CaseClause+ DefaultClause CaseClause* "}"    -- withDefault
-                        | "{" CaseClause+                           "}"     -- withoutDefault
-  CaseClause            = case ListOf<Exp, ","> ":" BangFunc 
-  DefaultClause         = default ":" BangFunc 
+  MatchBlock            = "{" CaseClause+ (DefaultClause CaseClause*)? "}"
+  CaseClause            = case ListOf<Exp, ","> ":" (BangFunc | Statement)
+  DefaultClause         = default ":" (BangFunc | Statement) 
   match                 = "match" ~idchar
   case                  = "case" ~idchar
   default               = "default"
@@ -113,9 +106,8 @@ Bang {
   multiLineComment      = "/*" (~"*/" any)* "*/"
   comment               = "//" (~newLine any)*
 
-  keyword               = const     | print     | boolLit   | match    
-                        | nil       | enum      | break     | return
-                        | local     | range
+  keyword               = const     | boolLit   | match     | nil       
+                        | enum      | break     | return    | local     
   nil                   = "nil" ~idchar
   break                 = "break" ~idchar
   local                 = "local" ~idchar

@@ -2,6 +2,69 @@ import assert from "assert/strict"
 import fs from "fs"
 import ohm from "ohm-js"
 
+const exps = [
+  ['2 arg range exp', 'range(1, 6)'],
+  ['additive exp', 'x + y'],
+  ['and exp', 'x && y'],
+  ['bang function', '{ x = 5 }'],
+  ['boolean exp !=', 'x != y'],
+  ['boolean exp <', 'x < y'],
+  ['boolean exp <=', 'x <= y'],
+  ['boolean exp ==', 'x == y'],
+  ['boolean exp >', 'x > y'],
+  ['boolean exp >=', 'x >= y'],
+  ['called selected variable', 'x.y()'],
+  ['called subscripted selected variable', 'x.y[1]()'],
+  ['division exp', 'x / y'],
+  ['empty formatted string', '$""'],
+  ['empty single quote formatted string', "$''"],
+  ['empty single quote string literal', "''"],
+  ['empty string literal', '""'],
+  ['exponential exp', 'x ** y'],
+  ['false boolean literal', 'false'],
+  ['formatted single quote string with no exp', "$'str'"],
+  ['formatted single quote string with only exp', "$'{x}'"],
+  ['formatted single quote string with two exp', "$'{x}{y}'"],
+  ['formatted string with no exp', '$"str"'],
+  ['formatted string with only exp', '$"{x}"'],
+  ['formatted string with two exp', '$"{x}{y}"'],
+  ['formatted string', '$"str{x}"'],
+  ['function call chain', 'x()()'],
+  ['function call', 'x()'],
+  ['function literal', '() -> { }'],
+  ['list literal', '[x]'],
+  ['longer formatted string', '$"str{x} alt {y}"'],
+  ['longer single quote formatted string', "$'str{x} alt {y}'"],
+  ['match exp', 'match x { case y: z }'],
+  ['mixed list literal', '[1, x]'],
+  ['modulus exp', 'x % y'],
+  ['multiplicative exp', 'x * y'],
+  ['negated exp', '!x'],
+  ['negative exp', '-x'],
+  ['nil', 'nil'],
+  ['number literal', '5'],
+  ['object literal', '{ "x": 1 }'],
+  ['or exp', 'x || y'],
+  ['parenthesized exp', '(x)'],
+  ['range exp', 'range(5)'],
+  ['selected variable', 'x.y'],
+  ['single quote formatted string', "$'str{x}'"],
+  ['single quote string literal', "'str'"],
+  ['string literal', '"str"'],
+  ['subscripted function call', 'x.y()[1]'],
+  ['subscripted function return value', 'x()[1]'],
+  ['subscripted selected variable', 'x.y[1]'],
+  ['subscripted variable call', 'x[1]()'],
+  ['subscripted variable', 'x[1]'],
+  ['subtractive exp', 'x - y'],
+  ['ternary exp', 'x ? y : z'],
+  ['true boolean literal', 'true'],
+  ['two literal list literal', '[1, 2]'],
+  ['two variable list literal', '[x, y]'],
+  ['variable name', 'x']
+]
+const binaryOps = []
+
 const syntaxChecks = [
   ['single line commments', '// comment here'],
   ['statements following single line comments', '// comment\nx = 5'],
@@ -387,9 +450,9 @@ const syntaxChecks = [
   ['empty objects with whitespace', '{ }'],
   ['empty objects that span multiple lines', '{\n\n}'],
   ['objects with one string key and a numeric value', '{ "x": 1 }'],
-  ['objects with two string keys and string values', '{ "x": \'hello\'\n"y": "hi" }'],
+  ['objects with two string keys and string values', '{ "x": \'hello\',\n"y": "hi" }'],
   ['objects with stringified numeric keys', '{ "9": 1 }'],
-  ['objects that span multiple lines', "{\n'key1': 'val1'\n'key2': 'val2'\n}"],
+  ['objects that span multiple lines', "{\n'key1': 'val1',\n'key2': 'val2'\n}"],
   ['objects with object values', '{ "key1": {} }'],
   ['objects with function values', '{ "key1": () -> { } }'],
   ['objects with extra whitespace', '{ "x" : 1 }']
@@ -525,9 +588,9 @@ const syntaxErrors = [
   ['objects with numeric keys', '{ 9: 1 }', /Line 1, col 4/],
   ['objects with object keys', '{ {}: "val1" }', /Line 1, col 5/],
   ['objects with variable declaration', '{ "x": 1\nx = 5 }', /Line 2, col 1/],
-  ['objects with floating function declaration', '{ "x": 1\n() -> {} }', /Line 2, col 1/],
+  ['objects with floating function declaration', '{ "x": 1\n() -> {} }', /Line 2, col 5/],
   ['objects with floating ids', '{ "x": 1\ny }', /Line 2, col 1/],
-  ['objects with floating keys', '{ "x": 1\n"y" }', /Line 2, col 5/]
+  ['objects with floating keys', '{ "x": 1,\n"y" }', /Line 2, col 5/]
 
   // lists
     // [a = 5]
@@ -559,6 +622,16 @@ describe("The grammar", () => {
       assert(grammar.match(source).succeeded())
     })
   }
+  for (const [scenario, source] of exps) {
+    it(`properly specifies ${scenario}s`, () => {
+      assert(grammar.match(`(${source})`).succeeded())
+    })
+  }
+  // for (const [scenario, source] of exps) {
+  //   it(`properly specifies parenthesized exps with ${scenario}s`, () => {
+  //     assert(grammar.match(`(${source})`).succeeded())
+  //   })
+  // }
   for (const [scenario, source, errorMessagePattern] of syntaxErrors) {
     it(`does not permit ${scenario}`, () => {
       const match = grammar.match(source)
