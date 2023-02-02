@@ -2,6 +2,8 @@ import assert from "assert/strict"
 import fs from "fs"
 import ohm from "ohm-js"
 
+const keywords = ['const', 'true', 'false', 'match', 'nil', 'enum', 'break', 'return', 'local']
+
 const exps = [
   ['2 arg function call', 'x(y, z)'],
   ['additive exp', 'x + y'],
@@ -401,60 +403,39 @@ const syntaxChecks = [
   ['{} in a single-quoted string', `'{}'`],
   ['{} in a string', `"{}"`],
   ['enum with cases on one line', 'enum x { a, b, c }'],
-  ['enum with cases on multiple lines', 'enum x { a\nb\nc }']
+  ['local var dec without value', 'local x'],
+  ['enum with cases on multiple lines', 'enum x { a\nb\nc }'],
+  ['return without value', 'return'],
+  ['break', 'break']
 ]
 
 const syntaxErrors = [
-  // single open/close bracket
-  // mismatched parens
-  // multiple statements on one line
-  // multiline comment w/ //
-  // mismatched quotes
-  // x = isValid? { "valid" } // should read as 2 statements
-
-  // bang function things
-    // single line w/ local keyword
-    // local const w/ no value
-    // return statement (ex. return x = 5)
-    // `return local var` (should be declared as local before return statement)
-    // return enum
-
-  // var dec tests
-    // local cannot be outside function
-    // const without value
-    // var dec with hanging assignment op
-    // var dec without value
-    // x = y = 5
-
-  // print tests
-    // requires parentheses
-    // cannot have mismatched parens
-    // printx(x)
-    // statement
-
-  // return tests
-    // return w/without value outside bang func
-
-  // break tests
-    // break outside bang func
-
-  // Exp tests
-    // !==
-    // ===
-    // !<
-    // =<
-    // x ! 5
-    // x == y == z
-
-  // Ternary
-    // x? { } // should read as 2 statements
-  
-  // Exp6
-    // -2 ** 2
-
-  // func lit
-    // x(y z)
-    // x(y\nz)
+  ['mismatched brackets', '[', /Line 1, col 2/],
+  ['mismatched brackets', ']', /Line 1, col 1/],
+  ['mismatched parens', '[(])', /Line 1, col 3/],
+  ['mismatched parens', '([)]', /Line 1, col 3/],
+  ['mismatched parens', '(', /Line 1, col 2/],
+  ['mismatched parens', ')', /Line 1, col 1/],
+  ['multiple statements per line', 'x = 2 x = 3', /Line 1, col 7/],
+  ['multiple statements per line', 'x = y? { "str" }', /Line 1, col 8/],
+  ['multiline comment with //', '// comment \n rest of comment', /Line 2, col 7/],
+  ['mismatched apostrophes', "'", /Line 1, col 2/],
+  ['mismatched quotes', '"', /Line 1, col 2/],
+  ['mismatched quotes', `"'`, /Line 1, col 3/],
+  ['mismatched quotes', `'"`, /Line 1, col 3/],
+  ['return statement as exp', 'return x = 5', /Line 1, col 12/],
+  ['return local var', 'return local x', /Line 1, col 8/],
+  ['return an enum', 'return enum x', /Line 1, col 8/],
+  ['const var dec without value', 'const x', /Line 1, col 8/],
+  ['var dec without value', 'x =', /Line 1, col 4/],
+  ['var value as statement', 'x = y = 5', /Line 1, col 9/],
+  ['!== operator', 'x !== y', /Line 1, col 5/],
+  ['=== operator', 'x === y', /Line 1, col 5/],
+  ['!< operator', 'x !< y', /Line 1, col 4/],
+  ['=< operator', 'x =< y', /Line 1, col 4/],
+  ['! as a binary operator', 'x ! 5', /Line 1, col 5/],
+  ['function parameters not separated by commas', 'x(y z)', /Line 1, col 5/],
+  ['function parameters separated by newlines', 'x(y\nz)', /Line 2, col 1/],
   ['objects with non-string keys', '{ x: 1 }', /Line 1, col 4/],
   ['objects with formatted string keys', '{ $"hi": 1 }', /Line 1, col 8/],
   ['objects with numeric keys', '{ 9: 1 }', /Line 1, col 4/],
@@ -463,29 +444,15 @@ const syntaxErrors = [
   ['objects with floating function declaration', '{ "x": 1\n() -> {} }', /Line 2, col 5/],
   ['objects with floating ids', '{ "x": 1\ny }', /Line 2, col 1/],
   ['objects with floating keys', '{ "x": 1,\n"y" }', /Line 2, col 5/],
-  ['local const variable', 'local const x', /Line 1, col 14/]
-
-  // lists
-    // [a = 5]
-
-  // ranges
-    // rangex(5)
-    // range(5 5)
-    // range = 5
-    
-  // match
-    // match x {}
-    // match x {default: {}}
-    // match x {default x: {}}
-    // match x {default: {}\ncase y: {}}
-
-  // enum
-    // enum Season {}
-    // enum Season { spring summer }
-    // enum Season { spring = 'spring', summer }
-
-  // declaring vars with hanging operators
-  // keywords as ids
+  ['local const variable', 'local const x', /Line 1, col 14/],
+  ['statements inside lists', '[x = y]', /Line 1, col 6/],
+  ['match without cases', 'match x {}', /Line 1, col 10/],
+  ['match with only default', 'match x {default: {}}', /Line 1, col 10/],
+  ['match with default case value', 'match x {case y: z\ndefault a: {}}', /Line 2, col 9/],
+  ['match with default case first', 'match x { default: y\ncase z: a }', /Line 1, col 11/],
+  ['enum without cases', 'enum x {}', /Line 1, col 9/],
+  ['enum with cases delimited by a space', 'enum x { y z }', /Line 1, col 12/],
+  ['enum with case assignment delimeted by a comma', 'enum x { y = 1, z }', /Line 1, col 15/]
 ]
 
 describe("The grammar", () => {
@@ -638,6 +605,12 @@ describe("The grammar", () => {
       const match = grammar.match(source)
       assert(!match.succeeded())
       assert(new RegExp(errorMessagePattern).test(match.message))
+    })
+  }
+
+  for (const keyword of keywords) {
+    it(`does not permit ${keyword} as a variable name`, () => {
+      assert(!grammar.match(`${keyword} = 1`).succeeded())
     })
   }
 })
