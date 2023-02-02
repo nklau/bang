@@ -42,7 +42,7 @@ Bang {
   
   FuncLit               = (Params | id) arrow (BangFunc | Statement)
   Params                = "(" ListOf<Arg, ","> ")"
-  Arg                   = PositionalArg | KeywordArg
+  Arg                   = KeywordArg | PositionalArg
   PositionalArg         = Exp
   KeywordArg            = id "=" Exp
   arrow                 = "->"

@@ -3,7 +3,7 @@ import fs from "fs"
 import ohm from "ohm-js"
 
 const exps = [
-  ['2 arg range exp', 'range(1, 6)'],
+  ['2 arg function call', 'x(y, z)'],
   ['additive exp', 'x + y'],
   ['and exp', 'x && y'],
   ['bang function', '{ x = 5 }'],
@@ -22,6 +22,7 @@ const exps = [
   ['empty string literal', '""'],
   ['exponential exp', 'x ** y'],
   ['false boolean literal', 'false'],
+  ['first half of ternary exp', 'x ? y'],
   ['formatted single quote string with no exp', "$'str'"],
   ['formatted single quote string with only exp', "$'{x}'"],
   ['formatted single quote string with two exp', "$'{x}{y}'"],
@@ -618,23 +619,40 @@ const syntaxErrors = [
 
 describe("The grammar", () => {
   const grammar = ohm.grammar(fs.readFileSync("src/bang.ohm"))
+
   for (const [scenario, source] of syntaxChecks) {
     it(`properly specifies ${scenario}`, () => {
       assert(grammar.match(source).succeeded())
     })
   }
+
   for (const [scenario, source] of exps) {
     it(`properly specifies ${scenario}s`, () => {
       assert(grammar.match(`${source}`).succeeded())
     })
-  }
-  for (const [scenario, source] of exps) {
     it(`properly specifies parenthesized exps with ${scenario}s`, () => {
       assert(grammar.match(`(${source})`).succeeded())
     })
-  }
-  for (const operator of binaryOps) {
-    for (const [scenario, source] of exps) {
+    it(`properly specifies bang functions with a ${scenario}`, () => {
+      assert(grammar.match(`{ x = ${source} }`).succeeded())
+    })
+    it(`properly specifies variable subscription with a ${scenario}`, () => {
+      assert(grammar.match(`x[${source}]`).succeeded())
+    })
+    it(`properly specifies variable declaration with a ${scenario} value`, () => {
+      assert(grammar.match(`x = ${source}`).succeeded())
+    })
+    it(`properly accepts a ${scenario} as a positional argument`, () => {
+      assert(grammar.match(`x(${source})`).succeeded())
+    })
+    it(`properly accepts a ${scenario} as a keyword argument`, () => {
+      assert(grammar.match(`x(y = ${source})`).succeeded())
+    })
+    it(`properly accepts a ${scenario} as a positional or keyword argument`, () => {
+      assert(grammar.match(`x(y = ${source}, ${source})`).succeeded())
+    })
+
+    for (const operator of binaryOps) {
       if (operator.includes('**') && scenario.includes('negative')) {
         it(`does not permit the ${operator} with ${scenario}s`, () => {
           const match = grammar.match(`${source} ${operator} ${source}`)
@@ -647,6 +665,7 @@ describe("The grammar", () => {
       }
     }
   }
+
   for (const [scenario, source, errorMessagePattern] of syntaxErrors) {
     it(`does not permit ${scenario}`, () => {
       const match = grammar.match(source)
