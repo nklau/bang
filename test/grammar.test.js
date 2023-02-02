@@ -627,11 +627,11 @@ describe("The grammar", () => {
       assert(grammar.match(`(${source})`).succeeded())
     })
   }
-  // for (const [scenario, source] of exps) {
-  //   it(`properly specifies parenthesized exps with ${scenario}s`, () => {
-  //     assert(grammar.match(`(${source})`).succeeded())
-  //   })
-  // }
+  for (const [scenario, source] of exps) {
+    it(`properly specifies parenthesized exps with ${scenario}s`, () => {
+      assert(grammar.match(`(${source})`).succeeded())
+    })
+  }
   for (const [scenario, source, errorMessagePattern] of syntaxErrors) {
     it(`does not permit ${scenario}`, () => {
       const match = grammar.match(source)
