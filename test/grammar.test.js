@@ -624,7 +624,7 @@ describe("The grammar", () => {
   }
   for (const [scenario, source] of exps) {
     it(`properly specifies ${scenario}s`, () => {
-      assert(grammar.match(`(${source})`).succeeded())
+      assert(grammar.match(`${source}`).succeeded())
     })
   }
   for (const [scenario, source] of exps) {
