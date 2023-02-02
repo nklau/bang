@@ -541,7 +541,6 @@ describe("The grammar", () => {
       assert(grammar.match(`${source} ? x`).succeeded())
       assert(grammar.match(`${source} ? x : y`).succeeded())
     })
-    // !, ?, -
     it(`properly accepts ${scenario} as the true case for a ternary`, () => {
       assert(grammar.match(`x ? ${source}`).succeeded())
       assert(grammar.match(`x ? ${source} : y`).succeeded())
@@ -614,63 +613,3 @@ describe("The grammar", () => {
     })
   }
 })
-
-
-  // TODO: Semantic tests
-    // { return x && [y][0] }
-
-    // { return x && y } 
-
-    // { return x() && y() }
-
-    // { return x.y && y.x }
-
-    // { return x[1] && y[0] }
-
-    // x ? { }
-    // x = y ? { "str" }
-    // x = y ? "str" : "alt"
-    // x = y ? { "str" } : "alt"
-    // x = y ? "str" : { "alt" }
-    // x = y ? { return z } : "alt"
-    // x = y ? { return "str" } : "alt"
-    // x = y ? "str" : { return z }
-    // y ? { break }
-    /*
-    y 
-    ? { 
-      x = 5
-        break
-    }
-    */
-    /*
-    y ? { 
-      "str"
-    } : {
-      "alt"
-    }
-    */
-    /*
-    y 
-    ? { return } 
-    : return
-    */
-    // x ? { () -> print("hi") }
-    // x ? { () -> { print("hi") }}
-    // x ? { (i) -> print(i) }
-    // x ? { (i) -> { print(i) }}
-    // x = y ? 'true' : 'false
-    // x = y ? 'true' : return nil
-    /*
-    z = y 
-    ? { return x ? 'true' : 'false' } 
-    : return nil
-    */
-    // x ? print('hi') : 'alt'
-    // x ? 'str' : { print('hi') }
-    // x = [{ print('hi') }] // should print hi, then x = [nil]
-    // constx = 5\nconstx = 6
-
-  // TODO: semantic errors
-    // a = [$'test {a}']
-    // constants as ids
