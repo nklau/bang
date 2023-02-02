@@ -2,7 +2,6 @@ Bang {
   space := "\n" | " " | "\t" | "\r" | multiLineComment | comment
   Program               = Block
   Block                 = #newLine* (Statement #(~newLine space)* #newLine+)* Statement? #newLine*  
-  // todo test 'local x'
   Statement             = local? const? VarAssignment assignmentOp Exp                      -- varAssignment
                         | local VarAssignment                                               -- localVar
                         | return Exp?                                                       -- return
