@@ -22,11 +22,12 @@ Bang {
   Exp5                  = Exp5 ("*" | "/" | "%") Exp6                                       -- multiplyDivideMod
                         | Exp6
   Exp6                  = Exp7 "**" Exp6                                                    -- exponent
-                        | ("-" | "!") Exp7                                                  -- negate
+                        | "-" Exp7                                                          -- negate
                         | Exp7
   Exp7                  = Exp7 Params                                                       -- call
                         | Exp7 "[" Exp "]"                                                  -- subscript
                         | Exp7? "." id                                                      -- select
+                        | "!" Exp7                                                          -- negative
                         | Exp7 #"?"                                                         -- unwrap
                         | Exp8
   Exp8                  = nil       | Str       | Num       | Obj       

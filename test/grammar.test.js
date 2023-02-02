@@ -61,9 +61,10 @@ const exps = [
   ['true boolean literal', 'true'],
   ['two literal list literal', '[1, 2]'],
   ['two variable list literal', '[x, y]'],
+  ['unwrapped exp', 'x?'],
   ['variable name', 'x']
 ]
-const binaryOps = []
+const binaryOps = ['||', '&&', '+', '-', '*', '/', '%', '**']
 
 const syntaxChecks = [
   ['single line commments', '// comment here'],
@@ -631,6 +632,20 @@ describe("The grammar", () => {
     it(`properly specifies parenthesized exps with ${scenario}s`, () => {
       assert(grammar.match(`(${source})`).succeeded())
     })
+  }
+  for (const operator of binaryOps) {
+    for (const [scenario, source] of exps) {
+      if (operator.includes('**') && scenario.includes('negative')) {
+        it(`does not permit the ${operator} with ${scenario}s`, () => {
+          const match = grammar.match(`${source} ${operator} ${source}`)
+          assert(!match.succeeded())
+        })
+      } else {
+        it(`properly specifies the ${operator} operator with ${scenario}s`, () => {
+          assert(grammar.match(`${source} ${operator} ${source}`).succeeded())
+        })
+      }
+    }
   }
   for (const [scenario, source, errorMessagePattern] of syntaxErrors) {
     it(`does not permit ${scenario}`, () => {
