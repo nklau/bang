@@ -65,7 +65,10 @@ const exps = [
   ['unwrapped exp', 'x?'],
   ['variable name', 'x']
 ]
+const assignmentOps = ['=', '+=', '-=', '*=', '/=', '%=']
+const varAssignments = ['x', 'x.y', 'x.y.z', 'x.y[1]', 'x.y[z]', 'x[1]', 'x[y]', 'x[1][y]', 'x[1].y', 'x[y].z']
 const binaryOps = ['||', '&&', '+', '-', '*', '/', '%', '**']
+const stringChars = ['', '}', '\\\'', '\\"', '\\\\', '\\n', '\\t', '\\r', '\\u']
 
 const syntaxChecks = [
   ['single line commments', '// comment here'],
@@ -380,39 +383,9 @@ const syntaxChecks = [
   ['lhs parentheses', '(x == y) == z'],
   ['rhs parentheses', 'x == (y == z)'],
   ['parenthesized exp with newlines', '(\nx\n\t+ y\n)'],
-  
-  // Ternary
-    // y ? "str"
-    // y ? "str" : "alt"
-    // x = y ? "str" : "alt"
-    // x = y ? "str" : "alt"
-    // nested ternary on left x ? (a ? b : c) : y
-    // nested ternary on right x ? y : (a ? b : c)
-
-  // function lits
-    // () -> print('hi')
-    // () -> { print('hi') }
-    // (i) -> print(i)
-    // (i) -> { print(i) }
-    // (i) -> { x = 5\nprint(x) }
-    // (a, b) -> { }
-    // () -> return 'hi'
-    // () -> { return 'hi' }
-    // (i) -> return i
-    // (i) -> { return i }
-    // () -> () -> { }
-    // (a=5, b) -> { }
-    // (a = 5, b) -> { }
-    // (a, b = 5) -> { }
-
-  // params
-    // x()
-    // x(y)
-    // x(y, z)
-    // x(y, z=5)
-    // x(y, z = 5)
-    // z(y = 5, z)
-
+  ['comments', 'x = 5 // comment'],
+  ['nested ternary on left', 'x ? (a ? b : c) : y'],
+  ['nested ternary on right', 'x ? y : (a ? b : c)'],
   ['empty objects', '{}'],
   ['empty objects with whitespace', '{ }'],
   ['empty objects that span multiple lines', '{\n\n}'],
@@ -422,81 +395,13 @@ const syntaxChecks = [
   ['objects that span multiple lines', "{\n'key1': 'val1',\n'key2': 'val2'\n}"],
   ['objects with object values', '{ "key1": {} }'],
   ['objects with function values', '{ "key1": () -> { } }'],
-  ['objects with extra whitespace', '{ "x" : 1 }']
-
-  // lists
-    // []
-    // [a]
-    // [a, b]
-    // [1, 2]
-    // [1, "str"]
-    // [a, 'str']
-    // [$'test {a}']
-    // [{ print('hi') }]
-    // [() -> print('hi')]
-
-  // range
-    // range(5)
-    // range(1, 5)
-  
-  // strings
-    // ''
-    // ""
-    // '"'
-    // "'"
-    // 'str'
-    // "str"
-    // '\''
-    // "\""
-    // '\\'
-    // "\\"
-    // '\n'
-    // "\n"
-    // '\t'
-    // "\t"
-    // '\r'
-    // "\r"
-  
-  // formatted strings
-    // $''
-    // $""
-    // $'{x}'
-    // $"{x}"
-    // $'str'
-    // $"str"
-    // $'str {x}'
-    // $"str {x}"
-    // $'{x}{y}'
-    // $"{x}{y}"
-    // $'{x}str'
-    // $"{x}str"
-    // $'}'
-    // $"}"
-
-  // match
-    // match x {case 1: {}}
-    // match x {case x: {}}
-    // match x {\ncase x: \n\t{}\n}
-    // match x {case x: {}\ncase y: {}}
-    // match x {case x: {}\ndefault: {}}
-    // match x {case x: {}\ndefault: {}\ncase y: {}}
-    // match x {case x, y: {}}
-
-  // enum
-    // enum Season { spring }
-    // enum Season { spring = 'spring' }
-    // enum Season { spring, summer }
-    // enum Season { spring\nsummer }
-    // enum Season { spring\n\tsummer }
-    // enum Season { spring = 'spring'\nsummer = 'summer' }
-    // enum Season { spring = 'spring'\nsummer }
-    // enum X { y = (all literals) }
-
-  // declaring vars with/without values
-  // declaring local vars with/without value
-  // declaring constant vars with/without values
-  // various assignment operators
-  // var selection
+  ['objects with extra whitespace', '{ "x" : 1 }'],
+  ['" in a single-quoted string', `'"'`],
+  ["' in a string", `"'"`],
+  ['{} in a single-quoted string', `'{}'`],
+  ['{} in a string', `"{}"`],
+  ['enum with cases on one line', 'enum x { a, b, c }'],
+  ['enum with cases on multiple lines', 'enum x { a\nb\nc }']
 ]
 
 const syntaxErrors = [
@@ -557,7 +462,8 @@ const syntaxErrors = [
   ['objects with variable declaration', '{ "x": 1\nx = 5 }', /Line 2, col 1/],
   ['objects with floating function declaration', '{ "x": 1\n() -> {} }', /Line 2, col 5/],
   ['objects with floating ids', '{ "x": 1\ny }', /Line 2, col 1/],
-  ['objects with floating keys', '{ "x": 1,\n"y" }', /Line 2, col 5/]
+  ['objects with floating keys', '{ "x": 1,\n"y" }', /Line 2, col 5/],
+  ['local const variable', 'local const x', /Line 1, col 14/]
 
   // lists
     // [a = 5]
@@ -591,6 +497,21 @@ describe("The grammar", () => {
     })
   }
 
+  for (const char of stringChars) {
+    it(`properly accepts ${char} in a single-quoted string`, () => {
+      assert(grammar.match(`'${char}'`).succeeded())
+    }) 
+    it(`properly accepts ${char} in a string`, () => {
+      assert(grammar.match(`"${char}"`).succeeded())
+    })
+    it(`properly accepts ${char} in a formatted single-quoted string`, () => {
+      assert(grammar.match(`$'${char}'`).succeeded())
+    })
+    it(`properly accepts ${char} in a formatted string`, () => {
+      assert(grammar.match(`$"${char}"`).succeeded())
+    })
+  }
+
   for (const [scenario, source] of exps) {
     it(`properly specifies ${scenario}s`, () => {
       assert(grammar.match(`${source}`).succeeded())
@@ -609,9 +530,6 @@ describe("The grammar", () => {
     })
     it(`properly specifies variable selection with a ${scenario}`, () => {
       assert(grammar.match(`${source}.x`).succeeded())
-    })
-    it(`properly specifies variable declaration with a ${scenario} value`, () => {
-      assert(grammar.match(`x = ${source}`).succeeded())
     })
     it(`properly accepts a ${scenario} as a positional argument`, () => {
       assert(grammar.match(`x(${source})`).succeeded())
@@ -683,6 +601,17 @@ describe("The grammar", () => {
         assert(match.succeeded())
       }
     })
+
+    for (const varAssignment of varAssignments) {
+      for (const op of assignmentOps) {
+        it(`properly specifies ${varAssignment} ${op} declaration with a ${scenario} value`, () => {
+          assert(grammar.match(`${varAssignment} ${op} ${source}`).succeeded())
+          assert(grammar.match(`local ${varAssignment} ${op} ${source}`).succeeded())
+          assert(grammar.match(`const ${varAssignment} ${op} ${source}`).succeeded())
+          assert(grammar.match(`local const ${varAssignment} ${op} ${source}`).succeeded())
+        })
+      }
+    }
 
     for (const [otherScenario, otherSource] of exps) {
       for (const operator of binaryOps) {
