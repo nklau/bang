@@ -636,6 +636,9 @@ describe("The grammar", () => {
     it(`properly specifies bang functions with a ${scenario}`, () => {
       assert(grammar.match(`{ x = ${source} }`).succeeded())
     })
+    it(`properly accepts a ${scenario} as a return value`, () => {
+      assert(grammar.match(`return ${source}`).succeeded())
+    })
     it(`properly specifies variable subscription with a ${scenario}`, () => {
       assert(grammar.match(`x[${source}]`).succeeded())
     })
@@ -650,6 +653,36 @@ describe("The grammar", () => {
     })
     it(`properly accepts a ${scenario} as a positional or keyword argument`, () => {
       assert(grammar.match(`x(y = ${source}, ${source})`).succeeded())
+    })
+    it(`properly accepts ${scenario}s as values in an object`, () => {
+      assert(grammar.match(`{ "x": ${source},\n"y": ${source} }`).succeeded())
+    })
+    it(`properly accepts ${scenario}s as list values`, () => {
+      assert(grammar.match(`[${source},\n${source}]`).succeeded())
+    })
+    it(`properly accepts ${scenario}s as exps in a formatted string`, () => {
+      if (!(source.includes('"') || source.includes("{"))) {
+        assert(grammar.match(`$"str${source} alt"`).succeeded())
+      } else if (!(source.includes("'") || source.includes("{"))) {
+        assert(grammar.match(`$'str${source} alt'`).succeeded())
+      }
+    })
+    it(`properly accepts a ${scenario} as a match case`, () => {
+      if (!scenario.includes('first half')) {
+        assert(grammar.match(`match x {\ncase ${source}:\nx}`).succeeded())
+      } else {
+        assert(grammar.match(`match x {\ncase (${source}):\nx}`).succeeded())
+      }
+    })
+    it(`properly accepts a ${scenario} as a return value for a match case`, () => {
+      assert(grammar.match(`match x {\ncase x:\n${source}}`).succeeded())
+    })
+    it(`properly accepts a ${scenario} as a return value for a default case`, () => {
+      assert(grammar.match(`match x {\ncase x:\ny\ndefault: ${source}\ncase z: x}`).succeeded())
+    })
+    it(`properly accepts a ${scenario} as a case value in an enum`, () => {
+      assert(grammar.match(`enum x { x = ${source} }`).succeeded())
+      assert(grammar.match(`enum x { \nx = ${source}\ny = ${source}\n}`).succeeded())
     })
 
     for (const operator of binaryOps) {
