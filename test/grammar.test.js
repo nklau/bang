@@ -380,41 +380,6 @@ const syntaxChecks = [
   ['lhs parentheses', '(x == y) == z'],
   ['rhs parentheses', 'x == (y == z)'],
   ['parenthesized exp with newlines', '(\nx\n\t+ y\n)'],
-  // ['or exp with ternaries', 'x ? y : z || a ? b : c'],
-  // ['or exp with ternaries', '(x ? y : z) || ( a ? b : c)'],
-  // x && y || z
-  // x || y && z
-  // x && y && z
-  // x || y || z
-  // (x && y || z) ? a
-
-  // Exps
-    // x || y (all literals)
-    // x && y (all literals)
-    // !x (all literals)
-    // x + y (all literals)
-    // x - y (all literals)
-    // x * y (all literals)
-    // x / y (all literals)
-    // x % y (all literals)
-    // x ** y (all literals)
-    // -x (all literals)
-    // (x) (all literals)
-    // (x + y) (all exps, all spacing)
-  
-  // Exp7
-    // x[1]
-    // x[1]()
-    // x[1].field
-    // x[1].method()
-    // x.field
-    // x.method()
-    // x.method(() -> { })
-    // x.method((i) -> { })
-    // x()().field.method()
-    // .field
-    // .method()
-    // .field.field2
   
   // Ternary
     // y ? "str"
@@ -642,6 +607,9 @@ describe("The grammar", () => {
     it(`properly specifies variable subscription with a ${scenario}`, () => {
       assert(grammar.match(`x[${source}]`).succeeded())
     })
+    it(`properly specifies variable selection with a ${scenario}`, () => {
+      assert(grammar.match(`${source}.x`).succeeded())
+    })
     it(`properly specifies variable declaration with a ${scenario} value`, () => {
       assert(grammar.match(`x = ${source}`).succeeded())
     })
@@ -684,17 +652,54 @@ describe("The grammar", () => {
       assert(grammar.match(`enum x { x = ${source} }`).succeeded())
       assert(grammar.match(`enum x { \nx = ${source}\ny = ${source}\n}`).succeeded())
     })
-
-    for (const operator of binaryOps) {
-      if (operator.includes('**') && scenario.includes('negative')) {
-        it(`does not permit the ${operator} with ${scenario}s`, () => {
-          const match = grammar.match(`${source} ${operator} ${source}`)
-          assert(!match.succeeded())
-        })
+    it(`properly accepts ${scenario} as the condition of a ternary`, () => {
+      assert(grammar.match(`${source} ? x`).succeeded())
+      assert(grammar.match(`${source} ? x : y`).succeeded())
+    })
+    // !, ?, -
+    it(`properly accepts ${scenario} as the true case for a ternary`, () => {
+      assert(grammar.match(`x ? ${source}`).succeeded())
+      assert(grammar.match(`x ? ${source} : y`).succeeded())
+    })
+    it(`properly accepts ${scenario} as the false case for a ternary`, () => {
+      assert(grammar.match(`x ? y : ${source}`).succeeded())
+    })
+    it(`properly accepts the ! operator on a ${scenario}`, () => {
+      const match = grammar.match(`!${source}`)
+      if (scenario.includes('negative exp')) {
+        assert(!match.succeeded())
       } else {
-        it(`properly specifies the ${operator} operator with ${scenario}s`, () => {
-          assert(grammar.match(`${source} ${operator} ${source}`).succeeded())
-        })
+        assert(match.succeeded())
+      }
+    })
+    it(`properly accepts the ? operator on a ${scenario}`, () => {
+      assert(grammar.match(`${source}?`).succeeded())
+    })
+    it(`properly accepts the - operator on a ${scenario}`, () => {
+      const match = grammar.match(`-${source}`)
+      if (scenario.includes('exponential') || scenario.includes('negative exp')) {
+        assert(!match.succeeded())
+      } else {
+        assert(match.succeeded())
+      }
+    })
+
+    for (const [otherScenario, otherSource] of exps) {
+      for (const operator of binaryOps) {
+        if (operator.includes('**') && (scenario.includes('negative') || otherScenario.includes('negative'))) {
+          it(`does not permit the ${operator} with ${scenario} and ${otherScenario}`, () => {
+            if (scenario.includes('negative')) {
+              assert(!grammar.match(`${source} ${operator} ${otherSource}`).succeeded())
+            } else {
+              assert(!grammar.match(`${otherSource} ${operator} ${source}`).succeeded())
+            }
+          })
+        } else {
+          it(`properly specifies the ${operator} operator with ${scenario} and ${otherScenario}`, () => {
+            assert(grammar.match(`${source} ${operator} ${otherSource}`).succeeded())
+            assert(grammar.match(`${otherSource} ${operator} ${source}`).succeeded())
+          })
+        }
       }
     }
   }
