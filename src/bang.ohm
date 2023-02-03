@@ -40,12 +40,11 @@ Bang {
                         | VarAssignment "." VarAssignment                                   -- select
                         | id
   
-  FuncLit               = (Params | id) arrow (BangFunc | Statement)
+  FuncLit               = (Params | id) "->" (BangFunc | Statement)
   Params                = "(" ListOf<Arg, ","> ")"
   Arg                   = KeywordArg | PositionalArg
   PositionalArg         = Exp
   KeywordArg            = id "=" Exp
-  arrow                 = "->"
 
   Obj                   = "{" ListOf<ObjField, ","> "}"
   ObjField              = key ":" Exp
@@ -56,8 +55,8 @@ Bang {
   Str                   = strLit | FormattedStr
   strLit                = "'" singleStrChar* "'"
                         | "\"" doubleStrChar* "\""
-  FormattedStr          = "$'" FSingleSubstr* "'"                                           -- singleQuotes
-                        | "$\"" FDoubleSubstr* "\""                                         -- doubleQuotes
+  FormattedStr          = "$'" FSingleSubstr* "'"
+                        | "$\"" FDoubleSubstr* "\""
   FSingleSubstr         = fSingleStrChar | FStrExp
   FDoubleSubstr         = fDoubleStrChar | FStrExp
   FStrExp               = "{" Exp "}"
@@ -72,7 +71,6 @@ Bang {
                         | "\\" escapeChar                                                   -- escaped
                         | lineContinuation
   escapeChar            = "'" | "\"" | "\\" | "n" | "t" | "r" | "u"
-  char                  = ~(escapeChar | newLine) any
   newLine               = "\n" | "\r" ~"\n" | "\u2028" | "\u2029"
   lineContinuation      = "\\" newLine
 
@@ -89,7 +87,7 @@ Bang {
   assignmentOp          = "=" | "+=" | "-=" | "*=" | "/=" | "%="
 
   MatchExp              = match id MatchBlock
-  MatchBlock            = "{" CaseClause+ (DefaultClause CaseClause*)? "}"
+  MatchBlock            = "{" CaseClause+ DefaultClause? "}"
   CaseClause            = case ListOf<Exp, ","> ":" (BangFunc | Statement)
   DefaultClause         = default ":" (BangFunc | Statement) 
   match                 = "match" ~idchar
@@ -97,9 +95,9 @@ Bang {
   default               = "default"
 
   Enum                  = enum id "{" EnumBlock "}"
-  EnumBlock             = EnumCaseAssignment+ | enumCases
-  EnumCaseAssignment    = id "=" Exp 
-  enumCases             = id (("," | newLine) spaces id)*
+  EnumBlock             = NonemptyListOf<EnumCaseAssignment, ",">
+  EnumCaseAssignment    = id "=" Exp                                                        -- withValue
+                        | id
   enum                  = "enum" ~idchar
 
   return                = "return" ~idchar

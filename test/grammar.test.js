@@ -404,7 +404,8 @@ const syntaxChecks = [
   ['{} in a string', `"{}"`],
   ['enum with cases on one line', 'enum x { a, b, c }'],
   ['local var dec without value', 'local x'],
-  ['enum with cases on multiple lines', 'enum x { a\nb\nc }'],
+  ['enum with cases on multiple lines', 'enum x { a,\nb,\nc }'],
+  ['enum with case assignment delimeted by a comma', 'enum x { y = 1, z }'],
   ['return without value', 'return'],
   ['break', 'break'],
   ['... operator on a function call', '...x()()']
@@ -452,8 +453,7 @@ const syntaxErrors = [
   ['match with default case value', 'match x {case y: z\ndefault a: {}}', /Line 2, col 9/],
   ['match with default case first', 'match x { default: y\ncase z: a }', /Line 1, col 11/],
   ['enum without cases', 'enum x {}', /Line 1, col 9/],
-  ['enum with cases delimited by a space', 'enum x { y z }', /Line 1, col 12/],
-  ['enum with case assignment delimeted by a comma', 'enum x { y = 1, z }', /Line 1, col 15/]
+  ['enum with cases delimited by a space', 'enum x { y z }', /Line 1, col 12/]
 ]
 
 describe("The grammar", () => {
@@ -532,11 +532,11 @@ describe("The grammar", () => {
       assert(grammar.match(`match x {\ncase x:\n${source}}`).succeeded())
     })
     it(`properly accepts a ${scenario} as a return value for a default case`, () => {
-      assert(grammar.match(`match x {\ncase x:\ny\ndefault: ${source}\ncase z: x}`).succeeded())
+      assert(grammar.match(`match x {\ncase x:\ny\ndefault: ${source}}`).succeeded())
     })
     it(`properly accepts a ${scenario} as a case value in an enum`, () => {
       assert(grammar.match(`enum x { x = ${source} }`).succeeded())
-      assert(grammar.match(`enum x { \nx = ${source}\ny = ${source}\n}`).succeeded())
+      assert(grammar.match(`enum x { \nx = ${source},\ny = ${source}\n}`).succeeded())
     })
     it(`properly accepts ${scenario} as the condition of a ternary`, () => {
       assert(grammar.match(`${source} ? x`).succeeded())
