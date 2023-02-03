@@ -1,0 +1,14 @@
+5.loop(() -> { print("hello world") })
+5.loop(() -> print("hello world"))
+5.loop({ print("hello world") })
+5.loop(print("hello world"))
+5.loop(i -> { print(i)) })
+5.loop(i -> print(i))
+5.loop(print)
+range(5).loop((i) -> { print(i) })
+range(5).loop((i) -> print(i))
+range(5).loop(print)
+// prints 0-4 on separate lines
+
+range(1, 6).loop(print)
+// prints 1-5 on separate lines

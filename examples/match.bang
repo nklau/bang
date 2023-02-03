@@ -1,0 +1,12 @@
+season = Season.fall
+result = match season {
+  case .spring: "spring!"
+  case .summer: { "summer!" }
+  case .fall, .winter: {
+    str = "is cold!"
+    str
+  }
+  default: "California!"
+}
+print(result)
+// prints "is cold!"
