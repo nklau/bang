@@ -406,7 +406,8 @@ const syntaxChecks = [
   ['local var dec without value', 'local x'],
   ['enum with cases on multiple lines', 'enum x { a\nb\nc }'],
   ['return without value', 'return'],
-  ['break', 'break']
+  ['break', 'break'],
+  ['... operator on a function call', '...x()()']
 ]
 
 const syntaxErrors = [
@@ -597,6 +598,12 @@ describe("The grammar", () => {
         }
       }
     }
+  }
+
+  for (const varAssignment of varAssignments) {
+    it(`properly accepts the ... operator on ${varAssignment}`, () => {
+      assert(grammar.match(`...${varAssignment}`).succeeded())
+    })
   }
 
   for (const [scenario, source, errorMessagePattern] of syntaxErrors) {

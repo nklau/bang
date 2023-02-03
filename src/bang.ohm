@@ -22,6 +22,7 @@ Bang {
                         | Exp6
   Exp6                  = Exp7 "**" Exp6                                                    -- exponent
                         | "-" Exp7                                                          -- negate
+                        | "..." Exp7                                                        -- spread
                         | Exp7
   Exp7                  = Exp7 Params                                                       -- call
                         | Exp7 "[" Exp "]"                                                  -- subscript
