@@ -19,92 +19,203 @@ function check(condition, message, node) {
 export default function analyze(sourceCode) {
   const analyzer = bangGrammar.createSemantics().addOperation("rep", {
     Program(body) {
-      return new core.Program(body.rep())
+      // console.log(body.rep())
+      return body.rep()
     },
-    Statement_bangFunc(_open, statements, _close) {
-      return new core.BangFunc(statements)
+    Block(_n0, statements, statement, _n1) {
+      // console.log(`block: ${this}`)
+      return new core.Block([...(statements.rep()), statement.rep()])
+
+      // let x = []
+      // statements.rep().map((statement, index) => { 
+      //   if (index % 2 !== 0) {
+      //     x.push(statement)
+      //   }
+      // })
+      // return new core.Block([...x, closingStatement.rep()])
     },
-    Statement_varDec(local, readOnly, id, op, exp) {
-      return new core.VariableDec(id, local, readOnly, op, exp)
+    StatementNewLine(statement, _space, _n) {
+      return statement.rep()
     },
-    Statement_print(_print, _open, exp, _close) {
-      return new core.PrintStatement(exp)
+    Statement_varAssignment(local, readOnly, id, op, exp) {
+      return new core.VariableDec(
+        id.sourceString, 
+        local.sourceString === 'local', 
+        readOnly.sourceString === 'const', 
+        op.sourceString, 
+        exp.rep()
+      )
+    },
+    Statement_localVar(_local, id) {
+      return new core.VariableDec(id.sourceString, true, false)
     },
     Statement_return(_return, exp) {
-      return new core.ReturnStatement(exp)
+      return new core.ReturnStatement(exp.rep())
     },
-    Exp_unary(op, operand) {
-      return new core.UnaryExp(op, operand)
+    Statement(exp) {
+      return exp.rep()
     },
-    Exp_binary(left, op, right) {
-      return new core.BinaryExp(left, right, op)
+    Exp_ternary(cond, _qMark, block, _c, alt) {
+      return new core.Ternary(cond.rep(), block.rep(), alt.asIteration().rep())
     },
-    Exp_call(id, args) {
-      return new core.Call(id, args)
+    Exp1_equality(left, op0, op1, right) {
+      return new core.BinaryExp(left.rep(), `${op0.sourceString}${op1.sourceString}`, right.rep())
     },
-    Exp_varSubscript(id, _open, selector, _close) {
-      return new core.VarSubscript(id, selector)
+    Exp2_or(left, or, right) {
+      return new core.BinaryExp(left.rep(), or.sourceString, right.rep())
     },
-    Exp_varSelect(id, _dot, field) {
-      return new core.VarSelect(id, field)
+    Exp3_and(left, op, right) {
+      return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
     },
-    Exp_cond(cond, _questionMark, block, _colon, alt) {
-      return new core.Conditional(cond, block, alt)
+    Exp4_addSubtract(left, op, right) {
+      return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
     },
-    Exp_func(params, _arrow, block) {
-      return new core.FuncLit(params, block)
+    Exp5_multiplyDivideMod(left, op, right) {
+      return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
     },
-    Params(_open, params, _close) {
-      return new core.Params(params)
+    Exp6_exponent(left, op, right) {
+      return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
     },
-    KeywordParam(id, _equals, exp) {
-      return new core.KeywordParam(id, exp)
+    Exp6_negate(negative, right) {
+      return new core.UnaryExp(right.rep(), negative.sourceString)
+    },
+    Exp6_spread(spread, right) {
+      return new core.UnaryExp(right.rep(), spread.sourceString)
+    },
+    Exp7_call(exp, params) {
+      return new core.Call(exp.rep(), params.rep())
+    },
+    Exp7_subscript(exp, _open, selector, _close) {
+      return new core.VarSubscript(exp.rep(), selector.rep())
+    },
+    Exp7_select(exp, _dot, selector) {
+      return new core.VarSelect(exp.rep(), selector.rep())
+    },
+    Exp7_negative(negate, exp) {
+      return new core.UnaryExp(exp.rep(), negate.sourceString)
+    },
+    Exp7_unwrap(exp, unwrap) {
+      return new core.UnaryExp(exp.rep(), unwrap.sourceString)
+    },
+    Exp8_enclosed(_open, exp, _close) {
+      return exp.rep()
+    },
+    BangFunc(_open, block, _close) {
+      return new core.Block(block.rep())
+    },
+    VarAssignment_subscript(exp, _open, selector, _close) {
+      return new core.VarSubscript(exp.rep(), selector.rep())
+    },
+    VarAssignment_select(exp, _dot, selector) {
+      return new core.VarSelect(exp.rep(), selector.rep())
+    },
+    FuncLit(exp, _arrow, block) {
+      return new FuncLit(exp.rep(), block.rep())
+    },
+    Params(_open, args, _close) {
+      return new Params(args.asIteration().rep())
+    },
+    Arg(arg) {
+      return arg.rep()
+    },
+    PositionalArg(exp) {
+      return exp.rep()
+    },
+    KeywordArg(id, _e, exp) {
+      return new core.KeywordParam(id.sourceString, exp.rep())
     },
     Obj(_open, fields, _close) {
-      return new core.Object(fields)
+      return new core.Obj(fields.asIteration().rep())
     },
-    ObjField(key, _colon, exp) {
-      return new core.ObjField(key, exp)
+    ObjField(key, _c, exp) {
+      return new core.ObjField(key.rep(), exp.rep())
     },
-    List(_open, list, _close) {
-      return new core.List(list)
+    key(str) {
+      return str.rep()
     },
-    Range(_range, _open, start, _comma, end, _close) {
-      return new core.Range(start, end)
+    ListLit(_open, list, _close) {
+      return list.asIteration().rep()
     },
-    StrLit(_open, chars, _close) {
-      // TODO: could probably replace with regular string
-      return new core.StrLit(chars)
+    Str(str) {
+      return str.rep()
     },
-    FormattedStr(_open, exps, _close) {
-      // TODO: could probably replace with JS's formatted string, i.e. `strLit ${exp}`
-      return new core.FormattedStr(exps)
+    strLit(_open, chars, _close) {
+      return chars.asIteration().rep().join('')
     },
-    FormattedSubstr(_open, exp, _close) {
-      return new core.FormattedSubstr(exp)
+    FormattedStr(_open, chars, _close) {
+      return chars.asIteration().rep().join('')
     },
-    Exp_unwrap(id, _questionMark) {
-      return new core.UnwrapExp(id)
+    FSingleSubstr(exp) {
+      return exp.rep()
     },
-    num(_whole, _dot, _fraction, _e, _sign, _exponent) {
+    FDoubleSubstr(exp) {
+      return exp.rep()
+    },
+    FStrExp(_open, exp, _close) {
+      return `{${exp.rep()}}`
+    },
+    fSingleStrChar(char) {
+      return char.rep()
+    },
+    fDoubleStrChar(char) {
+      return char.rep()
+    },
+    singleStrChar_escaped(escape, char) {
+      return `${escape.sourceString}${char.rep()}`
+    },
+    singleStrChar(char) {
+      return char.rep()
+    },
+    doubleStrChar_escaped(escape, char) {
+      return `${escape.sourceString}${char.rep()}`
+    },
+    doubleStrChar(char) {
+      return char.rep()
+    },
+    lineContinuation(escape, newLine) {
+      return `${escape.sourceString}${newLine.rep()}`
+    },
+    id(start, rest) {
+      return `${start}${rest.sourceString}`
+    },
+    boolLit(bool) {
+      return bool.rep()
+    },
+    Num(_whole, _dot, _fraction, _e, _sign, _exponent) {
       return Number(this.sourceString)
     },
-    Exp_match(_match, id, cases) {
-      return new core.MatchExp(id, cases)
+    MatchExp(_match, id, block) {
+      return new core.MatchExp(id.sourceString, block.rep())
     },
-    Exp_matchCase(_case, matches, _colon, block) {
-      return new core.MatchClause(false, matches, block)
+    MatchBlock(_open, cases, defaultCase, _close) {
+      return new core.MatchBlock(cases.rep(), defaultCase.asIteration().rep())
     },
-    Exp_matchDefaultCase(_default, _colon, block) {
-      return new core.MatchClause(true, undefined, block)
+    CaseClause(_case, matches, _colon, block) {
+      return new core.MatchCase(matches.asIteration().rep(), block.rep())
     },
-    Statement_enum(_enum, id, _open, cases, _close) {
-      return new core.Enum(id, cases)
-    }
-    // TODO: tokens
+    DefaultClause(_default, _colon, block) {
+      return new core.DefaultMatchCase(block.rep())
+    },
+    Enum(_enum, id, _open, block, _close) {
+      return new core.Enum(id.sourceString, block.rep())
+    },
+    EnumBlock(cases) {
+      return new core.EnumBlock(cases.rep())
+    },
+    EnumCaseAssignment_withValue(id, _e, exp) {
+      return new core.EnumCase(id.sourceString, exp.rep())
+    },
+    _terminal() {
+      return this.sourceString
+    },
+    _iter(...children) {
+      return children.map(child => child.rep())
+    },
   })
 
   const match = bangGrammar.match(sourceCode)
   if (!match.succeeded()) error(match.message)
   return analyzer(match).rep()
 }
+
+// console.log(analyze('x(y, z)'))

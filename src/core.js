@@ -1,10 +1,10 @@
 export class Program {
-  constructor(statements) {
-    this.statements = statements
+  constructor(block) {
+    this.block = block
   }
 }
 
-export class BangFunc {
+export class Block {
   constructor(statements) {
     this.statements = statements
   }
@@ -16,15 +16,28 @@ export class VariableDec {
   }
 }
 
-export class PrintStatement {
-  constructor(exp = '\n') {
+export class ReturnStatement {
+  constructor(exp) {
     this.exp = exp
   }
 }
 
-export class ReturnStatement {
-  constructor(exp) {
+export class Ternary {
+  constructor(cond, block, alternative) {
+    Object.assign(this, { cond, block, alternative })
+  }
+}
+
+export class BinaryExp {
+  constructor(left, right, op) {
+    Object.assign(this, { left, right, op })
+  }
+}
+
+export class UnaryExp {
+  constructor(exp, op) {
     this.exp = exp
+    this.op = op
   }
 }
 
@@ -32,25 +45,6 @@ export class Call {
   constructor(id, args) {
     this.id = id
     this.args = args
-  }
-}
-
-export class Conditional {
-  constructor(cond, block, alternative) {
-    Object.assign(this, { cond, block, alternative })
-  }
-}
-
-export class UnaryExp {
-  constructor(op, exp) {
-    this.op = op
-    this.exp = exp
-  }
-}
-
-export class BinaryExp {
-  constructor(left, right, op) {
-    Object.assign(this, { left, right, op })
   }
 }
 
@@ -88,7 +82,7 @@ export class KeywordParam {
   }
 }
 
-export class Object {
+export class Obj {
   constructor(fields) {
     this.fields = fields
   }
@@ -107,13 +101,6 @@ export class List {
   }
 }
 
-export class Range {
-  constructor(start = 0, end) {
-    this.start = start
-    this.end = end
-  }
-}
-
 export class StrLit {
   constructor(chars) {
     this.chars = chars
@@ -126,13 +113,7 @@ export class FormattedStr {
   }
 }
 
-export class FormattedSubstr {
-  constructor(exp) {
-    this.exp = exp
-  }
-}
-
-export class UnwrapExp {
+export class FormattedStrExp {
   constructor(exp) {
     this.exp = exp
   }
@@ -145,9 +126,21 @@ export class MatchExp {
   }
 }
 
-export class MatchClause {
-  constructor(isDefault, matchCases, block) {
+export class MatchBlock {
+  constructor(cases) {
+    this.cases = cases
+  }
+}
+
+export class MatchCase {
+  constructor(matchCases, block) {
     Object.assign(this, { isDefault, matchCases, block })
+  }
+}
+
+export class DefaultMatchCase {
+  constructor(block) {
+    this.block = block
   }
 }
 
@@ -158,9 +151,15 @@ export class Enum {
   }
 }
 
-export class Token {
-  constructor(category, src) {
-    this.category = category
-    this.src = src
+export class EnumBlock {
+  constructor(cases) {
+    this.cases = cases
+  }
+}
+
+export class EnumCase {
+  constructor(name, value) {
+    this.name = name
+    this.value = value ?? name
   }
 }
