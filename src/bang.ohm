@@ -1,7 +1,8 @@
 Bang {
   space := "\n" | " " | "\t" | "\r" | multiLineComment | comment
   Program               = Block
-  Block                 = #newLine* (Statement #(~newLine space)* #newLine+)* Statement? #newLine*  
+  Block                 = #newLine* StatementNewLine* Statement? #newLine*  
+  StatementNewLine      = Statement #(~newLine space)* #newLine+
   Statement             = local? const? VarAssignment assignmentOp Exp                      -- varAssignment
                         | local VarAssignment                                               -- localVar
                         | return Exp?                                                       -- return
