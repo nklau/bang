@@ -295,6 +295,8 @@ optional() // prints "invalid"
 
 ```swift
 enum Season { spring, summer, fall, winter }
+print(Season.spring) 
+// prints 'spring'
 ```
 
 </td>
@@ -317,13 +319,13 @@ const Season = Object.freeze({
 
 ```swift
 enum Season {
-  spring = '🌷'
-  summer = '☀️'
-  fall = '🍁'
-  winter = '❄️'
+  spring = '🌷',
+  summer = '☀️',
+  fall = '🍁',
+  winter = '❄️',
 }
 
-print(Season.spring.rawTextVal)
+print(Season.spring)
 // prints "🌷"
 ```
 
