@@ -19,20 +19,12 @@ function check(condition, message, node) {
 export default function analyze(sourceCode) {
   const analyzer = bangGrammar.createSemantics().addOperation("rep", {
     Program(body) {
-      // console.log(body.rep())
+      // console.log(body)
       return body.rep()
     },
     Block(_n0, statements, statement, _n1) {
-      // console.log(`block: ${this}`)
+      // console.log(this)
       return new core.Block([...(statements.rep()), statement.rep()])
-
-      // let x = []
-      // statements.rep().map((statement, index) => { 
-      //   if (index % 2 !== 0) {
-      //     x.push(statement)
-      //   }
-      // })
-      // return new core.Block([...x, closingStatement.rep()])
     },
     StatementNewLine(statement, _space, _n) {
       return statement.rep()
@@ -56,7 +48,7 @@ export default function analyze(sourceCode) {
       return exp.rep()
     },
     Exp_ternary(cond, _qMark, block, _c, alt) {
-      return new core.Ternary(cond.rep(), block.rep(), alt.asIteration().rep())
+      return new core.Ternary(cond.rep(), block.rep(), alt.rep())
     },
     Exp1_equality(left, op0, op1, right) {
       return new core.BinaryExp(left.rep(), `${op0.sourceString}${op1.sourceString}`, right.rep())
@@ -83,6 +75,10 @@ export default function analyze(sourceCode) {
       return new core.UnaryExp(right.rep(), spread.sourceString)
     },
     Exp7_call(exp, params) {
+      // console.log(params.children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0])
+      // exp.rep()
+      // console.log('hi')
+      // console.log(exp.children[0].children[0].children[0].children[0].children)
       return new core.Call(exp.rep(), params.rep())
     },
     Exp7_subscript(exp, _open, selector, _close) {
@@ -110,10 +106,11 @@ export default function analyze(sourceCode) {
       return new core.VarSelect(exp.rep(), selector.rep())
     },
     FuncLit(exp, _arrow, block) {
-      return new FuncLit(exp.rep(), block.rep())
+      return new core.FuncLit(exp.rep(), block.rep())
     },
     Params(_open, args, _close) {
-      return new Params(args.asIteration().rep())
+      // console.log('args')
+      return new core.Params(args.asIteration().rep())
     },
     Arg(arg) {
       return arg.rep()
@@ -134,16 +131,16 @@ export default function analyze(sourceCode) {
       return str.rep()
     },
     ListLit(_open, list, _close) {
-      return list.asIteration().rep()
+      return [...list.asIteration().rep()]
     },
     Str(str) {
       return str.rep()
     },
     strLit(_open, chars, _close) {
-      return chars.asIteration().rep().join('')
+      return chars.rep().join('')
     },
     FormattedStr(_open, chars, _close) {
-      return chars.asIteration().rep().join('')
+      return chars.rep().join('')
     },
     FSingleSubstr(exp) {
       return exp.rep()
@@ -176,19 +173,19 @@ export default function analyze(sourceCode) {
       return `${escape.sourceString}${newLine.rep()}`
     },
     id(start, rest) {
-      return `${start}${rest.sourceString}`
+      return `${start.sourceString}${rest.sourceString}`
     },
     boolLit(bool) {
-      return bool.rep()
+      return bool.sourceString === 'true'
     },
-    Num(_whole, _dot, _fraction, _e, _sign, _exponent) {
+    num(_whole, _dot, _fraction, _e, _sign, _exponent) {
       return Number(this.sourceString)
     },
     MatchExp(_match, id, block) {
       return new core.MatchExp(id.sourceString, block.rep())
     },
     MatchBlock(_open, cases, defaultCase, _close) {
-      return new core.MatchBlock(cases.rep(), defaultCase.asIteration().rep())
+      return new core.MatchBlock(cases.rep(), defaultCase.rep())
     },
     CaseClause(_case, matches, _colon, block) {
       return new core.MatchCase(matches.asIteration().rep(), block.rep())
@@ -200,7 +197,7 @@ export default function analyze(sourceCode) {
       return new core.Enum(id.sourceString, block.rep())
     },
     EnumBlock(cases) {
-      return new core.EnumBlock(cases.rep())
+      return new core.EnumBlock(cases.asIteration().rep())
     },
     EnumCaseAssignment_withValue(id, _e, exp) {
       return new core.EnumCase(id.sourceString, exp.rep())
@@ -217,5 +214,3 @@ export default function analyze(sourceCode) {
   if (!match.succeeded()) error(match.message)
   return analyzer(match).rep()
 }
-
-// console.log(analyze('x(y, z)'))

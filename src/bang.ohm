@@ -31,7 +31,7 @@ Bang {
                         | "!" Exp7                                                          -- negative
                         | Exp7 #"?"                                                         -- unwrap
                         | Exp8
-  Exp8                  = nil       | Str       | Num       | Obj       
+  Exp8                  = nil       | Str       | num       | Obj       
                         | boolLit   | BangFunc  | MatchExp  | ListLit   
                         | FuncLit   | id
                         | "(" Exp ")"                                                       -- enclosed
@@ -83,7 +83,7 @@ Bang {
   true                  = "true" ~idchar
   false                 = "false" ~idchar
 
-  Num                   = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
+  num                   = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
 
   assignmentOp          = "=" | "+=" | "-=" | "*=" | "/=" | "%="
 
