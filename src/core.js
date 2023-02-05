@@ -1,8 +1,4 @@
-export class Program {
-  constructor(block) {
-    this.block = block
-  }
-}
+import util from 'util'
 
 export class Block {
   constructor(statements) {
@@ -29,8 +25,8 @@ export class Ternary {
 }
 
 export class BinaryExp {
-  constructor(left, right, op) {
-    Object.assign(this, { left, right, op })
+  constructor(left, op, right) {
+    Object.assign(this, { left, op, right })
   }
 }
 
@@ -95,30 +91,6 @@ export class ObjField {
   }
 }
 
-export class List {
-  constructor(exps) {
-    this.exps = exps
-  }
-}
-
-export class StrLit {
-  constructor(chars) {
-    this.chars = chars
-  }
-}
-
-export class FormattedStr {
-  constructor(substrs) {
-    this.substrs = substrs
-  }
-}
-
-export class FormattedStrExp {
-  constructor(exp) {
-    this.exp = exp
-  }
-}
-
 export class MatchExp {
   constructor(cond, clauses) {
     this.cond = cond
@@ -162,4 +134,33 @@ export class EnumCase {
     this.name = name
     this.value = value ?? name
   }
+}
+
+Block.prototype[util.inspect.custom] = function () {
+  const tags = new Map()
+
+  // Attach a unique integer tag to every node
+  function tag(node) {
+    if (tags.has(node) || typeof node !== "object" || node === null) return
+    tags.set(node, tags.size + 1)
+    for (const child of Object.values(node)) {
+      Array.isArray(child) ? child.forEach(tag) : tag(child)
+    }
+  }
+
+  function* lines() {
+    function view(e) {
+      if (tags.has(e)) return `#${tags.get(e)}`
+      if (Array.isArray(e)) return `[${e.map(view)}]`
+      return util.inspect(e)
+    }
+    for (let [node, id] of [...tags.entries()].sort((a, b) => a[1] - b[1])) {
+      let type = node.constructor.name
+      let props = Object.entries(node).map(([k, v]) => `${k}=${view(v)}`)
+      yield `${String(id).padStart(4, " ")} | ${type} ${props.join(" ")}`
+    }
+  }
+
+  tag(this)
+  return [...lines()].join("\n")
 }
