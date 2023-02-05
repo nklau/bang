@@ -19,12 +19,10 @@ function check(condition, message, node) {
 export default function analyze(sourceCode) {
   const analyzer = bangGrammar.createSemantics().addOperation("rep", {
     Program(body) {
-      // console.log(body)
       return body.rep()
     },
     Block(_n0, statements, statement, _n1) {
-      // console.log(this)
-      return new core.Block([...(statements.rep()), statement.rep()])
+      return new core.Block([...(statements.rep()), ...statement.rep()])
     },
     StatementNewLine(statement, _space, _n) {
       return statement.rep()
@@ -75,10 +73,6 @@ export default function analyze(sourceCode) {
       return new core.UnaryExp(right.rep(), spread.sourceString)
     },
     Exp7_call(exp, params) {
-      // console.log(params.children[1].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0].children[0])
-      // exp.rep()
-      // console.log('hi')
-      // console.log(exp.children[0].children[0].children[0].children[0].children)
       return new core.Call(exp.rep(), params.rep())
     },
     Exp7_subscript(exp, _open, selector, _close) {
@@ -109,7 +103,6 @@ export default function analyze(sourceCode) {
       return new core.FuncLit(exp.rep(), block.rep())
     },
     Params(_open, args, _close) {
-      // console.log('args')
       return new core.Params(args.asIteration().rep())
     },
     Arg(arg) {
