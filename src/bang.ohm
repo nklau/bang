@@ -26,8 +26,8 @@ Bang {
                         | "..." Exp7                                                        -- spread
                         | Exp7
   Exp7                  = Exp7 Params                                                       -- call
-                        | Exp7 "[" Exp "]"                                                  -- subscript
-                        | Exp7? "." VarAssignment                                           -- select
+                        | Exp7 #"[" Exp "]"                                                 -- subscript
+                        | Exp7? #"." VarAssignment                                          -- select
                         | "!" Exp7                                                          -- negative
                         | Exp7 #"?"                                                         -- unwrap
                         | Exp8
@@ -37,8 +37,8 @@ Bang {
                         | "(" Exp ")"                                                       -- enclosed
 
   BangFunc              = "{" Block "}"
-  VarAssignment         = VarAssignment "[" Exp "]"                                         -- subscript
-                        | VarAssignment "." VarAssignment                                   -- select
+  VarAssignment         = VarAssignment #"[" Exp "]"                                        -- subscript
+                        | VarAssignment #"." VarAssignment                                  -- select
                         | id
   
   FuncLit               = (Params | id) "->" (BangFunc | Statement)
