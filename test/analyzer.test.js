@@ -84,14 +84,14 @@ const examples = [
    5 | VariableDec id='x' isLocal=true isReadOnly=false assignmentOp='=' exp=undefined
    6 | VariableDec id='x' isLocal=false isReadOnly=false assignmentOp='+=' exp=1.5
    7 | VariableDec id=#8 isLocal=false isReadOnly=false assignmentOp='-=' exp=15000
-   8 | VarSelect id='x' field='y'
+   8 | VarSelect id='x' selector='y'
    9 | VariableDec id=#10 isLocal=false isReadOnly=false assignmentOp='*=' exp=100000
   10 | VarSubscript id='x' selector='y'
   11 | VariableDec id=#12 isLocal=false isReadOnly=false assignmentOp='/=' exp=0.000001
-  12 | VarSelect id=#13 field='y'
+  12 | VarSelect id=#13 selector='y'
   13 | VarSubscript id='x' selector=1
   14 | VariableDec id=#15 isLocal=false isReadOnly=false assignmentOp='%=' exp=10000
-  15 | VarSelect id='x' field=#16
+  15 | VarSelect id='x' selector=#16
   16 | VarSubscript id='y' selector='str'`
   ],
   [
@@ -138,20 +138,20 @@ const examples = [
       d = false
     }`,
     `   1 | Block statements=[#2]
-   2 | Enum name='x' cases=#3
+   2 | Enum id='x' cases=#3
    3 | EnumBlock cases=[#4,#5,#6,#7,#15]
-   4 | EnumCase name='y' value='y'
-   5 | EnumCase name='z' value='z'
-   6 | EnumCase name='a' value=4
-   7 | EnumCase name='b' value=#8
+   4 | EnumCase id='y' val='y'
+   5 | EnumCase id='z' val='z'
+   6 | EnumCase id='a' val=4
+   7 | EnumCase id='b' val=#8
    8 | Block statements=[#9,#13]
    9 | VariableDec id='x' isLocal=true isReadOnly=true assignmentOp='=' exp=#10
   10 | BinaryExp left=#11 op='&&' right=#12
-  11 | VarSelect id='x' field='y'
-  12 | VarSelect id='x' field='z'
+  11 | VarSelect id='x' selector='y'
+  12 | VarSelect id='x' selector='z'
   13 | ReturnStatement exp=#14
   14 | BinaryExp left='a' op='+' right='x'
-  15 | EnumCase name='d' value=false`
+  15 | EnumCase id='d' val=false`
   ],
   [
     'ternaries',
@@ -180,8 +180,36 @@ const examples = [
   13 | Ternary cond=#14 block='hello' alternative=undefined
   14 | BinaryExp left=#15 op='>' right='f'
   15 | BinaryExp left='d' op='+' right='e'`
+  ],
+  [
+    'unary exps',
+    `x = false
+    x = !x
+    y = -x
+    z = !(y == true) ? [1] : { "n": ...[x, [y]] }
+    a = z?[0] == nil ? z?.n`,
+    `   1 | Block statements=[#2,#3,#5,#7,#15]
+   2 | VariableDec id='x' isLocal=false isReadOnly=false assignmentOp='=' exp=false
+   3 | VariableDec id='x' isLocal=false isReadOnly=false assignmentOp='=' exp=#4
+   4 | UnaryExp exp='x' op='!'
+   5 | VariableDec id='y' isLocal=false isReadOnly=false assignmentOp='=' exp=#6
+   6 | UnaryExp exp='x' op='-'
+   7 | VariableDec id='z' isLocal=false isReadOnly=false assignmentOp='=' exp=#8
+   8 | Ternary cond=#9 block=[1] alternative=#11
+   9 | UnaryExp exp=#10 op='!'
+  10 | BinaryExp left='y' op='==' right=true
+  11 | Obj fields=[#12]
+  12 | ObjField key='n' val=#13
+  13 | UnaryExp exp=['x',#14] op='...'
+  14 | Array 0='y'
+  15 | VariableDec id='a' isLocal=false isReadOnly=false assignmentOp='=' exp=#16
+  16 | Ternary cond=#17 block=#20 alternative=undefined
+  17 | BinaryExp left=#18 op='==' right=undefined
+  18 | VarSubscript id=#19 selector=0
+  19 | UnaryExp exp='z' op='?'
+  20 | VarSelect id=#21 selector='n'
+  21 | UnaryExp exp='z' op='?'`
   ]
-  // TODO: break
   // TODO: $'str{ a >= 5 ? b : c }'
 ]
 
