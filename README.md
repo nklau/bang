@@ -322,7 +322,7 @@ enum Season {
   spring = '🌷',
   summer = '☀️',
   fall = '🍁',
-  winter = '❄️',
+  winter = '❄️'
 }
 
 print(Season.spring)

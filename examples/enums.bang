@@ -1,7 +1,7 @@
 enum Season {
-  spring = '🌷'
-  summer = '☀️'
-  fall = '🍁'
+  spring = '🌷',
+  summer = '☀️',
+  fall = '🍁',
   winter = '❄️'
 }
 
