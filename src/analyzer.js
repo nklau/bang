@@ -46,7 +46,7 @@ export default function analyze(sourceCode) {
       return exp.rep()
     },
     Exp_ternary(cond, _qMark, block, _c, alt) {
-      return new core.Ternary(cond.rep(), block.rep(), alt.rep())
+      return new core.Ternary(cond.rep(), block.rep(), ...alt.rep())
     },
     Exp1_equality(left, op0, op1, right) {
       return new core.BinaryExp(left.rep(), `${op0.sourceString}${op1.sourceString}`, right.rep())
@@ -142,7 +142,9 @@ export default function analyze(sourceCode) {
       return exp.rep()
     },
     FStrExp(_open, exp, _close) {
-      return `{${exp.rep()}}`
+      // const x = exp.rep()[0]
+      // return ['${', exp.rep(), '}'].join('')
+      return `\${${exp.rep()}}`
     },
     fSingleStrChar(char) {
       return char.rep()
