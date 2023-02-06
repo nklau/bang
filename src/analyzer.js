@@ -29,7 +29,7 @@ export default function analyze(sourceCode) {
     },
     Statement_varAssignment(local, readOnly, id, op, exp) {
       return new core.VariableDec(
-        id.sourceString, 
+        id.rep(), 
         local.sourceString === 'local', 
         readOnly.sourceString === 'const', 
         op.sourceString, 
@@ -37,7 +37,7 @@ export default function analyze(sourceCode) {
       )
     },
     Statement_localVar(_local, id) {
-      return new core.VariableDec(id.sourceString, true, false)
+      return new core.VariableDec(id.rep(), true, false)
     },
     Statement_return(_return, exp) {
       return new core.ReturnStatement(exp.rep())
@@ -194,6 +194,9 @@ export default function analyze(sourceCode) {
     },
     EnumCaseAssignment_withValue(id, _e, exp) {
       return new core.EnumCase(id.sourceString, exp.rep())
+    },
+    nil(_nil) {
+      return undefined
     },
     _terminal() {
       return this.sourceString
