@@ -79,7 +79,7 @@ export default function analyze(sourceCode) {
       return new core.VarSubscript(exp.rep(), selector.rep())
     },
     Exp7_select(exp, _dot, selector) {
-      return new core.VarSelect(exp.rep(), selector.rep())
+      return new core.VarSelect(...exp.rep(), selector.rep())
     },
     Exp7_negative(negate, exp) {
       return new core.UnaryExp(exp.rep(), negate.sourceString)
