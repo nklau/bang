@@ -1,0 +1,13 @@
+const name = "John Smith"
+name = "Sally"
+
+firstName = "Ray"
+lastName = "Toal"
+combinedName = firstName + " " + lastName
+
+print(//)
+print("//")
+print(/*) */
+print(/* */)
+print(/* // */)
+print("\/*")
