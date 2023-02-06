@@ -1,5 +1,5 @@
 Bang {
-  space := "\n" | " " | "\t" | "\r" | multiLineComment | comment
+  space += multiLineComment | comment
   Program               = Block
   Block                 = #newLine* StatementNewLine* Statement? #newLine*  
   StatementNewLine      = Statement #(~newLine space)* #newLine+
