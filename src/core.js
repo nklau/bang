@@ -6,7 +6,7 @@ export class Block {
   }
 }
 
-export class VariableDec {
+export class VarDec {
   constructor(id, isLocal, isReadOnly, assignmentOp = '=', exp) {
     Object.assign(this, { id, isLocal, isReadOnly, assignmentOp, exp })
   }
@@ -111,8 +111,8 @@ export class MatchBlock {
 }
 
 export class MatchCase {
-  constructor(matchCases, block) {
-    Object.assign(this, { isDefault, matchCases, block })
+  constructor(conds, block) {
+    Object.assign(this, { conds, block })
   }
 }
 

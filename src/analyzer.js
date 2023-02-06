@@ -28,7 +28,7 @@ export default function analyze(sourceCode) {
       return statement.rep()
     },
     Statement_varAssignment(local, readOnly, id, op, exp) {
-      return new core.VariableDec(
+      return new core.VarDec(
         id.rep(), 
         local.sourceString === 'local', 
         readOnly.sourceString === 'const', 
@@ -37,7 +37,7 @@ export default function analyze(sourceCode) {
       )
     },
     Statement_localVar(_local, id) {
-      return new core.VariableDec(id.rep(), true, false)
+      return new core.VarDec(id.rep(), true, false)
     },
     Statement_return(_return, exp) {
       return new core.ReturnStatement(...exp.rep())
@@ -79,7 +79,9 @@ export default function analyze(sourceCode) {
       return new core.VarSubscript(exp.rep(), selector.rep())
     },
     Exp7_select(exp, _dot, selector) {
-      return new core.VarSelect(...exp.rep(), selector.rep())
+      return exp.sourceString 
+        ? new core.VarSelect(...exp.rep(), selector.rep())
+        : new core.VarSelect(undefined, selector.rep())
     },
     Exp7_negative(negate, exp) {
       return new core.UnaryExp(exp.rep(), negate.sourceString)
@@ -178,7 +180,7 @@ export default function analyze(sourceCode) {
       return new core.MatchExp(id.sourceString, block.rep())
     },
     MatchBlock(_open, cases, defaultCase, _close) {
-      return new core.MatchBlock(cases.rep(), defaultCase.rep())
+      return new core.MatchBlock([...cases.rep(), ...defaultCase.rep()])
     },
     CaseClause(_case, matches, _colon, block) {
       return new core.MatchCase(matches.asIteration().rep(), block.rep())
