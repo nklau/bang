@@ -166,18 +166,18 @@ const examples = [
       }
     }`,
     `   1 | Block statements=[#2,#3,#4]
-   2 | Ternary cond='x' block='y' alternative=undefined
-   3 | Ternary cond='x' block='y' alternative='z'
-   4 | Ternary cond='x' block=#5 alternative=#6
+   2 | Ternary cond='x' block='y' alt=undefined
+   3 | Ternary cond='x' block='y' alt='z'
+   4 | Ternary cond='x' block=#5 alt=#6
    5 | Block statements=['break']
    6 | Block statements=[#7]
    7 | ReturnStatement exp=#8
    8 | Obj fields=[#9,#12]
    9 | ObjField key='x' val=#10
-  10 | Ternary cond=#11 block='b' alternative='c'
+  10 | Ternary cond=#11 block='b' alt='c'
   11 | BinaryExp left='a' op='>=' right=5
   12 | ObjField key='y' val=#13
-  13 | Ternary cond=#14 block='hello' alternative=undefined
+  13 | Ternary cond=#14 block='hello' alt=undefined
   14 | BinaryExp left=#15 op='>' right='f'
   15 | BinaryExp left='d' op='+' right='e'`
   ],
@@ -195,7 +195,7 @@ const examples = [
    5 | VariableDec id='y' isLocal=false isReadOnly=false assignmentOp='=' exp=#6
    6 | UnaryExp exp='x' op='-'
    7 | VariableDec id='z' isLocal=false isReadOnly=false assignmentOp='=' exp=#8
-   8 | Ternary cond=#9 block=[1] alternative=#11
+   8 | Ternary cond=#9 block=[1] alt=#11
    9 | UnaryExp exp=#10 op='!'
   10 | BinaryExp left='y' op='==' right=true
   11 | Obj fields=[#12]
@@ -203,7 +203,7 @@ const examples = [
   13 | UnaryExp exp=['x',#14] op='...'
   14 | Array 0='y'
   15 | VariableDec id='a' isLocal=false isReadOnly=false assignmentOp='=' exp=#16
-  16 | Ternary cond=#17 block=#20 alternative=undefined
+  16 | Ternary cond=#17 block=#20 alt=undefined
   17 | BinaryExp left=#18 op='==' right=undefined
   18 | VarSubscript id=#19 selector=0
   19 | UnaryExp exp='z' op='?'
@@ -233,7 +233,7 @@ const examples = [
   10 | UnaryExp exp=#11 op='-'
   11 | BinaryExp left='y' op='**' right=2
   12 | VariableDec id='z' isLocal=false isReadOnly=false assignmentOp='=' exp=#13
-  13 | Ternary cond=#14 block=#17 alternative=#24
+  13 | Ternary cond=#14 block=#17 alt=#24
   14 | BinaryExp left=#15 op='>' right=25
   15 | Call id='x' args=#16
   16 | Params params=[5]
@@ -251,14 +251,16 @@ const examples = [
   28 | Block statements=[#29]
   29 | BinaryExp left=#30 op='**' right=2
   30 | UnaryExp exp='y' op='-'`
+  ],
+  [
+    'formatted strings',
+    `x = $'str{ a >= 5 ? b : c }'`,
+    `   1 | Block statements=[#2]
+   2 | VariableDec id='x' isLocal=false isReadOnly=false assignmentOp='=' exp=#3
+   3 | FormattedStr subexps=['s','t','r',#4]
+   4 | Ternary cond=#5 block='b' alt='c'
+   5 | BinaryExp left='a' op='>=' right=5`
   ]
-  // [
-  //   'formatted strings',
-  //   `x = $'str{ a >= 5 ? b : c }'`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VariableDec id='x' isLocal=false isReadOnly=false assignmentOp='=' exp='str\${}'`
-  //  // TODO: why is exp = 'str\${[object Object]}'
-  // ]
   // TODO: $'str{ a >= 5 ? b : c }'
   // TODO: escaped chars (formatted and regular strs)
 ]

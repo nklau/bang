@@ -133,7 +133,7 @@ export default function analyze(sourceCode) {
       return chars.rep().join('')
     },
     FormattedStr(_open, chars, _close) {
-      return chars.rep().join('')
+      return new core.FormattedStr(chars.rep())
     },
     FSingleSubstr(exp) {
       return exp.rep()
@@ -142,9 +142,7 @@ export default function analyze(sourceCode) {
       return exp.rep()
     },
     FStrExp(_open, exp, _close) {
-      // const x = exp.rep()[0]
-      // return ['${', exp.rep(), '}'].join('')
-      return `\${${exp.rep()}}`
+      return exp.rep()
     },
     fSingleStrChar(char) {
       return char.rep()

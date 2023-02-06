@@ -19,8 +19,8 @@ export class ReturnStatement {
 }
 
 export class Ternary {
-  constructor(cond, block, alternative) {
-    Object.assign(this, { cond, block, alternative })
+  constructor(cond, block, alt) {
+    Object.assign(this, { cond, block, alt: alt })
   }
 }
 
@@ -88,6 +88,12 @@ export class ObjField {
   constructor(key, val) {
     this.key = key
     this.val = val
+  }
+}
+
+export class FormattedStr {
+  constructor(subexps) {
+    this.subexps = subexps
   }
 }
 
