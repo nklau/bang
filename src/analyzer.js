@@ -195,6 +195,9 @@ export default function analyze(sourceCode) {
     EnumCaseAssignment_withValue(id, _e, exp) {
       return new core.EnumCase(id.sourceString, exp.rep())
     },
+    EnumCaseAssignment_noValue(id) {
+      return new core.EnumCase(id.sourceString)
+    },
     nil(_nil) {
       return undefined
     },

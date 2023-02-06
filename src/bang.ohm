@@ -98,7 +98,7 @@ Bang {
   Enum                  = enum id "{" EnumBlock "}"
   EnumBlock             = NonemptyListOf<EnumCaseAssignment, ",">
   EnumCaseAssignment    = id "=" Exp                                                        -- withValue
-                        | id
+                        | id                                                                -- noValue
   enum                  = "enum" ~idchar
 
   return                = "return" ~idchar
