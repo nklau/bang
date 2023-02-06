@@ -2,7 +2,7 @@
 5.loop(() -> print("hello world"))
 5.loop({ print("hello world") })
 5.loop(print("hello world"))
-5.loop(i -> { print(i)) })
+5.loop(i -> { print(i) })
 5.loop(i -> print(i))
 5.loop(print)
 
