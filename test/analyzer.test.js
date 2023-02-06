@@ -93,6 +93,38 @@ const examples = [
   14 | VariableDec id=#15 isLocal=false isReadOnly=false assignmentOp='%=' exp=10000
   15 | VarSelect id='x' field=#16
   16 | VarSubscript id='y' selector='str'`
+  ],
+  [
+    'return statement',
+    `return x
+    return x && y || z
+    return { 
+      "x": 1,
+      "y": { 
+        return [1, 'str'] 
+      } 
+    }
+    x = { 
+      local x = true
+      return x 
+    }
+    return`,
+    `   1 | Block statements=[#2,#3,#6,#12,#16]
+   2 | ReturnStatement exp='x'
+   3 | ReturnStatement exp=#4
+   4 | BinaryExp left=#5 op='||' right='z'
+   5 | BinaryExp left='x' op='&&' right='y'
+   6 | ReturnStatement exp=#7
+   7 | Obj fields=[#8,#9]
+   8 | ObjField key='x' val=1
+   9 | ObjField key='y' val=#10
+  10 | Block statements=[#11]
+  11 | ReturnStatement exp=[1,'str']
+  12 | VariableDec id='x' isLocal=false isReadOnly=false assignmentOp='=' exp=#13
+  13 | Block statements=[#14,#15]
+  14 | VariableDec id='x' isLocal=true isReadOnly=false assignmentOp='=' exp=true
+  15 | ReturnStatement exp='x'
+  16 | ReturnStatement exp=undefined`
   ]
 ]
 
