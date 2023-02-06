@@ -152,7 +152,37 @@ const examples = [
   13 | ReturnStatement exp=#14
   14 | BinaryExp left='a' op='+' right='x'
   15 | EnumCase name='d' value=false`
+  ],
+  [
+    'ternaries',
+    `x ? y
+    x ? y : z
+    x ? {
+      break
+    } : {
+      return {
+        "x": a >= 5 ? b : c,
+        'y': d + e > f ? 'hello'
+      }
+    }`,
+    `   1 | Block statements=[#2,#3,#4]
+   2 | Ternary cond='x' block='y' alternative=undefined
+   3 | Ternary cond='x' block='y' alternative='z'
+   4 | Ternary cond='x' block=#5 alternative=#6
+   5 | Block statements=['break']
+   6 | Block statements=[#7]
+   7 | ReturnStatement exp=#8
+   8 | Obj fields=[#9,#12]
+   9 | ObjField key='x' val=#10
+  10 | Ternary cond=#11 block='b' alternative='c'
+  11 | BinaryExp left='a' op='>=' right=5
+  12 | ObjField key='y' val=#13
+  13 | Ternary cond=#14 block='hello' alternative=undefined
+  14 | BinaryExp left=#15 op='>' right='f'
+  15 | BinaryExp left='d' op='+' right='e'`
   ]
+  // TODO: break
+  // TODO: $'str{ a >= 5 ? b : c }'
 ]
 
 describe('The analyzer', () => {
