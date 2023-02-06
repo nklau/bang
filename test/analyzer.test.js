@@ -209,8 +209,58 @@ const examples = [
   19 | UnaryExp exp='z' op='?'
   20 | VarSelect id=#21 selector='n'
   21 | UnaryExp exp='z' op='?'`
+  ],
+  [
+    'function literals',
+    `x = () -> {}
+    x = y -> { return -(y ** 2) }
+    z = x(5) > 25 ? {
+      return (y=0) -> {
+        y ** 2
+      }
+    } : {
+      return (y) -> { (-y) ** 2 }
+    }`,
+    `   1 | Block statements=[#2,#6,#12]
+   2 | VariableDec id='x' isLocal=false isReadOnly=false assignmentOp='=' exp=#3
+   3 | FuncLit params=#4 block=#5
+   4 | Params params=[]
+   5 | Block statements=[]
+   6 | VariableDec id='x' isLocal=false isReadOnly=false assignmentOp='=' exp=#7
+   7 | FuncLit params='y' block=#8
+   8 | Block statements=[#9]
+   9 | ReturnStatement exp=#10
+  10 | UnaryExp exp=#11 op='-'
+  11 | BinaryExp left='y' op='**' right=2
+  12 | VariableDec id='z' isLocal=false isReadOnly=false assignmentOp='=' exp=#13
+  13 | Ternary cond=#14 block=#17 alternative=#24
+  14 | BinaryExp left=#15 op='>' right=25
+  15 | Call id='x' args=#16
+  16 | Params params=[5]
+  17 | Block statements=[#18]
+  18 | ReturnStatement exp=#19
+  19 | FuncLit params=#20 block=#22
+  20 | Params params=[#21]
+  21 | KeywordParam id='y' val=0
+  22 | Block statements=[#23]
+  23 | BinaryExp left='y' op='**' right=2
+  24 | Block statements=[#25]
+  25 | ReturnStatement exp=#26
+  26 | FuncLit params=#27 block=#28
+  27 | Params params=['y']
+  28 | Block statements=[#29]
+  29 | BinaryExp left=#30 op='**' right=2
+  30 | UnaryExp exp='y' op='-'`
   ]
+  // [
+  //   'formatted strings',
+  //   `x = $'str{ a >= 5 ? b : c }'`,
+  //   `   1 | Block statements=[#2]
+  //  2 | VariableDec id='x' isLocal=false isReadOnly=false assignmentOp='=' exp='str\${}'`
+  //  // TODO: why is exp = 'str\${[object Object]}'
+  // ]
   // TODO: $'str{ a >= 5 ? b : c }'
+  // TODO: escaped chars (formatted and regular strs)
 ]
 
 describe('The analyzer', () => {
