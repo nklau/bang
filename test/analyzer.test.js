@@ -125,6 +125,33 @@ const examples = [
   14 | VariableDec id='x' isLocal=true isReadOnly=false assignmentOp='=' exp=true
   15 | ReturnStatement exp='x'
   16 | ReturnStatement exp=undefined`
+  ],
+  [
+    'enums',
+    `enum x {
+      y, z,
+      a = 4,
+      b = {
+        local const x = x.y && x.z
+        return a + x
+      },
+      d = false
+    }`,
+    `   1 | Block statements=[#2]
+   2 | Enum name='x' cases=#3
+   3 | EnumBlock cases=[#4,#5,#6,#7,#15]
+   4 | EnumCase name='y' value='y'
+   5 | EnumCase name='z' value='z'
+   6 | EnumCase name='a' value=4
+   7 | EnumCase name='b' value=#8
+   8 | Block statements=[#9,#13]
+   9 | VariableDec id='x' isLocal=true isReadOnly=true assignmentOp='=' exp=#10
+  10 | BinaryExp left=#11 op='&&' right=#12
+  11 | VarSelect id='x' field='y'
+  12 | VarSelect id='x' field='z'
+  13 | ReturnStatement exp=#14
+  14 | BinaryExp left='a' op='+' right='x'
+  15 | EnumCase name='d' value=false`
   ]
 ]
 
