@@ -52,9 +52,9 @@ export class VarSubscript {
 }
 
 export class VarSelect {
-  constructor(id, field) {
+  constructor(id, selector) {
     this.id = id
-    this.field = field
+    this.selector = selector
   }
 }
 
@@ -117,8 +117,8 @@ export class DefaultMatchCase {
 }
 
 export class Enum {
-  constructor(name, cases) {
-    this.name = name
+  constructor(id, cases) {
+    this.id = id
     this.cases = cases
   }
 }
@@ -130,9 +130,9 @@ export class EnumBlock {
 }
 
 export class EnumCase {
-  constructor(name, value) {
-    this.name = name
-    this.value = value ?? name
+  constructor(id, val) {
+    this.id = id
+    this.val = val ?? id
   }
 }
 
