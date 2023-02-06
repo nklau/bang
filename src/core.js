@@ -7,7 +7,7 @@ export class Block {
 }
 
 export class VariableDec {
-  constructor(id, isLocal, isReadOnly, assignmentOp, exp) {
+  constructor(id, isLocal, isReadOnly, assignmentOp = '=', exp) {
     Object.assign(this, { id, isLocal, isReadOnly, assignmentOp, exp })
   }
 }
