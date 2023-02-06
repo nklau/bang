@@ -40,7 +40,7 @@ export default function analyze(sourceCode) {
       return new core.VariableDec(id.rep(), true, false)
     },
     Statement_return(_return, exp) {
-      return new core.ReturnStatement(exp.rep())
+      return new core.ReturnStatement(...exp.rep())
     },
     Statement(exp) {
       return exp.rep()
@@ -91,7 +91,7 @@ export default function analyze(sourceCode) {
       return exp.rep()
     },
     BangFunc(_open, block, _close) {
-      return new core.Block(block.rep())
+      return block.rep()
     },
     VarAssignment_subscript(exp, _open, selector, _close) {
       return new core.VarSubscript(exp.rep(), selector.rep())
