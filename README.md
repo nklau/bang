@@ -353,12 +353,12 @@ console.log(Season.spring)
 ```swift
 season = Season.fall
 result = match season {
-  case .spring: "spring!",
-  case .summer: { "summer!" },
+  case .spring: "spring!"
+  case .summer: { "summer!" }
   case .fall, .winter: {
     str = "is cold!"
     str
-  },
+  }
   default: "California!"
 }
 print(result)
