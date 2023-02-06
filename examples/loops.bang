@@ -5,6 +5,14 @@
 5.loop(i -> { print(i)) })
 5.loop(i -> print(i))
 5.loop(print)
+
+i = 0
+(i < 10).loop({
+  print(i)
+  i += 1
+})
+// prints 0-9 on separate lines
+
 range(5).loop((i) -> { print(i) })
 range(5).loop((i) -> print(i))
 range(5).loop(print)
