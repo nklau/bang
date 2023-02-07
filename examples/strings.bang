@@ -6,9 +6,11 @@ lastName = "Toal"
 combinedName = firstName + " " + lastName
 interpolatedName = $'{firstName} {lastName}'
 
-print(//)
 print("//")
-print(/*) */
 print(/* */)
 print(/* // */)
+
+// syntax errors
 print("\/*")
+print(/*) */
+print(//)
