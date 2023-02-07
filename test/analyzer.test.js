@@ -7,7 +7,8 @@ const examples = [
     'variable declaration',
     'x = 1',
     `   1 | Block statements=[#2]
-   2 | VarDec id='x' isLocal=false isReadOnly=false assignmentOp='=' exp=1`
+   2 | VarDec variable=#3 assignmentOp='=' exp=1
+   3 | Var id='x' local=false readOnly=false type=undefined`
   ],
   [
     '2 arg function call', 
@@ -77,22 +78,31 @@ const examples = [
     x[y] *= 1e5
     x[1].y /= 1E-6
     x.y['str'] %= 1e+4`,
-    `   1 | Block statements=[#2,#3,#4,#5,#6,#7,#9,#11,#14]
-   2 | VarDec id='x' isLocal=true isReadOnly=false assignmentOp='=' exp=5
-   3 | VarDec id='y' isLocal=true isReadOnly=true assignmentOp='=' exp='str'
-   4 | VarDec id='var' isLocal=false isReadOnly=true assignmentOp='=' exp=undefined
-   5 | VarDec id='x' isLocal=true isReadOnly=false assignmentOp='=' exp=undefined
-   6 | VarDec id='x' isLocal=false isReadOnly=false assignmentOp='+=' exp=1.5
-   7 | VarDec id=#8 isLocal=false isReadOnly=false assignmentOp='-=' exp=15000
-   8 | VarSelect id='x' selector='y'
-   9 | VarDec id=#10 isLocal=false isReadOnly=false assignmentOp='*=' exp=100000
-  10 | VarSubscript id='x' selector='y'
-  11 | VarDec id=#12 isLocal=false isReadOnly=false assignmentOp='/=' exp=0.000001
-  12 | VarSelect id=#13 selector='y'
-  13 | VarSubscript id='x' selector=1
-  14 | VarDec id=#15 isLocal=false isReadOnly=false assignmentOp='%=' exp=10000
-  15 | VarSelect id='x' selector=#16
-  16 | VarSubscript id='y' selector='str'`
+    `   1 | Block statements=[#2,#4,#6,#8,#10,#12,#15,#18,#22]
+   2 | VarDec variable=#3 assignmentOp='=' exp=5
+   3 | Var id='x' local=true readOnly=false type=undefined
+   4 | VarDec variable=#5 assignmentOp='=' exp='str'
+   5 | Var id='y' local=true readOnly=true type=undefined
+   6 | VarDec variable=#7 assignmentOp='=' exp=undefined
+   7 | Var id='var' local=false readOnly=true type=undefined
+   8 | VarDec variable=#9 assignmentOp='=' exp=undefined
+   9 | Var id='x' local=true readOnly=false type=undefined
+  10 | VarDec variable=#11 assignmentOp='+=' exp=1.5
+  11 | Var id='x' local=false readOnly=false type=undefined
+  12 | VarDec variable=#13 assignmentOp='-=' exp=15000
+  13 | Var id=#14 local=false readOnly=false type=undefined
+  14 | VarSelect id='x' selector='y'
+  15 | VarDec variable=#16 assignmentOp='*=' exp=100000
+  16 | Var id=#17 local=false readOnly=false type=undefined
+  17 | VarSubscript id='x' selector='y'
+  18 | VarDec variable=#19 assignmentOp='/=' exp=0.000001
+  19 | Var id=#20 local=false readOnly=false type=undefined
+  20 | VarSelect id=#21 selector='y'
+  21 | VarSubscript id='x' selector=1
+  22 | VarDec variable=#23 assignmentOp='%=' exp=10000
+  23 | Var id=#24 local=false readOnly=false type=undefined
+  24 | VarSelect id='x' selector=#25
+  25 | VarSubscript id='y' selector='str'`
   ],
   [
     'return statement',
@@ -109,7 +119,7 @@ const examples = [
       return x 
     }
     return`,
-    `   1 | Block statements=[#2,#3,#6,#12,#16]
+    `   1 | Block statements=[#2,#3,#6,#12,#18]
    2 | ReturnStatement exp='x'
    3 | ReturnStatement exp=#4
    4 | BinaryExp left=#5 op='||' right='z'
@@ -120,11 +130,13 @@ const examples = [
    9 | ObjField key='y' val=#10
   10 | Block statements=[#11]
   11 | ReturnStatement exp=[1,'str']
-  12 | VarDec id='x' isLocal=false isReadOnly=false assignmentOp='=' exp=#13
-  13 | Block statements=[#14,#15]
-  14 | VarDec id='x' isLocal=true isReadOnly=false assignmentOp='=' exp=true
-  15 | ReturnStatement exp='x'
-  16 | ReturnStatement exp=undefined`
+  12 | VarDec variable=#13 assignmentOp='=' exp=#14
+  13 | Var id='x' local=false readOnly=false type=undefined
+  14 | Block statements=[#15,#17]
+  15 | VarDec variable=#16 assignmentOp='=' exp=true
+  16 | Var id='x' local=true readOnly=false type=undefined
+  17 | ReturnStatement exp='x'
+  18 | ReturnStatement exp=undefined`
   ],
   [
     'enums',
@@ -139,19 +151,20 @@ const examples = [
     }`,
     `   1 | Block statements=[#2]
    2 | Enum id='x' cases=#3
-   3 | EnumBlock cases=[#4,#5,#6,#7,#15]
+   3 | EnumBlock cases=[#4,#5,#6,#7,#16]
    4 | EnumCase id='y' val='y'
    5 | EnumCase id='z' val='z'
    6 | EnumCase id='a' val=4
    7 | EnumCase id='b' val=#8
-   8 | Block statements=[#9,#13]
-   9 | VarDec id='x' isLocal=true isReadOnly=true assignmentOp='=' exp=#10
-  10 | BinaryExp left=#11 op='&&' right=#12
-  11 | VarSelect id='x' selector='y'
-  12 | VarSelect id='x' selector='z'
-  13 | ReturnStatement exp=#14
-  14 | BinaryExp left='a' op='+' right='x'
-  15 | EnumCase id='d' val=false`
+   8 | Block statements=[#9,#14]
+   9 | VarDec variable=#10 assignmentOp='=' exp=#11
+  10 | Var id='x' local=true readOnly=true type=undefined
+  11 | BinaryExp left=#12 op='&&' right=#13
+  12 | VarSelect id='x' selector='y'
+  13 | VarSelect id='x' selector='z'
+  14 | ReturnStatement exp=#15
+  15 | BinaryExp left='a' op='+' right='x'
+  16 | EnumCase id='d' val=false`
   ],
   [
     'ternaries',
@@ -188,27 +201,32 @@ const examples = [
     y = -x
     z = !(y == true) ? [1] : { "n": ...[x, [y]] }
     a = z?[0] == nil ? z?.n`,
-    `   1 | Block statements=[#2,#3,#5,#7,#15]
-   2 | VarDec id='x' isLocal=false isReadOnly=false assignmentOp='=' exp=false
-   3 | VarDec id='x' isLocal=false isReadOnly=false assignmentOp='=' exp=#4
-   4 | UnaryExp exp='x' op='!'
-   5 | VarDec id='y' isLocal=false isReadOnly=false assignmentOp='=' exp=#6
-   6 | UnaryExp exp='x' op='-'
-   7 | VarDec id='z' isLocal=false isReadOnly=false assignmentOp='=' exp=#8
-   8 | Ternary cond=#9 block=[1] alt=#11
-   9 | UnaryExp exp=#10 op='!'
-  10 | BinaryExp left='y' op='==' right=true
-  11 | Obj fields=[#12]
-  12 | ObjField key='n' val=#13
-  13 | UnaryExp exp=['x',#14] op='...'
-  14 | Array 0='y'
-  15 | VarDec id='a' isLocal=false isReadOnly=false assignmentOp='=' exp=#16
-  16 | Ternary cond=#17 block=#20 alt=undefined
-  17 | BinaryExp left=#18 op='==' right=undefined
-  18 | VarSubscript id=#19 selector=0
-  19 | UnaryExp exp='z' op='?'
-  20 | VarSelect id=#21 selector='n'
-  21 | UnaryExp exp='z' op='?'`
+    `   1 | Block statements=[#2,#4,#7,#10,#19]
+   2 | VarDec variable=#3 assignmentOp='=' exp=false
+   3 | Var id='x' local=false readOnly=false type=undefined
+   4 | VarDec variable=#5 assignmentOp='=' exp=#6
+   5 | Var id='x' local=false readOnly=false type=undefined
+   6 | UnaryExp exp='x' op='!'
+   7 | VarDec variable=#8 assignmentOp='=' exp=#9
+   8 | Var id='y' local=false readOnly=false type=undefined
+   9 | UnaryExp exp='x' op='-'
+  10 | VarDec variable=#11 assignmentOp='=' exp=#12
+  11 | Var id='z' local=false readOnly=false type=undefined
+  12 | Ternary cond=#13 block=[1] alt=#15
+  13 | UnaryExp exp=#14 op='!'
+  14 | BinaryExp left='y' op='==' right=true
+  15 | Obj fields=[#16]
+  16 | ObjField key='n' val=#17
+  17 | UnaryExp exp=['x',#18] op='...'
+  18 | Array 0='y'
+  19 | VarDec variable=#20 assignmentOp='=' exp=#21
+  20 | Var id='a' local=false readOnly=false type=undefined
+  21 | Ternary cond=#22 block=#25 alt=undefined
+  22 | BinaryExp left=#23 op='==' right=undefined
+  23 | VarSubscript id=#24 selector=0
+  24 | UnaryExp exp='z' op='?'
+  25 | VarSelect id=#26 selector='n'
+  26 | UnaryExp exp='z' op='?'`
   ],
   [
     'function literals',
@@ -221,45 +239,49 @@ const examples = [
     } : {
       return (y) -> { (-y) ** 2 }
     }`,
-    `   1 | Block statements=[#2,#6,#12]
-   2 | VarDec id='x' isLocal=false isReadOnly=false assignmentOp='=' exp=#3
-   3 | FuncLit params=#4 block=#5
-   4 | Params params=[]
-   5 | Block statements=[]
-   6 | VarDec id='x' isLocal=false isReadOnly=false assignmentOp='=' exp=#7
-   7 | FuncLit params='y' block=#8
-   8 | Block statements=[#9]
-   9 | ReturnStatement exp=#10
-  10 | UnaryExp exp=#11 op='-'
-  11 | BinaryExp left='y' op='**' right=2
-  12 | VarDec id='z' isLocal=false isReadOnly=false assignmentOp='=' exp=#13
-  13 | Ternary cond=#14 block=#17 alt=#24
-  14 | BinaryExp left=#15 op='>' right=25
-  15 | Call id='x' args=#16
-  16 | Params params=[5]
-  17 | Block statements=[#18]
-  18 | ReturnStatement exp=#19
-  19 | FuncLit params=#20 block=#22
-  20 | Params params=[#21]
-  21 | KeywordParam id='y' val=0
-  22 | Block statements=[#23]
-  23 | BinaryExp left='y' op='**' right=2
-  24 | Block statements=[#25]
-  25 | ReturnStatement exp=#26
-  26 | FuncLit params=#27 block=#28
-  27 | Params params=['y']
-  28 | Block statements=[#29]
-  29 | BinaryExp left=#30 op='**' right=2
-  30 | UnaryExp exp='y' op='-'`
+    `   1 | Block statements=[#2,#7,#14]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type=undefined
+   4 | FuncLit params=#5 block=#6
+   5 | Params params=[]
+   6 | Block statements=[]
+   7 | VarDec variable=#8 assignmentOp='=' exp=#9
+   8 | Var id='x' local=false readOnly=false type=undefined
+   9 | FuncLit params='y' block=#10
+  10 | Block statements=[#11]
+  11 | ReturnStatement exp=#12
+  12 | UnaryExp exp=#13 op='-'
+  13 | BinaryExp left='y' op='**' right=2
+  14 | VarDec variable=#15 assignmentOp='=' exp=#16
+  15 | Var id='z' local=false readOnly=false type=undefined
+  16 | Ternary cond=#17 block=#20 alt=#27
+  17 | BinaryExp left=#18 op='>' right=25
+  18 | Call id='x' args=#19
+  19 | Params params=[5]
+  20 | Block statements=[#21]
+  21 | ReturnStatement exp=#22
+  22 | FuncLit params=#23 block=#25
+  23 | Params params=[#24]
+  24 | KeywordParam id='y' val=0
+  25 | Block statements=[#26]
+  26 | BinaryExp left='y' op='**' right=2
+  27 | Block statements=[#28]
+  28 | ReturnStatement exp=#29
+  29 | FuncLit params=#30 block=#31
+  30 | Params params=['y']
+  31 | Block statements=[#32]
+  32 | BinaryExp left=#33 op='**' right=2
+  33 | UnaryExp exp='y' op='-'`
   ],
   [
     'formatted strings',
     `x = $'str{ a >= 5 ? b : c }'`,
     `   1 | Block statements=[#2]
-   2 | VarDec id='x' isLocal=false isReadOnly=false assignmentOp='=' exp=#3
-   3 | FormattedStr subexps=['s','t','r',#4]
-   4 | Ternary cond=#5 block='b' alt='c'
-   5 | BinaryExp left='a' op='>=' right=5`
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type=undefined
+   4 | FormattedStr subexps=['s','t','r',#5]
+   5 | Ternary cond=#6 block='b' alt='c'
+   6 | BinaryExp left='a' op='>=' right=5`
   ],
   [
     'enums.bang and match.bang example code',
@@ -286,7 +308,7 @@ const examples = [
 
     print(result)
     // prints "is cold!"`,
-    `   1 | Block statements=[#2,#8,#11,#13,#27]
+    `   1 | Block statements=[#2,#8,#11,#14,#30]
    2 | Enum id='Season' cases=#3
    3 | EnumBlock cases=[#4,#5,#6,#7]
    4 | EnumCase id='spring' val='🌷'
@@ -296,24 +318,27 @@ const examples = [
    8 | Call id='print' args=#9
    9 | Params params=[#10]
   10 | VarSelect id='Season' selector='spring'
-  11 | VarDec id='season' isLocal=false isReadOnly=false assignmentOp='=' exp=#12
-  12 | VarSelect id='Season' selector='fall'
-  13 | VarDec id='result' isLocal=false isReadOnly=false assignmentOp='=' exp=#14
-  14 | MatchExp cond='season' clauses=#15
-  15 | MatchBlock cases=[#16,#18,#21,#26]
-  16 | MatchCase conds=[#17] block='spring!'
-  17 | VarSelect id=undefined selector='spring'
-  18 | MatchCase conds=[#19] block=#20
-  19 | VarSelect id=undefined selector='summer'
-  20 | Block statements=['summer!']
-  21 | MatchCase conds=[#22,#23] block=#24
-  22 | VarSelect id=undefined selector='fall'
-  23 | VarSelect id=undefined selector='winter'
-  24 | Block statements=[#25,'str']
-  25 | VarDec id='str' isLocal=false isReadOnly=false assignmentOp='=' exp='is cold!'
-  26 | DefaultMatchCase block='California!'
-  27 | Call id='print' args=#28
-  28 | Params params=['result']`
+  11 | VarDec variable=#12 assignmentOp='=' exp=#13
+  12 | Var id='season' local=false readOnly=false type=undefined
+  13 | VarSelect id='Season' selector='fall'
+  14 | VarDec variable=#15 assignmentOp='=' exp=#16
+  15 | Var id='result' local=false readOnly=false type=undefined
+  16 | MatchExp cond='season' clauses=#17
+  17 | MatchBlock cases=[#18,#20,#23,#29]
+  18 | MatchCase conds=[#19] block='spring!'
+  19 | VarSelect id=undefined selector='spring'
+  20 | MatchCase conds=[#21] block=#22
+  21 | VarSelect id=undefined selector='summer'
+  22 | Block statements=['summer!']
+  23 | MatchCase conds=[#24,#25] block=#26
+  24 | VarSelect id=undefined selector='fall'
+  25 | VarSelect id=undefined selector='winter'
+  26 | Block statements=[#27,'str']
+  27 | VarDec variable=#28 assignmentOp='=' exp='is cold!'
+  28 | Var id='str' local=false readOnly=false type=undefined
+  29 | DefaultMatchCase block='California!'
+  30 | Call id='print' args=#31
+  31 | Params params=['result']`
   ],
   [
     'loops.bang example code lines 1-7',
@@ -376,16 +401,18 @@ const examples = [
       i += 1
     })
     // prints 0-9 on separate lines`,
-    `   1 | Block statements=[#2,#3]
-   2 | VarDec id='i' isLocal=false isReadOnly=false assignmentOp='=' exp=0
-   3 | Call id=#4 args=#6
-   4 | VarSelect id=#5 selector='loop'
-   5 | BinaryExp left='i' op='<' right=10
-   6 | Params params=[#7]
-   7 | Block statements=[#8,#10]
-   8 | Call id='print' args=#9
-   9 | Params params=['i']
-  10 | VarDec id='i' isLocal=false isReadOnly=false assignmentOp='+=' exp=1`
+    `   1 | Block statements=[#2,#4]
+   2 | VarDec variable=#3 assignmentOp='=' exp=0
+   3 | Var id='i' local=false readOnly=false type=undefined
+   4 | Call id=#5 args=#7
+   5 | VarSelect id=#6 selector='loop'
+   6 | BinaryExp left='i' op='<' right=10
+   7 | Params params=[#8]
+   8 | Block statements=[#9,#11]
+   9 | Call id='print' args=#10
+  10 | Params params=['i']
+  11 | VarDec variable=#12 assignmentOp='+=' exp=1
+  12 | Var id='i' local=false readOnly=false type=undefined`
   ],
   [
     'loops.bang example code lines 16-22',
@@ -426,7 +453,31 @@ const examples = [
   28 | Call id='range' args=#29
   29 | Params params=[1,6]
   30 | Params params=['print']`
-  ]
+  ]//,
+  // [
+  //   'strings.bang example code lines 1-11',
+  //   `const name = "John Smith"
+  //   name = "Sally"
+    
+  //   firstName = "Ray"
+  //   lastName = "Toal"
+  //   combinedName = firstName + " " + lastName
+  //   interpolatedName = $'{firstName} {lastName}'
+    
+  //   print("//")
+  //   print(/* */)
+  //   print(/* // */)`,
+  //   `   1 | Block statements=[#2,#3,#4,#5,#6,#9]
+  //  2 | VarDec id='name' local=false readOnly=true type=undefined assignmentOp='=' exp='John Smith'
+  //  3 | VarDec id='name' local=false readOnly=false type=undefined assignmentOp='=' exp='Sally'
+  //  4 | VarDec id='firstName' local=false readOnly=false type=undefined assignmentOp='=' exp='Ray'
+  //  5 | VarDec id='lastName' local=false readOnly=false type=undefined assignmentOp='=' exp='Toal'
+  //  6 | VarDec id='combinedName' local=false readOnly=false type=undefined assignmentOp='=' exp=#7
+  //  7 | BinaryExp left=#8 op='+' right='lastName'
+  //  8 | BinaryExp left='firstName' op='+' right=' '
+  //  9 | VarDec id='interpolatedName' local=false readOnly=false type=undefined assignmentOp='=' exp=#10
+  // 10 | FormattedStr subexps=['firstName',' ','lastName']`
+  // ]
   // TODO: escaped chars (formatted and regular strs)
 ]
 

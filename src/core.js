@@ -7,8 +7,14 @@ export class Block {
 }
 
 export class VarDec {
-  constructor(id, isLocal, isReadOnly, assignmentOp = '=', exp) {
-    Object.assign(this, { id, isLocal, isReadOnly, assignmentOp, exp })
+  constructor(variable, assignmentOp = '=', exp) {
+    Object.assign(this, { variable, assignmentOp, exp })
+  }
+}
+
+export class Var {
+  constructor(id, local, readOnly, type) {
+    Object.assign(this, { id, local, readOnly, type })
   }
 }
 
