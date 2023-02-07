@@ -72,7 +72,7 @@ export default function analyze(sourceCode) {
     Exp6_spread(spread, right) {
       return new core.UnaryExp(right.rep(), spread.sourceString)
     },
-    Exp7_call(exp, params) {
+    Exp7_call(exp, _space, params) {
       return new core.Call(exp.rep(), params.rep())
     },
     Exp7_subscript(exp, _open, selector, _close) {

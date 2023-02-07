@@ -443,7 +443,7 @@ const syntaxErrors = [
   ['objects with numeric keys', '{ 9: 1 }', /Line 1, col 4/],
   ['objects with object keys', '{ {}: "val1" }', /Line 1, col 5/],
   ['objects with variable declaration', '{ "x": 1\nx = 5 }', /Line 2, col 1/],
-  ['objects with floating function declaration', '{ "x": 1\n() -> {} }', /Line 2, col 5/],
+  ['objects with floating function declaration', '{ "x": 1\n() -> {} }', /Line 2, col 1/],
   ['objects with floating ids', '{ "x": 1\ny }', /Line 2, col 1/],
   ['objects with floating keys', '{ "x": 1,\n"y" }', /Line 2, col 5/],
   ['local const variable', 'local const x', /Line 1, col 14/],

@@ -25,7 +25,7 @@ Bang {
                         | "-" Exp7                                                          -- negate
                         | "..." Exp7                                                        -- spread
                         | Exp7
-  Exp7                  = Exp7 Params                                                       -- call
+  Exp7                  = Exp7 #(~newLine space)* ~#newLine Params                          -- call
                         | Exp7 #"[" Exp "]"                                                 -- subscript
                         | Exp7? #"." VarAssignment                                          -- select
                         | "!" Exp7                                                          -- negative
