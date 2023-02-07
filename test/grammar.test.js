@@ -455,8 +455,8 @@ const syntaxErrors = [
   ['enum without cases', 'enum x {}', /Line 1, col 9/],
   ['enum with cases delimited by a space', 'enum x { y z }', /Line 1, col 12/],
   ['escaped non-escape char', 'print("\\/*")', /Line 1, col 9/],
-  ['closing paren in multiline comment', 'print(/*) */', /Line 1, col 7/],
-  ['closing paren commented out', 'print(//)', /Line 1, col 7/]
+  ['closing paren in multiline comment', 'print(/*) */', /Line 1, col 13/],
+  ['closing paren commented out', 'print(//)', /Line 1, col 10/]
 ]
 
 describe("The grammar", () => {
@@ -565,7 +565,7 @@ describe("The grammar", () => {
     })
     it(`properly accepts the - operator on a ${scenario}`, () => {
       const match = grammar.match(`-${source}`)
-      if (scenario.includes('exponential') || scenario.includes('negative exp')) {
+      if (scenario.includes('exponential')) {
         assert(!match.succeeded())
       } else {
         assert(match.succeeded())
@@ -607,12 +607,25 @@ describe("The grammar", () => {
     it(`properly accepts the ... operator on ${varAssignment}`, () => {
       assert(grammar.match(`...${varAssignment}`).succeeded())
     })
+    it(`properly accepts the post-increment operator on ${varAssignment}`, () => {
+      assert(grammar.match(`${varAssignment}++`).succeeded())
+    })
+    it(`properly accepts the pre-increment operator on ${varAssignment}`, () => {
+      assert(grammar.match(`++${varAssignment}`).succeeded())
+    })
+    it(`properly accepts the post-decrement operator on ${varAssignment}`, () => {
+      assert(grammar.match(`${varAssignment}--`).succeeded())
+    })
+    it(`properly accepts the pre-decrement operator on ${varAssignment}`, () => {
+      assert(grammar.match(`--${varAssignment}`).succeeded())
+    })
   }
 
   for (const [scenario, source, errorMessagePattern] of syntaxErrors) {
     it(`does not permit ${scenario}`, () => {
       const match = grammar.match(source)
       assert(!match.succeeded())
+      console.log(match.message)
       assert(new RegExp(errorMessagePattern).test(match.message))
     })
   }

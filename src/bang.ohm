@@ -24,6 +24,10 @@ Bang {
   Exp6                  = Exp7 "**" Exp6                                                    -- exponent
                         | "-" Exp7                                                          -- negate
                         | "..." Exp7                                                        -- spread
+                        | Exp7 "++"                                                         -- postIncrement
+                        | "++" Exp7                                                         -- preIncrement
+                        | Exp7 "--"                                                         -- postDecrement
+                        | "--" Exp7                                                         -- preDecrement
                         | Exp7
   Exp7                  = Exp7 #(~newLine space)* ~#newLine Params                          -- call
                         | Exp7 #"[" Exp "]"                                                 -- subscript

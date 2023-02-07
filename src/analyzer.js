@@ -77,6 +77,10 @@ export default function analyze(sourceCode) {
     Exp6_spread(spread, right) {
       return new core.UnaryExp(right.rep(), spread.sourceString)
     },
+    Exp6_postIncrement(exp, op) {
+      // TODO: how to preserve order
+      return new core.UnaryExp(exp.rep(), op.sourceString, true)
+    },
     Exp7_call(exp, _space, params) {
       return new core.Call(exp.rep(), params.rep())
     },

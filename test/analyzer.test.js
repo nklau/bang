@@ -206,27 +206,27 @@ const examples = [
    3 | Var id='x' local=false readOnly=false type=undefined
    4 | VarDec variable=#5 assignmentOp='=' exp=#6
    5 | Var id='x' local=false readOnly=false type=undefined
-   6 | UnaryExp exp='x' op='!'
+   6 | UnaryExp exp='x' op='!' returnBeforeEval=false
    7 | VarDec variable=#8 assignmentOp='=' exp=#9
    8 | Var id='y' local=false readOnly=false type=undefined
-   9 | UnaryExp exp='x' op='-'
+   9 | UnaryExp exp='x' op='-' returnBeforeEval=false
   10 | VarDec variable=#11 assignmentOp='=' exp=#12
   11 | Var id='z' local=false readOnly=false type=undefined
   12 | Ternary cond=#13 block=[1] alt=#15
-  13 | UnaryExp exp=#14 op='!'
+  13 | UnaryExp exp=#14 op='!' returnBeforeEval=false
   14 | BinaryExp left='y' op='==' right=true
   15 | Obj fields=[#16]
   16 | ObjField key='n' val=#17
-  17 | UnaryExp exp=['x',#18] op='...'
+  17 | UnaryExp exp=['x',#18] op='...' returnBeforeEval=false
   18 | Array 0='y'
   19 | VarDec variable=#20 assignmentOp='=' exp=#21
   20 | Var id='a' local=false readOnly=false type=undefined
   21 | Ternary cond=#22 block=#25 alt=undefined
   22 | BinaryExp left=#23 op='==' right=undefined
   23 | VarSubscript id=#24 selector=0
-  24 | UnaryExp exp='z' op='?'
+  24 | UnaryExp exp='z' op='?' returnBeforeEval=false
   25 | VarSelect id=#26 selector='n'
-  26 | UnaryExp exp='z' op='?'`
+  26 | UnaryExp exp='z' op='?' returnBeforeEval=false`
   ],
   [
     'function literals',
@@ -250,7 +250,7 @@ const examples = [
    9 | FuncLit params='y' block=#10
   10 | Block statements=[#11]
   11 | ReturnStatement exp=#12
-  12 | UnaryExp exp=#13 op='-'
+  12 | UnaryExp exp=#13 op='-' returnBeforeEval=false
   13 | BinaryExp left='y' op='**' right=2
   14 | VarDec variable=#15 assignmentOp='=' exp=#16
   15 | Var id='z' local=false readOnly=false type=undefined
@@ -271,7 +271,7 @@ const examples = [
   30 | Params params=['y']
   31 | Block statements=[#32]
   32 | BinaryExp left=#33 op='**' right=2
-  33 | UnaryExp exp='y' op='-'`
+  33 | UnaryExp exp='y' op='-' returnBeforeEval=false`
   ],
   [
     'formatted strings',
@@ -467,16 +467,23 @@ const examples = [
   //   print("//")
   //   print(/* */)
   //   print(/* // */)`,
-  //   `   1 | Block statements=[#2,#3,#4,#5,#6,#9]
-  //  2 | VarDec id='name' local=false readOnly=true type=undefined assignmentOp='=' exp='John Smith'
-  //  3 | VarDec id='name' local=false readOnly=false type=undefined assignmentOp='=' exp='Sally'
-  //  4 | VarDec id='firstName' local=false readOnly=false type=undefined assignmentOp='=' exp='Ray'
-  //  5 | VarDec id='lastName' local=false readOnly=false type=undefined assignmentOp='=' exp='Toal'
-  //  6 | VarDec id='combinedName' local=false readOnly=false type=undefined assignmentOp='=' exp=#7
-  //  7 | BinaryExp left=#8 op='+' right='lastName'
-  //  8 | BinaryExp left='firstName' op='+' right=' '
-  //  9 | VarDec id='interpolatedName' local=false readOnly=false type=undefined assignmentOp='=' exp=#10
-  // 10 | FormattedStr subexps=['firstName',' ','lastName']`
+  //   `   1 | Block statements=[#2,#4,#6,#8,#10,#14]
+  //  2 | VarDec variable=#3 assignmentOp='=' exp='John Smith'
+  //  3 | Var id='name' local=false readOnly=true type=undefined
+  //  4 | VarDec variable=#5 assignmentOp='=' exp='Sally'
+  //  5 | Var id='name' local=false readOnly=false type=undefined
+  //  6 | VarDec variable=#7 assignmentOp='=' exp='Ray'
+  //  7 | Var id='firstName' local=false readOnly=false type=undefined
+  //  8 | VarDec variable=#9 assignmentOp='=' exp='Toal'
+  //  9 | Var id='lastName' local=false readOnly=false type=undefined
+  // 10 | VarDec variable=#11 assignmentOp='=' exp=#12
+  // 11 | Var id='combinedName' local=false readOnly=false type=undefined
+  // 12 | BinaryExp left=#13 op='+' right='lastName'
+  // 13 | BinaryExp left='firstName' op='+' right=' '
+  // 14 | VarDec variable=#15 assignmentOp='=' exp=#16
+  // 15 | Var id='interpolatedName' local=false readOnly=false type=undefined
+  // 16 | FormattedStr subexps=[#17,' ']
+  // 17 | Var `
   // ]
   // TODO: escaped chars (formatted and regular strs)
 ]

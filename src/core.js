@@ -37,9 +37,10 @@ export class BinaryExp {
 }
 
 export class UnaryExp {
-  constructor(exp, op) {
+  constructor(exp, op, postOp = false) {
     this.exp = exp
     this.op = op
+    this.returnBeforeEval = postOp
   }
 }
 
@@ -145,6 +146,48 @@ export class EnumCase {
   constructor(id, val) {
     this.id = id
     this.val = val ?? id
+  }
+}
+
+export class Type {
+  static NUMBER = new Type('number')
+  static STRING = new Type('string')
+  static LIST = new Type('list')
+  static FUNC = new Type('function')
+  static BANGFUNC = new Type('bang function')
+  static OBJ = new Type('object')
+  static ENUM = new Type('enum')
+  static NIL = new Type('nil')
+
+  constructor(description) {
+    this.description = description
+  }
+
+  isEquivalentTo(target) {
+    return this == target
+  }
+
+  // TODO
+  isAssignableTo(target) {
+    return this.isEquivalentTo(target)
+  }
+}
+
+export class BoolType extends Type {
+  constructor() {
+    super('boolean')
+  }
+
+  loop(block) {
+    while (this) {
+      block.run()
+    }
+  }
+}
+
+export class BangFunc extends Type {
+  constructor() {
+    super('bang function')
   }
 }
 
