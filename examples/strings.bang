@@ -4,6 +4,7 @@ name = "Sally"
 firstName = "Ray"
 lastName = "Toal"
 combinedName = firstName + " " + lastName
+interpolatedName = $'{firstName} {lastName}'
 
 print(//)
 print("//")
