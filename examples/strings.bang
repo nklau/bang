@@ -1,5 +1,5 @@
 const name = "John Smith"
-name = "Sally"
+name = "Sally" // TODO: this will be a semantic error after context checks have been implemented
 
 firstName = "Ray"
 lastName = "Toal"
