@@ -314,6 +314,118 @@ const examples = [
   26 | DefaultMatchCase block='California!'
   27 | Call id='print' args=#28
   28 | Params params=['result']`
+  ],
+  [
+    'loops.bang example code lines 1-7',
+    `5.loop(() -> { print("hello world") })
+    5.loop(() -> print("hello world"))
+    5.loop({ print("hello world") })
+    5.loop(print("hello world"))
+    5.loop(i -> { print(i) })
+    5.loop(i -> print(i))
+    5.loop(print)`,
+    `   1 | Block statements=[#2,#10,#17,#23,#28,#35,#41]
+   2 | Call id=#3 args=#4
+   3 | VarSelect id=5 selector='loop'
+   4 | Params params=[#5]
+   5 | FuncLit params=#6 block=#7
+   6 | Params params=[]
+   7 | Block statements=[#8]
+   8 | Call id='print' args=#9
+   9 | Params params=['hello world']
+  10 | Call id=#11 args=#12
+  11 | VarSelect id=5 selector='loop'
+  12 | Params params=[#13]
+  13 | FuncLit params=#14 block=#15
+  14 | Params params=[]
+  15 | Call id='print' args=#16
+  16 | Params params=['hello world']
+  17 | Call id=#18 args=#19
+  18 | VarSelect id=5 selector='loop'
+  19 | Params params=[#20]
+  20 | Block statements=[#21]
+  21 | Call id='print' args=#22
+  22 | Params params=['hello world']
+  23 | Call id=#24 args=#25
+  24 | VarSelect id=5 selector='loop'
+  25 | Params params=[#26]
+  26 | Call id='print' args=#27
+  27 | Params params=['hello world']
+  28 | Call id=#29 args=#30
+  29 | VarSelect id=5 selector='loop'
+  30 | Params params=[#31]
+  31 | FuncLit params='i' block=#32
+  32 | Block statements=[#33]
+  33 | Call id='print' args=#34
+  34 | Params params=['i']
+  35 | Call id=#36 args=#37
+  36 | VarSelect id=5 selector='loop'
+  37 | Params params=[#38]
+  38 | FuncLit params='i' block=#39
+  39 | Call id='print' args=#40
+  40 | Params params=['i']
+  41 | Call id=#42 args=#43
+  42 | VarSelect id=5 selector='loop'
+  43 | Params params=['print']`
+  ],
+  [
+    'loops.bang example code lines 9-14',
+    `i = 0
+    (i < 10).loop({
+      print(i)
+      i += 1
+    })
+    // prints 0-9 on separate lines`,
+    `   1 | Block statements=[#2,#3]
+   2 | VarDec id='i' isLocal=false isReadOnly=false assignmentOp='=' exp=0
+   3 | Call id=#4 args=#6
+   4 | VarSelect id=#5 selector='loop'
+   5 | BinaryExp left='i' op='<' right=10
+   6 | Params params=[#7]
+   7 | Block statements=[#8,#10]
+   8 | Call id='print' args=#9
+   9 | Params params=['i']
+  10 | VarDec id='i' isLocal=false isReadOnly=false assignmentOp='+=' exp=1`
+  ],
+  [
+    'loops.bang example code lines 16-22',
+    `range(5).loop((i) -> { print(i) })
+    range(5).loop((i) -> print(i))
+    range(5).loop(print)
+    // prints 0-4 on separate lines
+    
+    range(1, 6).loop(print)
+    // prints 1-5 on separate lines`,
+    `   1 | Block statements=[#2,#12,#21,#26]
+   2 | Call id=#3 args=#6
+   3 | VarSelect id=#4 selector='loop'
+   4 | Call id='range' args=#5
+   5 | Params params=[5]
+   6 | Params params=[#7]
+   7 | FuncLit params=#8 block=#9
+   8 | Params params=['i']
+   9 | Block statements=[#10]
+  10 | Call id='print' args=#11
+  11 | Params params=['i']
+  12 | Call id=#13 args=#16
+  13 | VarSelect id=#14 selector='loop'
+  14 | Call id='range' args=#15
+  15 | Params params=[5]
+  16 | Params params=[#17]
+  17 | FuncLit params=#18 block=#19
+  18 | Params params=['i']
+  19 | Call id='print' args=#20
+  20 | Params params=['i']
+  21 | Call id=#22 args=#25
+  22 | VarSelect id=#23 selector='loop'
+  23 | Call id='range' args=#24
+  24 | Params params=[5]
+  25 | Params params=['print']
+  26 | Call id=#27 args=#30
+  27 | VarSelect id=#28 selector='loop'
+  28 | Call id='range' args=#29
+  29 | Params params=[1,6]
+  30 | Params params=['print']`
   ]
   // TODO: escaped chars (formatted and regular strs)
 ]
