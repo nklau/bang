@@ -453,7 +453,10 @@ const syntaxErrors = [
   ['match with default case value', 'match x {case y: z\ndefault a: {}}', /Line 2, col 9/],
   ['match with default case first', 'match x { default: y\ncase z: a }', /Line 1, col 11/],
   ['enum without cases', 'enum x {}', /Line 1, col 9/],
-  ['enum with cases delimited by a space', 'enum x { y z }', /Line 1, col 12/]
+  ['enum with cases delimited by a space', 'enum x { y z }', /Line 1, col 12/],
+  ['escaped non-escape char', 'print("\\/*")', /Line 1, col 9/],
+  ['closing paren in multiline comment', 'print(/*) */', /Line 1, col 7/],
+  ['closing paren commented out', 'print(//)', /Line 1, col 7/]
 ]
 
 describe("The grammar", () => {
