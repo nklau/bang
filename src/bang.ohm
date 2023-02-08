@@ -20,7 +20,7 @@ Bang {
                         | Exp4
   Exp4                  = Exp5 additionOp NonemptyListOf<Exp5, additionOp>                  -- addSubtract
                         | Exp5
-  Exp5                  = Exp5 ("*" | "/" | "%") Exp6                                       -- multiplyDivideMod
+  Exp5                  = Exp6 multiplicationOp NonemptyListOf<Exp6, multiplicationOp>      -- multiplyDivideMod
                         | Exp6
   Exp6                  = Exp7 "**" Exp6                                                    -- exponent
                         | "-" Exp7                                                          -- negate
@@ -93,6 +93,7 @@ Bang {
   assignmentOp          = "=" | "+=" | "-=" | "*=" | "/=" | "%="
   compareOp             = (("=" | "!") "=") | ("<" | ">") "="?
   additionOp            = "+" | "-"
+  multiplicationOp      = "*" | "/" | "%"
 
   MatchExp              = match id MatchBlock
   MatchBlock            = "{" CaseClause+ DefaultClause? "}"

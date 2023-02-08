@@ -156,10 +156,11 @@ export default function analyze(sourceCode) {
     },
     Exp4_addSubtract(left, op, rest) {
       return new core.NaryExp([left.rep(), op.sourceString, ...rest.asIteration().rep()])
-      return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
+      // return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
     },
-    Exp5_multiplyDivideMod(left, op, right) {
-      return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
+    Exp5_multiplyDivideMod(left, op, rest) {
+      return new core.NaryExp([left.rep(), op.sourceString, ...rest.asIteration().rep()])
+      // return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
     },
     Exp6_exponent(left, op, right) {
       return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
