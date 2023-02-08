@@ -168,17 +168,20 @@ export class EnumCase {
 }
 
 export class Type {
-  static NUMBER = new Type('number')
-  static STRING = new Type('string')
-  static LIST = new Type('list')
-  static FUNC = new Type('function')
-  static BANGFUNC = new Type('bang function')
-  static OBJ = new Type('object')
-  static ENUM = new Type('enum')
-  static NIL = new Type('nil')
+  // static NUMBER = new Type('number')
+  // static STRING = new Type('string')
+  // bool
 
-  constructor(description) {
+  // static LIST = new Type('list')
+  // static FUNC = new Type('function')
+  // static BANGFUNC = new Type('bang function')
+  // static OBJ = new Type('object')
+  // static ENUM = new Type('enum')
+  // static NIL = new Type('nil')
+
+  constructor(description, defaultVal) {
     this.description = description
+    this.default = defaultVal
   }
 
   isEquivalentTo(target) {
@@ -186,9 +189,34 @@ export class Type {
   }
 }
 
+export class NumType extends Type {
+  constructor() {
+    super('number')
+    this.default = 0
+  }
+
+  // TODO
+  loop(block) {
+
+  }
+}
+
+export class StrType extends Type {
+  constructor() {
+    super('string')
+    this.default = ''
+  }
+
+  // TODO
+  get len() {
+
+  }
+}
+
 export class BoolType extends Type {
   constructor() {
     super('boolean')
+    this.default = false
   }
 
   // TODO
@@ -202,8 +230,18 @@ export class BoolType extends Type {
 export class BangFunc extends Type {
   constructor() {
     super('bang function')
+    this.default = {}
   }
 }
+
+// static NUMBER = new Type('number')
+// static STRING = new Type('string')
+// static LIST = new Type('list')
+// static FUNC = new Type('function')
+// static BANGFUNC = new Type('bang function')
+// static OBJ = new Type('object')
+// static ENUM = new Type('enum')
+// static NIL = new Type('nil')
 
 // Throw an error message that takes advantage of Ohm's messaging
 function error(message, node) {

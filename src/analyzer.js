@@ -10,6 +10,24 @@ function check(condition, message, node) {
   if (!condition) error(message, node)
 }
 
+function checkType(e, types, expectation) {
+  check(types.includes(e.type.constructor), `Expected ${expectation}`)
+}
+
+function checkInBlock(context) {
+  check(context.function, 'Cannot return outside a function')
+}
+
+function checkBool(e) {
+  check(e.type.constructor === core.BoolType, 'Expected bool')
+}
+
+function coerceToBool(e) {
+  // TODO: attempt type coercion
+  // if e.val === e.default then e = falsy
+  checkBool(e)
+}
+
 // TODO: should be able to say break from inside a block that's nested in a loop
 // TODO: should be able to say return from inside a loop that's nested in a block
 class Context {
@@ -87,24 +105,30 @@ export default function analyze(sourceCode) {
       return new core.VarDec(v)
     },
     Statement_varAssignment(variable, op, exp) {
+      // Designed to only get here for variable subscription/selection
       const v = variable.rep()
       return new core.VarDec(v, op.sourceString, exp.rep())
     },
     Statement_return(_return, exp) {
-      // TODO: check if inside block
+      // Can only explicitly use 'return' keyword inside a function
+      checkInBlock(context)
       return new core.ReturnStatement(...exp.rep())
     },
     Statement_impliedReturn(exp) {
       return new core.ReturnStatement(...exp.rep())
     },
-    // Statement(exp) {
-    //   return exp.rep()
-    // },
     Exp_ternary(cond, _qMark, block, _c, alt) {
-      return new core.Ternary(cond.rep(), block.rep(), ...alt.rep())
+      const c = coerceToBool(cond.rep())
+      return new core.Ternary(c, block.rep(), ...alt.rep())
     },
     Exp1_equality(left, op0, op1, right) {
-      return new core.BinaryExp(left.rep(), `${op0.sourceString}${op1.sourceString}`, right.rep())
+      const [l, op, r] = [left.rep(), `${op0.sourceString}${op1.sourceString}`, right.rep()]
+      if (op.includes('<') || op.includes('>')) {
+        const types = [core.NumType, core.StrType, core.BoolType]
+        checkType(l, types, 'number')
+        checkType(r, types, l.type)
+      }
+      return new core.BinaryExp(left.rep(), op, right.rep())
     },
     Exp2_or(left, or, right) {
       return new core.BinaryExp(left.rep(), or.sourceString, right.rep())
