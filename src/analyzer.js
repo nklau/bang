@@ -122,7 +122,7 @@ export default function analyze(sourceCode) {
       return new core.Ternary(c, block.rep(), ...alt.rep())
     },
     Exp1_equality(left, op, rest) {
-      return new core.NaryExp([left.rep(), op.sourceString, [...rest.asIteration().rep()]])
+      return new core.NaryExp([left.rep(), op.sourceString, ...rest.asIteration().rep()])
 
       // const [l, op, r] = [left.rep(), `${op0.sourceString}${op1.sourceString}`, right.rep()]
       // if (op.includes('<') || op.includes('>')) {
@@ -154,7 +154,8 @@ export default function analyze(sourceCode) {
 
       return x
     },
-    Exp4_addSubtract(left, op, right) {
+    Exp4_addSubtract(left, op, rest) {
+      return new core.NaryExp([left.rep(), op.sourceString, ...rest.asIteration().rep()])
       return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
     },
     Exp5_multiplyDivideMod(left, op, right) {
