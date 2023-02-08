@@ -121,20 +121,38 @@ export default function analyze(sourceCode) {
       const c = coerceToBool(cond.rep())
       return new core.Ternary(c, block.rep(), ...alt.rep())
     },
-    Exp1_equality(left, op0, op1, right) {
-      const [l, op, r] = [left.rep(), `${op0.sourceString}${op1.sourceString}`, right.rep()]
-      if (op.includes('<') || op.includes('>')) {
-        const types = [core.NumType, core.StrType, core.BoolType]
-        checkType(l, types, 'number')
-        checkType(r, types, l.type)
-      }
-      return new core.BinaryExp(left.rep(), op, right.rep())
+    Exp1_equality(left, op, rest) {
+      return new core.NaryExp([left.rep(), op.sourceString, [...rest.asIteration().rep()]])
+
+      // const [l, op, r] = [left.rep(), `${op0.sourceString}${op1.sourceString}`, right.rep()]
+      // if (op.includes('<') || op.includes('>')) {
+      //   const types = [core.NumType, core.StrType, core.BoolType]
+      //   checkType(l, types, 'number')
+      //   checkType(r, types, l.type)
+      // }
+      // return new core.BinaryExp(left.rep(), op, right.rep())
     },
     Exp2_or(left, or, right) {
-      return new core.BinaryExp(left.rep(), or.sourceString, right.rep())
+      const [l, op, rs] = [left.rep(), or.sourceString, right.rep()]
+      let x = coerceToBool(l)
+
+      for (let r of rs) {
+        const y = coerceToBool(r)
+        x = new core.BinaryExp(x, op, y)
+      }
+
+      return x
     },
-    Exp3_and(left, op, right) {
-      return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
+    Exp3_and(left, and, right) {
+      const [l, op, rs] = [left.rep(), and.sourceString, right.rep()]
+      let x = coerceToBool(l)
+      
+      for (let r of rs) {
+        const y = coerceToBool(r)
+        x = new core.BinaryExp(x, op, y)
+      }
+
+      return x
     },
     Exp4_addSubtract(left, op, right) {
       return new core.BinaryExp(left.rep(), op.sourceString, right.rep())

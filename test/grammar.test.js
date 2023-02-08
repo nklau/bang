@@ -425,17 +425,17 @@ const syntaxErrors = [
   ['mismatched quotes', '"', /Line 1, col 2/],
   ['mismatched quotes', `"'`, /Line 1, col 3/],
   ['mismatched quotes', `'"`, /Line 1, col 3/],
-  ['return statement as exp', 'return x = 5', /Line 1, col 12/],
+  ['return statement as exp', 'return x = 5', /Line 1, col 11/],
   ['return local var', 'return local x', /Line 1, col 8/],
   ['return an enum', 'return enum x', /Line 1, col 8/],
   ['const var dec without value', 'const x', /Line 1, col 8/],
   ['var dec without value', 'x =', /Line 1, col 4/],
-  ['var value as statement', 'x = y = 5', /Line 1, col 9/],
+  ['var value as statement', 'x = y = 5', /Line 1, col 8/],
   ['!== operator', 'x !== y', /Line 1, col 5/],
   ['=== operator', 'x === y', /Line 1, col 5/],
   ['!< operator', 'x !< y', /Line 1, col 4/],
   ['=< operator', 'x =< y', /Line 1, col 4/],
-  ['! as a binary operator', 'x ! 5', /Line 1, col 5/],
+  ['! as a binary operator', 'x ! 5', /Line 1, col 4/],
   ['function parameters not separated by commas', 'x(y z)', /Line 1, col 5/],
   ['function parameters separated by newlines', 'x(y\nz)', /Line 2, col 1/],
   ['objects with non-string keys', '{ x: 1 }', /Line 1, col 4/],
@@ -447,7 +447,7 @@ const syntaxErrors = [
   ['objects with floating ids', '{ "x": 1\ny }', /Line 2, col 1/],
   ['objects with floating keys', '{ "x": 1,\n"y" }', /Line 2, col 5/],
   ['local const variable', 'local const x', /Line 1, col 14/],
-  ['statements inside lists', '[x = y]', /Line 1, col 6/],
+  ['statements inside lists', '[x = y]', /Line 1, col 5/],
   ['match without cases', 'match x {}', /Line 1, col 10/],
   ['match with only default', 'match x {default: {}}', /Line 1, col 10/],
   ['match with default case value', 'match x {case y: z\ndefault a: {}}', /Line 2, col 9/],
@@ -616,7 +616,7 @@ describe("The grammar", () => {
             }
           })
         } else {
-          it(`properly specifies the ${operator} operator with ${scenario} and ${otherScenario}`, () => {
+          it(`properly specifies the ${operator} operator with ${scenario} and ${otherScenario}\n${source} ${operator} ${otherSource}`, () => {
             assert(grammar.match(`${source} ${operator} ${otherSource}`).succeeded())
             assert(grammar.match(`${otherSource} ${operator} ${source}`).succeeded())
           })

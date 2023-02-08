@@ -30,6 +30,12 @@ export class Ternary {
   }
 }
 
+export class NaryExp {
+  constructor(exp) {
+    this.exp = exp
+  }
+}
+
 export class BinaryExp {
   constructor(left, op, right) {
     Object.assign(this, { left, op, right })

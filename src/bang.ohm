@@ -12,7 +12,7 @@ Bang {
                         | break
   Exp                   = Exp1 "?" (BangFunc | Statement) (":" (BangFunc | Statement))?     -- ternary
                         | Exp1
-  Exp1                  = Exp1 (("=" | "!") "=" | ("<" | ">") "="?) Exp2                    -- equality
+  Exp1                  = Exp2 compareOp NonemptyListOf<Exp2, compareOp>                    -- equality
                         | Exp2
   Exp2                  = Exp2 "||" Exp3                                                    -- or
                         | Exp3
@@ -91,6 +91,7 @@ Bang {
   num                   = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
 
   assignmentOp          = "=" | "+=" | "-=" | "*=" | "/=" | "%="
+  compareOp             = (("=" | "!") "=") | ("<" | ">") "="?
 
   MatchExp              = match id MatchBlock
   MatchBlock            = "{" CaseClause+ DefaultClause? "}"
