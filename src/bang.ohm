@@ -4,9 +4,9 @@ Bang {
   Block                 = #newLine* StatementNewLine* Statement? #newLine*  
   StatementNewLine      = Statement #(~newLine space)* #newLine+
   Statement             = local? const? VarAssignment assignmentOp Exp                      -- varAssignment
-                        | local VarAssignment                                               -- localVar
+                        | local id                                                          -- localVar
                         | return Exp?                                                       -- return
-                        | Exp
+                        | Exp                                                               -- impliedReturn
                         | Enum      
                         | break
   Exp                   = Exp1 "?" (BangFunc | Statement) (":" (BangFunc | Statement))?     -- ternary

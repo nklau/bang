@@ -581,6 +581,22 @@ describe("The grammar", () => {
           assert(grammar.match(`local const ${varAssignment} ${op} ${source}`).succeeded())
         })
       }
+      
+      it(`properly accepts the ... operator on ${varAssignment}`, () => {
+        assert(grammar.match(`...${varAssignment}`).succeeded())
+      })
+      it(`properly accepts the post-increment operator on ${varAssignment}`, () => {
+        assert(grammar.match(`${varAssignment}++`).succeeded())
+      })
+      it(`properly accepts the pre-increment operator on ${varAssignment}`, () => {
+        assert(grammar.match(`++${varAssignment}`).succeeded())
+      })
+      it(`properly accepts the post-decrement operator on ${varAssignment}`, () => {
+        assert(grammar.match(`${varAssignment}--`).succeeded())
+      })
+      it(`properly accepts the pre-decrement operator on ${varAssignment}`, () => {
+        assert(grammar.match(`--${varAssignment}`).succeeded())
+      })
     }
 
     for (const [otherScenario, otherSource] of exps) {
@@ -601,24 +617,6 @@ describe("The grammar", () => {
         }
       }
     }
-  }
-
-  for (const varAssignment of varAssignments) {
-    it(`properly accepts the ... operator on ${varAssignment}`, () => {
-      assert(grammar.match(`...${varAssignment}`).succeeded())
-    })
-    it(`properly accepts the post-increment operator on ${varAssignment}`, () => {
-      assert(grammar.match(`${varAssignment}++`).succeeded())
-    })
-    it(`properly accepts the pre-increment operator on ${varAssignment}`, () => {
-      assert(grammar.match(`++${varAssignment}`).succeeded())
-    })
-    it(`properly accepts the post-decrement operator on ${varAssignment}`, () => {
-      assert(grammar.match(`${varAssignment}--`).succeeded())
-    })
-    it(`properly accepts the pre-decrement operator on ${varAssignment}`, () => {
-      assert(grammar.match(`--${varAssignment}`).succeeded())
-    })
   }
 
   for (const [scenario, source, errorMessagePattern] of syntaxErrors) {
