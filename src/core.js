@@ -98,9 +98,27 @@ export class ObjField {
   }
 }
 
+export class List {
+  constructor(list) {
+    this.list = list
+  }
+}
+
 export class FormattedStr {
   constructor(subexps) {
     this.subexps = subexps
+  }
+}
+
+export class Bool {
+  constructor(val) {
+    this.val = val === 'true'
+  }
+}
+
+export class Num {
+  constructor(val) {
+    this.val = Number(val)
   }
 }
 
@@ -166,11 +184,6 @@ export class Type {
   isEquivalentTo(target) {
     return this == target
   }
-
-  // TODO
-  isAssignableTo(target) {
-    return this.isEquivalentTo(target)
-  }
 }
 
 export class BoolType extends Type {
@@ -178,10 +191,11 @@ export class BoolType extends Type {
     super('boolean')
   }
 
+  // TODO
   loop(block) {
-    while (this) {
-      block.run()
-    }
+    // while (this) {
+    //   block.run()
+    // }
   }
 }
 
@@ -189,6 +203,14 @@ export class BangFunc extends Type {
   constructor() {
     super('bang function')
   }
+}
+
+// Throw an error message that takes advantage of Ohm's messaging
+function error(message, node) {
+  if (node) {
+    throw new Error(`${node.source.getLineAndColumnMessage()}${message}`)
+  }
+  throw new Error(message)
 }
 
 Block.prototype[util.inspect.custom] = function () {

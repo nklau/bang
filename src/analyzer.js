@@ -4,19 +4,51 @@ import * as core from "./core.js"
 
 const bangGrammar = ohm.grammar(fs.readFileSync("src/bang.ohm"))
 
-// Throw an error message that takes advantage of Ohm's messaging
-function error(message, node) {
-  if (node) {
-    throw new Error(`${node.source.getLineAndColumnMessage()}${message}`)
-  }
-  throw new Error(message)
-}
+// TODO: function to get type
 
 function check(condition, message, node) {
   if (!condition) error(message, node)
 }
 
+// TODO: should be able to say break from inside a block that's nested in a loop
+// TODO: should be able to say return from inside a loop that's nested in a block
+class Context {
+  constructor({ parent = null, locals = new Map(), inLoop = false, block: b = null }) {
+    Object.assign(this, { parent, locals, inLoop, block: b })
+  }
+
+  sees(name) {
+    // Search "outward" through enclosing scopes
+    return this.locals.has(name) || this.parent?.sees(name)
+  }
+
+  lookup(name) {
+    const entity = this.locals.get(name)
+    return entity ? entity : this.parent?.lookup(name)
+  }
+
+  add(name, entity) {
+    // check(
+    //   !(!entity.local && entity.readOnly && this.locals.has(name)), 
+    //   `Cannot assign to constant variable ${name}`, 
+    //   node
+    // )
+    if (!entity.local && lookup(name).readOnly) {
+      core.error(`Cannot assign to constant variable ${name}`)
+    }
+    // entity.local ? `_${name}` : name
+    this.locals.set(name, entity)
+    // return entity
+  }
+
+  newChildContext(props) {
+    return new Context({ ...this, ...props, parent: this, locals: new Map() })
+  }
+}
+
 export default function analyze(sourceCode) {
+  let context = new Context({})
+
   const analyzer = bangGrammar.createSemantics().addOperation("rep", {
     Program(body) {
       return body.rep()
@@ -27,29 +59,47 @@ export default function analyze(sourceCode) {
     StatementNewLine(statement, _space, _n) {
       return statement.rep()
     },
-    Statement_varAssignment(local, readOnly, id, op, exp) {
-      const v = new core.Var(
-        id.rep(),
-        local.sourceString === 'local',
-        readOnly.sourceString === 'const'
-        // TODO: add type
-      )
-      return new core.VarDec(v, op.sourceString, exp.rep())
+    Statement_varDec(local, readOnly, id, op, exp) {
+      const e = exp.rep()
+      let v
+
+      if (op.sourceString === '=') {
+        v = new core.Var(
+          id.sourceString,
+          local.sourceString === 'local',
+          readOnly.sourceString === 'const',
+          e.type
+        )
+        context.add(id.sourceString, v)
+      } else {
+        v = id.rep()
+      }
+
+      return new core.VarDec(v, op.sourceString, e)
     },
     Statement_localVar(_local, id) {
       const v = new core.Var(
-        id.rep(),
+        id.sourceString,
         true,
         false
       )
+      context.add(id.sourceString, v)
       return new core.VarDec(v)
     },
+    Statement_varAssignment(variable, op, exp) {
+      const v = variable.rep()
+      return new core.VarDec(v, op.sourceString, exp.rep())
+    },
     Statement_return(_return, exp) {
+      // TODO: check if inside block
       return new core.ReturnStatement(...exp.rep())
     },
-    Statement(exp) {
-      return exp.rep()
+    Statement_impliedReturn(exp) {
+      return new core.ReturnStatement(...exp.rep())
     },
+    // Statement(exp) {
+    //   return exp.rep()
+    // },
     Exp_ternary(cond, _qMark, block, _c, alt) {
       return new core.Ternary(cond.rep(), block.rep(), ...alt.rep())
     },
@@ -78,7 +128,6 @@ export default function analyze(sourceCode) {
       return new core.UnaryExp(right.rep(), spread.sourceString)
     },
     Exp6_postIncrement(exp, op) {
-      // TODO: how to preserve order
       return new core.UnaryExp(exp.rep(), op.sourceString, true)
     },
     Exp7_call(exp, _space, params) {
@@ -108,6 +157,7 @@ export default function analyze(sourceCode) {
       return new core.VarSubscript(exp.rep(), selector.rep())
     },
     VarAssignment_select(exp, _dot, selector) {
+      // TODO: set exp type to object?
       return new core.VarSelect(exp.rep(), selector.rep())
     },
     FuncLit(exp, _arrow, block) {
@@ -135,7 +185,7 @@ export default function analyze(sourceCode) {
       return str.rep()
     },
     ListLit(_open, list, _close) {
-      return [...list.asIteration().rep()]
+      return core.List([...list.asIteration().rep()])
     },
     Str(str) {
       return str.rep()
@@ -176,14 +226,14 @@ export default function analyze(sourceCode) {
     lineContinuation(escape, newLine) {
       return `${escape.sourceString}${newLine.rep()}`
     },
-    id(start, rest) {
-      return `${start.sourceString}${rest.sourceString}`
+    id(_first, _rest) {
+      return context.lookup(this.sourceString)
     },
     boolLit(bool) {
-      return bool.sourceString === 'true'
+      return new core.Bool(bool.sourceString)
     },
     num(_whole, _dot, _fraction, _e, _sign, _exponent) {
-      return Number(this.sourceString)
+      return new core.Num(this.sourceString)
     },
     MatchExp(_match, id, block) {
       return new core.MatchExp(id.sourceString, block.rep())

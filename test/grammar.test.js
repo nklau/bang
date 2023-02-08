@@ -572,16 +572,22 @@ describe("The grammar", () => {
       }
     })
 
-    for (const varAssignment of varAssignments) {
-      for (const op of assignmentOps) {
+    for (const op of assignmentOps) {
+      for (const varAssignment of varAssignments) {
         it(`properly specifies ${varAssignment} ${op} declaration with a ${scenario} value`, () => {
           assert(grammar.match(`${varAssignment} ${op} ${source}`).succeeded())
-          assert(grammar.match(`local ${varAssignment} ${op} ${source}`).succeeded())
-          assert(grammar.match(`const ${varAssignment} ${op} ${source}`).succeeded())
-          assert(grammar.match(`local const ${varAssignment} ${op} ${source}`).succeeded())
         })
       }
-      
+
+      it(`properly specifies variable declaration with ${op} ${scenario}`, () => {
+        assert(grammar.match(`x ${op} ${source}`).succeeded())
+        assert(grammar.match(`local x ${op} ${source}`).succeeded())
+        assert(grammar.match(`const x ${op} ${source}`).succeeded())
+        assert(grammar.match(`local const x ${op} ${source}`).succeeded())
+      })
+    }
+
+    for (const varAssignment of varAssignments) {
       it(`properly accepts the ... operator on ${varAssignment}`, () => {
         assert(grammar.match(`...${varAssignment}`).succeeded())
       })
