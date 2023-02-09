@@ -25,18 +25,19 @@ Bang {
   Exp6                  = Exp7 "**" Exp6                                                    -- exponent
                         | "-" Exp7                                                          -- negate
                         | "..." Exp7                                                        -- spread
-                        | Exp7 "++"                                                         -- postIncrement
-                        | "++" Exp7                                                         -- preIncrement
-                        | Exp7 "--"                                                         -- postDecrement
-                        | "--" Exp7                                                         -- preDecrement
                         | Exp7
-  Exp7                  = Exp7 #(~newLine space)* ~#newLine Params                          -- call
-                        | Exp7 #"[" Exp "]"                                                 -- subscript
-                        | Exp7? #"." VarAssignment                                          -- select
-                        | "!" Exp7                                                          -- negative
-                        | Exp7 #"?"                                                         -- unwrap
+  Exp7                  = Exp8 "++"                                                         -- postIncrement
+                        | Exp8 "--"                                                         -- postDecrement
+                        | "++" Exp8                                                         -- preIncrement
+                        | "--" Exp8                                                         -- preDecrement
                         | Exp8
-  Exp8                  = nil       | Str       | num       | Obj       
+  Exp8                  = Exp8 #(~newLine space)* ~#newLine Params                          -- call
+                        | Exp8 #"[" Exp "]"                                                 -- subscript
+                        | Exp8? #"." VarAssignment                                          -- select
+                        | "!" Exp8                                                          -- negative
+                        | Exp8 #"?"                                                         -- unwrap
+                        | Exp9
+  Exp9                  = nil       | Str       | num       | Obj       
                         | boolLit   | BangFunc  | MatchExp  | ListLit   
                         | FuncLit   | id
                         | "(" Exp ")"                                                       -- enclosed

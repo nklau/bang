@@ -155,6 +155,7 @@ export default function analyze(sourceCode) {
       return x
     },
     Exp4_addSubtract(left, op, rest) {
+      // TODO check for '--' or '++' ops and op == '-' or '+'
       return new core.NaryExp([left.rep(), op.sourceString, ...rest.asIteration().rep()])
       // return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
     },
@@ -166,32 +167,33 @@ export default function analyze(sourceCode) {
       return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
     },
     Exp6_negate(negative, right) {
+      // TODO: check for '--' in right
       return new core.UnaryExp(right.rep(), negative.sourceString)
     },
     Exp6_spread(spread, right) {
       return new core.UnaryExp(right.rep(), spread.sourceString)
     },
-    Exp6_postIncrement(exp, op) {
+    Exp7_postIncrement(exp, op) {
       return new core.UnaryExp(exp.rep(), op.sourceString, true)
     },
-    Exp7_call(exp, _space, params) {
+    Exp8_call(exp, _space, params) {
       return new core.Call(exp.rep(), params.rep())
     },
-    Exp7_subscript(exp, _open, selector, _close) {
+    Exp8_subscript(exp, _open, selector, _close) {
       return new core.VarSubscript(exp.rep(), selector.rep())
     },
-    Exp7_select(exp, _dot, selector) {
+    Exp8_select(exp, _dot, selector) {
       return exp.sourceString
         ? new core.VarSelect(...exp.rep(), selector.rep())
         : new core.VarSelect(undefined, selector.rep())
     },
-    Exp7_negative(negate, exp) {
+    Exp8_negative(negate, exp) {
       return new core.UnaryExp(exp.rep(), negate.sourceString)
     },
-    Exp7_unwrap(exp, unwrap) {
+    Exp8_unwrap(exp, unwrap) {
       return new core.UnaryExp(exp.rep(), unwrap.sourceString)
     },
-    Exp8_enclosed(_open, exp, _close) {
+    Exp9_enclosed(_open, exp, _close) {
       return exp.rep()
     },
     BangFunc(_open, block, _close) {

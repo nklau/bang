@@ -6,6 +6,10 @@ const keywords = ['const', 'true', 'false', 'match', 'nil', 'enum', 'break', 're
 
 const exps = [
   ['2 arg function call', 'x(y, z)'],
+  ['post-incremented variable', 'x++'],
+  ['post-decremented variable', 'x--'],
+  ['pre-incremented variable', '++x'],
+  ['pre-decremented variable', '--x'],
   ['additive exp', 'x + y'],
   ['and exp', 'x && y'],
   ['bang function', '{ x = 5 }'],
@@ -500,7 +504,11 @@ describe("The grammar", () => {
       assert(grammar.match(`x[${source}]`).succeeded())
     })
     it(`properly specifies variable selection with a ${scenario}`, () => {
-      assert(grammar.match(`${source}.x`).succeeded())
+      if (scenario.includes('post-decremented') || scenario.includes('post-incremented')) {
+        assert(!grammar.match(`${source}.x`).succeeded())
+      } else {
+        assert(grammar.match(`${source}.x`).succeeded())
+      }
     })
     it(`properly accepts a ${scenario} as a positional argument`, () => {
       assert(grammar.match(`x(${source})`).succeeded())
@@ -554,14 +562,20 @@ describe("The grammar", () => {
     })
     it(`properly accepts the ! operator on a ${scenario}`, () => {
       const match = grammar.match(`!${source}`)
-      if (scenario.includes('negative exp')) {
+      if (scenario.includes('negative exp') || scenario.includes('pre-decremented') || scenario.includes('pre-incremented')) {
         assert(!match.succeeded())
       } else {
         assert(match.succeeded())
       }
     })
-    it(`properly accepts the ? operator on a ${scenario}`, () => {
-      assert(grammar.match(`${source}?`).succeeded())
+    it(`properly accepts the ? operator on a ${scenario}\n${source}?`, () => {
+      // console.log(`${scenario}?`)
+      const match = grammar.match(`${source}?`)
+      if (scenario.includes('post-decremented') || scenario.includes('post-incremented')) {
+        assert(!match.succeeded())
+      } else {
+        assert(match.succeeded())
+      }
     })
     it(`properly accepts the - operator on a ${scenario}`, () => {
       const match = grammar.match(`-${source}`)
