@@ -122,15 +122,22 @@ export default function analyze(sourceCode) {
       return new core.Ternary(c, block.rep(), ...alt.rep())
     },
     Exp1_equality(left, op, rest) {
-      return new core.NaryExp([left.rep(), op.sourceString, ...rest.asIteration().rep()])
+      const elements = [left.rep(), op.sourceString, ...rest.asIteration().rep()]
+      const pieces = new Map()
+      const types = [core.NumType, core.StrType, core.BoolType]
 
-      // const [l, op, r] = [left.rep(), `${op0.sourceString}${op1.sourceString}`, right.rep()]
-      // if (op.includes('<') || op.includes('>')) {
-      //   const types = [core.NumType, core.StrType, core.BoolType]
-      //   checkType(l, types, 'number')
-      //   checkType(r, types, l.type)
-      // }
-      // return new core.BinaryExp(left.rep(), op, right.rep())
+      for (i = 1; i < elements.length; i += 2) {
+        pieces.set(elements[i], [elements[i - 1], elements[i + 1]])
+      }
+
+      for (const [op, exps] of Object.entries(pieces)) {
+        if (op.includes('<') || op.includes('>')) {
+          checkType(exps[0], types, 'number')
+          checkType(exps[1], types, exps[0].type)
+        }
+      }
+      
+      return new core.NaryExp(elements)
     },
     Exp2_or(left, or, right) {
       const [l, op, rs] = [left.rep(), or.sourceString, right.rep()]
