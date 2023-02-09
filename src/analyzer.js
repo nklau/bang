@@ -14,6 +14,10 @@ function checkType(e, types, expectation) {
   check(types.includes(e.type.constructor), `Expected ${expectation}`)
 }
 
+function checkVarOrList(e) {
+  check(e.constructor === core.Var || isList(e), 'Cannot mutate a literal')
+}
+
 function checkInBlock(context) {
   check(context.function, 'Cannot return outside a function')
 }
@@ -24,6 +28,10 @@ function checkBool(e) {
 
 function checkNum(e) {
   check(e.type.constructor === core.NumType, 'Expected number')
+}
+
+function isList(e) {
+  return e.type.constructor === core.ListType
 }
 
 function coerceToBool(e) {
@@ -215,13 +223,27 @@ export default function analyze(sourceCode) {
     },
     Exp7_postFix(exp, op) {
       const [e, o] = [exp.rep(), op.sourceString]
-      checkNum(e)
+      checkVarOrList(e)
+
+      // TODO: what about objects
+      checkType(
+        r, 
+        [core.NumType, core.BoolType, core.ListType, core.StrType], 
+        'Invalid left-hand side expression in postfix operation'
+      )
 
       return new core.UnaryExp(e, o, true)
     },
     Exp7_preFix(op, exp) {
       const [e, o] = [exp.rep(), op.sourceString]
-      checkNum(e)
+      checkVarOrList(e)
+
+      // TODO: what about objects
+      checkType(
+        r, 
+        [core.NumType, core.BoolType, core.ListType, core.StrType], 
+        'Invalid right-hand side expression in prefix operation'
+      )
 
       return new core.UnaryExp(e, o, false)
     },
