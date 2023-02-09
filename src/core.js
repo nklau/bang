@@ -250,7 +250,7 @@ export class BangFunc extends Type {
 // static NIL = new Type('nil')
 
 // Throw an error message that takes advantage of Ohm's messaging
-function error(message, node) {
+export function error(message, node) {
   if (node) {
     throw new Error(`${node.source.getLineAndColumnMessage()}${message}`)
   }

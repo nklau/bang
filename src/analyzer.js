@@ -7,7 +7,7 @@ const bangGrammar = ohm.grammar(fs.readFileSync("src/bang.ohm"))
 // TODO: function to get type
 
 function check(condition, message, node) {
-  if (!condition) error(message, node)
+  if (!condition) core.error(message, node)
 }
 
 function checkType(e, types, expectation) {
@@ -26,6 +26,25 @@ function coerceToBool(e) {
   // TODO: attempt type coercion
   // if e.val === e.default then e = falsy
   checkBool(e)
+}
+
+function mapOps(elements) {
+  return elements.reduce(
+    (map, val, i) => (typeof val === 'string' ? { ...map, [val]: [elements[i - 1], elements[i + 1]] } : map),
+    {}
+  )
+}
+
+function isPreIncrement(e) {
+  return e.type.constructor === core.UnaryExp
+    && e.op === '++'
+    && !e.postOp
+}
+
+function isPreDecrement(e) {
+  return e.type.constructor === core.UnaryExp
+    && e.op === '--'
+    && !e.postOp
 }
 
 // TODO: should be able to say break from inside a block that's nested in a loop
@@ -123,20 +142,16 @@ export default function analyze(sourceCode) {
     },
     Exp1_equality(left, op, rest) {
       const elements = [left.rep(), op.sourceString, ...rest.asIteration().rep()]
-      const pieces = new Map()
+      const pieces = mapOps(elements)
       const types = [core.NumType, core.StrType, core.BoolType]
 
-      for (i = 1; i < elements.length; i += 2) {
-        pieces.set(elements[i], [elements[i - 1], elements[i + 1]])
-      }
-
-      for (const [op, exps] of Object.entries(pieces)) {
-        if (op.includes('<') || op.includes('>')) {
-          checkType(exps[0], types, 'number')
-          checkType(exps[1], types, exps[0].type)
+      for (const [o, [l, r]] of Object.entries(pieces)) {
+        if (o.includes('<') || o.includes('>')) {
+          checkType(l, types, 'number')
+          checkType(r, types, l.type)
         }
       }
-      
+
       return new core.NaryExp(elements)
     },
     Exp2_or(left, or, right) {
@@ -153,7 +168,7 @@ export default function analyze(sourceCode) {
     Exp3_and(left, and, right) {
       const [l, op, rs] = [left.rep(), and.sourceString, right.rep()]
       let x = coerceToBool(l)
-      
+
       for (let r of rs) {
         const y = coerceToBool(r)
         x = new core.BinaryExp(x, op, y)
@@ -162,20 +177,31 @@ export default function analyze(sourceCode) {
       return x
     },
     Exp4_addSubtract(left, op, rest) {
-      // TODO check for '--' or '++' ops and op == '-' or '+'
-      return new core.NaryExp([left.rep(), op.sourceString, ...rest.asIteration().rep()])
-      // return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
+      const elements = [left.rep(), op.sourceString, ...rest.asIteration().rep()]
+      const pieces = mapOps(elements)
+
+      for (const [o, [_, r]] of Object.entries(pieces)) {
+        if (o === '-' && isPreDecrement(r)) {
+          core.error('Expected parentheses around pre-decrement operation on the right side of a subtraction')
+        } else if (o === '+' && isPreIncrement(r)) {
+          core.error('Expected parentheses around pre-increment operation on the right side of an addition')
+        }
+      }
+
+      return new core.NaryExp(elements)
     },
     Exp5_multiplyDivideMod(left, op, rest) {
       return new core.NaryExp([left.rep(), op.sourceString, ...rest.asIteration().rep()])
-      // return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
     },
     Exp6_exponent(left, op, right) {
       return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
     },
     Exp6_negate(negative, right) {
-      // TODO: check for '--' in right
-      return new core.UnaryExp(right.rep(), negative.sourceString)
+      const [op, r] = [negative.sourceString, right.rep()]
+      if (isPreDecrement(r)) {
+        core.error('Expected parentheses around pre-decrement operation with a negation')
+      }
+      return new core.UnaryExp(r, op)
     },
     Exp6_spread(spread, right) {
       return new core.UnaryExp(right.rep(), spread.sourceString)
@@ -333,6 +359,6 @@ export default function analyze(sourceCode) {
   })
 
   const match = bangGrammar.match(sourceCode)
-  if (!match.succeeded()) error(match.message)
+  if (!match.succeeded()) core.error(match.message)
   return analyzer(match).rep()
 }
