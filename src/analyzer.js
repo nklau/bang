@@ -176,6 +176,15 @@ export default function analyze(sourceCode) {
     Exp7_postIncrement(exp, op) {
       return new core.UnaryExp(exp.rep(), op.sourceString, true)
     },
+    Exp7_postDecrement(exp, op) {
+      return new core.UnaryExp(exp.rep(), op.sourceString, true)
+    },
+    Exp7_preIncrement(op, exp) {
+      return new core.UnaryExp(exp.rep(), op.sourceString, false)
+    },
+    Exp7_preDecrement(op, exp) {
+      return new core.UnaryExp(exp.rep(), op.sourceString, false)
+    },
     Exp8_call(exp, _space, params) {
       return new core.Call(exp.rep(), params.rep())
     },
