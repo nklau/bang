@@ -19,7 +19,11 @@ function checkInBlock(context) {
 }
 
 function checkBool(e) {
-  check(e.type.constructor === core.BoolType, 'Expected bool')
+  check(e.type.constructor === core.BoolType, 'Expected boolean')
+}
+
+function checkNum(e) {
+  check(e.type.constructor === core.NumType, 'Expected number')
 }
 
 function coerceToBool(e) {
@@ -209,17 +213,17 @@ export default function analyze(sourceCode) {
 
       return new core.UnaryExp(r, o)
     },
-    Exp7_postIncrement(exp, op) {
-      return new core.UnaryExp(exp.rep(), op.sourceString, true)
+    Exp7_postFix(exp, op) {
+      const [e, o] = [exp.rep(), op.sourceString]
+      checkNum(e)
+
+      return new core.UnaryExp(e, o, true)
     },
-    Exp7_postDecrement(exp, op) {
-      return new core.UnaryExp(exp.rep(), op.sourceString, true)
-    },
-    Exp7_preIncrement(op, exp) {
-      return new core.UnaryExp(exp.rep(), op.sourceString, false)
-    },
-    Exp7_preDecrement(op, exp) {
-      return new core.UnaryExp(exp.rep(), op.sourceString, false)
+    Exp7_preFix(op, exp) {
+      const [e, o] = [exp.rep(), op.sourceString]
+      checkNum(e)
+
+      return new core.UnaryExp(e, o, false)
     },
     Exp8_call(exp, _space, params) {
       return new core.Call(exp.rep(), params.rep())
