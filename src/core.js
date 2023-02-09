@@ -240,6 +240,20 @@ export class BangFunc extends Type {
   }
 }
 
+export class ObjType extends Type {
+  constructor() {
+    super('object')
+    this.default = {}
+  }
+}
+
+export class ListType extends Type {
+  constructor() {
+    super('list')
+    this.default = []
+  }
+}
+
 // static NUMBER = new Type('number')
 // static STRING = new Type('string')
 // static LIST = new Type('list')

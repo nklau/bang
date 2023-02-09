@@ -204,7 +204,10 @@ export default function analyze(sourceCode) {
       return new core.UnaryExp(r, op)
     },
     Exp6_spread(spread, right) {
-      return new core.UnaryExp(right.rep(), spread.sourceString)
+      const [o, r] = [spread.sourceString, right.rep()]
+      checkType(r, [core.ObjType, core.ListType], 'Expected object or list')
+
+      return new core.UnaryExp(r, o)
     },
     Exp7_postIncrement(exp, op) {
       return new core.UnaryExp(exp.rep(), op.sourceString, true)
