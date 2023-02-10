@@ -201,6 +201,7 @@ export default function analyze(sourceCode) {
       return x
     },
     Exp4_addSubtract(left, op, rest) {
+      // TODO: str - 1
       const elements = [left.rep(), op.sourceString, ...rest.asIteration().rep()]
       const pieces = mapOps(elements)
 
@@ -217,52 +218,56 @@ export default function analyze(sourceCode) {
     Exp5_multiplyDivideMod(left, op, rest) {
       const pieces = [left.rep(), op.sourceString, ...rest.asIteration().rep()]
       pieces.filter(e => typeof e !== 'string').forEach(e => checkNotType(e, [core.FuncType]))
+      // TODO: combinations
+      // [] * []
+      // [] / []
+      // [] % []
+      // "" * ""
+      // "" / "" etc
+      // could coerce rhs to number?
 
       return new core.NaryExp(pieces)
     },
     Exp6_exponent(left, op, right) {
-      return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
+      const [l, o, r] = [left.rep(), op.sourceString, right.rep()]
+      checkNotType(l, [core.FuncType])
+      checkNotType(r, [core.FuncType])
+      return new core.BinaryExp(l, o, r)
     },
     Exp6_negate(negative, right) {
       const [op, r] = [negative.sourceString, right.rep()]
       if (isPreDecrement(r)) {
         core.error('Expected parentheses around pre-decrement operation with a negation')
       }
+      // -string
+      // -[]
+      // -{}
       return new core.UnaryExp(r, op)
     },
     Exp6_spread(spread, right) {
       const [o, r] = [spread.sourceString, right.rep()]
-      checkType(r, [core.ObjType, core.ListType], 'Expected object or list')
+      checkType(r, [core.ObjType, core.ListType, core.BangFuncType], 'Expected object or list')
 
       return new core.UnaryExp(r, o)
     },
     Exp7_postFix(exp, op) {
       const [e, o] = [exp.rep(), op.sourceString]
       checkVarOrList(e)
-
-      // TODO: what about objects
-      checkType(
-        r, 
-        [core.NumType, core.BoolType, core.ListType, core.StrType], 
-        'Invalid left-hand side expression in postfix operation'
-      )
+      // TODO: what about strings
+      checkNotType(e, [core.FuncType, core.BangFuncType])
 
       return new core.UnaryExp(e, o, true)
     },
     Exp7_preFix(op, exp) {
       const [e, o] = [exp.rep(), op.sourceString]
       checkVarOrList(e)
-
-      // TODO: what about objects
-      checkType(
-        r, 
-        [core.NumType, core.BoolType, core.ListType, core.StrType, core.ObjType], 
-        'Invalid right-hand side expression in prefix operation'
-      )
+      // TODO: what about strings
+      checkNotType(e, [core.FuncType, core.BangFuncType])
 
       return new core.UnaryExp(e, o, false)
     },
     Exp8_call(exp, _space, params) {
+      // TODO: should 0() return 0 etc
       return new core.Call(exp.rep(), params.rep())
     },
     Exp8_subscript(exp, _open, selector, _close) {

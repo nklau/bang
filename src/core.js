@@ -154,15 +154,7 @@ export class DefaultMatchCase {
 }
 
 export class Type {
-  // static NUMBER = new Type('number')
-  // static STRING = new Type('string')
-  // bool
-
-  // static LIST = new Type('list')
-  // static FUNC = new Type('function')
-  // static BANGFUNC = new Type('bang function')
-  // static OBJ = new Type('object')
-  // static NIL = new Type('nil')
+  static NIL = new Type('nil')
 
   constructor(description, defaultVal) {
     this.description = description
@@ -212,6 +204,20 @@ export class BoolType extends Type {
   }
 }
 
+export class ListType extends Type {
+  constructor() {
+    super('list')
+    this.default = []
+  }
+}
+
+export class FuncType extends Type {
+  constructor() {
+    super('function')
+    this.default = () => {}
+  }
+}
+
 export class BangFuncType extends Type {
   constructor() {
     super('bang function')
@@ -229,28 +235,6 @@ export class ObjType extends Type {
     // TODO
   }
 }
-
-export class ListType extends Type {
-  constructor() {
-    super('list')
-    this.default = []
-  }
-}
-
-export class FuncType extends Type {
-  constructor() {
-    super('function')
-    this.default = () => {}
-  }
-}
-
-// static NUMBER = new Type('number')
-// static STRING = new Type('string')
-// static LIST = new Type('list')
-// static FUNC = new Type('function')
-// static BANGFUNC = new Type('bang function')
-// static OBJ = new Type('object')
-// static NIL = new Type('nil')
 
 // Throw an error message that takes advantage of Ohm's messaging
 export function error(message, node) {
