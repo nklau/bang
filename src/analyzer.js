@@ -10,6 +10,16 @@ function check(condition, message, node) {
   if (!condition) core.error(message, node)
 }
 
+function checkNotType(e, types) {
+  const t = e.type
+  check(!types.includes(t.constructor), `Unexpected type ${t.description}`)
+}
+
+function checkSameTypes(e0, e1) {
+  const [t0, t1] = [e0.type, e1.type]
+  check(t0.constructor === t1.constructor, `${t0.description} can never be equal to ${t1.description}`)
+}
+
 function checkType(e, types, expectation) {
   check(types.includes(e.type.constructor), `Expected ${expectation}`)
 }
@@ -155,12 +165,13 @@ export default function analyze(sourceCode) {
     Exp1_equality(left, op, rest) {
       const elements = [left.rep(), op.sourceString, ...rest.asIteration().rep()]
       const pieces = mapOps(elements)
-      const types = [core.NumType, core.StrType, core.BoolType]
 
       for (const [o, [l, r]] of Object.entries(pieces)) {
+        if (o === '==') {
+          checkSameTypes(l, r)
+        }
         if (o.includes('<') || o.includes('>')) {
-          checkType(l, types, 'number')
-          checkType(r, types, l.type)
+          checkNotType(l, [core.FuncType, core.BangFuncType])
         }
       }
 

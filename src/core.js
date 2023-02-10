@@ -182,7 +182,6 @@ export class Type {
   // static FUNC = new Type('function')
   // static BANGFUNC = new Type('bang function')
   // static OBJ = new Type('object')
-  // static ENUM = new Type('enum')
   // static NIL = new Type('nil')
 
   constructor(description, defaultVal) {
@@ -233,7 +232,7 @@ export class BoolType extends Type {
   }
 }
 
-export class BangFunc extends Type {
+export class BangFuncType extends Type {
   constructor() {
     super('bang function')
     this.default = {}
@@ -251,6 +250,13 @@ export class ListType extends Type {
   constructor() {
     super('list')
     this.default = []
+  }
+}
+
+export class FuncType extends Type {
+  constructor() {
+    super('function')
+    this.default = () => {}
   }
 }
 
