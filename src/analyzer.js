@@ -215,7 +215,10 @@ export default function analyze(sourceCode) {
       return new core.NaryExp(elements)
     },
     Exp5_multiplyDivideMod(left, op, rest) {
-      return new core.NaryExp([left.rep(), op.sourceString, ...rest.asIteration().rep()])
+      const pieces = [left.rep(), op.sourceString, ...rest.asIteration().rep()]
+      pieces.filter(e => typeof e !== 'string').forEach(e => checkNotType(e, [core.FuncType]))
+
+      return new core.NaryExp(pieces)
     },
     Exp6_exponent(left, op, right) {
       return new core.BinaryExp(left.rep(), op.sourceString, right.rep())
