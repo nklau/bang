@@ -293,9 +293,14 @@ optional() // prints "invalid"
 <tr>
 <td>
 
-```swift
-enum Season { spring, summer, fall, winter }
-print(Season.spring) 
+```js
+const season = { 
+  'spring': 'spring', 
+  'summer': 'summer', 
+  'fall': 'fall',
+  'winter': 'winter' 
+}
+print(season.spring) 
 // prints 'spring'
 ```
 
@@ -318,41 +323,8 @@ const Season = Object.freeze({
 <td>
 
 ```swift
-enum Season {
-  spring = '🌷',
-  summer = '☀️',
-  fall = '🍁',
-  winter = '❄️'
-}
-
-print(Season.spring)
-// prints "🌷"
-```
-
-</td>
-<td>
-
-```javascript
-const Season = Object.freeze({
-  spring: "🌷",
-  summer: "☀️",
-  fall: "🍁",
-  winter: "❄️",
-})
-
-console.log(Season.spring)
-// prints "🌷"
-```
-
-</td>
-</tr>
-<tr></tr>
-<tr>
-<td>
-
-```swift
-season = Season.fall
-result = match season {
+s = season.fall
+result = match s {
   case .spring: "spring!"
   case .summer: { "summer!" }
   case .fall, .winter: {

@@ -153,26 +153,6 @@ export class DefaultMatchCase {
   }
 }
 
-export class Enum {
-  constructor(id, cases) {
-    this.id = id
-    this.cases = cases
-  }
-}
-
-export class EnumBlock {
-  constructor(cases) {
-    this.cases = cases
-  }
-}
-
-export class EnumCase {
-  constructor(id, val) {
-    this.id = id
-    this.val = val ?? id
-  }
-}
-
 export class Type {
   // static NUMBER = new Type('number')
   // static STRING = new Type('string')
@@ -270,7 +250,6 @@ export class FuncType extends Type {
 // static FUNC = new Type('function')
 // static BANGFUNC = new Type('bang function')
 // static OBJ = new Type('object')
-// static ENUM = new Type('enum')
 // static NIL = new Type('nil')
 
 // Throw an error message that takes advantage of Ohm's messaging
