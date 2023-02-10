@@ -234,6 +234,10 @@ export class ObjType extends Type {
   fixRef() {
     // TODO
   }
+
+  getVal(key) {
+    // TODO
+  }
 }
 
 // Throw an error message that takes advantage of Ohm's messaging

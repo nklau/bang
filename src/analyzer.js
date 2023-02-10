@@ -20,8 +20,9 @@ function checkSameTypes(e0, e1) {
   check(t0.constructor === t1.constructor, `${t0.description} can never be equal to ${t1.description}`)
 }
 
-function checkType(e, types, expectation) {
-  check(types.includes(e.type.constructor), `Expected ${expectation}`)
+function checkType(e, types) {
+  checkNotUndefined(e, e.sourceString)
+  check(types.includes(e.type.constructor), `Unexpected type ${e.type.description}`)
 }
 
 function checkNotUndefined(e, name) {
@@ -250,7 +251,7 @@ export default function analyze(sourceCode) {
     },
     Exp6_spread(spread, right) {
       const [o, r] = [spread.sourceString, right.rep()]
-      checkType(r, [core.ObjType, core.ListType, core.BangFuncType], 'Expected object or list')
+      checkType(r, [core.ObjType, core.ListType, core.BangFuncType])
 
       return new core.UnaryExp(r, o)
     },
@@ -274,12 +275,19 @@ export default function analyze(sourceCode) {
       // TODO: should 0() return 0 etc
       const [e, p] = [exp.rep(), params.rep()]
       const f = lookup(e)
+      // TODO check is var if not allowing 0()
       checkNotUndefined(f, e.sourceString)
 
       return new core.Call(f, p)
     },
     Exp8_subscript(exp, _open, selector, _close) {
-      return new core.VarSubscript(exp.rep(), selector.rep())
+      const [e, s] = [exp.rep(), selector.rep()]
+      const x = lookup(e)
+      checkType(x, [core.ObjType, core.ListType])
+      checkType(s, [core.NumType, core.StrType, core.BoolType, core.BangFuncType])
+      // TODO how to check context? to see if selector exists/needs to be created
+
+      return new core.VarSubscript(e, s)
     },
     Exp8_select(exp, _dot, selector) {
       return exp.sourceString
@@ -321,6 +329,7 @@ export default function analyze(sourceCode) {
       return new core.KeywordParam(id.rep(), exp.rep())
     },
     Obj(_open, fields, _close) {
+      // TODO: create new context?
       return new core.Obj(fields.asIteration().rep())
     },
     ObjField(key, _c, exp) {
