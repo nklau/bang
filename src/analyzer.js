@@ -241,7 +241,7 @@ export default function analyze(sourceCode) {
       // TODO: what about objects
       checkType(
         r, 
-        [core.NumType, core.BoolType, core.ListType, core.StrType], 
+        [core.NumType, core.BoolType, core.ListType, core.StrType, core.ObjType], 
         'Invalid right-hand side expression in prefix operation'
       )
 
@@ -363,18 +363,6 @@ export default function analyze(sourceCode) {
     },
     DefaultClause(_default, _colon, block) {
       return new core.DefaultMatchCase(block.rep())
-    },
-    Enum(_enum, id, _open, block, _close) {
-      return new core.Enum(id.sourceString, block.rep())
-    },
-    EnumBlock(cases) {
-      return new core.EnumBlock(cases.asIteration().rep())
-    },
-    EnumCaseAssignment_withValue(id, _e, exp) {
-      return new core.EnumCase(id.sourceString, exp.rep())
-    },
-    EnumCaseAssignment_noValue(id) {
-      return new core.EnumCase(id.sourceString)
     },
     nil(_nil) {
       return undefined

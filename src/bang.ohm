@@ -8,7 +8,6 @@ Bang {
                         | VarAssignment assignmentOp Exp                                    -- varAssignment
                         | return Exp?                                                       -- return
                         | Exp                                                               -- impliedReturn
-                        | Enum      
                         | break
   Exp                   = Exp1 "?" (BangFunc | Statement) (":" (BangFunc | Statement))?     -- ternary
                         | Exp1
@@ -102,19 +101,13 @@ Bang {
   case                  = "case" ~idchar
   default               = "default"
 
-  Enum                  = enum id "{" EnumBlock "}"
-  EnumBlock             = NonemptyListOf<EnumCaseAssignment, ",">
-  EnumCaseAssignment    = id "=" Exp                                                        -- withValue
-                        | id                                                                -- noValue
-  enum                  = "enum" ~idchar
-
   return                = "return" ~idchar
 
   multiLineComment      = "/*" (~"*/" any)* "*/"
   comment               = "//" (~newLine any)*
 
   keyword               = const     | boolLit   | match     | nil       
-                        | enum      | break     | return    | local     
+                        | break     | return    | local     
   nil                   = "nil" ~idchar
   break                 = "break" ~idchar
   local                 = "local" ~idchar
