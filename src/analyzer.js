@@ -49,6 +49,10 @@ function isList(e) {
   return e.type.constructor === core.ListType
 }
 
+function isVar(e) {
+  return e.constructor === core.Var
+}
+
 function coerceToBool(e) {
   // TODO: attempt type coercion
   // if e.val === e.default then e = falsy
@@ -124,7 +128,7 @@ export default function analyze(sourceCode) {
       return statement.rep()
     },
     Statement_varDec(local, readOnly, id, op, exp) {
-      const e = exp.rep()
+      let [e, o] = [exp.rep(), op.sourceString]
       let v
 
       if (op.sourceString === '=') {
@@ -136,10 +140,21 @@ export default function analyze(sourceCode) {
         )
         context.add(id.sourceString, v)
       } else {
+        // Designed to only get here if variable dec is using an eval assignment
         v = id.rep()
+        if (!v) {
+          v = new core.Var(
+            id.sourceString,
+            local.sourceString === 'local',
+            readOnly.sourceString === 'const',
+            e.type
+          )
+
+          e = new core.BinaryExp(v.type.default, o.charAt(0), e)
+        }
       }
 
-      return new core.VarDec(v, op.sourceString, e)
+      return new core.VarDec(v, o, e)
     },
     Statement_localVar(_local, id) {
       const v = new core.Var(
@@ -148,7 +163,7 @@ export default function analyze(sourceCode) {
         false
       )
       context.add(id.sourceString, v)
-      return new core.VarDec(v)
+      return new core.VarDec(v, '=', v.type.default)
     },
     Statement_varAssignment(variable, op, exp) {
       // Designed to only get here for variable subscription/selection
@@ -274,26 +289,35 @@ export default function analyze(sourceCode) {
     Exp8_call(exp, _space, params) {
       // TODO: should 0() return 0 etc
       const [e, p] = [exp.rep(), params.rep()]
-      const f = lookup(e)
       // TODO check is var if not allowing 0()
-      checkNotUndefined(f, e.sourceString)
+      checkNotUndefined(e, e.sourceString)
 
       return new core.Call(f, p)
     },
     Exp8_subscript(exp, _open, selector, _close) {
       const [e, s] = [exp.rep(), selector.rep()]
-      const x = lookup(e)
-      checkType(x, [core.ObjType, core.ListType])
+      // TODO: don't think this is right because it doesn't allow built-in functions
+      checkType(e, [core.ObjType, core.ListType])
       checkType(s, [core.NumType, core.StrType, core.BoolType, core.BangFuncType])
       // TODO how to check context? to see if selector exists/needs to be created
 
       return new core.VarSubscript(e, s)
     },
     Exp8_select(exp, _dot, selector) {
-      // const [e, s] = [exp.sourceString ? exp.rep() : undefined, selector.rep()]
-      return new core.VarSelect(exp.rep(), selector.rep())
+      const [e, s] = [exp.rep(), selector.rep()]
+      
+      checkNotType(e, [core.FuncType])
+      // TODO: how to check s?
+      // TODO do we allow list.1 as indexing?
+      // if so, need to allow list type for x
+      return new core.VarSelect(e, s)
     },
     Exp8_negative(negate, exp) {
+      // TODO: probably can't use on objects, function literals,
+      // unless we save it as a unary exp so it applies the negative to the result after the function gets called?
+      // does using it on a boolean toggle the boolean? or does it turn to -1 * boolean (this one makes more sense probably)
+      // -string? probably not allowed (unless it can be coerced to a number
+
       return new core.UnaryExp(exp.rep(), negate.sourceString)
     },
     Exp8_unwrap(exp, unwrap) {
