@@ -172,6 +172,7 @@ export default function analyze(sourceCode) {
         }
         if (o.includes('<') || o.includes('>')) {
           checkNotType(l, [core.FuncType])
+          checkNotType(r, [core.FuncType])
         }
       }
 
