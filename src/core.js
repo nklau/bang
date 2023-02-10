@@ -244,6 +244,10 @@ export class ObjType extends Type {
     super('object')
     this.default = {}
   }
+
+  fixRef() {
+    // TODO
+  }
 }
 
 export class ListType extends Type {

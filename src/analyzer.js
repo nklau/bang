@@ -171,7 +171,7 @@ export default function analyze(sourceCode) {
           checkSameTypes(l, r)
         }
         if (o.includes('<') || o.includes('>')) {
-          checkNotType(l, [core.FuncType, core.BangFuncType])
+          checkNotType(l, [core.FuncType])
         }
       }
 
