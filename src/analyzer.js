@@ -24,6 +24,10 @@ function checkType(e, types, expectation) {
   check(types.includes(e.type.constructor), `Expected ${expectation}`)
 }
 
+function checkNotUndefined(e, name) {
+  check(e, `${name} may not have been initialized`)
+}
+
 function checkVarOrList(e) {
   check(e.constructor === core.Var || isList(e), 'Cannot mutate a literal')
 }
@@ -268,7 +272,11 @@ export default function analyze(sourceCode) {
     },
     Exp8_call(exp, _space, params) {
       // TODO: should 0() return 0 etc
-      return new core.Call(exp.rep(), params.rep())
+      const [e, p] = [exp.rep(), params.rep()]
+      const f = lookup(e)
+      checkNotUndefined(f, e.sourceString)
+
+      return new core.Call(f, p)
     },
     Exp8_subscript(exp, _open, selector, _close) {
       return new core.VarSubscript(exp.rep(), selector.rep())
