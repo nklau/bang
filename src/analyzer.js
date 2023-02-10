@@ -290,9 +290,8 @@ export default function analyze(sourceCode) {
       return new core.VarSubscript(e, s)
     },
     Exp8_select(exp, _dot, selector) {
-      return exp.sourceString
-        ? new core.VarSelect(...exp.rep(), selector.rep())
-        : new core.VarSelect(undefined, selector.rep())
+      // const [e, s] = [exp.sourceString ? exp.rep() : undefined, selector.rep()]
+      return new core.VarSelect(exp.rep(), selector.rep())
     },
     Exp8_negative(negate, exp) {
       return new core.UnaryExp(exp.rep(), negate.sourceString)

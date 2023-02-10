@@ -30,7 +30,7 @@ Bang {
                         | Exp8
   Exp8                  = Exp8 #(~newLine space)* ~#newLine Params                          -- call
                         | Exp8 #"[" Exp "]"                                                 -- subscript
-                        | Exp8? #"." VarAssignment                                          -- select
+                        | Exp8 #"." VarAssignment                                           -- select
                         | "!" Exp8                                                          -- negative
                         | Exp8 #"?"                                                         -- unwrap
                         | Exp9
