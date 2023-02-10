@@ -163,7 +163,7 @@ export default function analyze(sourceCode) {
         false
       )
       context.add(id.sourceString, v)
-      return new core.VarDec(v, '=', v.type.default)
+      return new core.VarDec(v)
     },
     Statement_varAssignment(variable, op, exp) {
       // Designed to only get here for variable subscription/selection
