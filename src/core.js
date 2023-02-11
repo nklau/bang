@@ -75,6 +75,7 @@ export class FuncLit {
   constructor(params, block) {
     this.params = params
     this.block = block
+    this.type = new FuncType()
   }
 }
 
@@ -107,18 +108,21 @@ export class ObjField {
 export class List {
   constructor(list) {
     this.list = list
+    this.type = new ListType()
   }
 }
 
 export class FormattedStr {
   constructor(subexps) {
     this.subexps = subexps
+    this.type = new StrType()
   }
 }
 
 export class Bool {
   constructor(val) {
     this.val = val === 'true'
+    this.type = new BoolType()
   }
 }
 
@@ -126,6 +130,13 @@ export class Num {
   constructor(val) {
     this.val = Number(val)
     this.type = new NumType()
+  }
+}
+
+export class Str {
+  constructor(val) {
+    this.val = val
+    this.type = new StrType()
   }
 }
 
@@ -156,10 +167,10 @@ export class DefaultMatchCase {
 
 export class Type {
   static NIL = new Type('nil')
+  static default = Type.NIL
 
-  constructor(description, defaultVal) {
+  constructor(description) {
     this.description = description
-    this.default = defaultVal
   }
 
   isEquivalentTo(target) {
@@ -168,9 +179,10 @@ export class Type {
 }
 
 export class NumType extends Type {
+  static default = 0
+
   constructor() {
     super('number')
-    this.default = 0
   }
 
   // TODO
@@ -180,9 +192,10 @@ export class NumType extends Type {
 }
 
 export class StrType extends Type {
+  static default = ''
+
   constructor() {
     super('string')
-    this.default = ''
   }
 
   // TODO
@@ -192,9 +205,10 @@ export class StrType extends Type {
 }
 
 export class BoolType extends Type {
+  static default = false
+
   constructor() {
     super('boolean')
-    this.default = false
   }
 
   // TODO
@@ -206,30 +220,34 @@ export class BoolType extends Type {
 }
 
 export class ListType extends Type {
+  static default = []
+
   constructor() {
     super('list')
-    this.default = []
   }
 }
 
 export class FuncType extends Type {
+  static default = () => {}
+
   constructor() {
     super('function')
-    this.default = () => {}
   }
 }
 
 export class BangFuncType extends Type {
+  static default = {}
+
   constructor() {
     super('bang function')
-    this.default = {}
   }
 }
 
 export class ObjType extends Type {
+  static default = {}
+
   constructor() {
     super('object')
-    this.default = {}
   }
 
   fixRef() {

@@ -21,12 +21,12 @@ function checkSameTypes(e0, e1) {
 }
 
 function checkType(e, types) {
-  checkNotUndefined(e, e.sourceString)
+  checkNotUndefined(e)
   check(types.includes(e.type.constructor), `Unexpected type ${e.type.description}`)
 }
 
 function checkNotUndefined(e, name) {
-  check(e, `${name} may not have been initialized`)
+  check(e, `Variable may not have been initialized`)
 }
 
 function checkVarOrList(e) {
@@ -185,6 +185,7 @@ export default function analyze(sourceCode) {
     Exp1_equality(left, op, rest) {
       const elements = [left.rep(), op.sourceString, ...rest.asIteration().rep()]
       const pieces = mapOps(elements)
+      // TODO: 
 
       for (const [o, [l, r]] of Object.entries(pieces)) {
         if (o === '==') {
@@ -282,9 +283,9 @@ export default function analyze(sourceCode) {
     },
     Exp8_call(exp, _space, params) {
       const [e, p] = [exp.rep(), params.rep()]
-      checkNotUndefined(e, e.sourceString)
+      checkNotUndefined(e)
 
-      return new core.Call(f, p)
+      return new core.Call(e, p)
     },
     Exp8_subscript(exp, _open, selector, _close) {
       const [e, s] = [exp.rep(), selector.rep()]
@@ -354,13 +355,13 @@ export default function analyze(sourceCode) {
       return str.rep()
     },
     ListLit(_open, list, _close) {
-      return core.List([...list.asIteration().rep()])
+      return new core.List([...list.asIteration().rep()])
     },
     Str(str) {
       return str.rep()
     },
     strLit(_open, chars, _close) {
-      return chars.rep().join('')
+      return new core.Str(chars.rep().join(''))
     },
     FormattedStr(_open, chars, _close) {
       return new core.FormattedStr(chars.rep())
