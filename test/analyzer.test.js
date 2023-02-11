@@ -145,17 +145,44 @@ const examples = [
    7 | Var id='i' local=true readOnly=false type=undefined
    8 | Block statements=[#9]
    9 | ReturnStatement exp=#7`
-  ]
-  // TODO x = i -> { i }
-  // TODO x = i -> i
-  // [
-  //   '2 arg function call', 
-  //   `x = (y, z) -> {}
-  //   x(y, z)`, 
-  //   `   1 | Block statements=[#2]
-  //  2 | Call id='x' args=#3
-  //  3 | Params params=['y','z']`
-  // ],
+  ],
+  [
+    'function literal with no brackets',
+    `x = i -> i`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#5
+   3 | Var id='x' local=false readOnly=false type=#4
+   4 | FuncType description='function'
+   5 | Func params=#6 block=#8 type=#4
+   6 | Params params=[#7]
+   7 | Var id='i' local=true readOnly=false type=undefined
+   8 | ReturnStatement exp=#7`
+  ],
+  [
+    '2 arg function call', 
+    `add = (y, z) -> { y + z }
+    add(2, [false])`, 
+    `   1 | Block statements=[#2,#12]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#5
+   3 | Var id='add' local=false readOnly=false type=#4
+   4 | FuncType description='function'
+   5 | Func params=#6 block=#9 type=#4
+   6 | Params params=[#7,#8]
+   7 | Var id='y' local=true readOnly=false type=undefined
+   8 | Var id='z' local=true readOnly=false type=undefined
+   9 | Block statements=[#10]
+  10 | ReturnStatement exp=#11
+  11 | NaryExp exp=[#7,'+',#8]
+  12 | ReturnStatement exp=#13
+  13 | Call id=#3 args=#14
+  14 | Args args=[#15,#17]
+  15 | Num val=2 type=#16
+  16 | NumType description='number'
+  17 | List list=[#18] type=#20
+  18 | Bool val=false type=#19
+  19 | BoolType description='boolean'
+  20 | ListType description='list'`
+  ],
   // [
   //   'variable to number comparison',
   //   'x < 2',

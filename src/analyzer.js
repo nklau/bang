@@ -67,13 +67,13 @@ function mapOps(elements) {
 }
 
 function isPreIncrement(e) {
-  return e.type.constructor === core.UnaryExp
+  return e.type?.constructor === core.UnaryExp
     && e.op === '++'
     && !e.postOp
 }
 
 function isPreDecrement(e) {
-  return e.type.constructor === core.UnaryExp
+  return e.type?.constructor === core.UnaryExp
     && e.op === '--'
     && !e.postOp
 }
