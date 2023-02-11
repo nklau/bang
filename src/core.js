@@ -125,6 +125,7 @@ export class Bool {
 export class Num {
   constructor(val) {
     this.val = Number(val)
+    this.type = new NumType()
   }
 }
 

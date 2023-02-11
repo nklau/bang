@@ -101,7 +101,7 @@ class Context {
     //   `Cannot assign to constant variable ${name}`, 
     //   node
     // )
-    if (!entity.local && lookup(name).readOnly) {
+    if (!entity.local && this.lookup(name)?.readOnly) {
       core.error(`Cannot assign to constant variable ${name}`)
     }
     // entity.local ? `_${name}` : name
@@ -238,13 +238,7 @@ export default function analyze(sourceCode) {
     Exp5_multiplyDivideMod(left, op, rest) {
       const pieces = [left.rep(), op.sourceString, ...rest.asIteration().rep()]
       pieces.filter(e => typeof e !== 'string').forEach(e => checkNotType(e, [core.FuncType]))
-      // TODO: combinations
-      // [] * []
-      // [] / []
-      // [] % []
-      // "" * ""
-      // "" / "" etc
-      // could coerce rhs to number?
+      // TODO: see language design photos
 
       return new core.NaryExp(pieces)
     },
@@ -287,9 +281,7 @@ export default function analyze(sourceCode) {
       return new core.UnaryExp(e, o, false)
     },
     Exp8_call(exp, _space, params) {
-      // TODO: should 0() return 0 etc
       const [e, p] = [exp.rep(), params.rep()]
-      // TODO check is var if not allowing 0()
       checkNotUndefined(e, e.sourceString)
 
       return new core.Call(f, p)

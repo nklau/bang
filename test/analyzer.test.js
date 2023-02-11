@@ -1,15 +1,17 @@
-// import util from "util"
-// import assert from "assert/strict"
-// import analyze from "../src/analyzer.js"
+import util from "util"
+import assert from "assert/strict"
+import analyze from "../src/analyzer.js"
 
-// const examples = [
-//   [
-//     'variable declaration',
-//     'x = 1',
-//     `   1 | Block statements=[#2]
-//    2 | VarDec variable=#3 assignmentOp='=' exp=1
-//    3 | Var id='x' local=false readOnly=false type=undefined`
-//   ],
+const examples = [
+  [
+    'variable declaration',
+    'x = 1',
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#5
+   3 | Var id='x' local=false readOnly=false type=#4
+   4 | NumType description='number' default=0
+   5 | Num val=1 type=#4`
+  ]
 //   [
 //     '2 arg function call', 
 //     'x(y, z)', 
@@ -351,12 +353,12 @@
 //   // 17 | Var `
 //   // ]
 //   // TODO: escaped chars (formatted and regular strs)
-// ]
+]
 
-// describe('The analyzer', () => {
-//   for (const [scenario, example, expected] of examples) {
-//     it(`produces the expected ast for ${scenario}`, () => {
-//       assert.deepEqual(util.format(analyze(example)), expected)
-//     }) 
-//   }
-// })
+describe('The analyzer', () => {
+  for (const [scenario, example, expected] of examples) {
+    it(`produces the expected ast for ${scenario}`, () => {
+      assert.deepEqual(util.format(analyze(example)), expected)
+    }) 
+  }
+})
