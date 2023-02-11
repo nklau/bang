@@ -121,8 +121,21 @@ const examples = [
    7 | Block statements=[]`
   ],
   [
-    'function literal with 1 param var dec',
+    'function literal with enclosed 1 param var dec',
     `x = (i) -> { i }`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#5
+   3 | Var id='x' local=false readOnly=false type=#4
+   4 | FuncType description='function'
+   5 | Func params=#6 block=#8 type=#4
+   6 | Params params=[#7]
+   7 | Var id='i' local=true readOnly=false type=undefined
+   8 | Block statements=[#9]
+   9 | ReturnStatement exp=#7`
+  ],
+  [
+    'function literal with 1 param var dec',
+    `x = i -> { i }`,
     `   1 | Block statements=[#2]
    2 | VarDec variable=#3 assignmentOp='=' exp=#5
    3 | Var id='x' local=false readOnly=false type=#4

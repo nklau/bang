@@ -374,7 +374,7 @@ export default function analyze(sourceCode) {
       )
 
       context.add(id.sourceString, x)
-      return x
+      return new core.Params([x])
       // return new core.KeywordParam(id.rep(), exp.rep())
     },
     Obj(_open, fields, _close) {
