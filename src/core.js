@@ -71,7 +71,7 @@ export class VarSelect {
   }
 }
 
-export class FuncLit {
+export class Func {
   constructor(params, block) {
     this.params = params
     this.block = block
@@ -89,6 +89,12 @@ export class KeywordParam {
   constructor(id, val) {
     this.id = id
     this.val = val
+  }
+}
+
+export class Args {
+  constructor(args) {
+    this.args = args
   }
 }
 

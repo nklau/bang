@@ -176,7 +176,7 @@ export default function analyze(sourceCode) {
       return new core.ReturnStatement(...exp.rep())
     },
     Statement_impliedReturn(exp) {
-      return new core.ReturnStatement(...exp.rep())
+      return new core.ReturnStatement(exp.rep())
     },
     Exp_ternary(cond, _qMark, block, _c, alt) {
       const c = coerceToBool(cond.rep())
@@ -330,19 +330,52 @@ export default function analyze(sourceCode) {
       return new core.VarSelect(exp.rep(), selector.rep())
     },
     FuncLit(exp, _arrow, block) {
-      return new core.FuncLit(exp.rep(), block.rep())
+      const e = exp.rep()
+
+      const b = new core.Block()
+      context = context.newChildContext({ inLoop: false, block: b })
+      const f = block.rep()
+      context = context.parent
+
+      return new core.Func(e, f)
     },
-    Params(_open, args, _close) {
-      return new core.Params(args.asIteration().rep())
+    Params(_open, params, _close) {
+      return new core.Params(params.asIteration().rep())
+    },
+    Args(_open, args, _close) {
+      return new core.Args(args.asIteration().rep())
     },
     Arg(arg) {
       return arg.rep()
+    },
+    Param(param) {
+      const p = param.rep()
+      const x = new core.Var(
+        p ? p.id : param.sourceString,
+        true,
+        false,
+        p ? p.val.type : undefined
+      )
+
+      context.add(x.id, x)
+      return x
     },
     PositionalArg(exp) {
       return exp.rep()
     },
     KeywordArg(id, _e, exp) {
       return new core.KeywordParam(id.rep(), exp.rep())
+    },
+    oneParam(id) {
+      const x = new core.Var(
+        id.sourceString,
+        true,
+        false
+      )
+
+      context.add(id.sourceString, x)
+      return x
+      // return new core.KeywordParam(id.rep(), exp.rep())
     },
     Obj(_open, fields, _close) {
       // TODO: create new context?

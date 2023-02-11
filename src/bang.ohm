@@ -44,13 +44,14 @@ Bang {
                         | VarAssignment #"." VarAssignment                                  -- select
                         | id
   
-  FuncLit               = (Params | id) "->" (BangFunc | Statement)
+  FuncLit               = (Params | oneParam) "->" (BangFunc | Statement)
   Params                = "(" ListOf<Param, ","> ")"
   Args                  = "(" ListOf<Arg, ","> ")"
   Arg                   = KeywordArg | PositionalArg
   Param                 = KeywordArg | id
   PositionalArg         = Exp
   KeywordArg            = id "=" Exp
+  oneParam              = id
 
   Obj                   = "{" ListOf<ObjField, ","> "}"
   ObjField              = key ":" Exp

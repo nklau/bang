@@ -116,10 +116,25 @@ const examples = [
    2 | VarDec variable=#3 assignmentOp='=' exp=#5
    3 | Var id='x' local=false readOnly=false type=#4
    4 | FuncType description='function'
-   5 | FuncLit params=#6 block=#7 type=#4
+   5 | Func params=#6 block=#7 type=#4
    6 | Params params=[]
    7 | Block statements=[]`
+  ],
+  [
+    'function literal with 1 param var dec',
+    `x = (i) -> { i }`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#5
+   3 | Var id='x' local=false readOnly=false type=#4
+   4 | FuncType description='function'
+   5 | Func params=#6 block=#8 type=#4
+   6 | Params params=[#7]
+   7 | Var id='i' local=true readOnly=false type=undefined
+   8 | Block statements=[#9]
+   9 | ReturnStatement exp=#7`
   ]
+  // TODO x = i -> { i }
+  // TODO x = i -> i
   // [
   //   '2 arg function call', 
   //   `x = (y, z) -> {}
@@ -330,12 +345,12 @@ const examples = [
 //     `   1 | Block statements=[#2,#7,#14]
 //    2 | VarDec variable=#3 assignmentOp='=' exp=#4
 //    3 | Var id='x' local=false readOnly=false type=undefined
-//    4 | FuncLit params=#5 block=#6
+//    4 | Func params=#5 block=#6
 //    5 | Params params=[]
 //    6 | Block statements=[]
 //    7 | VarDec variable=#8 assignmentOp='=' exp=#9
 //    8 | Var id='x' local=false readOnly=false type=undefined
-//    9 | FuncLit params='y' block=#10
+//    9 | Func params='y' block=#10
 //   10 | Block statements=[#11]
 //   11 | ReturnStatement exp=#12
 //   12 | UnaryExp exp=#13 op='-' returnBeforeEval=false
@@ -348,14 +363,14 @@ const examples = [
 //   19 | Params params=[5]
 //   20 | Block statements=[#21]
 //   21 | ReturnStatement exp=#22
-//   22 | FuncLit params=#23 block=#25
+//   22 | Func params=#23 block=#25
 //   23 | Params params=[#24]
 //   24 | KeywordParam id='y' val=0
 //   25 | Block statements=[#26]
 //   26 | BinaryExp left='y' op='**' right=2
 //   27 | Block statements=[#28]
 //   28 | ReturnStatement exp=#29
-//   29 | FuncLit params=#30 block=#31
+//   29 | Func params=#30 block=#31
 //   30 | Params params=['y']
 //   31 | Block statements=[#32]
 //   32 | BinaryExp left=#33 op='**' right=2
@@ -407,7 +422,7 @@ const examples = [
 //    4 | Call id='range' args=#5
 //    5 | Params params=[5]
 //    6 | Params params=[#7]
-//    7 | FuncLit params=#8 block=#9
+//    7 | Func params=#8 block=#9
 //    8 | Params params=['i']
 //    9 | Block statements=[#10]
 //   10 | Call id='print' args=#11
@@ -417,7 +432,7 @@ const examples = [
 //   14 | Call id='range' args=#15
 //   15 | Params params=[5]
 //   16 | Params params=[#17]
-//   17 | FuncLit params=#18 block=#19
+//   17 | Func params=#18 block=#19
 //   18 | Params params=['i']
 //   19 | Call id='print' args=#20
 //   20 | Params params=['i']
