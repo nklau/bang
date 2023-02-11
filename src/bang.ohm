@@ -28,7 +28,7 @@ Bang {
   Exp7                  = Exp8 ("++" | "--")                                                -- postFix
                         | ("++" | "--") Exp8                                                -- preFix
                         | Exp8
-  Exp8                  = Exp8 #(~newLine space)* ~#newLine Params                          -- call
+  Exp8                  = Exp8 #(~newLine space)* ~#newLine Args                            -- call
                         | Exp8 #"[" Exp "]"                                                 -- subscript
                         | Exp8 #"." VarAssignment                                           -- select
                         | "!" Exp8                                                          -- negative
@@ -45,8 +45,10 @@ Bang {
                         | id
   
   FuncLit               = (Params | id) "->" (BangFunc | Statement)
-  Params                = "(" ListOf<Arg, ","> ")"
+  Params                = "(" ListOf<Param, ","> ")"
+  Args                  = "(" ListOf<Arg, ","> ")"
   Arg                   = KeywordArg | PositionalArg
+  Param                 = KeywordArg | id
   PositionalArg         = Exp
   KeywordArg            = id "=" Exp
 
