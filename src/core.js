@@ -1,5 +1,219 @@
 import util from 'util'
 
+export class List {
+  static defaultVal = []
+  static typeDescription = 'list'
+
+  constructor(val) {
+    this.val = val
+  }
+
+  loop(block) {
+    // TODO
+  }
+
+  equals(other) {
+    // TODO
+  }
+
+  get len() {
+    return this.val.length
+  }
+
+  get default() {
+    return new List(List.defaultVal)
+  }
+
+  get type() {
+    return List.typeDescription
+  }
+}
+
+export class Obj {
+  static defaultVal = []
+  static typeDescription = 'object'
+
+  constructor(val) {
+    this.val = val
+  }
+
+  loop(block) {
+    // TODO
+  }
+
+  equals(other) {
+    // TODO
+  }
+
+  fixRef() {
+    // TODO
+  }
+
+  get len() {
+    return this.val.length
+  }
+
+  get default() {
+    return new Obj(Obj.defaultVal)
+  }
+
+  get type() {
+    return Obj.typeDescription
+  }
+}
+
+export class ObjField {
+  constructor(key, val) {
+    this.key = key
+    this.val = val
+  }
+}
+
+export class Str {
+  static defaultVal = ''
+  static typeDescription = 'string'
+
+  constructor(val) {
+    this.val = val
+  }
+
+  loop(block) {
+    // TODO
+  }
+
+  equals(other) {
+    // TODO
+  }
+
+  get len() {
+    return this.val.length
+  }
+
+  get default() {
+    return new Str(Str.defaultVal)
+  }
+
+  get type() {
+    return Str.typeDescription
+  }
+}
+
+export class FormattedStr extends Str {
+  static defaultVal = []
+
+  constructor(val) {
+    super(val)
+  }
+
+  equals(other) {
+    // TODO
+  }
+
+  get default() {
+    return new FormattedStr(FormattedStr.defaultVal)
+  }
+}
+
+export class Num {
+  static defaultVal = 0
+  static typeDescription = 'number'
+
+  constructor(val) {
+    this.val = Number(val)
+  }
+
+  loop(block) {
+    // TODO
+  }
+
+  equals(other) {
+    // TODO
+  }
+
+  get default() {
+    return new Num(Num.defaultVal)
+  }
+
+  get type() {
+    return Num.typeDescription
+  }
+}
+
+export class Bool {
+  static defaultVal = 'false'
+  static typeDescription = 'boolean'
+
+  constructor(val) {
+    this.val = val === 'true'
+  }
+
+  loop(block) {
+    // TODO
+  }
+
+  equals(other) {
+    // TODO
+  }
+
+  get default() {
+    return new Bool(Bool.defaultVal)
+  }
+
+  get type() {
+    return Bool.typeDescription
+  }
+}
+
+export class Nil {
+  static get default() {
+    return undefined
+  }
+
+  static get type() {
+    return 'nil'
+  }
+}
+
+export class Func {
+  static defaultVal = []
+  static typeDescription = 'function'
+
+  constructor(params, block) {
+    this.params = params
+    this.block = block
+  }
+
+  equals(other) {
+    return this.type === other.type 
+      && this.params.params === other.params.params
+      && this.block.statements === other.block.statements
+  }
+
+  get default() {
+    return new Func(
+      new Params(Func.defaultVal),
+      new Block(Func.defaultVal)
+    )
+  }
+
+  get type() {
+    return Func.typeDescription
+  }
+}
+
+export class Params {
+  constructor(params) {
+    this.params = params
+  }
+}
+
+export class KeywordParam {
+  constructor(id, val) {
+    this.id = id
+    this.val = val
+  }
+}
+
 export class Block {
   constructor(statements) {
     this.statements = statements
@@ -15,6 +229,20 @@ export class VarDec {
 export class Var {
   constructor(id, local, readOnly, type) {
     Object.assign(this, { id, local, readOnly, type })
+  }
+}
+
+export class VarSubscript {
+  constructor(id, selector) {
+    this.id = id
+    this.selector = selector
+  }
+}
+
+export class VarSelect {
+  constructor(id, selector) {
+    this.id = id
+    this.selector = selector
   }
 }
 
@@ -57,92 +285,9 @@ export class Call {
   }
 }
 
-export class VarSubscript {
-  constructor(id, selector) {
-    this.id = id
-    this.selector = selector
-  }
-}
-
-export class VarSelect {
-  constructor(id, selector) {
-    this.id = id
-    this.selector = selector
-  }
-}
-
-export class Func {
-  constructor(params, block) {
-    this.params = params
-    this.block = block
-    this.type = new FuncType()
-  }
-}
-
-export class Params {
-  constructor(params) {
-    this.params = params
-  }
-}
-
-export class KeywordParam {
-  constructor(id, val) {
-    this.id = id
-    this.val = val
-  }
-}
-
 export class Args {
   constructor(args) {
     this.args = args
-  }
-}
-
-export class Obj {
-  constructor(fields) {
-    this.fields = fields
-  }
-}
-
-export class ObjField {
-  constructor(key, val) {
-    this.key = key
-    this.val = val
-  }
-}
-
-export class List {
-  constructor(list) {
-    this.list = list
-    this.type = new ListType()
-  }
-}
-
-export class FormattedStr {
-  constructor(subexps) {
-    this.subexps = subexps
-    this.type = new StrType()
-  }
-}
-
-export class Bool {
-  constructor(val) {
-    this.val = val === 'true'
-    this.type = new BoolType()
-  }
-}
-
-export class Num {
-  constructor(val) {
-    this.val = Number(val)
-    this.type = new NumType()
-  }
-}
-
-export class Str {
-  constructor(val) {
-    this.val = val
-    this.type = new StrType()
   }
 }
 
@@ -168,100 +313,6 @@ export class MatchCase {
 export class DefaultMatchCase {
   constructor(block) {
     this.block = block
-  }
-}
-
-export class Type {
-  static NIL = new Type('nil')
-  static default = Type.NIL
-
-  constructor(description) {
-    this.description = description
-  }
-
-  isEquivalentTo(target) {
-    return this == target
-  }
-}
-
-export class NumType extends Type {
-  static default = 0
-
-  constructor() {
-    super('number')
-  }
-
-  // TODO
-  loop(block) {
-
-  }
-}
-
-export class StrType extends Type {
-  static default = ''
-
-  constructor() {
-    super('string')
-  }
-
-  // TODO
-  get len() {
-
-  }
-}
-
-export class BoolType extends Type {
-  static default = false
-
-  constructor() {
-    super('boolean')
-  }
-
-  // TODO
-  loop(block) {
-    // while (this) {
-    //   block.run()
-    // }
-  }
-}
-
-export class ListType extends Type {
-  static default = []
-
-  constructor() {
-    super('list')
-  }
-}
-
-export class FuncType extends Type {
-  static default = () => {}
-
-  constructor() {
-    super('function')
-  }
-}
-
-export class BangFuncType extends Type {
-  static default = {}
-
-  constructor() {
-    super('bang function')
-  }
-}
-
-export class ObjType extends Type {
-  static default = {}
-
-  constructor() {
-    super('object')
-  }
-
-  fixRef() {
-    // TODO
-  }
-
-  getVal(key) {
-    // TODO
   }
 }
 

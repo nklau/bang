@@ -3,6 +3,7 @@ import ohm from "ohm-js"
 import * as core from "./core.js"
 
 const bangGrammar = ohm.grammar(fs.readFileSync("src/bang.ohm"))
+const d = { LIST: 'list', OBJ: 'object', STR: 'string', NUM: 'number', BOOL: 'boolean', NIL: 'nil', FUNC: 'function' }
 
 // TODO: function to get type
 
@@ -11,52 +12,83 @@ function check(condition, message, node) {
 }
 
 function checkNotType(e, types) {
-  const t = e.type
-  check(!types.includes(t?.constructor), `Unexpected type ${t?.description}`)
+  const t = e?.type
+  check(!types.includes(t), `Unexpected type ${t}`)
 }
 
 function checkSameTypes(e0, e1) {
-  const [t0, t1] = [e0.type, e1.type]
-  check(t0.constructor === t1.constructor, `${t0.description} can never be equal to ${t1.description}`)
+  const [t0, t1] = [e0?.type, e1?.type]
+  check(t0 === t1, `${t0} can never be equal to ${t1}`)
+}
+
+function isVar(e) {
+  return e instanceof core.Var
+}
+
+function isList(e) {
+  return e.type === d.LIST
+}
+
+function isObj(e) {
+  return e.type === d.OBJ
+}
+
+function isStr(e) {
+  return e.type === d.STR
+}
+
+function isNum(e) {
+  return e.type === d.NUM
+}
+
+function isBool(e) {
+  return e.type === d.BOOL
+}
+
+// TODO: is this needed?
+function isNil(e) {
+  return e.type === d.NIL
+}
+
+function isFunc(e) {
+  return e.type === d.FUNC
 }
 
 function checkType(e, types) {
-  checkNotUndefined(e)
-  check(types.includes(e.type.constructor), `Unexpected type ${e.type.description}`)
+  check(types.includes(e?.type), `Unexpected type ${e?.type}`)
 }
 
-function checkNotUndefined(e, name) {
-  check(e, `Variable may not have been initialized`)
-}
+// function checkNotUndefined(e, name) {
+//   check(e, `Variable may not have been initialized`)
+// }
 
-function checkVarOrList(e) {
-  check(e.constructor === core.Var || isList(e), 'Cannot mutate a literal')
+function checkNotLiteral(e) {
+  const lits = [d.STR, d.NUM, d.BOOL, d.NIL]
+  check((isVar(e) || lits.includes(e?.type)), 'Cannot mutate a literal')
 }
 
 function checkInBlock(context) {
   check(context.function, 'Cannot return outside a function')
 }
 
-function checkBool(e) {
-  check(e.type.constructor === core.BoolType, 'Expected boolean')
-}
+// function checkBool(e) {
+//   check(e.type.constructor === core.BoolType, 'Expected boolean')
+// }
 
-function checkNum(e) {
-  check(e.type.constructor === core.NumType, 'Expected number')
-}
+// function checkNum(e) {
+//   check(e.type.constructor === core.NumType, 'Expected number')
+// }
 
-function isList(e) {
-  return e.type.constructor === core.ListType
-}
+// function isList(e) {
+//   return e.type.constructor === core.ListType
+// }
 
-function isVar(e) {
-  return e.constructor === core.Var
-}
+// function isVar(e) {
+//   return e.constructor === core.Var
+// }
 
 function coerceToBool(e) {
-  // TODO: attempt type coercion
-  // if e.val === e.default then e = falsy
-  checkBool(e)
+  return !e?.equals(e?.default)
 }
 
 function mapOps(elements) {
@@ -67,13 +99,13 @@ function mapOps(elements) {
 }
 
 function isPreIncrement(e) {
-  return e.type?.constructor === core.UnaryExp
+  return e instanceof core.UnaryExp
     && e.op === '++'
     && !e.postOp
 }
 
 function isPreDecrement(e) {
-  return e.type?.constructor === core.UnaryExp
+  return e instanceof core.UnaryExp
     && e.op === '--'
     && !e.postOp
 }
@@ -150,11 +182,14 @@ export default function analyze(sourceCode) {
             e.type
           )
 
-          e = new core.BinaryExp(v.type.default, o.charAt(0), e)
+          context.add(id.sourceString, v)
+          e = new core.NaryExp([e.default, o.charAt(0), e])
+        } else {
+          e = new core.NaryExp([v, o.charAt(0), e])
         }
       }
 
-      return new core.VarDec(v, o, e)
+      return new core.VarDec(v, '=', e)
     },
     Statement_localVar(_local, id) {
       const v = new core.Var(
@@ -188,11 +223,11 @@ export default function analyze(sourceCode) {
 
       for (const [o, [l, r]] of Object.entries(pieces)) {
         if (o === '==') {
-          checkSameTypes(l, r)
+          // checkSameTypes(l, r) // TODO: probably don't want to throw error on this - just want to replace with false
         }
         if (o.includes('<') || o.includes('>')) {
-          checkNotType(l, [core.FuncType])
-          checkNotType(r, [core.FuncType])
+          checkNotType(l, [d.FUNC])
+          checkNotType(r, [d.FUNC])
         }
       }
 
@@ -221,7 +256,6 @@ export default function analyze(sourceCode) {
       return x
     },
     Exp4_addSubtract(left, op, rest) {
-      // TODO: str - 1
       const elements = [left.rep(), op.sourceString, ...rest.asIteration().rep()]
       const pieces = mapOps(elements)
 
@@ -237,15 +271,15 @@ export default function analyze(sourceCode) {
     },
     Exp5_multiplyDivideMod(left, op, rest) {
       const pieces = [left.rep(), op.sourceString, ...rest.asIteration().rep()]
-      pieces.filter(e => typeof e !== 'string').forEach(e => checkNotType(e, [core.FuncType]))
+      pieces.filter(e => typeof e !== 'string').forEach(e => checkNotType(e, [d.FUNC]))
       // TODO: see language design photos
 
       return new core.NaryExp(pieces)
     },
     Exp6_exponent(left, op, right) {
       const [l, o, r] = [left.rep(), op.sourceString, right.rep()]
-      checkNotType(l, [core.FuncType])
-      checkNotType(r, [core.FuncType])
+      checkNotType(l, [d.FUNC])
+      checkNotType(r, [d.FUNC])
       return new core.BinaryExp(l, o, r)
     },
     Exp6_negate(negative, right) {
@@ -260,37 +294,34 @@ export default function analyze(sourceCode) {
     },
     Exp6_spread(spread, right) {
       const [o, r] = [spread.sourceString, right.rep()]
-      checkType(r, [core.ObjType, core.ListType, core.BangFuncType])
+      checkType(r, [d.OBJ, d.LIST])
 
       return new core.UnaryExp(r, o)
     },
     Exp7_postFix(exp, op) {
       const [e, o] = [exp.rep(), op.sourceString]
-      checkVarOrList(e)
-      // TODO: what about strings
-      checkNotType(e, [core.FuncType, core.BangFuncType])
+      checkNotLiteral(e)
 
       return new core.UnaryExp(e, o, true)
     },
     Exp7_preFix(op, exp) {
       const [e, o] = [exp.rep(), op.sourceString]
-      checkVarOrList(e)
-      // TODO: what about strings
-      checkNotType(e, [core.FuncType, core.BangFuncType])
+      checkNotLiteral(e)
 
       return new core.UnaryExp(e, o, false)
     },
     Exp8_call(exp, _space, params) {
       const [e, p] = [exp.rep(), params.rep()]
-      checkNotUndefined(e)
+      check(e, 'Variable may not have been initialized')
+      // checkNotUndefined(e) // TODO: does this prevent 0()
 
       return new core.Call(e, p)
     },
     Exp8_subscript(exp, _open, selector, _close) {
       const [e, s] = [exp.rep(), selector.rep()]
       // TODO: don't think this is right because it doesn't allow built-in functions
-      checkType(e, [core.ObjType, core.ListType])
-      checkType(s, [core.NumType, core.StrType, core.BoolType, core.BangFuncType])
+      checkType(e, [d.OBJ, d.LIST])
+      checkType(s, [d.NUM, d.STR, d.BOOL])
       // TODO how to check context? to see if selector exists/needs to be created
 
       return new core.VarSubscript(e, s)
@@ -298,7 +329,7 @@ export default function analyze(sourceCode) {
     Exp8_select(exp, _dot, selector) {
       const [e, s] = [exp.rep(), selector.rep()]
       
-      checkNotType(e, [core.FuncType])
+      checkNotType(e, [d.FUNC])
       // TODO: how to check s?
       // TODO do we allow list.1 as indexing?
       // if so, need to allow list type for x
@@ -356,7 +387,7 @@ export default function analyze(sourceCode) {
         p ? p.id : param.sourceString,
         true,
         false,
-        p ? p.val.type : undefined
+        p ? p.type : undefined
       )
 
       context.add(x.id, x)
