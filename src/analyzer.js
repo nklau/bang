@@ -211,7 +211,8 @@ export default function analyze(sourceCode) {
       return new core.ReturnStatement(...exp.rep())
     },
     Statement_impliedReturn(exp) {
-      return new core.ReturnStatement(exp.rep())
+      const e = exp.rep()
+      return e instanceof core.Ternary ? e : new core.ReturnStatement(e)
     },
     Exp_ternary(cond, _qMark, block, _c, alt) {
       const c = coerceToBool(cond.rep())

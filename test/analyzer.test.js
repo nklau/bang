@@ -200,6 +200,8 @@ const examples = [
    8 | NaryExp exp=[#3,'==',undefined]`
    // 5 | TODO: think #3 should maybe just be the default value 0?
   ]
+  // TODO will need to change the way delimiters work for x + y - z etc
+  // TODO need to check that a ternary is NOT an implied return
   // [
   //   'empty obj dec',
   //   `x = {}`,
