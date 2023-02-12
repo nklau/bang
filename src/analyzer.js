@@ -12,7 +12,7 @@ function check(condition, message, node) {
 
 function checkNotType(e, types) {
   const t = e.type
-  check(!types.includes(t.constructor), `Unexpected type ${t.description}`)
+  check(!types.includes(t?.constructor), `Unexpected type ${t?.description}`)
 }
 
 function checkSameTypes(e0, e1) {
@@ -182,10 +182,9 @@ export default function analyze(sourceCode) {
       const c = coerceToBool(cond.rep())
       return new core.Ternary(c, block.rep(), ...alt.rep())
     },
-    Exp1_equality(left, op, rest) {
-      const elements = [left.rep(), op.sourceString, ...rest.asIteration().rep()]
+    Exp1_equality(left, right) {
+      const elements = [...left.rep(), right.rep()].flat()
       const pieces = mapOps(elements)
-      // TODO: 
 
       for (const [o, [l, r]] of Object.entries(pieces)) {
         if (o === '==') {
@@ -319,6 +318,9 @@ export default function analyze(sourceCode) {
     Exp9_enclosed(_open, exp, _close) {
       return exp.rep()
     },
+    LeftCompare(exp, op) {
+      return [exp.rep(), op.sourceString]
+    },
     BangFunc(_open, block, _close) {
       return block.rep()
     },
@@ -437,6 +439,9 @@ export default function analyze(sourceCode) {
     },
     num(_whole, _dot, _fraction, _e, _sign, _exponent) {
       return new core.Num(this.sourceString)
+    },
+    compareOp(_o0, _o1) {
+      return this.sourceString
     },
     MatchExp(_match, id, block) {
       return new core.MatchExp(id.sourceString, block.rep())

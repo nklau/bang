@@ -183,20 +183,37 @@ const examples = [
   19 | BoolType description='boolean'
   20 | ListType description='list'`
   ],
-  // [
-  //   'variable to number comparison',
-  //   'x < 2',
-  //   `   1 | Block statements=[#2]
-  //  2 | BinaryExp left=#3 op='<' right=
-  //  3 | Var id='x' local=false readOnly=false type=#4
-  //  4 | `
-  // ],
-//   [
-//     'number to variable comparison',
-//     '4 > y',
-//     `   1 | Block statements=[#2]
-//    2 | BinaryExp left=4 op='>' right='y'`
-//   ],
+  [
+    'variable to number comparison',
+    `x = 1
+    x < 2`,
+    `   1 | Block statements=[#2,#6]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#5
+   3 | Var id='x' local=false readOnly=false type=#4
+   4 | NumType description='number'
+   5 | Num val=1 type=#4
+   6 | ReturnStatement exp=#7
+   7 | NaryExp exp=[#3,'<',#8]
+   8 | Num val=2 type=#9
+   9 | NumType description='number'`
+  ],
+  [
+    'number to variable comparison',
+    `y = false
+    4 > y > -1`,
+    `   1 | Block statements=[#2,#6]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#5
+   3 | Var id='y' local=false readOnly=false type=#4
+   4 | BoolType description='boolean'
+   5 | Bool val=false type=#4
+   6 | ReturnStatement exp=#7
+   7 | NaryExp exp=[#8,'>',#3,'>',#10]
+   8 | Num val=4 type=#9
+   9 | NumType description='number'
+  10 | UnaryExp exp=#11 op='-' returnBeforeEval=false
+  11 | Num val=1 type=#12
+  12 | NumType description='number'`
+  ],
 //   [
 //     'binary exps',
 //     `x == y

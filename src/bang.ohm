@@ -11,7 +11,7 @@ Bang {
                         | break
   Exp                   = Exp1 "?" (BangFunc | Statement) (":" (BangFunc | Statement))?     -- ternary
                         | Exp1
-  Exp1                  = Exp2 compareOp NonemptyListOf<Exp2, compareOp>                    -- equality
+  Exp1                  = LeftCompare+ Exp2                                                 -- equality
                         | Exp2
   Exp2                  = Exp2 "||" Exp3                                                    -- or
                         | Exp3
@@ -38,6 +38,8 @@ Bang {
                         | boolLit   | BangFunc  | MatchExp  | ListLit   
                         | FuncLit   | id
                         | "(" Exp ")"                                                       -- enclosed
+
+  LeftCompare           = Exp2 compareOp
 
   BangFunc              = "{" Block "}"
   VarAssignment         = VarAssignment #"[" Exp "]"                                        -- subscript
