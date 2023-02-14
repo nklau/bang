@@ -363,8 +363,20 @@ const examples = [
    4 | Num val=5
    5 | VarDec variable=#3 assignmentOp='=' exp=#6
    6 | Str val='str'`
+  ],
+  [
+    'changing variable value with mutating assignment op',
+    `x = 5
+    x += 'str'`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='string'
+   4 | Num val=5
+   5 | VarDec variable=#3 assignmentOp='=' exp=#6
+   6 | NaryExp exp=[#3,'+',#7]
+   7 | Str val='str'`
   ]
-  // TODO: x = 5 \n x += 'str'
+  // TODO: x = 5 \n x += 'str' + 'alt'
   // TODO: declaring local x in smaller scope should make a new var, then outside var should be unchanged type (test using different types)
 //   [
 //     'binary exps',

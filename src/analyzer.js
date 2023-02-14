@@ -179,6 +179,7 @@ export default function analyze(sourceCode) {
       } else {
         // Designed to only get here if variable dec is using an eval assignment
         if (!v) {
+          e = new core.NaryExp([e.default, o.charAt(0), e])
           v = new core.Var(
             id.sourceString,
             l === 'local',
@@ -187,9 +188,9 @@ export default function analyze(sourceCode) {
           )
 
           context.add(id.sourceString, v)
-          e = new core.NaryExp([e.default, o.charAt(0), e])
         } else {
           e = new core.NaryExp([v, o.charAt(0), e])
+          v.type = e.type
         }
       }
 

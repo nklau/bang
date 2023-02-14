@@ -264,6 +264,16 @@ export class NaryExp {
   constructor(exp) {
     this.exp = exp
   }
+
+  get type() {
+    const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription]
+
+    for (const type of types) {
+      if (this.exp.some(e => { return e.type === type })) { 
+        return type 
+      }
+    }
+  }
 }
 
 export class BinaryExp {
