@@ -301,6 +301,24 @@ const examples = [
    2 | VarDec variable=#3 assignmentOp='=' exp=#4
    3 | Var id='x' local=true readOnly=false type='nil'
    4 | Nil `
+  ],
+  [
+    'var dec without value',
+    `x`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='nil'
+   4 | Nil `
+  ],
+  [
+    'var as implied return gets recognized as return',
+    `x = 1
+    x`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | Num val=1
+   5 | ReturnStatement exp=#3`
   ]
   // TODO: test local w/without val
   // TODO: test const

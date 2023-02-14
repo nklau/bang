@@ -214,8 +214,21 @@ export default function analyze(sourceCode) {
     },
     Statement_impliedReturn(exp) {
       const e = exp.rep()
-      const noReturn = [core.Ternary, core.PreIncrement, core.PreDecrement, core.PostIncrement, core.PostDecrement]
-      return noReturn.some(r => e instanceof r) ? e : new core.ReturnStatement(e)
+      if (e) {
+        const noReturn = [core.Ternary, core.PreIncrement, core.PreDecrement, core.PostIncrement, core.PostDecrement]
+        return noReturn.some(r => e instanceof r) ? e : new core.ReturnStatement(e)
+      } else {
+        const x = new core.Nil()
+        const v = new core.Var(
+          exp.sourceString,
+          false,
+          false,
+          x.type
+        )
+
+        context.add(exp.sourceString, v)
+        return new core.VarDec(v, '=', x)
+      }
     },
     Exp_ternary(cond, _qMark, block, _c, alt) {
       const c = coerceToBool(cond.rep())
