@@ -247,13 +247,26 @@ const examples = [
    6 | ReturnStatement exp=#7
    7 | Num val=2`
   ],
-  // [
-  //   'postfix op',
-  //   `x = 1
-  //   x++`,
-  //   ''
-  // ],
-  // TODO will need to change the way delimiters work for x + y - z etc
+  [
+    'postfix op',
+    `x = 1
+    x++`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | Num val=1
+   5 | PostIncrement exp=#3`
+  ],
+  [
+    'chained addition',
+    `1 + 2 + 3`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | NaryExp exp=[#4,'+',#5,'+',#6]
+   4 | Num val=1
+   5 | Num val=2
+   6 | Num val=3`
+  ]
   // TODO need to check that a ternary is NOT an implied return
   // TODO need to check that x++, etc is NOT an implied return
   // TODO fix x++ for undeclared var

@@ -17,7 +17,7 @@ Bang {
                         | Exp3
   Exp3                  = Exp3 "&&" Exp4                                                    -- and
                         | Exp4
-  Exp4                  = Exp5 additionOp NonemptyListOf<Exp5, additionOp>                  -- addSubtract
+  Exp4                  = LeftAddition+ Exp5                                                -- addSubtract
                         | Exp5
   Exp5                  = Exp6 multiplicationOp NonemptyListOf<Exp6, multiplicationOp>      -- multiplyDivideMod
                         | Exp6
@@ -40,6 +40,7 @@ Bang {
                         | "(" Exp ")"                                                       -- enclosed
 
   LeftCompare           = Exp2 compareOp
+  LeftAddition          = Exp5 additionOp
 
   BangFunc              = "{" Block "}"
   VarAssignment         = VarAssignment #"[" Exp "]"                                        -- subscript

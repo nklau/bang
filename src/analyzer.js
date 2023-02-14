@@ -257,8 +257,8 @@ export default function analyze(sourceCode) {
 
       return x
     },
-    Exp4_addSubtract(left, op, rest) {
-      const elements = [left.rep(), op.sourceString, ...rest.asIteration().rep()]
+    Exp4_addSubtract(left, right) {
+      const elements = [...left.rep(), right.rep()].flat()
       const pieces = mapOps(elements)
 
       for (const [o, [l, r]] of Object.entries(pieces)) {
@@ -369,6 +369,9 @@ export default function analyze(sourceCode) {
       return exp.rep()
     },
     LeftCompare(exp, op) {
+      return [exp.rep(), op.sourceString]
+    },
+    LeftAddition(exp, op) {
       return [exp.rep(), op.sourceString]
     },
     BangFunc(_open, block, _close) {
