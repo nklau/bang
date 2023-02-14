@@ -208,9 +208,34 @@ const examples = [
    4 | PostIncrement exp=#5
    5 | Var id='x' local=false readOnly=false type='number'`
   ],
-  // [
-  //   'post-increment operator is not an implied return'
-  // ]
+  [
+    'post-increment operator is not an implied return',
+    `x++`,
+    `   1 | Block statements=[#2]
+   2 | PostIncrement exp=#3
+   3 | Var id='x' local=false readOnly=false type='number'`
+  ],
+  [
+    'post-decrement operator is not an implied return',
+    `x--`,
+    `   1 | Block statements=[#2]
+   2 | PostDecrement exp=#3
+   3 | Var id='x' local=false readOnly=false type='number'`
+  ],
+  [
+    'pre-increment operator is not an implied return',
+    `++x`,
+    `   1 | Block statements=[#2]
+   2 | PreIncrement exp=#3
+   3 | Var id='x' local=false readOnly=false type='number'`
+  ],
+  [
+    'pre-decrement operator is not an implied return',
+    `--x`,
+    `   1 | Block statements=[#2]
+   2 | PreDecrement exp=#3
+   3 | Var id='x' local=false readOnly=false type='number'`
+  ],
   // [
   //   'ternary',
   //   `true ? 1 : 2`,

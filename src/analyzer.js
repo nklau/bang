@@ -320,7 +320,7 @@ export default function analyze(sourceCode) {
       return o.includes('+') ? new core.PostIncrement(e) : new core.PostDecrement(e)
     },
     Exp7_preFix(op, exp) {
-      const [e, o] = [exp.rep(), op.sourceString]
+      let [e, o] = [exp.rep(), op.sourceString]
       if (!e) {
         e = new core.Var(exp.sourceString, false, false, 'number')
         context.add(exp.sourceString, e)
