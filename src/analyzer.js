@@ -160,25 +160,29 @@ export default function analyze(sourceCode) {
       return statement.rep()
     },
     Statement_varDec(local, readOnly, id, op, exp) {
-      let [e, o] = [exp.rep(), op.sourceString]
-      let v
+      let [e, o, l, r] = [exp.rep(), op.sourceString, local.sourceString, readOnly.sourceString]
+      let v = context.lookup(id.sourceString)
 
       if (op.sourceString === '=') {
-        v = new core.Var(
-          id.sourceString,
-          local.sourceString === 'local',
-          readOnly.sourceString === 'const',
-          e.type ?? e.exp?.type
-        )
-        context.add(id.sourceString, v)
+        if (v) {
+          v.local = l === 'local'
+          v.type = e.type ?? e.exp?.type
+        } else {
+          v = new core.Var(
+            id.sourceString,
+            l === 'local',
+            r === 'const',
+            e.type ?? e.exp?.type
+          )
+          context.add(id.sourceString, v)
+        }
       } else {
         // Designed to only get here if variable dec is using an eval assignment
-        v = id.rep()
         if (!v) {
           v = new core.Var(
             id.sourceString,
-            local.sourceString === 'local',
-            readOnly.sourceString === 'const',
+            l === 'local',
+            r === 'const',
             e.type
           )
 

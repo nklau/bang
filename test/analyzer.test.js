@@ -2,6 +2,10 @@ import util from "util"
 import assert from "assert/strict"
 import analyze from "../src/analyzer.js"
 
+// TODO const w/out val should error
+// TODO: local const w/out val should error
+// TODO: changing const val should error
+
 const examples = [
   [
     'numeric variable declaration',
@@ -319,14 +323,49 @@ const examples = [
    3 | Var id='x' local=false readOnly=false type='number'
    4 | Num val=1
    5 | ReturnStatement exp=#3`
+  ],
+  [
+    'const var dec with value',
+    `const x = 5`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=true type='number'
+   4 | Num val=5`
+  ],
+  [
+    'local const var dec with value',
+    `local const x = 5`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=true readOnly=true type='number'
+   4 | Num val=5`
+  ],
+  [
+    'changing variable value affects previously undefined var type',
+    `x
+    x = 5
+    x`,
+    `   1 | Block statements=[#2,#5,#7]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | Nil 
+   5 | VarDec variable=#3 assignmentOp='=' exp=#6
+   6 | Num val=5
+   7 | ReturnStatement exp=#3`
+  ],
+  [
+    'changing variable value affects already existing var type',
+    `x = 5
+    x = 'str'`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='string'
+   4 | Num val=5
+   5 | VarDec variable=#3 assignmentOp='=' exp=#6
+   6 | Str val='str'`
   ]
-  // TODO: test local w/without val
-  // TODO: test const
-  // TODO: test local const
-  // TODO const w/out val should error
-  // TODO: local const w/out val should error
-  // TODO: changing const val should error
-  // TODO: `x \n x = 5` x should be a number
+  // TODO: x = 5 \n x += 'str'
+  // TODO: declaring local x in smaller scope should make a new var, then outside var should be unchanged type (test using different types)
 //   [
 //     'binary exps',
 //     `x == y
