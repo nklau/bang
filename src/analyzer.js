@@ -63,8 +63,8 @@ function checkType(e, types) {
 // }
 
 function checkNotLiteral(e) {
-  const lits = [d.STR, d.NUM, d.BOOL, d.NIL]
-  check((isVar(e) || lits.includes(e?.type)), 'Cannot mutate a literal')
+  const lits = [core.Str, core.Num, core.Bool, core.Nil]
+  check(!lits.some(l => e instanceof l), 'Cannot mutate a literal')
 }
 
 function checkInBlock(context) {
@@ -168,7 +168,7 @@ export default function analyze(sourceCode) {
           id.sourceString,
           local.sourceString === 'local',
           readOnly.sourceString === 'const',
-          e.type
+          e.type ?? e.exp?.type
         )
         context.add(id.sourceString, v)
       } else {
@@ -211,10 +211,9 @@ export default function analyze(sourceCode) {
       return new core.ReturnStatement(...exp.rep())
     },
     Statement_impliedReturn(exp) {
-      const e = exp.rep() // TODO ++ and -- also shouldn't immediately return
-      const noReturn = [core.Ternary] // TODO: change back to old if only ternaries cause issues
+      const e = exp.rep()
+      const noReturn = [core.Ternary, core.PreIncrement, core.PreDecrement, core.PostIncrement, core.PostDecrement]
       return noReturn.some(r => e instanceof r) ? e : new core.ReturnStatement(e)
-      // return e instanceof core.Ternary ? e : new core.ReturnStatement(e)
     },
     Exp_ternary(cond, _qMark, block, _c, alt) {
       const c = coerceToBool(cond.rep())
@@ -311,14 +310,22 @@ export default function analyze(sourceCode) {
       return new core.UnaryExp(r, o)
     },
     Exp7_postFix(exp, op) {
-      const [e, o] = [exp.rep(), op.sourceString]
-      checkNotLiteral(e) // TODO: causes issue for x++ when x is undefined
+      let [e, o] = [exp.rep(), op.sourceString]
+      if (!e) {
+        e = new core.Var(exp.sourceString, false, false, 'number')
+        context.add(exp.sourceString, e)
+      }
+      checkNotLiteral(e)
 
       return o.includes('+') ? new core.PostIncrement(e) : new core.PostDecrement(e)
     },
     Exp7_preFix(op, exp) {
       const [e, o] = [exp.rep(), op.sourceString]
-      checkNotLiteral(e) // TODO: causes issue for ++x when x is undefined
+      if (!e) {
+        e = new core.Var(exp.sourceString, false, false, 'number')
+        context.add(exp.sourceString, e)
+      }
+      checkNotLiteral(e)
 
       return o.includes('+') ? new core.PreIncrement(e) : new core.PreDecrement(e)
     },
@@ -475,7 +482,7 @@ export default function analyze(sourceCode) {
       return `${escape.sourceString}${newLine.rep()}`
     },
     id(_first, _rest) {
-      return context.lookup(this.sourceString)
+      return context.lookup(this.sourceString) // TODO is returning undefined
     },
     boolLit(bool) {
       return new core.Bool(bool.sourceString)

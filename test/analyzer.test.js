@@ -199,15 +199,17 @@ const examples = [
    7 | ReturnStatement exp=#8
    8 | NaryExp exp=[#3,'==',undefined]`
   ],
+  [
+    'post-increment operator',
+    `y = x++`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='y' local=false readOnly=false type='number'
+   4 | PostIncrement exp=#5
+   5 | Var id='x' local=false readOnly=false type='number'`
+  ],
   // [
-  //   'post-increment operator',
-  //   `y = x++`, // should basically be x = x + 1, but also needs to evaluate to x + 1
-  //   /* translation: 
-  //   y = x // y = 0 (x should already be typed as number IFF x type is undefined)
-  //   x = x + 1
-  //   */
-  //   `   1 | Block statements=[#2]
-  //  2 | `
+  //   'post-increment operator is not an implied return'
   // ]
   // [
   //   'ternary',
