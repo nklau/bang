@@ -178,8 +178,9 @@ export default function analyze(sourceCode) {
         }
       } else {
         // Designed to only get here if variable dec is using an eval assignment
+        const spread = e instanceof core.NaryExp ? e.exp : [e]
         if (!v) {
-          e = new core.NaryExp([e.default, o.charAt(0), e])
+          e = new core.NaryExp([e.default, o.charAt(0), ...spread])
           v = new core.Var(
             id.sourceString,
             l === 'local',
@@ -189,7 +190,7 @@ export default function analyze(sourceCode) {
 
           context.add(id.sourceString, v)
         } else {
-          e = new core.NaryExp([v, o.charAt(0), e])
+          e = new core.NaryExp([v, o.charAt(0), ...spread])
           v.type = e.type
         }
       }

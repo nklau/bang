@@ -376,21 +376,23 @@ const examples = [
    6 | NaryExp exp=[#3,'+',#7]
    7 | Str val='str'`
   ],
-  // [
-  //   '+= op with chained addition on right',
-  //   `x = 5
-  //   x += 'str' + ['alt']`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec variable=#3 assignmentOp='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='list'
-  //  4 | Num val=5
-  //  5 | VarDec variable=#3 assignmentOp='=' exp=#6
-  //  6 | NaryExp exp=[#3,'+',#7,'+',#8]
-  //  7 | Str val='str'
-  //  8 | List val=[#9]
-  //  9 | Str val='alt'`
-  // ]
+  [
+    '+= op with chained addition on right',
+    `x = 5
+    x += 'str' + ['alt']`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='list'
+   4 | Num val=5
+   5 | VarDec variable=#3 assignmentOp='=' exp=#6
+   6 | NaryExp exp=[#3,'+',#7,'+',#8]
+   7 | Str val='str'
+   8 | List val=[#9]
+   9 | Str val='alt'`
+  ]
   // TODO: x = 5 \n x += 'str' + 'alt'
+  // TODO: test x += 1 + 2 and check that it doesn't nest NaryExps
+  // TODO: x += x++ // x = 0 \n x = x + 1
   // TODO: declaring local x in smaller scope should make a new var, then outside var should be unchanged type (test using different types)
 //   [
 //     'binary exps',
