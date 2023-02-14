@@ -5,7 +5,6 @@ Bang {
   StatementNewLine      = Statement #(~newLine space)* #newLine+
   Statement             = local? const? id assignmentOp Exp                                 -- varDec
                         | local id                                                          -- localVar
-                        // | id                                                                -- noInitVar
                         | VarAssignment assignmentOp Exp                                    -- varAssignment
                         | return Exp?                                                       -- return
                         | Exp                                                               -- impliedReturn
