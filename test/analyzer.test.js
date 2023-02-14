@@ -183,7 +183,7 @@ const examples = [
    5 | ReturnStatement exp=#6
    6 | NaryExp exp=[#7,'>',#3,'>',#8]
    7 | Num val=4
-   8 | UnaryExp exp=#9 op='-' returnBeforeEval=false
+   8 | UnaryExp exp=#9 op='-'
    9 | Num val=1`
   ],
   [
@@ -198,10 +198,32 @@ const examples = [
    6 | Num val=1
    7 | ReturnStatement exp=#8
    8 | NaryExp exp=[#3,'==',undefined]`
-   // 5 | TODO: think #3 should maybe just be the default value 0?
-  ]
+  ],
+  // [
+  //   'post-increment operator',
+  //   `y = x++`, // should basically be x = x + 1, but also needs to evaluate to x + 1
+  //   /* translation: 
+  //   y = x // y = 0 (x should already be typed as number IFF x type is undefined)
+  //   x = x + 1
+  //   */
+  //   `   1 | Block statements=[#2]
+  //  2 | `
+  // ]
+  // [
+  //   'ternary',
+  //   `true ? 1 : 2`,
+  //   ''
+  // ],
+  // [
+  //   'postfix op',
+  //   `x = 1
+  //   x++`,
+  //   ''
+  // ],
   // TODO will need to change the way delimiters work for x + y - z etc
   // TODO need to check that a ternary is NOT an implied return
+  // TODO need to check that x++, etc is NOT an implied return
+  // TODO fix x++ for undeclared var
   // [
   //   'empty obj dec',
   //   `x = {}`,

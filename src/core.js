@@ -271,10 +271,33 @@ export class BinaryExp {
 }
 
 export class UnaryExp {
-  constructor(exp, op, postOp = false) {
+  constructor(exp, op) {
     this.exp = exp
     this.op = op
-    this.returnBeforeEval = postOp
+  }
+}
+
+export class PreIncrement {
+  constructor(exp) {
+    this.exp = exp
+  }
+}
+
+export class PreDecrement {
+  constructor(exp) {
+    this.exp = exp
+  }
+}
+
+export class PostIncrement {
+  constructor(exp) {
+    this.exp = exp
+  }
+}
+
+export class PostDecrement {
+  constructor(exp) {
+    this.exp = exp
   }
 }
 

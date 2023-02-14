@@ -98,17 +98,17 @@ function mapOps(elements) {
   )
 }
 
-function isPreIncrement(e) {
-  return e instanceof core.UnaryExp
-    && e.op === '++'
-    && !e.postOp
-}
+// function isPreIncrement(e) {
+//   return e instanceof core.UnaryExp
+//     && e.op === '++'
+//     && !e.postOp
+// }
 
-function isPreDecrement(e) {
-  return e instanceof core.UnaryExp
-    && e.op === '--'
-    && !e.postOp
-}
+// function isPreDecrement(e) {
+//   return e instanceof core.UnaryExp
+//     && e.op === '--'
+//     && !e.postOp
+// }
 
 // TODO: should be able to say break from inside a block that's nested in a loop
 // TODO: should be able to say return from inside a loop that's nested in a block
@@ -211,8 +211,10 @@ export default function analyze(sourceCode) {
       return new core.ReturnStatement(...exp.rep())
     },
     Statement_impliedReturn(exp) {
-      const e = exp.rep()
-      return e instanceof core.Ternary ? e : new core.ReturnStatement(e)
+      const e = exp.rep() // TODO ++ and -- also shouldn't immediately return
+      const noReturn = [core.Ternary] // TODO: change back to old if only ternaries cause issues
+      return noReturn.some(r => e instanceof r) ? e : new core.ReturnStatement(e)
+      // return e instanceof core.Ternary ? e : new core.ReturnStatement(e)
     },
     Exp_ternary(cond, _qMark, block, _c, alt) {
       const c = coerceToBool(cond.rep())
@@ -260,11 +262,19 @@ export default function analyze(sourceCode) {
       const elements = [left.rep(), op.sourceString, ...rest.asIteration().rep()]
       const pieces = mapOps(elements)
 
-      for (const [o, [_, r]] of Object.entries(pieces)) {
-        if (o === '-' && isPreDecrement(r)) {
-          core.error('Expected parentheses around pre-decrement operation on the right side of a subtraction')
-        } else if (o === '+' && isPreIncrement(r)) {
-          core.error('Expected parentheses around pre-increment operation on the right side of an addition')
+      for (const [o, [l, r]] of Object.entries(pieces)) {
+        if (o === '-') {
+          if (r instanceof core.PreDecrement) {
+            core.error('Expected parentheses around pre-decrement operation on the right side of a subtraction')
+          } else if (l instanceof core.PostDecrement) {
+            core.error('Expected parentheses around post-decrement operation on the left side of a subtraction')
+          }
+        } else if (o === '+') {
+          if (r instanceof core.PreIncrement) {
+            core.error('Expected parentheses around pre-increment operation on the right side of an addition')
+          } else if (l instanceof core.PostIncrement) {
+            core.error('Expected parentheses around post-increment operation on the left side of an addition')
+          }
         }
       }
 
@@ -277,6 +287,7 @@ export default function analyze(sourceCode) {
 
       return new core.NaryExp(pieces)
     },
+    // TODO implement eval order (l -> r)
     Exp6_exponent(left, op, right) {
       const [l, o, r] = [left.rep(), op.sourceString, right.rep()]
       checkNotType(l, [d.FUNC])
@@ -285,7 +296,7 @@ export default function analyze(sourceCode) {
     },
     Exp6_negate(negative, right) {
       const [op, r] = [negative.sourceString, right.rep()]
-      if (isPreDecrement(r)) {
+      if (r instanceof core.PreDecrement) {
         core.error('Expected parentheses around pre-decrement operation with a negation')
       }
       // -string
@@ -301,15 +312,15 @@ export default function analyze(sourceCode) {
     },
     Exp7_postFix(exp, op) {
       const [e, o] = [exp.rep(), op.sourceString]
-      checkNotLiteral(e)
+      checkNotLiteral(e) // TODO: causes issue for x++ when x is undefined
 
-      return new core.UnaryExp(e, o, true)
+      return o.includes('+') ? new core.PostIncrement(e) : new core.PostDecrement(e)
     },
     Exp7_preFix(op, exp) {
       const [e, o] = [exp.rep(), op.sourceString]
-      checkNotLiteral(e)
+      checkNotLiteral(e) // TODO: causes issue for ++x when x is undefined
 
-      return new core.UnaryExp(e, o, false)
+      return o.includes('+') ? new core.PreIncrement(e) : new core.PreDecrement(e)
     },
     Exp8_call(exp, _space, params) {
       const [e, p] = [exp.rep(), params.rep()]
