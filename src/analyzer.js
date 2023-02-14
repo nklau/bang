@@ -192,13 +192,15 @@ export default function analyze(sourceCode) {
       return new core.VarDec(v, '=', e)
     },
     Statement_localVar(_local, id) {
+      const e = new core.Nil()
       const v = new core.Var(
         id.sourceString,
         true,
-        false
+        false,
+        e.type
       )
       context.add(id.sourceString, v)
-      return new core.VarDec(v)
+      return new core.VarDec(v, '=', e)
     },
     Statement_varAssignment(variable, op, exp) {
       // Designed to only get here for variable subscription/selection

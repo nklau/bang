@@ -165,12 +165,14 @@ export class Bool {
 }
 
 export class Nil {
+  static typeDescription = 'nil'
+
   static get default() {
     return undefined
   }
 
-  static get type() {
-    return 'nil'
+  get type() {
+    return Nil.typeDescription
   }
 }
 
@@ -221,7 +223,7 @@ export class Block {
 }
 
 export class VarDec {
-  constructor(variable, assignmentOp = '=', exp) {
+  constructor(variable, assignmentOp, exp) {
     Object.assign(this, { variable, assignmentOp, exp })
   }
 }

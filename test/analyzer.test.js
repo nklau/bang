@@ -266,15 +266,49 @@ const examples = [
    4 | Num val=1
    5 | Num val=2
    6 | Num val=3`
+  ],
+  [
+    'chained subtraction',
+    `4 - 3 - 5 - 1`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | NaryExp exp=[#4,'-',#5,'-',#6,'-',#7]
+   4 | Num val=4
+   5 | Num val=3
+   6 | Num val=5
+   7 | Num val=1`
+  ],
+  [
+    'empty obj dec',
+    `x = {}`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='object'
+   4 | Obj val=[]`
+  ],
+  [
+    'local var dec with value', 
+    `local x = 5`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=true readOnly=false type='number'
+   4 | Num val=5`
+  ],
+  [
+    'local var dec without value',
+    `local x`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=true readOnly=false type='nil'
+   4 | Nil `
   ]
-  // TODO need to check that a ternary is NOT an implied return
-  // TODO need to check that x++, etc is NOT an implied return
-  // TODO fix x++ for undeclared var
-  // [
-  //   'empty obj dec',
-  //   `x = {}`,
-  //   ''
-  // ]
+  // TODO: test local w/without val
+  // TODO: test const
+  // TODO: test local const
+  // TODO const w/out val should error
+  // TODO: local const w/out val should error
+  // TODO: changing const val should error
+  // TODO: `x \n x = 5` x should be a number
 //   [
 //     'binary exps',
 //     `x == y
