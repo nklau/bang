@@ -144,7 +144,7 @@ export class Bool {
   static typeDescription = 'boolean'
 
   constructor(val) {
-    this.val = val === 'true'
+    this.val = val === 'true' || val === true
   }
 
   loop(block) {

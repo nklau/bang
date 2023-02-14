@@ -88,7 +88,7 @@ function checkInBlock(context) {
 // }
 
 function coerceToBool(e) {
-  return !e?.equals(e?.default)
+  return new core.Bool(!e?.equals(e?.default))
 }
 
 function mapOps(elements) {

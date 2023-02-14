@@ -236,11 +236,17 @@ const examples = [
    2 | PreDecrement exp=#3
    3 | Var id='x' local=false readOnly=false type='number'`
   ],
-  // [
-  //   'ternary',
-  //   `true ? 1 : 2`,
-  //   ''
-  // ],
+  [
+    'ternary is not an implied return',
+    `true ? 1 : 2`,
+    `   1 | Block statements=[#2]
+   2 | Ternary cond=#3 block=#4 alt=#6
+   3 | Bool val=true
+   4 | ReturnStatement exp=#5
+   5 | Num val=1
+   6 | ReturnStatement exp=#7
+   7 | Num val=2`
+  ],
   // [
   //   'postfix op',
   //   `x = 1
