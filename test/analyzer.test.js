@@ -518,29 +518,29 @@ const examples = [
    6 | Var id='x' local=false readOnly=false type='number'
    7 | NaryExp exp=[#8,'+',#3]
    8 | Num val=0`
+  ],
+  [
+    'undefined -= op defaults to highest type',
+    `const y = 4
+    const z = 'str'
+    a = [y]
+    x -= y + z * a`,
+    `   1 | Block statements=[#2,#5,#8,#11]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='y' local=false readOnly=true type='number'
+   4 | Num val=4
+   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   6 | Var id='z' local=false readOnly=true type='string'
+   7 | Str val='str'
+   8 | VarDec variable=#9 assignmentOp='=' exp=#10
+   9 | Var id='a' local=false readOnly=false type='list'
+  10 | List val=[#3]
+  11 | VarDec variable=#12 assignmentOp='=' exp=#13
+  12 | Var id='x' local=false readOnly=false type='list'
+  13 | NaryExp exp=[#14,'-',#3,'+',#15]
+  14 | List val=[]
+  15 | NaryExp exp=[#6,'*',#9]`
   ]
-  // [
-  //   'undefined -= op defaults to highest type',
-  //   `const y = 4
-  //   const z = 'str'
-  //   a = [y]
-  //   x -= y + z * a`,
-  //   `   1 | Block statements=[#2,#5,#8,#11]
-  //  2 | VarDec variable=#3 assignmentOp='=' exp=#4
-  //  3 | Var id='y' local=false readOnly=true type='number'
-  //  4 | Num val=4
-  //  5 | VarDec variable=#6 assignmentOp='=' exp=#7
-  //  6 | Var id='z' local=false readOnly=true type='string'
-  //  7 | Str val='str'
-  //  8 | VarDec variable=#9 assignmentOp='=' exp=#10
-  //  9 | Var id='a' local=false readOnly=false type='list'
-  // 10 | List val=[#3]
-  // 11 | VarDec variable=#12 assignmentOp='=' exp=#13
-  // 12 | Var id='x' local=false readOnly=false type='list'
-  // 13 | NaryExp exp=[#14,'-',#3,'+',#15]
-  // 14 | List val=[]
-  // 15 | NaryExp exp=[#6,'*',#9]`
-  // ]
   // TODO: x += $'str'
   // TODO: need to prevent const x = x++
   // TODO: test x += 1 + 2 and check that it doesn't nest NaryExps
