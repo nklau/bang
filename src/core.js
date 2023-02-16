@@ -225,6 +225,10 @@ export class Block {
     const r = this.statements.find(s => s instanceof ReturnStatement)
     return r.type
   }
+
+  get default() {
+    return getDefault(this.type)
+  }
 }
 
 export class VarDec {

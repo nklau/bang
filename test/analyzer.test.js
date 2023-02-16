@@ -600,6 +600,18 @@ const examples = [
    9 | Var id='x' local=true readOnly=false type='string'
   10 | Str val='str'
   11 | ReturnStatement exp=#9`
+  ],
+  [
+    '+= with block has default value',
+    `x += { 1 }`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | NaryExp exp=[#5,'+',#6]
+   5 | Num val=0
+   6 | Block statements=[#7]
+   7 | ReturnStatement exp=#8
+   8 | Num val=1`
   ]
   // TODO: x += { 1 } should have default val of 0 for x
   // TODO: declaring local x in smaller scope should make a new var, then outside var should be unchanged type (test using different types)
