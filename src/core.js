@@ -232,6 +232,10 @@ export class Var {
   constructor(id, local, readOnly, type) {
     Object.assign(this, { id, local, readOnly, type })
   }
+
+  get default() {
+    return getDefault(this.type)
+  }
 }
 
 export class VarSubscript {
@@ -276,13 +280,7 @@ export class NaryExp {
   }
 
   get default() {
-    const types = [List, Obj, Str, Num, Bool]
-
-    for (const type of types) {
-      if (this.exp.some(e => { return e instanceof type })) {
-        return new type().default
-      }
-    }
+    return getDefault(this.type)
   }
 }
 
@@ -396,4 +394,14 @@ Block.prototype[util.inspect.custom] = function () {
 
   tag(this)
   return [...lines()].join("\n")
+}
+
+const getDefault = (t) => {
+  const types = { [List.typeDescription]: List, [Obj.typeDescription]: Obj, [Str.typeDescription]: Str, [Num.typeDescription]: Num, [Bool.typeDescription]: Bool }
+
+  for (const [typeDescription, type] of Object.entries(types)) {
+    if (t === typeDescription) {
+      return new type().default
+    }
+  }
 }
