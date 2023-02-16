@@ -274,6 +274,16 @@ export class NaryExp {
       }
     }
   }
+
+  get default() {
+    const types = [List, Obj, Str, Num, Bool]
+
+    for (const type of types) {
+      if (this.exp.some(e => { return e instanceof type })) {
+        return new type().default
+      }
+    }
+  }
 }
 
 export class BinaryExp {

@@ -390,7 +390,7 @@ export default function analyze(sourceCode) {
       return new core.UnaryExp(exp.rep(), unwrap.sourceString)
     },
     Exp9_enclosed(_open, exp, _close) {
-      return new core.NaryExp([exp.rep()]) // TODO should add () to naryexp list
+      return new core.NaryExp([exp.rep()])
     },
     LeftCompare(exp, op) {
       return [exp.rep(), op.sourceString]
