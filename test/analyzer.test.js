@@ -389,8 +389,53 @@ const examples = [
    7 | Str val='str'
    8 | List val=[#9]
    9 | Str val='alt'`
+  ],
+  [
+    'y = x++ sets x and y to numbers',
+    `y = x++`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='y' local=false readOnly=false type='number'
+   4 | PostIncrement exp=#5
+   5 | Var id='x' local=false readOnly=false type='number'`
+  ],
+  [
+    'y = (x++) + [] sets y to a list',
+    `y = (x++) + []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='y' local=false readOnly=false type='list'
+   4 | NaryExp exp=[#5,'+',#8]
+   5 | NaryExp exp=[#6]
+   6 | PostIncrement exp=#7
+   7 | Var id='x' local=false readOnly=false type='number'
+   8 | List val=[]`
+  ],
+  [
+    'using post-increment with undefined var points back to same var',
+    `x = x++`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | PostIncrement exp=#3`
+  ],
+  // [
+  //   '',
+  //   `const x = 1
+  //   x++`,
+  //   ''
+  // ],
+  [
+    'post increment with undefined var adds to context',
+    `x++
+    x`,
+    `   1 | Block statements=[#2,#4]
+   2 | PostIncrement exp=#3
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | ReturnStatement exp=#3`
   ]
-  // TODO: x = 5 \n x += 'str' + 'alt'
+  // TODO need to prevent const x = x++
+  // TODO: x = x++ + [] sets x to a list
   // TODO: test x += 1 + 2 and check that it doesn't nest NaryExps
   // TODO: x += x++ // x = 0 \n x = x + 1
   // TODO: declaring local x in smaller scope should make a new var, then outside var should be unchanged type (test using different types)

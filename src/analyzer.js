@@ -166,7 +166,8 @@ export default function analyze(sourceCode) {
       if (op.sourceString === '=') {
         if (v) {
           v.local = l === 'local'
-          v.type = e.type ?? e.exp?.type
+          // TODO: if this is local need to add to context
+          v.type = e.type ?? e.exp?.type // TODO what if this is weaker type
         } else {
           v = new core.Var(
             id.sourceString,
@@ -191,7 +192,7 @@ export default function analyze(sourceCode) {
           context.add(id.sourceString, v)
         } else {
           e = new core.NaryExp([v, o.charAt(0), ...spread])
-          v.type = e.type
+          v.type = e.type // TODO: check for weaker type
         }
       }
 
@@ -331,6 +332,7 @@ export default function analyze(sourceCode) {
       return new core.UnaryExp(r, o)
     },
     Exp7_postFix(exp, op) {
+      // TODO need to check const
       let [e, o] = [exp.rep(), op.sourceString]
       if (!e) {
         e = new core.Var(exp.sourceString, false, false, 'number')
@@ -341,6 +343,7 @@ export default function analyze(sourceCode) {
       return o.includes('+') ? new core.PostIncrement(e) : new core.PostDecrement(e)
     },
     Exp7_preFix(op, exp) {
+      // TODO need to check const
       let [e, o] = [exp.rep(), op.sourceString]
       if (!e) {
         e = new core.Var(exp.sourceString, false, false, 'number')
@@ -387,7 +390,7 @@ export default function analyze(sourceCode) {
       return new core.UnaryExp(exp.rep(), unwrap.sourceString)
     },
     Exp9_enclosed(_open, exp, _close) {
-      return exp.rep()
+      return new core.NaryExp([exp.rep()]) // TODO should add () to naryexp list
     },
     LeftCompare(exp, op) {
       return [exp.rep(), op.sourceString]
