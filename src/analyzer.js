@@ -160,36 +160,29 @@ export default function analyze(sourceCode) {
       return statement.rep()
     },
     Statement_varDec(local, readOnly, id, op, exp) {
-      let [e, o, l, r] = [exp.rep(), op.sourceString, local.sourceString, readOnly.sourceString]
+      let [e, o, l, r, i] = [exp.rep(), op.sourceString, local.sourceString === 'local', readOnly.sourceString === 'const', id.sourceString]
       let v = context.lookup(id.sourceString)
 
       if (op.sourceString === '=') {
         if (v) {
-          v.local = l === 'local'
-          // TODO: if this is local need to add to context
-          v.type = e.type ?? e.exp?.type // TODO what if this is weaker type
+          if (l) {
+            v = new core.Var(i, l, r, e.type ?? e.exp?.type)
+            context.add(i, v)
+          } else {
+            v.type = e.type ?? e.exp?.type // TODO what if this is weaker type
+          }
         } else {
-          v = new core.Var(
-            id.sourceString,
-            l === 'local',
-            r === 'const',
-            e.type ?? e.exp?.type
-          )
-          context.add(id.sourceString, v)
+          v = new core.Var(i, l, r, e.type ?? e.exp?.type)
+          context.add(i, v)
         }
       } else {
         // Designed to only get here if variable dec is using an eval assignment
         const spread = e instanceof core.NaryExp ? e.exp : [e]
         if (!v) {
           e = new core.NaryExp([e.default, o.charAt(0), ...spread])
-          v = new core.Var(
-            id.sourceString,
-            l === 'local',
-            r === 'const',
-            e.type
-          )
+          v = new core.Var(i, l, r, e.type)
 
-          context.add(id.sourceString, v)
+          context.add(i, v)
         } else {
           e = new core.NaryExp([v, o.charAt(0), ...spread])
           v.type = e.type // TODO: check for weaker type

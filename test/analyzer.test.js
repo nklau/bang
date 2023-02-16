@@ -5,6 +5,7 @@ import analyze from "../src/analyzer.js"
 // TODO const w/out val should error
 // TODO: local const w/out val should error
 // TODO: changing const val should error
+// TODO: x += x++ // x = 0 \n x = x + 1
 
 const examples = [
   [
@@ -540,11 +541,59 @@ const examples = [
   13 | NaryExp exp=[#14,'-',#3,'+',#15]
   14 | List val=[]
   15 | NaryExp exp=[#6,'*',#9]`
-  ]
-  // TODO: x += $'str'
-  // TODO: need to prevent const x = x++
-  // TODO: test x += 1 + 2 and check that it doesn't nest NaryExps
-  // TODO: x += x++ // x = 0 \n x = x + 1
+  ],
+  [
+    'eval assignment op with formatted str',
+    `y = 5
+    x += $'str{y}'`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='y' local=false readOnly=false type='number'
+   4 | Num val=5
+   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   6 | Var id='x' local=false readOnly=false type='string'
+   7 | NaryExp exp=[#8,'+',#9]
+   8 | FormattedStr val=[]
+   9 | FormattedStr val=['s','t','r',#3]`
+  ],
+  [
+    'local x does not change type of global x',
+    `x = 1
+    {
+      local x = 'str'
+    }`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | Num val=1
+   5 | ReturnStatement exp=#6
+   6 | Block statements=[#7]
+   7 | VarDec variable=#8 assignmentOp='=' exp=#9
+   8 | Var id='x' local=true readOnly=false type='string'
+   9 | Str val='str'`
+  ],
+  // [
+  //   'var type gets set by return type'
+  // ]
+  // [
+  //   'local x does not change type of global x',
+  //   `const x = 5
+  //   y = {
+  //     local x = 'str'
+  //     x
+  //   }`,
+  //   `   1 | Block statements=[#2,#5]
+  //  2 | VarDec variable=#3 assignmentOp='=' exp=#4
+  //  3 | Var id='x' local=false readOnly=true type='number'
+  //  4 | Num val=5
+  //  5 | VarDec variable=#6 assignmentOp='=' exp=#7
+  //  6 | Var id='y' local=false readOnly=false type='string'
+  //  7 | Block statements=[#8,#11]
+  //  8 | VarDec variable=#9 assignmentOp='=' exp=#10
+  //  9 | Var id='x' local=true readOnly=false type='string'
+  // 10 | Str val='str'
+  // 11 | ReturnStatement exp=#9`
+  // ]
   // TODO: declaring local x in smaller scope should make a new var, then outside var should be unchanged type (test using different types)
 //   [
 //     'binary exps',
