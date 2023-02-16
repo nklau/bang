@@ -572,28 +572,36 @@ const examples = [
    8 | Var id='x' local=true readOnly=false type='string'
    9 | Str val='str'`
   ],
-  // [
-  //   'var type gets set by return type'
-  // ]
-  // [
-  //   'local x does not change type of global x',
-  //   `const x = 5
-  //   y = {
-  //     local x = 'str'
-  //     x
-  //   }`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec variable=#3 assignmentOp='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=true type='number'
-  //  4 | Num val=5
-  //  5 | VarDec variable=#6 assignmentOp='=' exp=#7
-  //  6 | Var id='y' local=false readOnly=false type='string'
-  //  7 | Block statements=[#8,#11]
-  //  8 | VarDec variable=#9 assignmentOp='=' exp=#10
-  //  9 | Var id='x' local=true readOnly=false type='string'
-  // 10 | Str val='str'
-  // 11 | ReturnStatement exp=#9`
-  // ]
+  [
+    'var type gets set by return type',
+    `x = { 1 }`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | Block statements=[#5]
+   5 | ReturnStatement exp=#6
+   6 | Num val=1`
+  ],
+  [
+    'local x does not change type of global x',
+    `const x = 5
+    y = {
+      local x = 'str'
+      x
+    }`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=true type='number'
+   4 | Num val=5
+   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   6 | Var id='y' local=false readOnly=false type='string'
+   7 | Block statements=[#8,#11]
+   8 | VarDec variable=#9 assignmentOp='=' exp=#10
+   9 | Var id='x' local=true readOnly=false type='string'
+  10 | Str val='str'
+  11 | ReturnStatement exp=#9`
+  ]
+  // TODO: x += { 1 } should have default val of 0 for x
   // TODO: declaring local x in smaller scope should make a new var, then outside var should be unchanged type (test using different types)
 //   [
 //     'binary exps',

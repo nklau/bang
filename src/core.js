@@ -220,6 +220,11 @@ export class Block {
   constructor(statements) {
     this.statements = statements
   }
+
+  get type() {
+    const r = this.statements.find(s => s instanceof ReturnStatement)
+    return r.type
+  }
 }
 
 export class VarDec {
@@ -255,6 +260,10 @@ export class VarSelect {
 export class ReturnStatement {
   constructor(exp) {
     this.exp = exp
+  }
+
+  get type() {
+    return this.exp.type ?? Nil.typeDescription
   }
 }
 
@@ -405,3 +414,9 @@ const getDefault = (t) => {
     }
   }
 }
+
+// const getType = (e) => {
+//   const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription]
+
+//   return types.find(t => t === e)
+// }
