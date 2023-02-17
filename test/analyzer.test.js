@@ -872,7 +872,18 @@ const examples = [
    6 | Num val=1
    7 | List val=[]`
   ],
-  // TODO fix x * y / z
+  [
+    'chained multiplicative ops',
+    `x = 1 * 2 / [3]`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='list'
+   4 | NaryExp exp=[#5,'*',#6,'/',#7]
+   5 | Num val=1
+   6 | Num val=2
+   7 | List val=[#8]
+   8 | Num val=3`
+  ]
 
   //x * y
 //     x / y

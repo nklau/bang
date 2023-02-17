@@ -19,7 +19,8 @@ Bang {
                         | Exp4
   Exp4                  = LeftAddition+ Exp5                                                -- addSubtract
                         | Exp5
-  Exp5                  = Exp6 multiplicationOp NonemptyListOf<Exp6, multiplicationOp>      -- multiplyDivideMod
+  Exp5                  = LeftMultiply+ Exp6                                                -- multiplyDivideMod
+//   Exp6 multiplicationOp NonemptyListOf<Exp6, multiplicationOp>      -- multiplyDivideMod
                         | Exp6
   Exp6                  = LeftExponent+ Exp7                                                -- exponent
                         | Exp7
@@ -42,6 +43,7 @@ Bang {
 
   LeftCompare           = Exp2 compareOp
   LeftAddition          = Exp5 additionOp
+  LeftMultiply          = Exp6 multiplicationOp
   LeftExponent          = Exp7 "**"
 
   BangFunc              = "{" Block "}"

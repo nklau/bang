@@ -281,12 +281,12 @@ export default function analyze(sourceCode) {
 
       return new core.NaryExp(elements)
     },
-    Exp5_multiplyDivideMod(left, op, rest) {
-      const pieces = [left.rep(), op.sourceString, ...rest.asIteration().rep()]
-      pieces.filter(e => typeof e !== 'string').forEach(e => checkNotType(e, [d.FUNC]))
+    Exp5_multiplyDivideMod(left, right) {
+      const elements = [...left.rep(), right.rep()].flat()
+      elements.filter(e => typeof e !== 'string').forEach(e => checkNotType(e, [d.FUNC]))
       // TODO: see language design photos
 
-      return new core.NaryExp(pieces)
+      return new core.NaryExp(elements)
     },
     // TODO implement eval order (l -> r)
     Exp6_exponent(left, right) {
@@ -384,6 +384,9 @@ export default function analyze(sourceCode) {
       return [exp.rep(), op.sourceString]
     },
     LeftAddition(exp, op) {
+      return [exp.rep(), op.sourceString]
+    },
+    LeftMultiply(exp, op) {
       return [exp.rep(), op.sourceString]
     },
     LeftExponent(exp, op) {
