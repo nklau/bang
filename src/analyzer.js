@@ -392,13 +392,11 @@ export default function analyze(sourceCode) {
     Exp9_select(exp, dot, selector) {
       const e = exp.rep()
       checkNotType(e, [d.FUNC])
-      let s = selector.rep()
-
 
       if (e.type === d.LIST) {
-        s = e.val[selector.sourceString]
-      } else if (e.type === core.Obj) {
-        s = (e instanceof Var ? e.exp : e).getVal(selector.sourceString)
+        return e.val[selector.sourceString] ?? new core.Nil()
+      } else if (e.type === d.OBJ) {
+        return (e instanceof core.Var ? e.exp : e).getVal(selector.sourceString)
       }
 
       // TODO check for loop
@@ -408,7 +406,7 @@ export default function analyze(sourceCode) {
       // TODO: how to check s?
       // TODO do we allow list.1 as indexing?
       // if so, need to allow list type for x
-      return new core.BinaryExp(e, dot.sourceString, s)
+      return new core.BinaryExp(e, dot.sourceString, selector.rep())
     },
     Exp9_negative(negate, exp) {
       // TODO: probably can't use on objects, function literals,

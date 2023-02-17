@@ -50,7 +50,7 @@ export class Obj {
   }
 
   getVal(key) {
-    return this.val.find(field => field.key === key)?.val ?? new Nil()
+    return this.val.find(field => field.key.val === key)?.val ?? new Nil()
   }
 
   get len() {

@@ -927,22 +927,20 @@ const examples = [
    6 | Str val='x'
    7 | Num val=1`
   ],
-  // [
-  //   'var select',
-  //   `y = { "x": 1 }
-  //   z = y.x`,
-  //   `   1 | Block statements=[#2,#8]
-  //  2 | VarDec variable=#3 assignmentOp='=' exp=#4
-  //  3 | Var id='y' local=false readOnly=false type='object' exp=#4
-  //  4 | Obj val=[#5]
-  //  5 | ObjField key=#6 val=#7
-  //  6 | Str val='x'
-  //  7 | Num val=1
-  //  8 | VarDec variable=#9 assignmentOp='=' exp=#10
-  //  9 | Var id='z' local=false readOnly=false type='number' exp=#10
-  // 10 | VarSelect id=#3 selector=#11
-  // 11 | Str val='x'`
-  // ],
+  [
+    'var select',
+    `y = { "x": 1 }
+    z = y.x`,
+    `   1 | Block statements=[#2,#8]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='y' local=false readOnly=false type='object' exp=#4
+   4 | Obj val=[#5]
+   5 | ObjField key=#6 val=#7
+   6 | Str val='x'
+   7 | Num val=1
+   8 | VarDec variable=#9 assignmentOp='=' exp=#7
+   9 | Var id='z' local=false readOnly=false type='number' exp=#7`
+  ],
   // TODO: x.y.z
   // [
   //   'var subscript',
