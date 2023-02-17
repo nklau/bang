@@ -178,13 +178,14 @@ export default function analyze(sourceCode) {
       } else {
         // Designed to only get here if variable dec is using an eval assignment
         const spread = e instanceof core.NaryExp ? e.exp : [e]
+        const evalOp = o.includes('**') ? '**' : o.charAt(0)
         if (!v) {
-          e = new core.NaryExp([e.default, o.charAt(0), ...spread])
+          e = new core.NaryExp([e.default, evalOp, ...spread])
           v = new core.Var(i, l, r, e.type)
 
           context.add(i, v)
         } else {
-          e = new core.NaryExp([v, o.charAt(0), ...spread])
+          e = new core.NaryExp([v, evalOp, ...spread])
           v.type = e.type // TODO: check for weaker type
         }
       }
@@ -289,6 +290,7 @@ export default function analyze(sourceCode) {
     },
     // TODO implement eval order (l -> r)
     Exp6_exponent(left, op, right) {
+      // TODO check for unary op with - as op
       const [l, o, r] = [left.rep(), op.sourceString, right.rep()]
       checkNotType(l, [d.FUNC])
       checkNotType(r, [d.FUNC])

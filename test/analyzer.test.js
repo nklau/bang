@@ -703,7 +703,180 @@ const examples = [
    4 | BinaryExp left=#5 op='&&' right=#6
    5 | Num val=1
    6 | List val=[]`
-  ]
+  ],
+  [
+    '* op',
+    `x = 1 * []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='list'
+   4 | NaryExp exp=[#5,'*',#6]
+   5 | Num val=1
+   6 | List val=[]`
+  ],
+  [
+    '+= with * op',
+    `x += 1 * []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='list'
+   4 | NaryExp exp=[#5,'+',#6,'*',#7]
+   5 | List val=[]
+   6 | Num val=1
+   7 | List val=[]`
+  ],
+  [
+    '* assignment op',
+    `x *= 1`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | NaryExp exp=[#5,'*',#6]
+   5 | Num val=0
+   6 | Num val=1`
+  ],
+  [
+    '*= with + op does not nest nary exps',
+    `x *= 1 + []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='list'
+   4 | NaryExp exp=[#5,'*',#6,'+',#7]
+   5 | List val=[]
+   6 | Num val=1
+   7 | List val=[]`
+  ],
+  [
+    '/ op',
+    `x = 1 / []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='list'
+   4 | NaryExp exp=[#5,'/',#6]
+   5 | Num val=1
+   6 | List val=[]`
+  ],
+  [
+    '/ assignment op',
+    `x /= 1`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | NaryExp exp=[#5,'/',#6]
+   5 | Num val=0
+   6 | Num val=1`
+  ],
+  [
+    '/= with + op does not nest nary exps',
+    `x /= 1 + []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='list'
+   4 | NaryExp exp=[#5,'/',#6,'+',#7]
+   5 | List val=[]
+   6 | Num val=1
+   7 | List val=[]`
+  ],
+  [
+    '% op',
+    `x = 1 % []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='list'
+   4 | NaryExp exp=[#5,'%',#6]
+   5 | Num val=1
+   6 | List val=[]`
+  ],
+  [
+    '% assignment op',
+    `x %= 1`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | NaryExp exp=[#5,'%',#6]
+   5 | Num val=0
+   6 | Num val=1`
+  ],
+  [
+    '%= with + op does not nest nary exps',
+    `x %= 1 + []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='list'
+   4 | NaryExp exp=[#5,'%',#6,'+',#7]
+   5 | List val=[]
+   6 | Num val=1
+   7 | List val=[]`
+  ],
+  [
+    '% op',
+    `x = 1 % []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='list'
+   4 | NaryExp exp=[#5,'%',#6]
+   5 | Num val=1
+   6 | List val=[]`
+  ],
+  [
+    '% assignment op',
+    `x %= 1`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | NaryExp exp=[#5,'%',#6]
+   5 | Num val=0
+   6 | Num val=1`
+  ],
+  [
+    '%= with + op does not nest nary exps',
+    `x %= 1 + []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='list'
+   4 | NaryExp exp=[#5,'%',#6,'+',#7]
+   5 | List val=[]
+   6 | Num val=1
+   7 | List val=[]`
+  ],
+  [
+    '** op',
+    `x = 1 ** []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='list'
+   4 | BinaryExp left=#5 op='**' right=#6
+   5 | Num val=1
+   6 | List val=[]`
+  ],
+  [
+    '** assignment op',
+    `x **= 1`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | NaryExp exp=[#5,'**',#6]
+   5 | Num val=0
+   6 | Num val=1`
+  ],
+  [
+    '**= with + op does not nest nary exps',
+    `x **= 1 + []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='list'
+   4 | NaryExp exp=[#5,'**',#6,'+',#7]
+   5 | List val=[]
+   6 | Num val=1
+   7 | List val=[]`
+  ],
+  // TODO fix x * y / z
+
+  //x * y
+//     x / y
+//     x % y
+//     x ** y
+  // TODO: negate should be bool type
 //   [
 //     'binary exps',
 //     `x != true

@@ -94,7 +94,7 @@ Bang {
 
   num                   = digit+ ("." digit+)? (("E" | "e") ("+" | "-")? digit+)?
 
-  assignmentOp          = "=" | "+=" | "-=" | "*=" | "/=" | "%="
+  assignmentOp          = "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "**="
   compareOp             = (("=" | "!") "=") | ("<" | ">") "="?
   additionOp            = "+" | "-"
   multiplicationOp      = "*" | "/" | "%"
