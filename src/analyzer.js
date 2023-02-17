@@ -372,9 +372,10 @@ export default function analyze(sourceCode) {
       // TODO check for loop
       const [e, s] = [exp.rep(), selector.rep()]
       if (e.type === d.LIST) {
-        
+        return e.val[s.val]
       } else if (e.type === d.OBJ) {
-        
+        return (e instanceof core.Var ? e.exp : e).getVal(s.val)
+        // TODO dive further if chained dot ops
       }
       // TODO check if it's a list or obj
       // for obj, use .getVal(key)
@@ -387,16 +388,17 @@ export default function analyze(sourceCode) {
       // TODO how to check context? to see if selector exists/needs to be created
         // use .getVal(key)
 
-      return new core.VarSubscript(e, s)
+      return new core.VarSubscript(e, selector.rep())
     },
     Exp9_select(exp, dot, selector) {
-      const e = exp.rep()
+      const [e, s] = [exp.rep(), selector.sourceString]
       checkNotType(e, [d.FUNC])
 
       if (e.type === d.LIST) {
-        return e.val[selector.sourceString] ?? new core.Nil()
+        return e.val[s] ?? new core.Nil()
       } else if (e.type === d.OBJ) {
-        return (e instanceof core.Var ? e.exp : e).getVal(selector.sourceString)
+        return (e instanceof core.Var ? e.exp : e).getVal(s)
+        // TODO dive further if chained dot ops
       }
 
       // TODO check for loop
