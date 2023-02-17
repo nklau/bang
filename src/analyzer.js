@@ -173,13 +173,13 @@ export default function analyze(sourceCode) {
       if (op.sourceString === '=') {
         if (v) {
           if (l) {
-            v = new core.Var(i, l, r, e.type ?? e.exp?.type)
+            v = new core.Var(i, l, r, e.type ?? e.exp?.type, e)
             context.add(i, v)
           } else {
             v.type = e.type ?? e.exp?.type // TODO what if this is weaker type
           }
         } else {
-          v = new core.Var(i, l, r, e.type ?? e.exp?.type)
+          v = new core.Var(i, l, r, e.type ?? e.exp?.type, e)
           context.add(i, v)
         }
       } else {
@@ -188,7 +188,7 @@ export default function analyze(sourceCode) {
         const evalOp = o.includes('**') ? '**' : o.charAt(0)
         if (!v) {
           e = new core.NaryExp([e.default, evalOp, ...spread])
-          v = new core.Var(i, l, r, e.type)
+          v = new core.Var(i, l, r, e.type, e)
 
           context.add(i, v)
         } else {
@@ -205,7 +205,8 @@ export default function analyze(sourceCode) {
         id.sourceString,
         true,
         false,
-        e.type
+        e.type,
+        e
       )
       context.add(id.sourceString, v)
       return new core.VarDec(v, '=', e)
@@ -235,7 +236,8 @@ export default function analyze(sourceCode) {
           exp.sourceString,
           false,
           false,
-          x.type
+          x.type,
+          x
         )
 
         context.add(exp.sourceString, v)
@@ -337,8 +339,9 @@ export default function analyze(sourceCode) {
     Exp8_postFix(exp, op) {
       // TODO need to check const
       let [e, o] = [exp.rep(), op.sourceString]
+
       if (!e) {
-        e = new core.Var(exp.sourceString, false, false, 'number')
+        e = new core.Var(exp.sourceString, false, false, 'number', new core.Num().default)
         context.add(exp.sourceString, e)
       }
       checkNotLiteral(e)
@@ -348,8 +351,9 @@ export default function analyze(sourceCode) {
     Exp8_preFix(op, exp) {
       // TODO need to check const
       let [e, o] = [exp.rep(), op.sourceString]
+
       if (!e) {
-        e = new core.Var(exp.sourceString, false, false, 'number')
+        e = new core.Var(exp.sourceString, false, false, 'number', new core.Num().default)
         context.add(exp.sourceString, e)
       }
       checkNotLiteral(e)
@@ -364,23 +368,47 @@ export default function analyze(sourceCode) {
       return new core.Call(e, p)
     },
     Exp9_subscript(exp, _open, selector, _close) {
+
+      // TODO check for loop
       const [e, s] = [exp.rep(), selector.rep()]
+      if (e.type === d.LIST) {
+        
+      } else if (e.type === d.OBJ) {
+        
+      }
+      // TODO check if it's a list or obj
+      // for obj, use .getVal(key)
+      // for list, index
+
+
       // TODO: don't think this is right because it doesn't allow built-in functions
       checkType(e, [d.OBJ, d.LIST])
       checkType(s, [d.NUM, d.STR, d.BOOL])
       // TODO how to check context? to see if selector exists/needs to be created
+        // use .getVal(key)
 
       return new core.VarSubscript(e, s)
     },
-    Exp9_select(exp, _dot, selector) {
-      const [e, s] = [exp.rep(), selector.rep()]
+    Exp9_select(exp, dot, selector) {
+      const e = exp.rep()
+      checkNotType(e, [d.FUNC])
+      let s = selector.rep()
+
+
+      if (e.type === d.LIST) {
+        s = e.val[selector.sourceString]
+      } else if (e.type === core.Obj) {
+        s = (e instanceof Var ? e.exp : e).getVal(selector.sourceString)
+      }
+
+      // TODO check for loop
+
       // selector.rep() ?? new core.Str(selector.sourceString)
       
-      checkNotType(e, [d.FUNC])
       // TODO: how to check s?
       // TODO do we allow list.1 as indexing?
       // if so, need to allow list type for x
-      return new core.VarSelect(e, s)
+      return new core.BinaryExp(e, dot.sourceString, s)
     },
     Exp9_negative(negate, exp) {
       // TODO: probably can't use on objects, function literals,
@@ -412,11 +440,12 @@ export default function analyze(sourceCode) {
       return block.rep()
     },
     VarAssignment_subscript(exp, _open, selector, _close) {
+      // TODO check for loop
       return new core.VarSubscript(exp.rep(), selector.rep())
     },
-    VarAssignment_select(exp, _dot, selector) {
-      // TODO: set exp type to object?
-      return new core.VarSelect(exp.rep(), selector.rep())
+    VarAssignment_select(exp, dot, selector) {
+      // TODO check for loop
+      return new core.BinaryExp(exp.rep(), dot.sourceString, selector.rep())
     },
     FuncLit(exp, _arrow, block) {
       const e = exp.rep()
@@ -443,7 +472,8 @@ export default function analyze(sourceCode) {
         p ? p.id : param.sourceString,
         true,
         false,
-        p ? p.type : undefined
+        p ? p.type : d.NIL,
+        p ?? new core.Nil()
       )
 
       context.add(x.id, x)
@@ -459,7 +489,9 @@ export default function analyze(sourceCode) {
       const x = new core.Var(
         id.sourceString,
         true,
-        false
+        false,
+        d.NIL,
+        new core.Nil()
       )
 
       context.add(id.sourceString, x)

@@ -49,6 +49,10 @@ export class Obj {
     // TODO
   }
 
+  getVal(key) {
+    return this.val.find(field => field.key === key)?.val ?? new Nil()
+  }
+
   get len() {
     return this.val.length
   }
@@ -238,8 +242,8 @@ export class VarDec {
 }
 
 export class Var {
-  constructor(id, local, readOnly, type) {
-    Object.assign(this, { id, local, readOnly, type })
+  constructor(id, local, readOnly, type, exp) {
+    Object.assign(this, { id, local, readOnly, type, exp })
   }
 
   get default() {
@@ -254,12 +258,12 @@ export class VarSubscript {
   }
 }
 
-export class VarSelect {
-  constructor(id, selector) {
-    this.id = id
-    this.selector = selector
-  }
-}
+// export class VarSelect {
+//   constructor(id, selector) {
+//     this.id = id
+//     this.selector = selector
+//   }
+// }
 
 export class ReturnStatement {
   constructor(exp) {
@@ -310,6 +314,10 @@ export class BinaryExp {
     if (boolOps.includes(this.op)) {
       return Bool.typeDescription
     }
+
+    // if (this.op === '.') {
+    //   return this.right.type
+    // }
 
     return getType([this.left, this.right])
   }
