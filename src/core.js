@@ -320,6 +320,10 @@ export class UnaryExp {
     this.exp = exp
     this.op = op
   }
+
+  get type() {
+    return this.op === '!' ? Bool.typeDescription : this.exp.type
+  }
 }
 
 export class PreIncrement {

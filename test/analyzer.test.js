@@ -883,12 +883,16 @@ const examples = [
    6 | Num val=2
    7 | List val=[#8]
    8 | Num val=3`
+  ],
+  [
+    '! op returns a bool',
+    `x = !1`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='boolean'
+   4 | UnaryExp exp=#5 op='!'
+   5 | Num val=1`
   ]
-
-  //x * y
-//     x / y
-//     x % y
-//     x ** y
   // TODO: negate should be bool type
 //   [
 //     'binary exps',
