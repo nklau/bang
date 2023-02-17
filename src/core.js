@@ -50,6 +50,7 @@ export class Obj {
   }
 
   getVal(key) {
+    // TODO replace after implementing .equals for strings
     return this.val.find(field => field.key.val === key)?.val ?? new Nil()
   }
 

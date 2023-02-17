@@ -169,6 +169,9 @@ export default function analyze(sourceCode) {
     Statement_varDec(local, readOnly, id, op, exp) {
       let [e, o, l, r, i] = [exp.rep(), op.sourceString, local.sourceString === 'local', readOnly.sourceString === 'const', id.sourceString]
       let v = context.lookup(id.sourceString)
+      if (e instanceof core.Var) {
+        e = e.exp
+      }
 
       if (op.sourceString === '=') {
         if (v) {
@@ -212,6 +215,7 @@ export default function analyze(sourceCode) {
       return new core.VarDec(v, '=', e)
     },
     Statement_varAssignment(variable, op, exp) {
+      // TODO check for var
       // Designed to only get here for variable subscription/selection
       const v = variable.rep()
       // TODO: should objects have their own context?
@@ -391,13 +395,13 @@ export default function analyze(sourceCode) {
       return new core.VarSubscript(e, selector.rep())
     },
     Exp9_select(exp, dot, selector) {
-      const [e, s] = [exp.rep(), selector.sourceString]
+      const [e, s] = [exp.rep(), selector.rep()]
       checkNotType(e, [d.FUNC])
 
       if (e.type === d.LIST) {
-        return e.val[s] ?? new core.Nil()
+        return e.val[s.val] ?? new core.Nil()
       } else if (e.type === d.OBJ) {
-        return (e instanceof core.Var ? e.exp : e).getVal(s)
+        return (e instanceof core.Var ? e.exp : e).getVal(s.val)
         // TODO dive further if chained dot ops
       }
 

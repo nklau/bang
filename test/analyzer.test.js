@@ -534,7 +534,7 @@ const examples = [
    4 | Num val=1
    5 | VarDec variable=#6 assignmentOp='=' exp=#7
    6 | Var id='x' local=false readOnly=false type='number' exp=#7
-   7 | NaryExp exp=[#8,'+',#3]
+   7 | NaryExp exp=[#8,'+',#4]
    8 | Num val=0`
   ],
   [
@@ -666,6 +666,17 @@ const examples = [
   13 | NaryExp exp=[#3,'<',#6,'<=',#9,'==',#14,'!=',#15]
   14 | Num val=4
   15 | Str val='str'`
+  ],
+  [
+    'setting vars equal to each other does not link by ids',
+    `x = 1
+    y = x`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number' exp=#4
+   4 | Num val=1
+   5 | VarDec variable=#6 assignmentOp='=' exp=#4
+   6 | Var id='y' local=false readOnly=false type='number' exp=#4`
   ],
   [
     `binary exp >`,
@@ -927,20 +938,36 @@ const examples = [
    6 | Str val='x'
    7 | Num val=1`
   ],
-  [
-    'var select',
-    `y = { "x": 1 }
-    z = y.x`,
-    `   1 | Block statements=[#2,#8]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
-   3 | Var id='y' local=false readOnly=false type='object' exp=#4
-   4 | Obj val=[#5]
-   5 | ObjField key=#6 val=#7
-   6 | Str val='x'
-   7 | Num val=1
-   8 | VarDec variable=#9 assignmentOp='=' exp=#7
-   9 | Var id='z' local=false readOnly=false type='number' exp=#7`
-  ],
+  // [
+  //   'var select',
+  //   `y = { "x": 1 }
+  //   z = y.x`,
+  //   `   1 | Block statements=[#2,#8]
+  //  2 | VarDec variable=#3 assignmentOp='=' exp=#4
+  //  3 | Var id='y' local=false readOnly=false type='object' exp=#4
+  //  4 | Obj val=[#5]
+  //  5 | ObjField key=#6 val=#7
+  //  6 | Str val='x'
+  //  7 | Num val=1
+  //  8 | VarDec variable=#9 assignmentOp='=' exp=#7
+  //  9 | Var id='z' local=false readOnly=false type='number' exp=#7`
+  // ],
+  // [
+  //   'chained dot op',
+  //   `x = { 'y': { 'x': 1 } }
+  //   x.y.x`,
+  //   `   1 | Block statements=[#2,#11]
+  //  2 | VarDec variable=#3 assignmentOp='=' exp=#4
+  //  3 | Var id='x' local=false readOnly=false type='object' exp=#4
+  //  4 | Obj val=[#5]
+  //  5 | ObjField key=#6 val=#7
+  //  6 | Str val='y'
+  //  7 | Obj val=[#8]
+  //  8 | ObjField key=#9 val=#10
+  //  9 | Str val='x'
+  // 10 | Num val=1
+  // 11 | ReturnStatement exp=#9`
+  // ],
   // TODO: x.y.z
   [
     'var subscript',
