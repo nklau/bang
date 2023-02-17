@@ -271,6 +271,10 @@ export class ReturnStatement {
   }
 }
 
+export class BreakStatement {
+  constructor() { }
+}
+
 export class Ternary {
   constructor(cond, block, alt) {
     Object.assign(this, { cond, block, alt: alt })

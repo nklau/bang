@@ -995,6 +995,16 @@ const examples = [
    9 | Var id='x' local=true readOnly=false type='string'
   10 | Str val='str'
   11 | ReturnStatement exp=#9`
+  ],
+  [
+    'declared var with value of nil still returns',
+    `x
+    x`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='nil'
+   4 | Nil 
+   5 | ReturnStatement exp=#3`
   ]
   // { x ? { return x }} type checking
   //[

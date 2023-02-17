@@ -8,6 +8,7 @@ Bang {
                         | VarAssignment assignmentOp Exp                                    -- varAssignment
                         | return Exp?                                                       -- return
                         | Exp                                                               -- impliedReturn
+                        | break                                                             -- break
   Exp                   = Exp1 "?" (BangFunc | Statement) (":" (BangFunc | Statement))?     -- ternary
                         | Exp1
   Exp1                  = LeftCompare+ Exp2                                                 -- equality
@@ -115,7 +116,8 @@ Bang {
   comment               = "//" (~newLine any)*
 
   keyword               = const     | boolLit   | match     | nil       
-                        | return    | local     
+                        | break     | return    | local     
   nil                   = "nil" ~idchar
+  break                 = "break" ~idchar
   local                 = "local" ~idchar
 }

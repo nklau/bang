@@ -2,7 +2,7 @@ import assert from "assert/strict"
 import fs from "fs"
 import ohm from "ohm-js"
 
-const keywords = ['const', 'true', 'false', 'match', 'nil', 'return', 'local']
+const keywords = ['const', 'true', 'false', 'match', 'nil', 'break', 'return', 'local']
 
 const exps = [
   ['2 arg function call', 'x(y, z)'],
@@ -93,6 +93,7 @@ const syntaxChecks = [
   ['bang function with local var', '{ local x = 1 }'],
   ['bang function with local const var', '{ local const x = 1 }'],
   ['bang function with empty return', '{ return }'],
+  ['bang function with break', '{ break }'],
   ['bang function that returns boolean exp', '{ return x == y }'],
   ['bang function that returns ternary', '{ return x ? y : z }'],
   ['bang function that returns or exp', '{ return x || y }'],
@@ -407,6 +408,7 @@ const syntaxChecks = [
   ['{} in a string', `"{}"`],
   ['local var dec without value', 'local x'],
   ['return without value', 'return'],
+  ['break', 'break'],
   ['... operator on a function call', '...x()()']
 ]
 

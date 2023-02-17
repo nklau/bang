@@ -71,6 +71,10 @@ function checkInBlock(context) {
   check(context.block, 'Cannot return outside a function')
 }
 
+function checkInLoop(context) {
+  check(context.inLoop, 'Cannot break outside of loop')
+}
+
 // function checkBool(e) {
 //   check(e.type.constructor === core.BoolType, 'Expected boolean')
 // }
@@ -237,6 +241,10 @@ export default function analyze(sourceCode) {
         context.add(exp.sourceString, v)
         return new core.VarDec(v, '=', x)
       }
+    },
+    Statement_break(_b) { 
+      checkInLoop(context)
+      return new core.BreakStatement()
     },
     Exp_ternary(cond, _qMark, block, _c, alt) {
       const c = coerceToBool(cond.rep())
