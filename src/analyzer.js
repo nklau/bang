@@ -168,7 +168,7 @@ export default function analyze(sourceCode) {
     },
     Statement_varDec(local, readOnly, id, op, exp) {
       let [e, o, l, r, i] = [exp.rep(), op.sourceString, local.sourceString === 'local', readOnly.sourceString === 'const', id.sourceString]
-      let v = context.lookup(id.sourceString)
+      let v = context.lookup(i)
       if (e instanceof core.Var) {
         e = e.exp
       }
@@ -179,16 +179,18 @@ export default function analyze(sourceCode) {
             v = new core.Var(i, l, r, e.type ?? e.exp?.type, e)
             context.add(i, v)
           } else {
-            v.type = e.type ?? e.exp?.type // TODO what if this is weaker type
+            v.type = e.type ?? e.exp?.type 
+            // TODO edit v.exp
           }
         } else {
+          // TODO same as above fix it
           v = new core.Var(i, l, r, e.type ?? e.exp?.type, e)
           context.add(i, v)
         }
       } else {
         // Designed to only get here if variable dec is using an eval assignment
         const spread = e instanceof core.NaryExp ? e.exp : [e]
-        const evalOp = o.includes('**') ? '**' : o.charAt(0)
+        const evalOp = (/^(.)=/.exec(o) ?? /(\*\*)=/.exec(o))[1]
         if (!v) {
           e = new core.NaryExp([e.default, evalOp, ...spread])
           v = new core.Var(i, l, r, e.type, e)
