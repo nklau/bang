@@ -568,12 +568,7 @@ describe("The grammar", () => {
       }
     })
     it(`properly accepts the - operator on a ${scenario}`, () => {
-      const match = grammar.match(`-${source}`)
-      if (scenario.includes('exponential')) {
-        assert(!match.succeeded())
-      } else {
-        assert(match.succeeded())
-      }
+      assert(grammar.match(`-${source}`).succeeded())
     })
 
     for (const op of assignmentOps) {
@@ -611,20 +606,10 @@ describe("The grammar", () => {
 
     for (const [otherScenario, otherSource] of exps) {
       for (const operator of binaryOps) {
-        if (operator.includes('**') && (scenario.includes('negative') || otherScenario.includes('negative'))) {
-          it(`does not permit the ${operator} with ${scenario} and ${otherScenario}`, () => {
-            if (scenario.includes('negative')) {
-              assert(!grammar.match(`${source} ${operator} ${otherSource}`).succeeded())
-            } else {
-              assert(!grammar.match(`${otherSource} ${operator} ${source}`).succeeded())
-            }
-          })
-        } else {
-          it(`properly specifies the ${operator} operator with ${scenario} and ${otherScenario}\n${source} ${operator} ${otherSource}`, () => {
-            assert(grammar.match(`${source} ${operator} ${otherSource}`).succeeded())
-            assert(grammar.match(`${otherSource} ${operator} ${source}`).succeeded())
-          })
-        }
+        it(`properly specifies the ${operator} operator with ${scenario} and ${otherScenario}\n${source} ${operator} ${otherSource}`, () => {
+          assert(grammar.match(`${source} ${operator} ${otherSource}`).succeeded())
+          assert(grammar.match(`${otherSource} ${operator} ${source}`).succeeded())
+        })
       }
     }
   }

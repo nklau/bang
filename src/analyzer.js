@@ -289,14 +289,21 @@ export default function analyze(sourceCode) {
       return new core.NaryExp(pieces)
     },
     // TODO implement eval order (l -> r)
-    Exp6_exponent(left, op, right) {
-      // TODO check for unary op with - as op
-      const [l, o, r] = [left.rep(), op.sourceString, right.rep()]
-      checkNotType(l, [d.FUNC])
-      checkNotType(r, [d.FUNC])
-      return new core.BinaryExp(l, o, r)
+    Exp6_exponent(left, right) {
+      const elements = [...left.rep(), right.rep()].flat()
+      const exps = elements.filter(e => typeof e !== 'string')
+
+      exps.slice(0, -1).forEach(e => {
+        checkNotType(e, [d.FUNC])
+        if (e instanceof core.UnaryExp && e.op === '-') {
+          core.error('Expected parentheses around negative operation on the left side of an exponential expression')
+        }
+      })
+      checkNotType(exps[-1], [d.FUNC])
+
+      return new core.NaryExp(elements)
     },
-    Exp6_negate(negative, right) {
+    Exp7_negate(negative, right) {
       const [op, r] = [negative.sourceString, right.rep()]
       if (r instanceof core.PreDecrement) {
         core.error('Expected parentheses around pre-decrement operation with a negation')
@@ -306,13 +313,13 @@ export default function analyze(sourceCode) {
       // -{}
       return new core.UnaryExp(r, op)
     },
-    Exp6_spread(spread, right) {
+    Exp7_spread(spread, right) {
       const [o, r] = [spread.sourceString, right.rep()]
       checkType(r, [d.OBJ, d.LIST])
 
       return new core.UnaryExp(r, o)
     },
-    Exp7_postFix(exp, op) {
+    Exp8_postFix(exp, op) {
       // TODO need to check const
       let [e, o] = [exp.rep(), op.sourceString]
       if (!e) {
@@ -323,7 +330,7 @@ export default function analyze(sourceCode) {
 
       return o.includes('+') ? new core.PostIncrement(e) : new core.PostDecrement(e)
     },
-    Exp7_preFix(op, exp) {
+    Exp8_preFix(op, exp) {
       // TODO need to check const
       let [e, o] = [exp.rep(), op.sourceString]
       if (!e) {
@@ -334,14 +341,14 @@ export default function analyze(sourceCode) {
 
       return o.includes('+') ? new core.PreIncrement(e) : new core.PreDecrement(e)
     },
-    Exp8_call(exp, _space, params) {
+    Exp9_call(exp, _space, params) {
       const [e, p] = [exp.rep(), params.rep()]
       check(e, 'Variable may not have been initialized')
       // checkNotUndefined(e) // TODO: does this prevent 0()
 
       return new core.Call(e, p)
     },
-    Exp8_subscript(exp, _open, selector, _close) {
+    Exp9_subscript(exp, _open, selector, _close) {
       const [e, s] = [exp.rep(), selector.rep()]
       // TODO: don't think this is right because it doesn't allow built-in functions
       checkType(e, [d.OBJ, d.LIST])
@@ -350,7 +357,7 @@ export default function analyze(sourceCode) {
 
       return new core.VarSubscript(e, s)
     },
-    Exp8_select(exp, _dot, selector) {
+    Exp9_select(exp, _dot, selector) {
       const [e, s] = [exp.rep(), selector.rep()]
       
       checkNotType(e, [d.FUNC])
@@ -359,7 +366,7 @@ export default function analyze(sourceCode) {
       // if so, need to allow list type for x
       return new core.VarSelect(e, s)
     },
-    Exp8_negative(negate, exp) {
+    Exp9_negative(negate, exp) {
       // TODO: probably can't use on objects, function literals,
       // unless we save it as a unary exp so it applies the negative to the result after the function gets called?
       // does using it on a boolean toggle the boolean? or does it turn to -1 * boolean (this one makes more sense probably)
@@ -367,16 +374,19 @@ export default function analyze(sourceCode) {
 
       return new core.UnaryExp(exp.rep(), negate.sourceString)
     },
-    Exp8_unwrap(exp, unwrap) {
+    Exp9_unwrap(exp, unwrap) {
       return new core.UnaryExp(exp.rep(), unwrap.sourceString)
     },
-    Exp9_enclosed(_open, exp, _close) {
+    Exp10_enclosed(_open, exp, _close) {
       return new core.NaryExp([exp.rep()])
     },
     LeftCompare(exp, op) {
       return [exp.rep(), op.sourceString]
     },
     LeftAddition(exp, op) {
+      return [exp.rep(), op.sourceString]
+    },
+    LeftExponent(exp, op) {
       return [exp.rep(), op.sourceString]
     },
     BangFunc(_open, block, _close) {

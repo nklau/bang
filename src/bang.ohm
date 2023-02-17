@@ -21,26 +21,28 @@ Bang {
                         | Exp5
   Exp5                  = Exp6 multiplicationOp NonemptyListOf<Exp6, multiplicationOp>      -- multiplyDivideMod
                         | Exp6
-  Exp6                  = Exp7 "**" Exp6                                                    -- exponent
-                        | "-" Exp7                                                          -- negate
-                        | "..." Exp7                                                        -- spread
+  Exp6                  = LeftExponent+ Exp7                                                -- exponent
                         | Exp7
-  Exp7                  = Exp8 ("++" | "--")                                                -- postFix
-                        | ("++" | "--") Exp8                                                -- preFix
+  Exp7                  = "-" Exp8                                                          -- negate
+                        | "..." Exp8                                                        -- spread
                         | Exp8
-  Exp8                  = Exp8 #(~newLine space)* ~#newLine Args                            -- call
-                        | Exp8 #"[" Exp "]"                                                 -- subscript
-                        | Exp8 #"." VarAssignment                                           -- select
-                        | "!" Exp8                                                          -- negative
-                        | Exp8 #"?"                                                         -- unwrap
+  Exp8                  = Exp9 ("++" | "--")                                                -- postFix
+                        | ("++" | "--") Exp9                                                -- preFix
                         | Exp9
-  Exp9                  = nil       | Str       | num       | Obj       
+  Exp9                  = Exp9 #(~newLine space)* ~#newLine Args                            -- call
+                        | Exp9 #"[" Exp "]"                                                 -- subscript
+                        | Exp9 #"." VarAssignment                                           -- select
+                        | "!" Exp9                                                          -- negative
+                        | Exp9 #"?"                                                         -- unwrap
+                        | Exp10
+  Exp10                 = nil       | Str       | num       | Obj       
                         | boolLit   | BangFunc  | MatchExp  | ListLit   
                         | FuncLit   | id
                         | "(" Exp ")"                                                       -- enclosed
 
   LeftCompare           = Exp2 compareOp
   LeftAddition          = Exp5 additionOp
+  LeftExponent          = Exp7 "**"
 
   BangFunc              = "{" Block "}"
   VarAssignment         = VarAssignment #"[" Exp "]"                                        -- subscript

@@ -6,6 +6,8 @@ import analyze from "../src/analyzer.js"
 // TODO: local const w/out val should error
 // TODO: changing const val should error
 // TODO: x += x++ // x = 0 \n x = x + 1
+// -2 ** 2
+// 2 ** -2 ** 2
 
 const examples = [
   [
@@ -845,7 +847,7 @@ const examples = [
     `   1 | Block statements=[#2]
    2 | VarDec variable=#3 assignmentOp='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list'
-   4 | BinaryExp left=#5 op='**' right=#6
+   4 | NaryExp exp=[#5,'**',#6]
    5 | Num val=1
    6 | List val=[]`
   ],
