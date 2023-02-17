@@ -68,7 +68,7 @@ function checkNotLiteral(e) {
 }
 
 function checkInBlock(context) {
-  check(context.function, 'Cannot return outside a function')
+  check(context.block, 'Cannot return outside a function')
 }
 
 // function checkBool(e) {
@@ -154,7 +154,10 @@ export default function analyze(sourceCode) {
       return body.rep()
     },
     Block(_n0, statements, statement, _n1) {
-      return new core.Block([...(statements.rep()), ...statement.rep()])
+      const b = new core.Block()
+      context = context.newChildContext({ inLoop: false, block: b })
+      b.statements = [...(statements.rep()), ...statement.rep()]
+      return b
     },
     StatementNewLine(statement, _space, _n) {
       return statement.rep()
@@ -206,14 +209,17 @@ export default function analyze(sourceCode) {
     Statement_varAssignment(variable, op, exp) {
       // Designed to only get here for variable subscription/selection
       const v = variable.rep()
+      // TODO: should objects have their own context?
       return new core.VarDec(v, op.sourceString, exp.rep())
     },
     Statement_return(_return, exp) {
       // Can only explicitly use 'return' keyword inside a function
       checkInBlock(context)
+      context = context.parent
       return new core.ReturnStatement(...exp.rep())
     },
     Statement_impliedReturn(exp) {
+      // TODO: need to move up a context
       const e = exp.rep()
       if (e) {
         const noReturn = [core.Ternary, core.PreIncrement, core.PreDecrement, core.PostIncrement, core.PostDecrement]
@@ -359,6 +365,7 @@ export default function analyze(sourceCode) {
     },
     Exp9_select(exp, _dot, selector) {
       const [e, s] = [exp.rep(), selector.rep()]
+      // selector.rep() ?? new core.Str(selector.sourceString)
       
       checkNotType(e, [d.FUNC])
       // TODO: how to check s?

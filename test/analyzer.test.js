@@ -900,45 +900,69 @@ const examples = [
    2 | VarDec variable=#3 assignmentOp='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='nil'
    4 | Nil `
+  ],
+  [
+    'object literal',
+    `y = { "x": 1 }`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='y' local=false readOnly=false type='object'
+   4 | Obj val=[#5]
+   5 | ObjField key=#6 val=#7
+   6 | Str val='x'
+   7 | Num val=1`
+  ],
+  // [
+  //   'var select',
+  //   `y = { "x": 1 }
+  //   z = y.x`,
+  //   `   1 | Block statements=[#2,#8]
+  //  2 | VarDec variable=#3 assignmentOp='=' exp=#4
+  //  3 | Var id='y' local=false readOnly=false type='object'
+  //  4 | Obj val=[#5]
+  //  5 | ObjField key=#6 val=#7
+  //  6 | Str val='x'
+  //  7 | Num val=1
+  //  8 | VarDec variable=#9 assignmentOp='=' exp=#10
+  //  9 | Var id='z' local=false readOnly=false type='number'
+  // 10 | VarSelect id=#3 selector=#11
+  // 11 | Str val='x'`
+  // ],
+  // [
+  //   'var subscript',
+  //   `y = { "x": 1 }
+  //   z = y['x']`,
+  //   `   1 | Block statements=[#2,#8]
+  //  2 | VarDec variable=#3 assignmentOp='=' exp=#4
+  //  3 | Var id='y' local=false readOnly=false type='object'
+  //  4 | Obj val=[#5]
+  //  5 | ObjField key=#6 val=#7
+  //  6 | Str val='x'
+  //  7 | Num val=1
+  //  8 | VarDec variable=#9 assignmentOp='=' exp=#10
+  //  9 | Var id='z' local=false readOnly=fale type='number'
+  // 10 | VarSubscript id=#3 selector=#11
+  // 11 | Str val='x'`
+  // ],
+  [
+    'empty obj',
+    `x = {}`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='object'
+   4 | Obj val=[]`
+  ],
+  [
+    'short return statement',
+    `x = { return }`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='nil'
+   4 | Block statements=[#5]
+   5 | ReturnStatement exp=#6
+   6 | Nil `
   ]
-//   [
-//     'assignment ops',
-//     `local x = 5
-//     local const y = 'str'
-//     const var = nil
-//     local x
-//     x += 1.5
-//     x.y -= 1.5E4
-//     x[y] *= 1e5
-//     x[1].y /= 1E-6
-//     x.y['str'] %= 1e+4`,
-//     `   1 | Block statements=[#2,#4,#6,#8,#10,#12,#15,#18,#22]
-//    2 | VarDec variable=#3 assignmentOp='=' exp=5
-//    3 | Var id='x' local=true readOnly=false type=undefined
-//    4 | VarDec variable=#5 assignmentOp='=' exp='str'
-//    5 | Var id='y' local=true readOnly=true type=undefined
-//    6 | VarDec variable=#7 assignmentOp='=' exp=undefined
-//    7 | Var id='var' local=false readOnly=true type=undefined
-//    8 | VarDec variable=#9 assignmentOp='=' exp=undefined
-//    9 | Var id='x' local=true readOnly=false type=undefined
-//   10 | VarDec variable=#11 assignmentOp='+=' exp=1.5
-//   11 | Var id='x' local=false readOnly=false type=undefined
-//   12 | VarDec variable=#13 assignmentOp='-=' exp=15000
-//   13 | Var id=#14 local=false readOnly=false type=undefined
-//   14 | VarSelect id='x' selector='y'
-//   15 | VarDec variable=#16 assignmentOp='*=' exp=100000
-//   16 | Var id=#17 local=false readOnly=false type=undefined
-//   17 | VarSubscript id='x' selector='y'
-//   18 | VarDec variable=#19 assignmentOp='/=' exp=0.000001
-//   19 | Var id=#20 local=false readOnly=false type=undefined
-//   20 | VarSelect id=#21 selector='y'
-//   21 | VarSubscript id='x' selector=1
-//   22 | VarDec variable=#23 assignmentOp='%=' exp=10000
-//   23 | Var id=#24 local=false readOnly=false type=undefined
-//   24 | VarSelect id='x' selector=#25
-//   25 | VarSubscript id='y' selector='str'`
-//   ],
-//   [
+  //[
 //     'return statement',
 //     `return x
 //     return x && y || z
@@ -972,6 +996,39 @@ const examples = [
 //   17 | Var id='x' local=true readOnly=false type=undefined
 //   18 | ReturnStatement exp='x'
 //   19 | ReturnStatement exp=undefined`
+//   ],
+//   [
+//     'assignment ops',
+//     `x += 1.5
+//     x.y -= 1.5E4
+//     x[y] *= 1e5
+//     x[1].y /= 1E-6
+//     x.y['str'] %= 1e+4`,
+//     `   1 | Block statements=[#2,#4,#6,#8,#10,#12,#15,#18,#22]
+//    2 | VarDec variable=#3 assignmentOp='=' exp=5
+//    3 | Var id='x' local=true readOnly=false type=undefined
+//    4 | VarDec variable=#5 assignmentOp='=' exp='str'
+//    5 | Var id='y' local=true readOnly=true type=undefined
+//    6 | VarDec variable=#7 assignmentOp='=' exp=undefined
+//    7 | Var id='var' local=false readOnly=true type=undefined
+//    8 | VarDec variable=#9 assignmentOp='=' exp=undefined
+//    9 | Var id='x' local=true readOnly=false type=undefined
+//   10 | VarDec variable=#11 assignmentOp='+=' exp=1.5
+//   11 | Var id='x' local=false readOnly=false type=undefined
+//   12 | VarDec variable=#13 assignmentOp='-=' exp=15000
+//   13 | Var id=#14 local=false readOnly=false type=undefined
+//   14 | VarSelect id='x' selector='y'
+//   15 | VarDec variable=#16 assignmentOp='*=' exp=100000
+//   16 | Var id=#17 local=false readOnly=false type=undefined
+//   17 | VarSubscript id='x' selector='y'
+//   18 | VarDec variable=#19 assignmentOp='/=' exp=0.000001
+//   19 | Var id=#20 local=false readOnly=false type=undefined
+//   20 | VarSelect id=#21 selector='y'
+//   21 | VarSubscript id='x' selector=1
+//   22 | VarDec variable=#23 assignmentOp='%=' exp=10000
+//   23 | Var id=#24 local=false readOnly=false type=undefined
+//   24 | VarSelect id='x' selector=#25
+//   25 | VarSubscript id='y' selector='str'`
 //   ],
 //   [
 //     'ternaries',

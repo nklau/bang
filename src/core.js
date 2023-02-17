@@ -263,7 +263,7 @@ export class VarSelect {
 
 export class ReturnStatement {
   constructor(exp) {
-    this.exp = exp
+    this.exp = exp ?? new Nil()
   }
 
   get type() {

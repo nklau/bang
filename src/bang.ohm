@@ -8,7 +8,6 @@ Bang {
                         | VarAssignment assignmentOp Exp                                    -- varAssignment
                         | return Exp?                                                       -- return
                         | Exp                                                               -- impliedReturn
-                        | break
   Exp                   = Exp1 "?" (BangFunc | Statement) (":" (BangFunc | Statement))?     -- ternary
                         | Exp1
   Exp1                  = LeftCompare+ Exp2                                                 -- equality
@@ -20,7 +19,6 @@ Bang {
   Exp4                  = LeftAddition+ Exp5                                                -- addSubtract
                         | Exp5
   Exp5                  = LeftMultiply+ Exp6                                                -- multiplyDivideMod
-//   Exp6 multiplicationOp NonemptyListOf<Exp6, multiplicationOp>      -- multiplyDivideMod
                         | Exp6
   Exp6                  = LeftExponent+ Exp7                                                -- exponent
                         | Exp7
@@ -117,8 +115,7 @@ Bang {
   comment               = "//" (~newLine any)*
 
   keyword               = const     | boolLit   | match     | nil       
-                        | break     | return    | local     
+                        | return    | local     
   nil                   = "nil" ~idchar
-  break                 = "break" ~idchar
   local                 = "local" ~idchar
 }
