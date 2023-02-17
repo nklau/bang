@@ -8,6 +8,7 @@ import analyze from "../src/analyzer.js"
 // TODO: x += x++ // x = 0 \n x = x + 1
 // -2 ** 2
 // 2 ** -2 ** 2
+// return outside block
 
 const examples = [
   [
@@ -961,6 +962,40 @@ const examples = [
    4 | Block statements=[#5]
    5 | ReturnStatement exp=#6
    6 | Nil `
+  ],
+  [
+    'return var',
+    `x = 1
+    y = {
+      return x
+    }`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | Num val=1
+   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   6 | Var id='y' local=false readOnly=false type='number'
+   7 | Block statements=[#8]
+   8 | ReturnStatement exp=#3`
+  ],
+  [
+    'local return var',
+    `const x = 1
+    y = {
+      local x = 'str'
+      return x
+    }`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=true type='number'
+   4 | Num val=1
+   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   6 | Var id='y' local=false readOnly=false type='string'
+   7 | Block statements=[#8,#11]
+   8 | VarDec variable=#9 assignmentOp='=' exp=#10
+   9 | Var id='x' local=true readOnly=false type='string'
+  10 | Str val='str'
+  11 | ReturnStatement exp=#9`
   ]
   //[
 //     'return statement',
@@ -975,8 +1010,7 @@ const examples = [
 //     x = { 
 //       local x = true
 //       return x 
-//     }
-//     return`,
+//     }`,
 //     `   1 | Block statements=[#2,#3,#6,#13,#19]
 //    2 | ReturnStatement exp='x'
 //    3 | ReturnStatement exp=#4

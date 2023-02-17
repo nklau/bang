@@ -215,8 +215,9 @@ export default function analyze(sourceCode) {
     Statement_return(_return, exp) {
       // Can only explicitly use 'return' keyword inside a function
       checkInBlock(context)
+      const e = exp.rep()
       context = context.parent
-      return new core.ReturnStatement(...exp.rep())
+      return new core.ReturnStatement(...e)
     },
     Statement_impliedReturn(exp) {
       // TODO: need to move up a context
