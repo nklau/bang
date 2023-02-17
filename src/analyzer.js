@@ -527,7 +527,7 @@ export default function analyze(sourceCode) {
       return new core.DefaultMatchCase(block.rep())
     },
     nil(_nil) {
-      return undefined
+      return new core.Nil()
     },
     _terminal() {
       return this.sourceString

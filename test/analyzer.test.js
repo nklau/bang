@@ -892,47 +892,15 @@ const examples = [
    3 | Var id='x' local=false readOnly=false type='boolean'
    4 | UnaryExp exp=#5 op='!'
    5 | Num val=1`
+  ],
+  [
+    'var dec with nil',
+    `x = nil`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='nil'
+   4 | Nil `
   ]
-  // TODO: negate should be bool type
-//   [
-//     'binary exps',
-//     `x != true
-//     x < 2
-//     4 > y
-//     x <= y
-//     x >= y
-//     x || false
-//     x && y
-//     [x] + 'str'
-//     x - y
-//     x * y
-//     x / y
-//     x % y
-//     x ** y`,
-//     `   1 | Block statements=[#2,#3,#5]
-//    2 | BinaryExp left='x' op='==' right='y'
-//    3 | BinaryExp left='x' op='!=' right=#4
-//    4 | Bool val=false
-//    5 | BinaryExp left='x' op='<' right=2
-//    6 | BinaryExp left=4 op='>' right='y'
-//    6 | BinaryExp left='x' op='<=' right='y'
-//    7 | BinaryExp left='x' op='>=' right='y'
-//    8 | BinaryExp left='x' op='||' right=false
-//    9 | BinaryExp left='x' op='&&' right='y'
-//   10 | BinaryExp left=#11 op='+' right='str'
-//   11 | List list=['x']
-//   12 | BinaryExp left='x' op='-' right='y'
-//   13 | BinaryExp left='x' op='*' right='y'
-//   14 | BinaryExp left='x' op='/' right='y'
-//   15 | BinaryExp left='x' op='%' right='y'
-//   16 | BinaryExp left='x' op='**' right='y'`
-//   ],
-//   [
-//     'additive exp',
-//     'x + y',
-//     `   1 | Block statements=[#2]
-//    2 | BinaryExp left='x' op='+' right='y'`
-//   ],
 //   [
 //     'assignment ops',
 //     `local x = 5

@@ -168,7 +168,7 @@ export class Nil {
   static typeDescription = 'nil'
 
   static get default() {
-    return undefined
+    return new Nil()
   }
 
   get type() {
