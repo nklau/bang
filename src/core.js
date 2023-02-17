@@ -283,6 +283,11 @@ export class NaryExp {
   }
 
   get type() {
+    const equalityOps = ['>=', '<=', '>', '<', '==', '!=']
+    if (this.exp.some(e => equalityOps.includes(e))) {
+      return Bool.typeDescription
+    }
+
     const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription]
 
     for (const type of types) {

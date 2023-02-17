@@ -612,13 +612,80 @@ const examples = [
    6 | Block statements=[#7]
    7 | ReturnStatement exp=#8
    8 | Num val=1`
-  ]
-  // TODO: x += { 1 } should have default val of 0 for x
-  // TODO: declaring local x in smaller scope should make a new var, then outside var should be unchanged type (test using different types)
+  ],
+  [
+    'binary exp ==',
+    `x = 1
+    y = false
+    x == y`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | Num val=1
+   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   6 | Var id='y' local=false readOnly=false type='boolean'
+   7 | Bool val=false
+   8 | ReturnStatement exp=#9
+   9 | NaryExp exp=[#3,'==',#6]`
+  ],
+  [
+    'chained equality exp',
+    `x = 1
+    y = false
+    z = $'{x}'
+    x < y <= z == 4 != 'str'`,
+    `   1 | Block statements=[#2,#5,#8,#11]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | Num val=1
+   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   6 | Var id='y' local=false readOnly=false type='boolean'
+   7 | Bool val=false
+   8 | VarDec variable=#9 assignmentOp='=' exp=#10
+   9 | Var id='z' local=false readOnly=false type='string'
+  10 | FormattedStr val=[#3]
+  11 | ReturnStatement exp=#12
+  12 | NaryExp exp=[#3,'<',#6,'<=',#9,'==',#13,'!=',#14]
+  13 | Num val=4
+  14 | Str val='str'`
+  ],
+  [
+    `binary exp >`,
+    `1 > 2`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | NaryExp exp=[#4,'>',#5]
+   4 | Num val=1
+   5 | Num val=2`
+  ],
+  [
+    'binary exp >=',
+    `4 >= false`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | NaryExp exp=[#4,'>=',#5]
+   4 | Num val=4
+   5 | Bool val=false`
+  ],
+  [
+    '== op has type boolean',
+    `x = 1
+    y = false
+    z = x == y`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='number'
+   4 | Num val=1
+   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   6 | Var id='y' local=false readOnly=false type='boolean'
+   7 | Bool val=false
+   8 | VarDec variable=#9 assignmentOp='=' exp=#10
+   9 | Var id='z' local=false readOnly=false type='boolean'
+  10 | NaryExp exp=[#3,'==',#6]`
+  ],
 //   [
 //     'binary exps',
-//     `x == y
-//     x != true
+//     `x != true
 //     x < 2
 //     4 > y
 //     x <= y
