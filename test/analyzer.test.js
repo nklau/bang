@@ -633,7 +633,7 @@ const examples = [
     `x = 1
     y = false
     z = $'{x}'
-    x < y <= z == 4 != 'str'`,
+    n = x < y <= z == 4 != 'str'`,
     `   1 | Block statements=[#2,#5,#8,#11]
    2 | VarDec variable=#3 assignmentOp='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number'
@@ -644,10 +644,11 @@ const examples = [
    8 | VarDec variable=#9 assignmentOp='=' exp=#10
    9 | Var id='z' local=false readOnly=false type='string'
   10 | FormattedStr val=[#3]
-  11 | ReturnStatement exp=#12
-  12 | NaryExp exp=[#3,'<',#6,'<=',#9,'==',#13,'!=',#14]
-  13 | Num val=4
-  14 | Str val='str'`
+  11 | VarDec variable=#12 assignmentOp='=' exp=#13
+  12 | Var id='n' local=false readOnly=false type='boolean'
+  13 | NaryExp exp=[#3,'<',#6,'<=',#9,'==',#14,'!=',#15]
+  14 | Num val=4
+  15 | Str val='str'`
   ],
   [
     `binary exp >`,
@@ -683,6 +684,26 @@ const examples = [
    9 | Var id='z' local=false readOnly=false type='boolean'
   10 | NaryExp exp=[#3,'==',#6]`
   ],
+  [
+    '|| operator has type boolean',
+    `x = 1 || []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='boolean'
+   4 | BinaryExp left=#5 op='||' right=#6
+   5 | Num val=1
+   6 | List val=[]`
+  ],
+  [
+    '&& op has type bool',
+    `x = 1 && []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   3 | Var id='x' local=false readOnly=false type='boolean'
+   4 | BinaryExp left=#5 op='&&' right=#6
+   5 | Num val=1
+   6 | List val=[]`
+  ]
 //   [
 //     'binary exps',
 //     `x != true

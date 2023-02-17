@@ -288,13 +288,7 @@ export class NaryExp {
       return Bool.typeDescription
     }
 
-    const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription]
-
-    for (const type of types) {
-      if (this.exp.some(e => { return e.type === type })) { 
-        return type 
-      }
-    }
+    return getType(this.exp)
   }
 
   get default() {
@@ -305,6 +299,19 @@ export class NaryExp {
 export class BinaryExp {
   constructor(left, op, right) {
     Object.assign(this, { left, op, right })
+  }
+
+  get type() {
+    const boolOps = ['||', '&&']
+    if (boolOps.includes(this.op)) {
+      return Bool.typeDescription
+    }
+
+    return getType([this.left, this.right])
+  }
+
+  get default() {
+    return getDefault(this.type)
   }
 }
 
@@ -424,8 +431,12 @@ const getDefault = (t) => {
   }
 }
 
-// const getType = (e) => {
-//   const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription]
-
-//   return types.find(t => t === e)
-// }
+const getType = (exps) => {
+  const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription]
+  
+  for (const type of types) {
+    if (exps.some(e => { return e.type === type })) { 
+      return type 
+    }
+  }
+}

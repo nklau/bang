@@ -251,26 +251,12 @@ export default function analyze(sourceCode) {
       return new core.NaryExp(elements)
     },
     Exp2_or(left, or, right) {
-      const [l, op, rs] = [left.rep(), or.sourceString, right.rep()]
-      let x = coerceToBool(l)
-
-      for (let r of rs) {
-        const y = coerceToBool(r)
-        x = new core.BinaryExp(x, op, y)
-      }
-
-      return x
+      const [l, op, r] = [left.rep(), or.sourceString, right.rep()]
+      return new core.BinaryExp(l, op, r)
     },
     Exp3_and(left, and, right) {
-      const [l, op, rs] = [left.rep(), and.sourceString, right.rep()]
-      let x = coerceToBool(l)
-
-      for (let r of rs) {
-        const y = coerceToBool(r)
-        x = new core.BinaryExp(x, op, y)
-      }
-
-      return x
+      const [l, op, r] = [left.rep(), and.sourceString, right.rep()]
+      return new core.BinaryExp(l, op, r)
     },
     Exp4_addSubtract(left, right) {
       const elements = [...left.rep(), right.rep()].flat()
