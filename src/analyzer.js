@@ -223,7 +223,7 @@ export default function analyze(sourceCode) {
       // TODO: need to move up a context
       const e = exp.rep()
       if (e) {
-        const noReturn = [core.Ternary, core.PreIncrement, core.PreDecrement, core.PostIncrement, core.PostDecrement]
+        const noReturn = [core.Ternary, core.PreIncrement, core.PreDecrement, core.PostIncrement, core.PostDecrement, core.Call]
         return noReturn.some(r => e instanceof r) ? e : new core.ReturnStatement(e)
       } else {
         const x = new core.Nil()

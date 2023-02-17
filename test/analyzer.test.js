@@ -161,12 +161,11 @@ const examples = [
    8 | Block statements=[#9]
    9 | ReturnStatement exp=#10
   10 | NaryExp exp=[#6,'+',#7]
-  11 | ReturnStatement exp=#12
-  12 | Call id=#3 args=#13
-  13 | Args args=[#14,#15]
-  14 | Num val=2
-  15 | List val=[#16]
-  16 | Bool val=false`
+  11 | Call id=#3 args=#12
+  12 | Args args=[#13,#14]
+  13 | Num val=2
+  14 | List val=[#15]
+  15 | Bool val=false`
   ],
   [
     'variable to number comparison',
@@ -997,6 +996,7 @@ const examples = [
   10 | Str val='str'
   11 | ReturnStatement exp=#9`
   ]
+  // { x ? { return x }} type checking
   //[
 //     'return statement',
 //     `return x
