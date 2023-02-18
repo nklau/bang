@@ -238,7 +238,9 @@ export class Block {
 
 export class VarDec {
   constructor(variable, assignmentOp, exp) {
-    Object.assign(this, { variable, assignmentOp, exp })
+    this.var = variable
+    this.op = assignmentOp
+    this.exp = exp
   }
 }
 
@@ -249,6 +251,13 @@ export class Var {
 
   get default() {
     return getDefault(this.type)
+  }
+}
+
+export class Assign {
+  constructor(variable, exp) {
+    this.var = variable
+    this.exp = exp
   }
 }
 

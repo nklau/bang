@@ -174,13 +174,20 @@ export default function analyze(sourceCode) {
       }
 
       if (op.sourceString === '=') {
+        // if (l || !v) {
+        //   v = new core.Var(i, l, r, e.type ?? e.exp?.type, e)
+        //   context.add(i, v)
+        // } else if (v && !l) {
+        //   v.type = e.type ?? e.exp?.type 
+        //   v.exp = e
+        // }
         if (v) {
           if (l) {
             v = new core.Var(i, l, r, e.type ?? e.exp?.type, e)
             context.add(i, v)
           } else {
-            v.type = e.type ?? e.exp?.type 
-            // TODO edit v.exp
+            v.type = e.type ?? e.exp?.type
+            // v.exp = e
           }
         } else {
           // TODO same as above fix it
@@ -199,6 +206,7 @@ export default function analyze(sourceCode) {
         } else {
           e = new core.NaryExp([v, evalOp, ...spread])
           v.type = e.type // TODO: check for weaker type
+          // v.exp = e
         }
       }
 

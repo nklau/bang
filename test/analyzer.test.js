@@ -15,7 +15,7 @@ const examples = [
     'numeric variable declaration',
     'x = 1',
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | Num val=1`
   ],
@@ -23,7 +23,7 @@ const examples = [
     'string var dec',
     'x = "str"',
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='string' exp=#4
    4 | Str val='str'`
   ],
@@ -31,7 +31,7 @@ const examples = [
     'string var dec with apostrophes',
     `x = 'str'`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='string' exp=#4
    4 | Str val='str'`
   ],
@@ -39,7 +39,7 @@ const examples = [
     'bool var dec with true',
     'x = true',
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='boolean' exp=#4
    4 | Bool val=true`
   ],
@@ -47,7 +47,7 @@ const examples = [
     'bool var dec with false',
     'x = false',
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='boolean' exp=#4
    4 | Bool val=false`
   ],
@@ -55,7 +55,7 @@ const examples = [
     'list var dec with empty list',
     'x = []',
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | List val=[]`
   ],
@@ -63,7 +63,7 @@ const examples = [
     'list var dec with 1-element list',
     'x = [1]',
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | List val=[#5]
    5 | Num val=1`
@@ -72,7 +72,7 @@ const examples = [
     'list var dec with 2-element list',
     'x = [1, "str"]',
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | List val=[#5,#6]
    5 | Num val=1
@@ -83,10 +83,10 @@ const examples = [
     `y = 12
     x = $"str{y}ing"`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='y' local=false readOnly=false type='number' exp=#4
    4 | Num val=12
-   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   5 | VarDec var=#6 op='=' exp=#7
    6 | Var id='x' local=false readOnly=false type='string' exp=#7
    7 | FormattedStr val=['s','t','r',#3,'i','n','g']`
   ],
@@ -95,10 +95,10 @@ const examples = [
     `y = 12
     x = $'str{y}ing'`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='y' local=false readOnly=false type='number' exp=#4
    4 | Num val=12
-   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   5 | VarDec var=#6 op='=' exp=#7
    6 | Var id='x' local=false readOnly=false type='string' exp=#7
    7 | FormattedStr val=['s','t','r',#3,'i','n','g']`
   ],
@@ -106,7 +106,7 @@ const examples = [
     'empty function literal with no params var dec',
     `x = () -> {}`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='function' exp=#4
    4 | Func params=#5 block=#6
    5 | Params params=[]
@@ -116,7 +116,7 @@ const examples = [
     'function literal with enclosed 1 param var dec',
     `x = (i) -> { i }`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='function' exp=#4
    4 | Func params=#5 block=#8
    5 | Params params=[#6]
@@ -129,7 +129,7 @@ const examples = [
     'function literal with 1 param var dec',
     `x = i -> { i }`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='function' exp=#4
    4 | Func params=#5 block=#8
    5 | Params params=[#6]
@@ -142,7 +142,7 @@ const examples = [
     'function literal with no brackets',
     `x = i -> i`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='function' exp=#4
    4 | Func params=#5 block=#8
    5 | Params params=[#6]
@@ -155,7 +155,7 @@ const examples = [
     `add = (y, z) -> { y + z }
     add(2, [false])`, 
     `   1 | Block statements=[#2,#13]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='add' local=false readOnly=false type='function' exp=#4
    4 | Func params=#5 block=#10
    5 | Params params=[#6,#8]
@@ -177,7 +177,7 @@ const examples = [
     `x = 1
     x < 2`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | Num val=1
    5 | ReturnStatement exp=#6
@@ -189,7 +189,7 @@ const examples = [
     `y = false
     4 > y > -1`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='y' local=false readOnly=false type='boolean' exp=#4
    4 | Bool val=false
    5 | ReturnStatement exp=#6
@@ -203,7 +203,7 @@ const examples = [
     `x += 1
     x == y`,
     `   1 | Block statements=[#2,#7]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | NaryExp exp=[#5,'+',#6]
    5 | Num val=0
@@ -215,7 +215,7 @@ const examples = [
     'post-increment operator',
     `y = x++`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='y' local=false readOnly=false type='number' exp=#4
    4 | PostIncrement exp=#5
    5 | Var id='x' local=false readOnly=false type='number' exp=#6
@@ -269,7 +269,7 @@ const examples = [
     `x = 1
     x++`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | Num val=1
    5 | PostIncrement exp=#3`
@@ -299,7 +299,7 @@ const examples = [
     'empty obj dec',
     `x = {}`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='object' exp=#4
    4 | Obj val=[]`
   ],
@@ -307,7 +307,7 @@ const examples = [
     'local var dec with value', 
     `local x = 5`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=true readOnly=false type='number' exp=#4
    4 | Num val=5`
   ],
@@ -315,7 +315,7 @@ const examples = [
     'local var dec without value',
     `local x`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=true readOnly=false type='nil' exp=#4
    4 | Nil `
   ],
@@ -323,7 +323,7 @@ const examples = [
     'var dec without value',
     `x`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='nil' exp=#4
    4 | Nil `
   ],
@@ -332,7 +332,7 @@ const examples = [
     `x = 1
     x`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | Num val=1
    5 | ReturnStatement exp=#3`
@@ -341,7 +341,7 @@ const examples = [
     'const var dec with value',
     `const x = 5`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=true type='number' exp=#4
    4 | Num val=5`
   ],
@@ -349,7 +349,7 @@ const examples = [
     'local const var dec with value',
     `local const x = 5`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=true readOnly=true type='number' exp=#4
    4 | Num val=5`
   ],
@@ -359,10 +359,10 @@ const examples = [
     x = 5
     x`,
     `   1 | Block statements=[#2,#5,#7]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | Nil 
-   5 | VarDec variable=#3 assignmentOp='=' exp=#6
+   5 | VarDec var=#3 op='=' exp=#6
    6 | Num val=5
    7 | ReturnStatement exp=#3`
   ],
@@ -371,10 +371,10 @@ const examples = [
     `x = 5
     x = 'str'`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='string' exp=#4
    4 | Num val=5
-   5 | VarDec variable=#3 assignmentOp='=' exp=#6
+   5 | VarDec var=#3 op='=' exp=#6
    6 | Str val='str'`
   ],
   [
@@ -382,10 +382,10 @@ const examples = [
     `x = 5
     x += 'str'`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='string' exp=#4
    4 | Num val=5
-   5 | VarDec variable=#3 assignmentOp='=' exp=#6
+   5 | VarDec var=#3 op='=' exp=#6
    6 | NaryExp exp=[#3,'+',#7]
    7 | Str val='str'`
   ],
@@ -394,10 +394,10 @@ const examples = [
     `x = 5
     x += 'str' + ['alt']`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | Num val=5
-   5 | VarDec variable=#3 assignmentOp='=' exp=#6
+   5 | VarDec var=#3 op='=' exp=#6
    6 | NaryExp exp=[#3,'+',#7,'+',#8]
    7 | Str val='str'
    8 | List val=[#9]
@@ -407,7 +407,7 @@ const examples = [
     'y = x++ sets x and y to numbers',
     `y = x++`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='y' local=false readOnly=false type='number' exp=#4
    4 | PostIncrement exp=#5
    5 | Var id='x' local=false readOnly=false type='number' exp=#6
@@ -417,7 +417,7 @@ const examples = [
     'y = (x++) + [] sets y to a list',
     `y = (x++) + []`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='y' local=false readOnly=false type='list' exp=#4
    4 | NaryExp exp=[#5,'+',#9]
    5 | NaryExp exp=[#6]
@@ -430,7 +430,7 @@ const examples = [
     'x = (x++) + [] sets x to a list',
     `x = (x++) + []`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#5
+   2 | VarDec var=#3 op='=' exp=#5
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | Num val=0
    5 | NaryExp exp=[#6,'+',#8]
@@ -442,7 +442,7 @@ const examples = [
     'using post-increment with undefined var points back to same var',
     `x = x++`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#5
+   2 | VarDec var=#3 op='=' exp=#5
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | Num val=0
    5 | PostIncrement exp=#3`
@@ -461,7 +461,7 @@ const examples = [
     '+= does not nest NaryExps',
     `x += 1 + 2`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | NaryExp exp=[#5,'+',#6,'+',#7]
    5 | Num val=0
@@ -472,7 +472,7 @@ const examples = [
     'undefined assignment op defaults to highest type',
     `x += 4 + 'str' + [false]`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | NaryExp exp=[#5,'+',#6,'+',#7,'+',#8]
    5 | List val=[]
@@ -485,7 +485,7 @@ const examples = [
     '-= op',
     `x -= 4`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | NaryExp exp=[#5,'-',#6]
    5 | Num val=0
@@ -495,7 +495,7 @@ const examples = [
     '-= op with nary exp',
     `x -= 4 + 'str'`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='string' exp=#4
    4 | NaryExp exp=[#5,'-',#6,'+',#7]
    5 | Str val=''
@@ -529,10 +529,10 @@ const examples = [
     `y = 1
     x += y`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='y' local=false readOnly=false type='number' exp=#4
    4 | Num val=1
-   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   5 | VarDec var=#6 op='=' exp=#7
    6 | Var id='x' local=false readOnly=false type='number' exp=#7
    7 | NaryExp exp=[#8,'+',#4]
    8 | Num val=0`
@@ -544,16 +544,16 @@ const examples = [
     a = [y]
     x -= y + z * a`,
     `   1 | Block statements=[#2,#5,#8,#11]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='y' local=false readOnly=true type='number' exp=#4
    4 | Num val=4
-   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   5 | VarDec var=#6 op='=' exp=#7
    6 | Var id='z' local=false readOnly=true type='string' exp=#7
    7 | Str val='str'
-   8 | VarDec variable=#9 assignmentOp='=' exp=#10
+   8 | VarDec var=#9 op='=' exp=#10
    9 | Var id='a' local=false readOnly=false type='list' exp=#10
   10 | List val=[#3]
-  11 | VarDec variable=#12 assignmentOp='=' exp=#13
+  11 | VarDec var=#12 op='=' exp=#13
   12 | Var id='x' local=false readOnly=false type='list' exp=#13
   13 | NaryExp exp=[#14,'-',#3,'+',#15]
   14 | List val=[]
@@ -564,10 +564,10 @@ const examples = [
     `y = 5
     x += $'str{y}'`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='y' local=false readOnly=false type='number' exp=#4
    4 | Num val=5
-   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   5 | VarDec var=#6 op='=' exp=#7
    6 | Var id='x' local=false readOnly=false type='string' exp=#7
    7 | NaryExp exp=[#8,'+',#9]
    8 | FormattedStr val=[]
@@ -580,12 +580,12 @@ const examples = [
       local x = 'str'
     }`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | Num val=1
    5 | ReturnStatement exp=#6
    6 | Block statements=[#7]
-   7 | VarDec variable=#8 assignmentOp='=' exp=#9
+   7 | VarDec var=#8 op='=' exp=#9
    8 | Var id='x' local=true readOnly=false type='string' exp=#9
    9 | Str val='str'`
   ],
@@ -593,7 +593,7 @@ const examples = [
     'var type gets set by return type',
     `x = { 1 }`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | Block statements=[#5]
    5 | ReturnStatement exp=#6
@@ -607,13 +607,13 @@ const examples = [
       x
     }`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=true type='number' exp=#4
    4 | Num val=5
-   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   5 | VarDec var=#6 op='=' exp=#7
    6 | Var id='y' local=false readOnly=false type='string' exp=#7
    7 | Block statements=[#8,#11]
-   8 | VarDec variable=#9 assignmentOp='=' exp=#10
+   8 | VarDec var=#9 op='=' exp=#10
    9 | Var id='x' local=true readOnly=false type='string' exp=#10
   10 | Str val='str'
   11 | ReturnStatement exp=#9`
@@ -622,7 +622,7 @@ const examples = [
     '+= with block has default value',
     `x += { 1 }`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | NaryExp exp=[#5,'+',#6]
    5 | Num val=0
@@ -636,10 +636,10 @@ const examples = [
     y = false
     x == y`,
     `   1 | Block statements=[#2,#5,#8]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | Num val=1
-   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   5 | VarDec var=#6 op='=' exp=#7
    6 | Var id='y' local=false readOnly=false type='boolean' exp=#7
    7 | Bool val=false
    8 | ReturnStatement exp=#9
@@ -652,16 +652,16 @@ const examples = [
     z = $'{x}'
     n = x < y <= z == 4 != 'str'`,
     `   1 | Block statements=[#2,#5,#8,#11]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | Num val=1
-   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   5 | VarDec var=#6 op='=' exp=#7
    6 | Var id='y' local=false readOnly=false type='boolean' exp=#7
    7 | Bool val=false
-   8 | VarDec variable=#9 assignmentOp='=' exp=#10
+   8 | VarDec var=#9 op='=' exp=#10
    9 | Var id='z' local=false readOnly=false type='string' exp=#10
   10 | FormattedStr val=[#3]
-  11 | VarDec variable=#12 assignmentOp='=' exp=#13
+  11 | VarDec var=#12 op='=' exp=#13
   12 | Var id='n' local=false readOnly=false type='boolean' exp=#13
   13 | NaryExp exp=[#3,'<',#6,'<=',#9,'==',#14,'!=',#15]
   14 | Num val=4
@@ -672,10 +672,10 @@ const examples = [
     `x = 1
     y = x`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | Num val=1
-   5 | VarDec variable=#6 assignmentOp='=' exp=#4
+   5 | VarDec var=#6 op='=' exp=#4
    6 | Var id='y' local=false readOnly=false type='number' exp=#4`
   ],
   [
@@ -702,13 +702,13 @@ const examples = [
     y = false
     z = x == y`,
     `   1 | Block statements=[#2,#5,#8]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | Num val=1
-   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   5 | VarDec var=#6 op='=' exp=#7
    6 | Var id='y' local=false readOnly=false type='boolean' exp=#7
    7 | Bool val=false
-   8 | VarDec variable=#9 assignmentOp='=' exp=#10
+   8 | VarDec var=#9 op='=' exp=#10
    9 | Var id='z' local=false readOnly=false type='boolean' exp=#10
   10 | NaryExp exp=[#3,'==',#6]`
   ],
@@ -716,7 +716,7 @@ const examples = [
     '|| operator has type boolean',
     `x = 1 || []`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='boolean' exp=#4
    4 | BinaryExp left=#5 op='||' right=#6
    5 | Num val=1
@@ -726,7 +726,7 @@ const examples = [
     '&& op has type bool',
     `x = 1 && []`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='boolean' exp=#4
    4 | BinaryExp left=#5 op='&&' right=#6
    5 | Num val=1
@@ -736,7 +736,7 @@ const examples = [
     '* op',
     `x = 1 * []`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | NaryExp exp=[#5,'*',#6]
    5 | Num val=1
@@ -746,7 +746,7 @@ const examples = [
     '+= with * op',
     `x += 1 * []`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | NaryExp exp=[#5,'+',#6,'*',#7]
    5 | List val=[]
@@ -757,7 +757,7 @@ const examples = [
     '* assignment op',
     `x *= 1`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | NaryExp exp=[#5,'*',#6]
    5 | Num val=0
@@ -767,7 +767,7 @@ const examples = [
     '*= with + op does not nest nary exps',
     `x *= 1 + []`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | NaryExp exp=[#5,'*',#6,'+',#7]
    5 | List val=[]
@@ -778,7 +778,7 @@ const examples = [
     '/ op',
     `x = 1 / []`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | NaryExp exp=[#5,'/',#6]
    5 | Num val=1
@@ -788,7 +788,7 @@ const examples = [
     '/ assignment op',
     `x /= 1`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | NaryExp exp=[#5,'/',#6]
    5 | Num val=0
@@ -798,7 +798,7 @@ const examples = [
     '/= with + op does not nest nary exps',
     `x /= 1 + []`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | NaryExp exp=[#5,'/',#6,'+',#7]
    5 | List val=[]
@@ -809,7 +809,7 @@ const examples = [
     '% op',
     `x = 1 % []`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | NaryExp exp=[#5,'%',#6]
    5 | Num val=1
@@ -819,7 +819,7 @@ const examples = [
     '% assignment op',
     `x %= 1`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | NaryExp exp=[#5,'%',#6]
    5 | Num val=0
@@ -829,7 +829,7 @@ const examples = [
     '%= with + op does not nest nary exps',
     `x %= 1 + []`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | NaryExp exp=[#5,'%',#6,'+',#7]
    5 | List val=[]
@@ -840,7 +840,7 @@ const examples = [
     '% op',
     `x = 1 % []`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | NaryExp exp=[#5,'%',#6]
    5 | Num val=1
@@ -850,7 +850,7 @@ const examples = [
     '% assignment op',
     `x %= 1`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | NaryExp exp=[#5,'%',#6]
    5 | Num val=0
@@ -860,7 +860,7 @@ const examples = [
     '%= with + op does not nest nary exps',
     `x %= 1 + []`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | NaryExp exp=[#5,'%',#6,'+',#7]
    5 | List val=[]
@@ -871,7 +871,7 @@ const examples = [
     '** op',
     `x = 1 ** []`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | NaryExp exp=[#5,'**',#6]
    5 | Num val=1
@@ -881,7 +881,7 @@ const examples = [
     '** assignment op',
     `x **= 1`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | NaryExp exp=[#5,'**',#6]
    5 | Num val=0
@@ -891,7 +891,7 @@ const examples = [
     '**= with + op does not nest nary exps',
     `x **= 1 + []`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | NaryExp exp=[#5,'**',#6,'+',#7]
    5 | List val=[]
@@ -902,7 +902,7 @@ const examples = [
     'chained multiplicative ops',
     `x = 1 * 2 / [3]`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='list' exp=#4
    4 | NaryExp exp=[#5,'*',#6,'/',#7]
    5 | Num val=1
@@ -914,7 +914,7 @@ const examples = [
     '! op returns a bool',
     `x = !1`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='boolean' exp=#4
    4 | UnaryExp exp=#5 op='!'
    5 | Num val=1`
@@ -923,7 +923,7 @@ const examples = [
     'var dec with nil',
     `x = nil`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='nil' exp=#4
    4 | Nil `
   ],
@@ -931,7 +931,7 @@ const examples = [
     'object literal',
     `y = { "x": 1 }`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='y' local=false readOnly=false type='object' exp=#4
    4 | Obj val=[#5]
    5 | ObjField key=#6 val=#7
@@ -943,13 +943,13 @@ const examples = [
   //   `y = { "x": 1 }
   //   z = y.x`,
   //   `   1 | Block statements=[#2,#8]
-  //  2 | VarDec variable=#3 assignmentOp='=' exp=#4
+  //  2 | VarDec var=#3 op='=' exp=#4
   //  3 | Var id='y' local=false readOnly=false type='object' exp=#4
   //  4 | Obj val=[#5]
   //  5 | ObjField key=#6 val=#7
   //  6 | Str val='x'
   //  7 | Num val=1
-  //  8 | VarDec variable=#9 assignmentOp='=' exp=#7
+  //  8 | VarDec var=#9 op='=' exp=#7
   //  9 | Var id='z' local=false readOnly=false type='number' exp=#7`
   // ],
   // [
@@ -957,7 +957,7 @@ const examples = [
   //   `x = { 'y': { 'x': 1 } }
   //   x.y.x`,
   //   `   1 | Block statements=[#2,#11]
-  //  2 | VarDec variable=#3 assignmentOp='=' exp=#4
+  //  2 | VarDec var=#3 op='=' exp=#4
   //  3 | Var id='x' local=false readOnly=false type='object' exp=#4
   //  4 | Obj val=[#5]
   //  5 | ObjField key=#6 val=#7
@@ -974,20 +974,20 @@ const examples = [
     `y = { "x": 1 }
     z = y['x']`,
     `   1 | Block statements=[#2,#8]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='y' local=false readOnly=false type='object' exp=#4
    4 | Obj val=[#5]
    5 | ObjField key=#6 val=#7
    6 | Str val='x'
    7 | Num val=1
-   8 | VarDec variable=#9 assignmentOp='=' exp=#7
+   8 | VarDec var=#9 op='=' exp=#7
    9 | Var id='z' local=false readOnly=false type='number' exp=#7`
   ],
   [
     'empty obj',
     `x = {}`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='object' exp=#4
    4 | Obj val=[]`
   ],
@@ -995,7 +995,7 @@ const examples = [
     'short return statement',
     `x = { return }`,
     `   1 | Block statements=[#2]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='nil' exp=#4
    4 | Block statements=[#5]
    5 | ReturnStatement exp=#6
@@ -1008,10 +1008,10 @@ const examples = [
       return x
     }`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='number' exp=#4
    4 | Num val=1
-   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   5 | VarDec var=#6 op='=' exp=#7
    6 | Var id='y' local=false readOnly=false type='number' exp=#7
    7 | Block statements=[#8]
    8 | ReturnStatement exp=#3`
@@ -1024,13 +1024,13 @@ const examples = [
       return x
     }`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=true type='number' exp=#4
    4 | Num val=1
-   5 | VarDec variable=#6 assignmentOp='=' exp=#7
+   5 | VarDec var=#6 op='=' exp=#7
    6 | Var id='y' local=false readOnly=false type='string' exp=#7
    7 | Block statements=[#8,#11]
-   8 | VarDec variable=#9 assignmentOp='=' exp=#10
+   8 | VarDec var=#9 op='=' exp=#10
    9 | Var id='x' local=true readOnly=false type='string' exp=#10
   10 | Str val='str'
   11 | ReturnStatement exp=#9`
@@ -1040,11 +1040,22 @@ const examples = [
     `x
     x`,
     `   1 | Block statements=[#2,#5]
-   2 | VarDec variable=#3 assignmentOp='=' exp=#4
+   2 | VarDec var=#3 op='=' exp=#4
    3 | Var id='x' local=false readOnly=false type='nil' exp=#4
    4 | Nil 
    5 | ReturnStatement exp=#3`
-  ]
+  ],
+  // [
+  //   'var changes value',
+  //   `x = 1
+  //   x = 2`,
+  //   `   1 | Block statements=[#2,#6]
+  //  2 | VarDec var=#3 op='=' exp=#5
+  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
+  //  4 | Num val=2
+  //  5 | Num val=1
+  //  6 | VarDec var=#3 op='=' exp=#4`
+  // ]
 
   // { x ? { return x }} type checking
   //[
@@ -1073,10 +1084,10 @@ const examples = [
 //   10 | Block statements=[#11]
 //   11 | ReturnStatement exp=#12
 //   12 | List list=[1,'str']
-//   13 | VarDec variable=#13 assignmentOp='=' exp=#14
+//   13 | VarDec var=#13 op='=' exp=#14
 //   14 | Var id='x' local=false readOnly=false type=undefined
 //   15 | Block statements=[#15,#17]
-//   16 | VarDec variable=#16 assignmentOp='=' exp=true
+//   16 | VarDec var=#16 op='=' exp=true
 //   17 | Var id='x' local=true readOnly=false type=undefined
 //   18 | ReturnStatement exp='x'
 //   19 | ReturnStatement exp=undefined`
@@ -1089,27 +1100,27 @@ const examples = [
 //     x[1].y /= 1E-6
 //     x.y['str'] %= 1e+4`,
 //     `   1 | Block statements=[#2,#4,#6,#8,#10,#12,#15,#18,#22]
-//    2 | VarDec variable=#3 assignmentOp='=' exp=5
+//    2 | VarDec var=#3 op='=' exp=5
 //    3 | Var id='x' local=true readOnly=false type=undefined
-//    4 | VarDec variable=#5 assignmentOp='=' exp='str'
+//    4 | VarDec var=#5 op='=' exp='str'
 //    5 | Var id='y' local=true readOnly=true type=undefined
-//    6 | VarDec variable=#7 assignmentOp='=' exp=undefined
+//    6 | VarDec var=#7 op='=' exp=undefined
 //    7 | Var id='var' local=false readOnly=true type=undefined
-//    8 | VarDec variable=#9 assignmentOp='=' exp=undefined
+//    8 | VarDec var=#9 op='=' exp=undefined
 //    9 | Var id='x' local=true readOnly=false type=undefined
-//   10 | VarDec variable=#11 assignmentOp='+=' exp=1.5
+//   10 | VarDec var=#11 op='+=' exp=1.5
 //   11 | Var id='x' local=false readOnly=false type=undefined
-//   12 | VarDec variable=#13 assignmentOp='-=' exp=15000
+//   12 | VarDec var=#13 op='-=' exp=15000
 //   13 | Var id=#14 local=false readOnly=false type=undefined
 //   14 | VarSelect id='x' selector='y'
-//   15 | VarDec variable=#16 assignmentOp='*=' exp=100000
+//   15 | VarDec var=#16 op='*=' exp=100000
 //   16 | Var id=#17 local=false readOnly=false type=undefined
 //   17 | VarSubscript id='x' selector='y'
-//   18 | VarDec variable=#19 assignmentOp='/=' exp=0.000001
+//   18 | VarDec var=#19 op='/=' exp=0.000001
 //   19 | Var id=#20 local=false readOnly=false type=undefined
 //   20 | VarSelect id=#21 selector='y'
 //   21 | VarSubscript id='x' selector=1
-//   22 | VarDec variable=#23 assignmentOp='%=' exp=10000
+//   22 | VarDec var=#23 op='%=' exp=10000
 //   23 | Var id=#24 local=false readOnly=false type=undefined
 //   24 | VarSelect id='x' selector=#25
 //   25 | VarSubscript id='y' selector='str'`
@@ -1150,15 +1161,15 @@ const examples = [
 //     z = !(y == true) ? [1] : { "n": ...[x, [y]] }
 //     a = z?[0] == nil ? z?.n`,
 //     `   1 | Block statements=[#2,#4,#7,#10,#19]
-//    2 | VarDec variable=#3 assignmentOp='=' exp=false
+//    2 | VarDec var=#3 op='=' exp=false
 //    3 | Var id='x' local=false readOnly=false type=undefined
-//    4 | VarDec variable=#5 assignmentOp='=' exp=#6
+//    4 | VarDec var=#5 op='=' exp=#6
 //    5 | Var id='x' local=false readOnly=false type=undefined
 //    6 | UnaryExp exp='x' op='!' returnBeforeEval=false
-//    7 | VarDec variable=#8 assignmentOp='=' exp=#9
+//    7 | VarDec var=#8 op='=' exp=#9
 //    8 | Var id='y' local=false readOnly=false type=undefined
 //    9 | UnaryExp exp='x' op='-' returnBeforeEval=false
-//   10 | VarDec variable=#11 assignmentOp='=' exp=#12
+//   10 | VarDec var=#11 op='=' exp=#12
 //   11 | Var id='z' local=false readOnly=false type=undefined
 //   12 | Ternary cond=#13 block=[1] alt=#15
 //   13 | UnaryExp exp=#14 op='!' returnBeforeEval=false
@@ -1167,7 +1178,7 @@ const examples = [
 //   16 | ObjField key='n' val=#17
 //   17 | UnaryExp exp=['x',#18] op='...' returnBeforeEval=false
 //   18 | Array 0='y'
-//   19 | VarDec variable=#20 assignmentOp='=' exp=#21
+//   19 | VarDec var=#20 op='=' exp=#21
 //   20 | Var id='a' local=false readOnly=false type=undefined
 //   21 | Ternary cond=#22 block=#25 alt=undefined
 //   22 | BinaryExp left=#23 op='==' right=undefined
@@ -1188,19 +1199,19 @@ const examples = [
 //       return (y) -> { (-y) ** 2 }
 //     }`,
 //     `   1 | Block statements=[#2,#7,#14]
-//    2 | VarDec variable=#3 assignmentOp='=' exp=#4
+//    2 | VarDec var=#3 op='=' exp=#4
 //    3 | Var id='x' local=false readOnly=false type=undefined
 //    4 | Func params=#5 block=#6
 //    5 | Params params=[]
 //    6 | Block statements=[]
-//    7 | VarDec variable=#8 assignmentOp='=' exp=#9
+//    7 | VarDec var=#8 op='=' exp=#9
 //    8 | Var id='x' local=false readOnly=false type=undefined
 //    9 | Func params='y' block=#10
 //   10 | Block statements=[#11]
 //   11 | ReturnStatement exp=#12
 //   12 | UnaryExp exp=#13 op='-' returnBeforeEval=false
 //   13 | BinaryExp left='y' op='**' right=2
-//   14 | VarDec variable=#15 assignmentOp='=' exp=#16
+//   14 | VarDec var=#15 op='=' exp=#16
 //   15 | Var id='z' local=false readOnly=false type=undefined
 //   16 | Ternary cond=#17 block=#20 alt=#27
 //   17 | BinaryExp left=#18 op='>' right=25
@@ -1225,7 +1236,7 @@ const examples = [
 //     'formatted strings',
 //     `x = $'str{ a >= 5 ? b : c }'`,
 //     `   1 | Block statements=[#2]
-//    2 | VarDec variable=#3 assignmentOp='=' exp=#4
+//    2 | VarDec var=#3 op='=' exp=#4
 //    3 | Var id='x' local=false readOnly=false type=undefined
 //    4 | FormattedStr subexps=['s','t','r',#5]
 //    5 | Ternary cond=#6 block='b' alt='c'
@@ -1240,7 +1251,7 @@ const examples = [
 //     })
 //     // prints 0-9 on separate lines`,
 //     `   1 | Block statements=[#2,#4]
-//    2 | VarDec variable=#3 assignmentOp='=' exp=0
+//    2 | VarDec var=#3 op='=' exp=0
 //    3 | Var id='i' local=false readOnly=false type=undefined
 //    4 | Call id=#5 args=#7
 //    5 | VarSelect id=#6 selector='loop'
@@ -1249,7 +1260,7 @@ const examples = [
 //    8 | Block statements=[#9,#11]
 //    9 | Call id='print' args=#10
 //   10 | Params params=['i']
-//   11 | VarDec variable=#12 assignmentOp='+=' exp=1
+//   11 | VarDec var=#12 op='+=' exp=1
 //   12 | Var id='i' local=false readOnly=false type=undefined`
 //   ],
 //   [
@@ -1306,19 +1317,19 @@ const examples = [
 //   //   print(/* */)
 //   //   print(/* // */)`,
 //   //   `   1 | Block statements=[#2,#4,#6,#8,#10,#14]
-//   //  2 | VarDec variable=#3 assignmentOp='=' exp='John Smith'
+//   //  2 | VarDec var=#3 op='=' exp='John Smith'
 //   //  3 | Var id='name' local=false readOnly=true type=undefined
-//   //  4 | VarDec variable=#5 assignmentOp='=' exp='Sally'
+//   //  4 | VarDec var=#5 op='=' exp='Sally'
 //   //  5 | Var id='name' local=false readOnly=false type=undefined
-//   //  6 | VarDec variable=#7 assignmentOp='=' exp='Ray'
+//   //  6 | VarDec var=#7 op='=' exp='Ray'
 //   //  7 | Var id='firstName' local=false readOnly=false type=undefined
-//   //  8 | VarDec variable=#9 assignmentOp='=' exp='Toal'
+//   //  8 | VarDec var=#9 op='=' exp='Toal'
 //   //  9 | Var id='lastName' local=false readOnly=false type=undefined
-//   // 10 | VarDec variable=#11 assignmentOp='=' exp=#12
+//   // 10 | VarDec var=#11 op='=' exp=#12
 //   // 11 | Var id='combinedName' local=false readOnly=false type=undefined
 //   // 12 | BinaryExp left=#13 op='+' right='lastName'
 //   // 13 | BinaryExp left='firstName' op='+' right=' '
-//   // 14 | VarDec variable=#15 assignmentOp='=' exp=#16
+//   // 14 | VarDec var=#15 op='=' exp=#16
 //   // 15 | Var id='interpolatedName' local=false readOnly=false type=undefined
 //   // 16 | FormattedStr subexps=[#17,' ']
 //   // 17 | Var `
