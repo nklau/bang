@@ -31,7 +31,7 @@ Bang {
                         | Exp9
   Exp9                  = Exp9 #(~newLine space)* ~#newLine Args                            -- call
                         | Exp9 #"[" Exp "]"                                                 -- subscript
-                        | Exp9 #"." VarAssignment                                           -- select
+                        | Exp9 #"." id                                                      -- select
                         | "!" Exp9                                                          -- negative
                         | Exp9 #"?"                                                         -- unwrap
                         | Exp10
@@ -47,7 +47,7 @@ Bang {
 
   BangFunc              = "{" Block "}"
   VarAssignment         = VarAssignment #"[" Exp "]"                                        -- subscript
-                        | VarAssignment #"." VarAssignment                                  -- select
+                        | VarAssignment #"." id                                             -- select
                         | id
   
   FuncLit               = (Params | oneParam) "->" (BangFunc | Statement)
