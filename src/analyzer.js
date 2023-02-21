@@ -91,9 +91,9 @@ function checkInLoop(context) {
 //   return e.constructor === core.Var
 // }
 
-function coerceToBool(e) {
-  return new core.Bool(!e?.equals(e?.default))
-}
+// function coerceToBool(e) {
+//   return new core.Bool(!e?.equals(e?.default))
+// }
 
 function mapOps(elements) {
   return elements.reduce(
@@ -250,7 +250,7 @@ export default function analyze(sourceCode) {
       return new core.BreakStatement()
     },
     Exp_ternary(cond, _qMark, block, _c, alt) {
-      const bool = coerceToBool(cond.rep())
+      const bool = cond.rep()
       return new core.Ternary(bool, block.rep(), ...alt.rep())
     },
     Exp1_equality(left, right) {
