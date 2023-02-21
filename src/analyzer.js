@@ -3,7 +3,7 @@ import ohm from "ohm-js"
 import * as core from "./core.js"
 
 const bangGrammar = ohm.grammar(fs.readFileSync("src/bang.ohm"))
-const d = { LIST: 'list', OBJ: 'object', STR: 'string', NUM: 'number', BOOL: 'boolean', NIL: 'nil', FUNC: 'function' }
+const d = { LIST: 'list', OBJ: 'object', STR: 'string', NUM: 'number', BOOL: 'boolean', NIL: 'nil', FUNC: 'function', ANY: 'any' }
 
 // TODO: function to get type
 
@@ -158,78 +158,71 @@ export default function analyze(sourceCode) {
       return body.rep()
     },
     Block(_n0, statements, statement, _n1) {
-      const b = new core.Block()
-      context = context.newChildContext({ inLoop: false, block: b })
-      b.statements = [...(statements.rep()), ...statement.rep()]
-      return b
+      const block = new core.Block()
+      context = context.newChildContext({ inLoop: false, block: block })
+      block.statements = [...(statements.rep()), ...statement.rep()]
+      return block
     },
     StatementNewLine(statement, _space, _n) {
       return statement.rep()
     },
     Statement_varDec(local, readOnly, id, op, exp) {
-      let [e, o, l, r, i] = [exp.rep(), op.sourceString, local.sourceString === 'local', readOnly.sourceString === 'const', id.sourceString]
-      let v = context.lookup(i)
-      if (e instanceof core.Var) {
-        e = e.exp
+      let [val, o, isLocal, isReadOnly, name] = [exp.rep(), op.sourceString, local.sourceString === 'local', readOnly.sourceString === 'const', id.sourceString]
+      let variable = context.lookup(name)
+      if (val instanceof core.Var) {
+        // setting a variable equal to another variable makes a shallow copy
+        val = val.exp
       }
 
-      if (op.sourceString === '=') {
-        // if (l || !v) {
-        //   v = new core.Var(i, l, r, e.type ?? e.exp?.type, e)
-        //   context.add(i, v)
-        // } else if (v && !l) {
-        //   v.type = e.type ?? e.exp?.type 
-        //   v.exp = e
-        // }
-        if (v) {
-          if (l) {
-            v = new core.Var(i, l, r, e.type ?? e.exp?.type, e)
-            context.add(i, v)
-          } else {
-            v.type = e.type ?? e.exp?.type
-            // v.exp = e
-          }
+      if (o === '=') {
+        if (isLocal || !variable) {
+          variable = new core.Var(name, isLocal, isReadOnly, [val.type ?? val.exp?.type])
+          context.add(name, variable)
+          return new core.VarDec(variable, val)
         } else {
-          // TODO same as above fix it
-          v = new core.Var(i, l, r, e.type ?? e.exp?.type, e)
-          context.add(i, v)
+          variable.types.add(val.type ?? val.exp?.type)
         }
       } else {
         // Designed to only get here if variable dec is using an eval assignment
-        const spread = e instanceof core.NaryExp ? e.exp : [e]
+        const flatExp = val instanceof core.NaryExp ? val.exp : [val]
         const evalOp = (/^(.)=/.exec(o) ?? /(\*\*)=/.exec(o))[1]
-        if (!v) {
-          e = new core.NaryExp([e.default, evalOp, ...spread])
-          v = new core.Var(i, l, r, e.type, e)
+        if (!variable) {
+          val = new core.NaryExp([val.default, evalOp, ...flatExp])
+          variable = new core.Var(name, isLocal, isReadOnly, [val.type])
 
-          context.add(i, v)
+          context.add(name, variable)
+          return new core.VarDec(variable, val)
         } else {
-          e = new core.NaryExp([v, evalOp, ...spread])
-          v.type = e.type // TODO: check for weaker type
-          // v.exp = e
+          val = new core.NaryExp([variable, evalOp, ...flatExp])
+          variable.types.add(val.type)
         }
       }
 
-      return new core.VarDec(v, '=', e)
+      return new core.Assign(variable, val)
     },
     Statement_localVar(_local, id) {
-      const e = new core.Nil()
-      const v = new core.Var(
-        id.sourceString,
-        true,
-        false,
-        e.type,
-        e
-      )
-      context.add(id.sourceString, v)
-      return new core.VarDec(v, '=', e)
+      const [name, exp] = [id.sourceString, new core.Nil()]
+      const variable = new core.Var(name, true, false, [exp.type])
+      context.add(name, variable)
+      // TODO check if var has already been declared as local within this scope
+      return new core.VarDec(variable, exp)
     },
-    Statement_varAssignment(variable, op, exp) {
-      // TODO check for var
-      // Designed to only get here for variable subscription/selection
-      const v = variable.rep()
-      // TODO: should objects have their own context?
-      return new core.VarDec(v, op.sourceString, exp.rep())
+    Statement_varAssignment(target, op, exp) {
+      let [variable, o, val] = [target.rep(), op.sourceString, exp.rep()]
+      if (val instanceof core.Var) {
+        // setting a variable equal to another variable makes a shallow copy
+        val = val.exp
+      }
+
+      // variable will never be undefined because the "id" rule is caught by Statement_varDec
+      if (o !== '=') {
+        // Using eval assignment
+        const flatExp = val instanceof core.NaryExp ? val.exp : [val]
+        const evalOp = (/^(.)=/.exec(o) ?? /(\*\*)=/.exec(o))[1]
+        val = new core.NaryExp([variable, evalOp, ...flatExp])
+      }
+
+      return new core.Assign(variable, val)
     },
     Statement_return(_return, exp) {
       // Can only explicitly use 'return' keyword inside a function
@@ -242,20 +235,14 @@ export default function analyze(sourceCode) {
       // TODO: need to move up a context
       const e = exp.rep()
       if (e) {
-        const noReturn = [core.Ternary, core.PreIncrement, core.PreDecrement, core.PostIncrement, core.PostDecrement, core.Call]
+        const noReturn = [core.Ternary, core.PreIncrement, core.PreDecrement, core.PostIncrement, core.PostDecrement, core.Call, core.VarDec]
         return noReturn.some(r => e instanceof r) ? e : new core.ReturnStatement(e)
       } else {
-        const x = new core.Nil()
-        const v = new core.Var(
-          exp.sourceString,
-          false,
-          false,
-          x.type,
-          x
-        )
+        const [name, nil] = [exp.sourceString, new core.Nil()]
+        const variable = new core.Var(name, false, false, [nil.type])
 
-        context.add(exp.sourceString, v)
-        return new core.VarDec(v, '=', x)
+        context.add(name, variable)
+        return new core.VarDec(variable, nil)
       }
     },
     Statement_break(_b) { 
@@ -263,48 +250,48 @@ export default function analyze(sourceCode) {
       return new core.BreakStatement()
     },
     Exp_ternary(cond, _qMark, block, _c, alt) {
-      const c = coerceToBool(cond.rep())
-      return new core.Ternary(c, block.rep(), ...alt.rep())
+      const bool = coerceToBool(cond.rep())
+      return new core.Ternary(bool, block.rep(), ...alt.rep())
     },
     Exp1_equality(left, right) {
       const elements = [...left.rep(), right.rep()].flat()
       const pieces = mapOps(elements)
 
-      for (const [o, [l, r]] of Object.entries(pieces)) {
-        if (o === '==') {
+      for (const [op, [lhs, rhs]] of Object.entries(pieces)) {
+        if (op === '==') {
           // checkSameTypes(l, r) // TODO: probably don't want to throw error on this - just want to replace with false
         }
-        if (o.includes('<') || o.includes('>')) {
-          checkNotType(l, [d.FUNC])
-          checkNotType(r, [d.FUNC])
+        if (op.includes('<') || op.includes('>')) {
+          checkNotType(lhs, [d.FUNC])
+          checkNotType(rhs, [d.FUNC])
         }
       }
 
       return new core.NaryExp(elements)
     },
     Exp2_or(left, or, right) {
-      const [l, op, r] = [left.rep(), or.sourceString, right.rep()]
-      return new core.BinaryExp(l, op, r)
+      const [lhs, op, rhs] = [left.rep(), or.sourceString, right.rep()]
+      return new core.BinaryExp(lhs, op, rhs)
     },
     Exp3_and(left, and, right) {
-      const [l, op, r] = [left.rep(), and.sourceString, right.rep()]
-      return new core.BinaryExp(l, op, r)
+      const [lhs, op, rhs] = [left.rep(), and.sourceString, right.rep()]
+      return new core.BinaryExp(lhs, op, rhs)
     },
     Exp4_addSubtract(left, right) {
       const elements = [...left.rep(), right.rep()].flat()
       const pieces = mapOps(elements)
 
-      for (const [o, [l, r]] of Object.entries(pieces)) {
-        if (o === '-') {
-          if (r instanceof core.PreDecrement) {
+      for (const [op, [lhs, rhs]] of Object.entries(pieces)) {
+        if (op === '-') {
+          if (rhs instanceof core.PreDecrement) {
             core.error('Expected parentheses around pre-decrement operation on the right side of a subtraction')
-          } else if (l instanceof core.PostDecrement) {
+          } else if (lhs instanceof core.PostDecrement) {
             core.error('Expected parentheses around post-decrement operation on the left side of a subtraction')
           }
-        } else if (o === '+') {
-          if (r instanceof core.PreIncrement) {
+        } else if (op === '+') {
+          if (rhs instanceof core.PreIncrement) {
             core.error('Expected parentheses around pre-increment operation on the right side of an addition')
-          } else if (l instanceof core.PostIncrement) {
+          } else if (lhs instanceof core.PostIncrement) {
             core.error('Expected parentheses around post-increment operation on the left side of an addition')
           }
         }
@@ -315,7 +302,6 @@ export default function analyze(sourceCode) {
     Exp5_multiplyDivideMod(left, right) {
       const elements = [...left.rep(), right.rep()].flat()
       elements.filter(e => typeof e !== 'string').forEach(e => checkNotType(e, [d.FUNC]))
-      // TODO: see language design photos
 
       return new core.NaryExp(elements)
     },
@@ -335,101 +321,84 @@ export default function analyze(sourceCode) {
       return new core.NaryExp(elements)
     },
     Exp7_negate(negative, right) {
-      const [op, r] = [negative.sourceString, right.rep()]
-      if (r instanceof core.PreDecrement) {
+      const [op, rhs] = [negative.sourceString, right.rep()]
+      if (rhs instanceof core.PreDecrement) {
         core.error('Expected parentheses around pre-decrement operation with a negation')
       }
-      // -string
-      // -[]
-      // -{}
-      return new core.UnaryExp(r, op)
+      return new core.UnaryExp(rhs, op)
     },
     Exp7_spread(spread, right) {
-      const [o, r] = [spread.sourceString, right.rep()]
-      checkType(r, [d.OBJ, d.LIST])
+      const [op, rhs] = [spread.sourceString, right.rep()]
+      checkType(rhs, [d.OBJ, d.LIST])
 
-      return new core.UnaryExp(r, o)
+      return new core.UnaryExp(rhs, op)
     },
-    Exp8_postFix(exp, op) {
+    Exp8_postFix(target, postfixOp) {
       // TODO need to check const
-      let [e, o] = [exp.rep(), op.sourceString]
+      let [exp, op] = [target.rep(), postfixOp.sourceString]
+      const increment = op.includes('+') ? core.PostIncrement : core.PostDecrement
 
-      if (!e) {
-        e = new core.Var(exp.sourceString, false, false, 'number', new core.Num().default)
-        context.add(exp.sourceString, e)
+      if (!exp) {
+        const name = target.sourceString
+        const variable = new core.Var(name, false, false, [d.NUM])
+
+        context.add(name, variable)
+        return new core.VarDec(variable, new increment(variable))
       }
-      checkNotLiteral(e)
 
-      return o.includes('+') ? new core.PostIncrement(e) : new core.PostDecrement(e)
+      checkNotLiteral(exp)
+      return new increment(exp)
     },
-    Exp8_preFix(op, exp) {
+    Exp8_preFix(prefixOp, target) {
       // TODO need to check const
-      let [e, o] = [exp.rep(), op.sourceString]
+      let [exp, op] = [target.rep(), prefixOp.sourceString]
+      const increment = op.includes('+') ? core.PreIncrement : core.PreDecrement
 
-      if (!e) {
-        e = new core.Var(exp.sourceString, false, false, 'number', new core.Num().default)
-        context.add(exp.sourceString, e)
+      if (!exp) {
+        const name = target.sourceString
+        const variable = new core.Var(name, false, false, [d.NUM])
+
+        context.add(name, variable)
+        return new core.VarDec(variable, new increment(variable))
       }
-      checkNotLiteral(e)
 
-      return o.includes('+') ? new core.PreIncrement(e) : new core.PreDecrement(e)
+      checkNotLiteral(exp)
+      return new increment(exp)
     },
-    Exp9_call(exp, _space, params) {
-      const [e, p] = [exp.rep(), params.rep()]
-      check(e, 'Variable may not have been initialized')
-      // checkNotUndefined(e) // TODO: does this prevent 0()
-
-      return new core.Call(e, p)
+    Exp9_call(id, _space, params) {
+      const [exp, args] = [id.rep(), params.rep()]
+      return new core.Call(exp, args)
     },
-    Exp9_subscript(exp, _open, selector, _close) {
-
+    Exp9_subscript(target, _open, selector, _close) {
       // TODO check for loop
-      const [e, s] = [exp.rep(), selector.rep()]
-      if (e.type === d.LIST) {
-        return e.val[s.val]
-      } else if (e.type === d.OBJ) {
-        return (e instanceof core.Var ? e.exp : e).getVal(s.val)
+      const [id, exp] = [target.rep(), selector.rep()]
+      checkNotType(id, [d.FUNC])
+      if (id.type === d.LIST) {
+        // TODO is this how we should handle this
+        return id.val[exp.val]
+      } else if (id.type === d.OBJ) {
+        // TODO is this how we should handle this
+        return (id instanceof core.Var ? id.exp : id).getVal(exp.val)
         // TODO dive further if chained dot ops
       }
-      // TODO check if it's a list or obj
-      // for obj, use .getVal(key)
-      // for list, index
-
-
-      // TODO: don't think this is right because it doesn't allow built-in functions
-      checkType(e, [d.OBJ, d.LIST])
-      checkType(s, [d.NUM, d.STR, d.BOOL])
       // TODO how to check context? to see if selector exists/needs to be created
-        // use .getVal(key)
-
-      return new core.VarSubscript(e, selector.rep())
+      return new core.VarSubscript(id, exp)
     },
-    Exp9_select(exp, dot, selector) {
-      const [e, s] = [exp.rep(), selector.rep()]
-      checkNotType(e, [d.FUNC])
+    Exp9_select(target, dot, selector) {
+      const [id, exp] = [target.rep(), selector.rep()]
+      checkNotType(id, [d.FUNC])
 
-      if (e.type === d.LIST) {
-        return e.val[s.val] ?? new core.Nil()
-      } else if (e.type === d.OBJ) {
-        return (e instanceof core.Var ? e.exp : e).getVal(s.val)
+      if (id.type === d.LIST) {
+        return id.val[exp.val] ?? new core.Nil()
+      } else if (id.type === d.OBJ) {
+        return (id instanceof core.Var ? id.exp : id).getVal(exp.val)
         // TODO dive further if chained dot ops
       }
-
-      // TODO check for loop
 
       // selector.rep() ?? new core.Str(selector.sourceString)
-      
-      // TODO: how to check s?
-      // TODO do we allow list.1 as indexing?
-      // if so, need to allow list type for x
-      return new core.BinaryExp(e, dot.sourceString, selector.rep())
+      return new core.BinaryExp(id, dot.sourceString, exp)
     },
     Exp9_negative(negate, exp) {
-      // TODO: probably can't use on objects, function literals,
-      // unless we save it as a unary exp so it applies the negative to the result after the function gets called?
-      // does using it on a boolean toggle the boolean? or does it turn to -1 * boolean (this one makes more sense probably)
-      // -string? probably not allowed (unless it can be coerced to a number
-
       return new core.UnaryExp(exp.rep(), negate.sourceString)
     },
     Exp9_unwrap(exp, unwrap) {
@@ -453,23 +422,45 @@ export default function analyze(sourceCode) {
     BangFunc(_open, block, _close) {
       return block.rep()
     },
-    VarAssignment_subscript(exp, _open, selector, _close) {
+    VarAssignment_subscript(target, _open, selector, _close) {
       // TODO check for loop
-      return new core.VarSubscript(exp.rep(), selector.rep())
-    },
-    VarAssignment_select(exp, dot, selector) {
-      // TODO check for loop
-      return new core.BinaryExp(exp.rep(), dot.sourceString, selector.rep())
-    },
-    FuncLit(exp, _arrow, block) {
-      const e = exp.rep()
+      let [id, exp] = [target.rep(), selector.rep()]
 
-      const b = new core.Block()
-      context = context.newChildContext({ inLoop: false, block: b })
-      const f = block.rep()
+      if (!id) {
+        const name = target.sourceString
+        id = new core.Var(name, false, false)
+        const assign = new core.VarDec(id)
+
+        context.add(name, id)
+        context.block.statements.unshift(assign)
+      }
+
+      return new core.VarSubscript(id, exp)
+    },
+    VarAssignment_select(target, dot, selector) {
+      let [id, exp] = [target.rep(), selector.sourceString]
+
+      if (!id) {
+        const name = target.sourceString
+        id = new core.Var(name, false, false)
+        const assign = new core.VarDec(id)
+
+        context.add(name, id)
+        context.block.statements.unshift(assign)
+      }
+
+      // TODO check for loop
+      return new core.BinaryExp(id, dot.sourceString, exp)
+    },
+    FuncLit(exp, _arrow, funcBody) {
+      const id = exp.rep()
+
+      const block = new core.Block()
+      context = context.newChildContext({ inLoop: false, block: block })
+      const statements = funcBody.rep()
       context = context.parent
 
-      return new core.Func(e, f)
+      return new core.Func(id, statements)
     },
     Params(_open, params, _close) {
       return new core.Params(params.asIteration().rep())
@@ -481,36 +472,25 @@ export default function analyze(sourceCode) {
       return arg.rep()
     },
     Param(param) {
-      const p = param.rep()
-      const x = new core.Var(
-        p ? p.id : param.sourceString,
-        true,
-        false,
-        p ? p.type : d.NIL,
-        p ?? new core.Nil()
-      )
+      const name = param.sourceString
+      const variable = new core.Var(name, true, false, [d.ANY])
 
-      context.add(x.id, x)
-      return x
+      context.add(name, variable)
+      return variable
     },
     PositionalArg(exp) {
       return exp.rep()
     },
     KeywordArg(id, _e, exp) {
-      return new core.KeywordParam(id.rep(), exp.rep())
+      // TODO: this may need to be a separate core.KeywordArg class
+      return new core.KeywordParam(id.sourceString, exp.rep())
     },
     oneParam(id) {
-      const x = new core.Var(
-        id.sourceString,
-        true,
-        false,
-        d.NIL,
-        new core.Nil()
-      )
+      const name = id.sourceString
+      const variable = new core.Var(name, true, false, [d.ANY])
 
-      context.add(id.sourceString, x)
-      return new core.Params([x])
-      // return new core.KeywordParam(id.rep(), exp.rep())
+      context.add(name, variable)
+      return new core.Params([variable])
     },
     Obj(_open, fields, _close) {
       // TODO: create new context?
@@ -565,7 +545,14 @@ export default function analyze(sourceCode) {
       return `${escape.sourceString}${newLine.rep()}`
     },
     id(_first, _rest) {
-      return context.lookup(this.sourceString) // TODO is returning undefined
+      // const name = this.sourceString
+      // let variable = context.lookup(name)
+      // if (!variable) {
+      //   variable = new core.Var(name, false, false)
+      //   context.add(name, variable)
+      // }
+      // return variable
+      return context.lookup(this.sourceString)
     },
     boolLit(bool) {
       return new core.Bool(bool.sourceString)

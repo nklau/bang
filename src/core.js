@@ -237,25 +237,26 @@ export class Block {
 }
 
 export class VarDec {
-  constructor(variable, assignmentOp, exp) {
+  constructor(variable, exp = new Nil()) {
     this.var = variable
-    this.op = assignmentOp
     this.exp = exp
   }
 }
 
 export class Var {
-  constructor(id, local, readOnly, type, exp) {
-    Object.assign(this, { id, local, readOnly, type, exp })
+  constructor(id, local, readOnly, types = []) {
+    Object.assign(this, { id, local, readOnly })
+    this.types = new Set(types)
+    console.log(this.types)
   }
 
   get default() {
-    return getDefault(this.type)
+    return getDefault(this.types.length === 1 ? this.types.values().next() : Bool.typeDescription)
   }
 }
 
 export class Assign {
-  constructor(variable, exp) {
+  constructor(variable, exp = new Nil()) {
     this.var = variable
     this.exp = exp
   }
@@ -281,7 +282,7 @@ export class ReturnStatement {
   }
 
   get type() {
-    return this.exp.type ?? Nil.typeDescription
+    return this.exp.type
   }
 }
 
@@ -426,7 +427,7 @@ Block.prototype[util.inspect.custom] = function () {
     if (tags.has(node) || typeof node !== "object" || node === null) return
     tags.set(node, tags.size + 1)
     for (const child of Object.values(node)) {
-      Array.isArray(child) ? child.forEach(tag) : tag(child)
+      Array.isArray(child) || child instanceof Set ? child.forEach(tag) : tag(child)
     }
   }
 
@@ -434,6 +435,7 @@ Block.prototype[util.inspect.custom] = function () {
     function view(e) {
       if (tags.has(e)) return `#${tags.get(e)}`
       if (Array.isArray(e)) return `[${e.map(view)}]`
+      if (e instanceof Set) return `[${[...e].map(view)}]`
       return util.inspect(e)
     }
     for (let [node, id] of [...tags.entries()].sort((a, b) => a[1] - b[1])) {
@@ -455,6 +457,8 @@ const getDefault = (t) => {
       return new type().default
     }
   }
+
+  return new Nil()
 }
 
 const getType = (exps) => {
@@ -465,4 +469,6 @@ const getType = (exps) => {
       return type 
     }
   }
+
+  return 'any'
 }
