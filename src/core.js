@@ -247,7 +247,6 @@ export class Var {
   constructor(id, local, readOnly, types = []) {
     Object.assign(this, { id, local, readOnly })
     this.types = new Set(types)
-    console.log(this.types)
   }
 
   get default() {

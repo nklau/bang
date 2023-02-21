@@ -19,14 +19,14 @@ const examples = [
    3 | Var id='x' local=false readOnly=false types=['number']
    4 | Num val=1`
   ],
-  // [
-  //   'string var dec',
-  //   'x = "str"',
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='string' exp=#4
-  //  4 | Str val='str'`
-  // ],
+  [
+    'string var dec',
+    'x = "str"',
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false types=['string']
+   4 | Str val='str'`
+  ],
   // [
   //   'string var dec with apostrophes',
   //   `x = 'str'`,
