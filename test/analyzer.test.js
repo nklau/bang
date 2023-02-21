@@ -193,18 +193,31 @@ const examples = [
    8 | UnaryExp exp=#9 op='-'
    9 | Num val=1`
   ],
+  // [
+  //   // TODO this is wrong, this is the AST for x = x++
+  //   'post increment creates a vardec',
+  //   `x++`,
+  //   `   1 | Block statements=[#2]
+  //  2 | VarDec var=#3 exp=#4
+  //  3 | Var id='x' local=false readOnly=false types=['number']
+  //  4 | PostIncrement exp=#3`
+  // ]
   [
+    // TODO this is missing a vardec
     'equality check',
     `x += 1
     x == y`,
-    `   1 | Block statements=[#2,#7]
+    `   1 | Block statements=[#2,#7,#10]
    2 | VarDec var=#3 exp=#4
    3 | Var id='x' local=false readOnly=false types=['number']
    4 | NaryExp exp=[#5,'+',#6]
    5 | Num val=0
    6 | Num val=1
-   7 | ReturnStatement exp=#8
-   8 | NaryExp exp=[#3,'==',undefined]`
+   7 | VarDec var=#8 exp=#9
+   8 | Var id='y' local=false readOnly=false types=['nil']
+   9 | Nil 
+  10 | ReturnStatement exp=#11
+  11 | NaryExp exp=[#3,'==',#8]`
   ],
   // [
   //   'post-increment operator',

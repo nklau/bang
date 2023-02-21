@@ -222,7 +222,7 @@ export class KeywordParam {
 }
 
 export class Block {
-  constructor(statements) {
+  constructor(statements = []) {
     this.statements = statements
   }
 
@@ -244,13 +244,13 @@ export class VarDec {
 }
 
 export class Var {
-  constructor(id, local, readOnly, types = []) {
+  constructor(id, local, readOnly, types = ['any']) {
     Object.assign(this, { id, local, readOnly })
     this.types = new Set(types)
   }
 
   get default() {
-    return getDefault(this.types.length === 1 ? this.types.values().next() : Bool.typeDescription)
+    return getDefault(this.types.length === 1 ? this.types.values().next() : Nil.typeDescription)
   }
 }
 
