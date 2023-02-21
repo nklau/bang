@@ -191,10 +191,9 @@ export default function analyze(sourceCode) {
 
       if (o === '=') {
         if (isLocal || !variable) {
-          return defineVar(name, context, val, [val.type ?? val.exp?.type], isLocal, isReadOnly)
-          // variable = new core.Var(name, isLocal, isReadOnly, [val.type ?? val.exp?.type])
-          // context.add(name, variable)
-          // return new core.VarDec(variable, val)
+          let type = val.type ?? val.exp?.type
+          type = type instanceof Set ? Array.from(type) : [type]
+          return defineVar(name, context, val, [...type], isLocal, isReadOnly)
         } else {
           variable.types.add(val.type ?? val.exp?.type)
         }
@@ -205,10 +204,6 @@ export default function analyze(sourceCode) {
         if (!variable) {
           val = new core.NaryExp([val.default, evalOp, ...flatExp])
           return defineVar(name, context, val, [val.type], isLocal, isReadOnly)
-          // variable = new core.Var(name, isLocal, isReadOnly, [val.type])
-
-          // context.add(name, variable)
-          // return new core.VarDec(variable, val)
         } else {
           val = new core.NaryExp([variable, evalOp, ...flatExp])
           variable.types.add(val.type)
@@ -386,6 +381,7 @@ export default function analyze(sourceCode) {
       // TODO need to check const
       let [exp, op] = [target.rep(), postfixOp.sourceString]
       checkNotLiteral(exp)
+
       const increment = op.includes('+') ? core.PostIncrement : core.PostDecrement
       let extra
 
@@ -395,7 +391,6 @@ export default function analyze(sourceCode) {
 
         context.add(name, exp)
         extra = new core.VarDec(exp, exp.default)
-        // return [new core.VarDec(variable, variable.default), new increment(variable)]
       }
 
       const statement = new increment(exp)
@@ -409,18 +404,26 @@ export default function analyze(sourceCode) {
     Exp8_preFix(prefixOp, target) {
       // TODO need to check const
       let [exp, op] = [target.rep(), prefixOp.sourceString]
+      checkNotLiteral(exp)
+
       const increment = op.includes('+') ? core.PreIncrement : core.PreDecrement
+      let extra
 
       if (typeof exp === 'string') {
         const name = target.sourceString
-        const variable = new core.Var(name, false, false, [d.NUM])
+        exp = new core.Var(name, false, false, [d.NUM])
 
-        context.add(name, variable)
-        return [new core.VarDec(variable, variable.default), new increment(variable)]
+        context.add(name, exp)
+        extra = new core.VarDec(exp, exp.default)
       }
 
-      checkNotLiteral(exp)
-      return new increment(exp)
+      const statement = new increment(exp)
+
+      if (extra) {
+        extraStatements.set(statement, [extra])
+      }
+
+      return statement
     },
     Exp9_call(id, _space, params) {
       const [exp, args] = [id.rep(), params.rep()]

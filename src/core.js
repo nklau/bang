@@ -244,13 +244,13 @@ export class VarDec {
 }
 
 export class Var {
-  constructor(id, local, readOnly, types = ['any']) {
+  constructor(id, local, readOnly, type = ['any']) {
     Object.assign(this, { id, local, readOnly })
-    this.types = new Set(types)
+    this.type = new Set(type)
   }
 
   get default() {
-    return getDefault(this.types.size === 1 ? this.types.values().next().value : Nil.typeDescription)
+    return getDefault(this.type.size === 1 ? this.type.values().next().value : Nil.typeDescription)
   }
 }
 

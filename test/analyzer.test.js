@@ -16,7 +16,7 @@ const examples = [
     'x = 1',
     `   1 | Block statements=[#2]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false types=['number']
+   3 | Var id='x' local=false readOnly=false type=['number']
    4 | Num val=1`
   ],
   [
@@ -24,7 +24,7 @@ const examples = [
     'x = "str"',
     `   1 | Block statements=[#2]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false types=['string']
+   3 | Var id='x' local=false readOnly=false type=['string']
    4 | Str val='str'`
   ],
   [
@@ -32,7 +32,7 @@ const examples = [
     `x = 'str'`,
     `   1 | Block statements=[#2]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false types=['string']
+   3 | Var id='x' local=false readOnly=false type=['string']
    4 | Str val='str'`
   ],
   [
@@ -40,7 +40,7 @@ const examples = [
     'x = true',
     `   1 | Block statements=[#2]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false types=['boolean']
+   3 | Var id='x' local=false readOnly=false type=['boolean']
    4 | Bool val=true`
   ],
   [
@@ -48,7 +48,7 @@ const examples = [
     'x = false',
     `   1 | Block statements=[#2]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false types=['boolean']
+   3 | Var id='x' local=false readOnly=false type=['boolean']
    4 | Bool val=false`
   ],
   [
@@ -56,7 +56,7 @@ const examples = [
     'x = []',
     `   1 | Block statements=[#2]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false types=['list']
+   3 | Var id='x' local=false readOnly=false type=['list']
    4 | List val=[]`
   ],
   [
@@ -64,7 +64,7 @@ const examples = [
     'x = [1]',
     `   1 | Block statements=[#2]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false types=['list']
+   3 | Var id='x' local=false readOnly=false type=['list']
    4 | List val=[#5]
    5 | Num val=1`
   ],
@@ -73,7 +73,7 @@ const examples = [
     'x = [1, "str"]',
     `   1 | Block statements=[#2]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false types=['list']
+   3 | Var id='x' local=false readOnly=false type=['list']
    4 | List val=[#5,#6]
    5 | Num val=1
    6 | Str val='str'`
@@ -84,10 +84,10 @@ const examples = [
     x = $"str{y}ing"`,
     `   1 | Block statements=[#2,#5]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='y' local=false readOnly=false types=['number']
+   3 | Var id='y' local=false readOnly=false type=['number']
    4 | Num val=12
    5 | VarDec var=#6 exp=#7
-   6 | Var id='x' local=false readOnly=false types=['string']
+   6 | Var id='x' local=false readOnly=false type=['string']
    7 | FormattedStr val=['s','t','r',#3,'i','n','g']`
   ],
   [
@@ -96,10 +96,10 @@ const examples = [
     x = $'str{y}ing'`,
     `   1 | Block statements=[#2,#5]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='y' local=false readOnly=false types=['number']
+   3 | Var id='y' local=false readOnly=false type=['number']
    4 | Num val=12
    5 | VarDec var=#6 exp=#7
-   6 | Var id='x' local=false readOnly=false types=['string']
+   6 | Var id='x' local=false readOnly=false type=['string']
    7 | FormattedStr val=['s','t','r',#3,'i','n','g']`
   ],
   [
@@ -107,7 +107,7 @@ const examples = [
     `x = () -> {}`,
     `   1 | Block statements=[#2]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false types=['function']
+   3 | Var id='x' local=false readOnly=false type=['function']
    4 | Func params=#5 block=#6
    5 | Params params=[]
    6 | Block statements=[]`
@@ -117,10 +117,10 @@ const examples = [
     `x = (i) -> { i }`,
     `   1 | Block statements=[#2]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false types=['function']
+   3 | Var id='x' local=false readOnly=false type=['function']
    4 | Func params=#5 block=#7
    5 | Params params=[#6]
-   6 | Var id='i' local=true readOnly=false types=['any']
+   6 | Var id='i' local=true readOnly=false type=['any']
    7 | Block statements=[#8]
    8 | ReturnStatement exp=#6`
   ],
@@ -129,10 +129,10 @@ const examples = [
     `x = i -> { i }`,
     `   1 | Block statements=[#2]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false types=['function']
+   3 | Var id='x' local=false readOnly=false type=['function']
    4 | Func params=#5 block=#7
    5 | Params params=[#6]
-   6 | Var id='i' local=true readOnly=false types=['any']
+   6 | Var id='i' local=true readOnly=false type=['any']
    7 | Block statements=[#8]
    8 | ReturnStatement exp=#6`
   ],
@@ -141,10 +141,10 @@ const examples = [
     `x = i -> i`,
     `   1 | Block statements=[#2]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false types=['function']
+   3 | Var id='x' local=false readOnly=false type=['function']
    4 | Func params=#5 block=#7
    5 | Params params=[#6]
-   6 | Var id='i' local=true readOnly=false types=['any']
+   6 | Var id='i' local=true readOnly=false type=['any']
    7 | ReturnStatement exp=#6`
   ],
   [
@@ -153,11 +153,11 @@ const examples = [
     add(2, [false])`, 
     `   1 | Block statements=[#2,#11]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='add' local=false readOnly=false types=['function']
+   3 | Var id='add' local=false readOnly=false type=['function']
    4 | Func params=#5 block=#8
    5 | Params params=[#6,#7]
-   6 | Var id='y' local=true readOnly=false types=['any']
-   7 | Var id='z' local=true readOnly=false types=['any']
+   6 | Var id='y' local=true readOnly=false type=['any']
+   7 | Var id='z' local=true readOnly=false type=['any']
    8 | Block statements=[#9]
    9 | ReturnStatement exp=#10
   10 | NaryExp exp=[#6,'+',#7]
@@ -173,7 +173,7 @@ const examples = [
     x < 2`,
     `   1 | Block statements=[#2,#5]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false types=['number']
+   3 | Var id='x' local=false readOnly=false type=['number']
    4 | Num val=1
    5 | ReturnStatement exp=#6
    6 | NaryExp exp=[#3,'<',#7]
@@ -185,7 +185,7 @@ const examples = [
     4 > y > -1`,
     `   1 | Block statements=[#2,#5]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='y' local=false readOnly=false types=['boolean']
+   3 | Var id='y' local=false readOnly=false type=['boolean']
    4 | Bool val=false
    5 | ReturnStatement exp=#6
    6 | NaryExp exp=[#7,'>',#3,'>',#8]
@@ -198,7 +198,7 @@ const examples = [
     `x++`,
     `   1 | Block statements=[#2,#5]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false types=['number']
+   3 | Var id='x' local=false readOnly=false type=['number']
    4 | Num val=0
    5 | PostIncrement exp=#3`
   ],
@@ -208,58 +208,54 @@ const examples = [
     x == y`,
     `   1 | Block statements=[#2,#7,#10]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false types=['number']
+   3 | Var id='x' local=false readOnly=false type=['number']
    4 | NaryExp exp=[#5,'+',#6]
    5 | Num val=0
    6 | Num val=1
    7 | VarDec var=#8 exp=#9
-   8 | Var id='y' local=false readOnly=false types=['nil']
+   8 | Var id='y' local=false readOnly=false type=['nil']
    9 | Nil 
   10 | ReturnStatement exp=#11
   11 | NaryExp exp=[#3,'==',#8]`
   ],
-  // [
-  //   'post-increment operator',
-  //   `y = x++`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='y' local=false readOnly=false type='number' exp=#4
-  //  4 | PostIncrement exp=#5
-  //  5 | Var id='x' local=false readOnly=false type='number' exp=#6
-  //  6 | Num val=0`
-  // ],
-  // [
-  //   'post-increment operator is not an implied return',
-  //   `x++`,
-  //   `   1 | Block statements=[#2]
-  //  2 | PostIncrement exp=#3
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=0`
-  // ],
-  // [
-  //   'post-decrement operator is not an implied return',
-  //   `x--`,
-  //   `   1 | Block statements=[#2]
-  //  2 | PostDecrement exp=#3
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=0`
-  // ],
-  // [
-  //   'pre-increment operator is not an implied return',
-  //   `++x`,
-  //   `   1 | Block statements=[#2]
-  //  2 | PreIncrement exp=#3
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=0`
-  // ],
-  // [
-  //   'pre-decrement operator is not an implied return',
-  //   `--x`,
-  //   `   1 | Block statements=[#2]
-  //  2 | PreDecrement exp=#3
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=0`
-  // ],
+  [
+    'post-increment operator assignment',
+    `y = x++`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['number']
+   7 | PostIncrement exp=#3`
+  ],
+  [
+    'post-decrement operator is not an implied return',
+    `x--`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | PostDecrement exp=#3`
+  ],
+  [
+    'pre-increment operator is not an implied return',
+    `++x`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | PreIncrement exp=#3`
+  ],
+  [
+    'pre-decrement operator is not an implied return',
+    `--x`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | PreDecrement exp=#3`
+  ],
   // [
   //   'ternary is not an implied return',
   //   `true ? 1 : 2`,
