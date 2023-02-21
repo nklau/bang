@@ -250,7 +250,7 @@ export class Var {
   }
 
   get default() {
-    return getDefault(this.types.length === 1 ? this.types.values().next() : Nil.typeDescription)
+    return getDefault(this.types.size === 1 ? this.types.values().next().value : Nil.typeDescription)
   }
 }
 

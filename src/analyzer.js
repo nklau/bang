@@ -172,9 +172,9 @@ export default function analyze(sourceCode) {
       const block = new core.Block()
       context = context.newChildContext({ inLoop: false, block: block })
       block.statements = [...(statements.rep()), ...statement.rep()].flat()
-      for (let [toFind, statements] of extraStatements.entries()) {
+      for (let [toFind, toAdd] of extraStatements.entries()) {
         const index = block.statements.findIndex(s => s === toFind)
-        block.statements.splice(index, 0, ...statements)
+        block.statements.splice(index, 0, ...toAdd)
       }
       return block
     },
@@ -385,19 +385,26 @@ export default function analyze(sourceCode) {
     Exp8_postFix(target, postfixOp) {
       // TODO need to check const
       let [exp, op] = [target.rep(), postfixOp.sourceString]
+      checkNotLiteral(exp)
       const increment = op.includes('+') ? core.PostIncrement : core.PostDecrement
+      let extra
 
       if (typeof exp === 'string') {
         const name = target.sourceString
-        const variable = new core.Var(name, false, false, [d.NUM])
+        exp = new core.Var(name, false, false, [d.NUM])
 
-        context.add(name, variable)
-        // return new core.VarDec(variable, new increment(variable))
-        return [new core.VarDec(variable, variable.default), new increment(variable)]
+        context.add(name, exp)
+        extra = new core.VarDec(exp, exp.default)
+        // return [new core.VarDec(variable, variable.default), new increment(variable)]
       }
 
-      checkNotLiteral(exp)
-      return new increment(exp)
+      const statement = new increment(exp)
+
+      if (extra) {
+        extraStatements.set(statement, [extra])
+      }
+
+      return statement
     },
     Exp8_preFix(prefixOp, target) {
       // TODO need to check const
