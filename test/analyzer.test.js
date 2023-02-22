@@ -357,70 +357,70 @@ const examples = [
    8 | Num val=1
    9 | Assign var=#3 exp=#10
   10 | Str val='str'`
-  ]
-  // [
-  //   'postfix op',
-  //   `x = 1
-  //   x++`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=1
-  //  5 | PostIncrement exp=#3`
-  // ],
-  // [
-  //   'chained addition',
-  //   `1 + 2 + 3`,
-  //   `   1 | Block statements=[#2]
-  //  2 | ReturnStatement exp=#3
-  //  3 | NaryExp exp=[#4,'+',#5,'+',#6]
-  //  4 | Num val=1
-  //  5 | Num val=2
-  //  6 | Num val=3`
-  // ],
-  // [
-  //   'chained subtraction',
-  //   `4 - 3 - 5 - 1`,
-  //   `   1 | Block statements=[#2]
-  //  2 | ReturnStatement exp=#3
-  //  3 | NaryExp exp=[#4,'-',#5,'-',#6,'-',#7]
-  //  4 | Num val=4
-  //  5 | Num val=3
-  //  6 | Num val=5
-  //  7 | Num val=1`
-  // ],
-  // [
-  //   'empty obj dec',
-  //   `x = {}`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='object' exp=#4
-  //  4 | Obj val=[]`
-  // ],
-  // [
-  //   'local var dec with value', 
-  //   `local x = 5`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=true readOnly=false type='number' exp=#4
-  //  4 | Num val=5`
-  // ],
-  // [
-  //   'local var dec without value',
-  //   `local x`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=true readOnly=false type='nil' exp=#4
-  //  4 | Nil `
-  // ],
-  // [
-  //   'var dec without value',
-  //   `x`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='nil' exp=#4
-  //  4 | Nil `
-  // ],
+  ],
+  [
+    'postfix op',
+    `x = 1
+    x++`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=1
+   5 | PostIncrement exp=#3`
+  ],
+  [
+    'chained addition',
+    `1 + 2 + 3`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | NaryExp exp=[#4,'+',#5,'+',#6]
+   4 | Num val=1
+   5 | Num val=2
+   6 | Num val=3`
+  ],
+  [
+    'chained subtraction',
+    `4 - 3 - 5 - 1`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | NaryExp exp=[#4,'-',#5,'-',#6,'-',#7]
+   4 | Num val=4
+   5 | Num val=3
+   6 | Num val=5
+   7 | Num val=1`
+  ],
+  [
+    'empty obj dec',
+    `x = {}`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['object']
+   4 | Obj val=[]`
+  ],
+  [
+    'local var dec with value', 
+    `local x = 5`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=true readOnly=false type=['number']
+   4 | Num val=5`
+  ],
+  [
+    'local var dec without value',
+    `local x`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=true readOnly=false type=['nil']
+   4 | Nil `
+  ],
+  [
+    'var dec without value',
+    `x`,
+    `   1 | Block statements=[#2,#3]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['nil']
+   4 | Nil `
+  ],
   // [
   //   'var as implied return gets recognized as return',
   //   `x = 1
