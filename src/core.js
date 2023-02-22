@@ -191,7 +191,7 @@ export class Func {
   }
 
   equals(other) {
-    return this.type === other.type 
+    return this.type === other.type
       && this.params.params === other.params.params
       && this.block.statements === other.block.statements
   }
@@ -479,10 +479,16 @@ const getDefault = (t) => {
 
 export const getType = (exps) => {
   const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription]
-  
+
   for (const type of types) {
-    if (exps.some(e => { return e.type === type })) { 
-      return type 
+    if (exps.some(e => {
+      let t = e.type
+      if (e instanceof Var) {
+        t = e.type.size === 1 ? e.type.values().next().value : t
+      }
+      return t === type
+    })) {
+      return type
     }
   }
 

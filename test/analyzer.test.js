@@ -203,22 +203,22 @@ const examples = [
    5 | ReturnStatement exp=#6
    6 | PostIncrement exp=#3`
   ],
-  // [
-  //   'equality check',
-  //   `x += 1
-  //   x == y`,
-  //   `   1 | Block statements=[#2,#7,#10]
-  //  2 | VarDec var=#3 exp=#4
-  //  3 | Var id='x' local=false readOnly=false type=['number']
-  //  4 | NaryExp exp=[#5,'+',#6]
-  //  5 | Num val=0
-  //  6 | Num val=1
-  //  7 | VarDec var=#8 exp=#9
-  //  8 | Var id='y' local=false readOnly=false type=['nil']
-  //  9 | Nil 
-  // 10 | ReturnStatement exp=#11
-  // 11 | NaryExp exp=[#3,'==',#8]`
-  // ],
+  [
+    'equality check',
+    `x += 1
+    x == y`,
+    `   1 | Block statements=[#2,#5,#10]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='y' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='x' local=false readOnly=false type=['number']
+   7 | NaryExp exp=[#8,'+',#9]
+   8 | Num val=0
+   9 | Num val=1
+  10 | ReturnStatement exp=#11
+  11 | NaryExp exp=[#6,'==',#3]`
+  ],
   [
     'post-increment operator assignment',
     `y = x++`,
@@ -346,17 +346,17 @@ const examples = [
   [
     'implicitly declared var does not get redeclared later',
     `y = x == 1
-    x = 3`,
+    x = 'str'`,
     `   1 | Block statements=[#2,#5,#9]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false type=['number']
+   3 | Var id='x' local=false readOnly=false type=['number','string']
    4 | Num val=0
    5 | VarDec var=#6 exp=#7
    6 | Var id='y' local=false readOnly=false type=['boolean']
    7 | NaryExp exp=[#3,'==',#8]
    8 | Num val=1
    9 | Assign var=#3 exp=#10
-  10 | Num val=3`
+  10 | Str val='str'`
   ]
   // [
   //   'postfix op',
