@@ -26,7 +26,7 @@ Bang {
   Exp7                  = "-" Exp8                                                          -- negate
                         | "..." Exp8                                                        -- spread
                         | Exp8
-  Exp8                  = Exp9 ("++" | "--")                                                -- postFix
+  Exp8                  = Exp9 #("++" | "--")                                               -- postFix
                         | ("++" | "--") Exp9                                                -- preFix
                         | Exp9
   Exp9                  = Exp9 #(~newLine space)* ~#newLine Args                            -- call
@@ -41,7 +41,7 @@ Bang {
                         | "(" Exp ")"                                                       -- enclosed
 
   LeftCompare           = Exp2 compareOp
-  LeftAddition          = Exp5 additionOp
+  LeftAddition          = Exp5 ("+" #(~"+") | "-" #(~"-"))
   LeftMultiply          = Exp6 multiplicationOp
   LeftExponent          = Exp7 "**"
 
@@ -99,7 +99,6 @@ Bang {
 
   assignmentOp          = "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "**="
   compareOp             = (("=" | "!") "=") | ("<" | ">") "="?
-  additionOp            = "+" | "-"
   multiplicationOp      = "*" | "/" | "%"
 
   MatchExp              = match id MatchBlock
