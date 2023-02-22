@@ -179,9 +179,10 @@ export default function analyze(sourceCode) {
         block.statements[0] = new core.ReturnStatement(block.statements[0])
       }
 
-      for (let [toFind, toAdd] of extraStatements.entries()) {
-        const index = block.statements.indexOf(toFind)
-        block.statements.splice(index, 0, ...toAdd)
+      for (let [_toFind, toAdd] of extraStatements.entries()) {
+        block.statements.unshift(...toAdd)
+        // const index = block.statements.indexOf(toFind)
+        // block.statements.splice(index, 0, ...toAdd)
       }
       extraStatements = new Map()
       context = context.parent ?? context
@@ -204,7 +205,7 @@ export default function analyze(sourceCode) {
           type = type instanceof Set ? Array.from(type) : [type]
           return defineVar(name, context, val, [...type], isLocal, isReadOnly)
         } else {
-          variable.types.add(val.type ?? val.exp?.type)
+          variable.type.add(val.type ?? val.exp?.type)
         }
       } else {
         // Designed to only get here if variable dec is using an eval assignment
@@ -215,7 +216,7 @@ export default function analyze(sourceCode) {
           return defineVar(name, context, val, [val.type], isLocal, isReadOnly)
         } else {
           val = new core.NaryExp([variable, evalOp, ...flatExp])
-          variable.types.add(val.type)
+          variable.type.add(val.type)
         }
       }
 
@@ -318,6 +319,7 @@ export default function analyze(sourceCode) {
     },
     Exp1_equality(left, right) {
       let elements = [...left.rep(), right.rep()].flat()
+      const type = core.getType(elements.filter(e => typeof e !== 'string'))
       const pieces = mapOps(elements)
       let statements = []
 
@@ -330,16 +332,16 @@ export default function analyze(sourceCode) {
           checkNotType(rhs, [d.FUNC])
         }
         if (typeof lhs === 'string') {
-          const variable = new core.Var(lhs, false, false, ['nil'])
+          const variable = new core.Var(lhs, false, false, [type === d.ANY ? d.NIL : type])
           context.add(lhs, variable)
-          statements.push(new core.VarDec(variable))
+          statements.push(new core.VarDec(variable, variable.default))
           elements[elements.indexOf(lhs)] = variable
         }
 
         if (typeof rhs === 'string') {
-          const variable = new core.Var(rhs, false, false, ['nil'])
+          const variable = new core.Var(rhs, false, false, [type === d.ANY ? d.NIL : type])
           context.add(rhs, variable)
-          statements.push(new core.VarDec(variable))
+          statements.push(new core.VarDec(variable, variable.default))
           elements[elements.indexOf(rhs)] = variable
         }
       }

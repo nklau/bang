@@ -477,7 +477,7 @@ const getDefault = (t) => {
   return new Nil()
 }
 
-const getType = (exps) => {
+export const getType = (exps) => {
   const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription]
   
   for (const type of types) {
