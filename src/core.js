@@ -228,7 +228,7 @@ export class Block {
 
   get type() {
     const r = this.statements.find(s => s instanceof ReturnStatement)
-    return r.type
+    return r?.type ?? 'any'
   }
 
   get default() {
@@ -281,7 +281,12 @@ export class ReturnStatement {
   }
 
   get type() {
-    return this.exp.type
+    let [e, t] = [this.exp]
+    while (!t) {
+      t = e.type
+      e = e.exp
+    }
+    return t
   }
 }
 

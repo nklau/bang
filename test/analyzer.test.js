@@ -200,7 +200,8 @@ const examples = [
    2 | VarDec var=#3 exp=#4
    3 | Var id='x' local=false readOnly=false type=['number']
    4 | Num val=0
-   5 | PostIncrement exp=#3`
+   5 | ReturnStatement exp=#6
+   6 | PostIncrement exp=#3`
   ],
   [
     'equality check',
@@ -231,7 +232,8 @@ const examples = [
   ],
   [
     'post-decrement operator is not an implied return',
-    `x--`,
+    `x = 0
+    x--`,
     `   1 | Block statements=[#2,#5]
    2 | VarDec var=#3 exp=#4
    3 | Var id='x' local=false readOnly=false type=['number']
@@ -240,7 +242,8 @@ const examples = [
   ],
   [
     'pre-increment operator is not an implied return',
-    `++x`,
+    `x = 0
+    ++x`,
     `   1 | Block statements=[#2,#5]
    2 | VarDec var=#3 exp=#4
    3 | Var id='x' local=false readOnly=false type=['number']
@@ -249,13 +252,29 @@ const examples = [
   ],
   [
     'pre-decrement operator is not an implied return',
-    `--x`,
+    `x = 0
+    --x`,
     `   1 | Block statements=[#2,#5]
    2 | VarDec var=#3 exp=#4
    3 | Var id='x' local=false readOnly=false type=['number']
    4 | Num val=0
    5 | PreDecrement exp=#3`
   ],
+  [
+    'postfix op adds a var dec to the correct block',
+    `x = {
+      y++
+    }`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Block statements=[#5,#8]
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['number']
+   7 | Num val=0
+   8 | ReturnStatement exp=#9
+   9 | PostIncrement exp=#6`
+  ]
   // [
   //   'ternary is not an implied return',
   //   `true ? 1 : 2`,

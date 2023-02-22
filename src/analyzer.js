@@ -4,6 +4,7 @@ import * as core from "./core.js"
 
 const bangGrammar = ohm.grammar(fs.readFileSync("src/bang.ohm"))
 const d = { LIST: 'list', OBJ: 'object', STR: 'string', NUM: 'number', BOOL: 'boolean', NIL: 'nil', FUNC: 'function', ANY: 'any' }
+const noReturnExps = [core.Ternary, core.PreIncrement, core.PreDecrement, core.PostIncrement, core.PostDecrement, core.Call]
 
 // TODO: function to get type
 
@@ -171,11 +172,19 @@ export default function analyze(sourceCode) {
     Block(_n0, statements, statement, _n1) {
       const block = new core.Block()
       context = context.newChildContext({ inLoop: false, block: block })
+
       block.statements = [...(statements.rep()), ...statement.rep()].flat()
+
+      if (block.statements.length === 1 && noReturnExps.includes(block.statements[0].constructor)) {
+        block.statements[0] = new core.ReturnStatement(block.statements[0])
+      }
+
       for (let [toFind, toAdd] of extraStatements.entries()) {
-        const index = block.statements.findIndex(s => s === toFind)
+        const index = block.statements.indexOf(toFind)
         block.statements.splice(index, 0, ...toAdd)
       }
+      extraStatements = new Map()
+      context = context.parent ?? context
       return block
     },
     StatementNewLine(statement, _space, _n) {
@@ -241,16 +250,15 @@ export default function analyze(sourceCode) {
       // Can only explicitly use 'return' keyword inside a function
       checkInBlock(context)
       const e = exp.rep()
-      context = context.parent
+      // context = context.parent
       return new core.ReturnStatement(...e)
     },
     Statement_impliedReturn(exp) {
       const e = exp.rep()
       if (e) {
-        const noReturnExps = [core.Ternary, core.PreIncrement, core.PreDecrement, core.PostIncrement, core.PostDecrement, core.Call, core.VarDec]
         const noReturn = noReturnExps.some(r => e instanceof r)
         if (!noReturn) {
-          context = context.parent ?? context
+          // context = context.parent ?? context
           return new core.ReturnStatement(e)
         }
         
