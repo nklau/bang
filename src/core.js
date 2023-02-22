@@ -228,7 +228,12 @@ export class Block {
 
   get type() {
     const r = this.statements.find(s => s instanceof ReturnStatement)
-    return r?.type ?? 'any'
+
+    if (!r) {
+      return 'any'
+    }
+
+    return r.type
   }
 
   get default() {
@@ -297,6 +302,13 @@ export class BreakStatement {
 export class Ternary {
   constructor(cond, block, alt) {
     Object.assign(this, { cond, block, alt: alt })
+  }
+
+  get type() {
+    let [blockType, altType] = [this.block.type, this.alt.type]
+    blockType = blockType instanceof Set ? [...blockType] : [blockType]
+    altType = altType instanceof Set ? [...altType] : [altType]
+    return new Set([...blockType, ...altType])
   }
 }
 

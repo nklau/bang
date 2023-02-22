@@ -250,34 +250,71 @@ export default function analyze(sourceCode) {
       // Can only explicitly use 'return' keyword inside a function
       checkInBlock(context)
       const e = exp.rep()
-      // context = context.parent
       return new core.ReturnStatement(...e)
     },
     Statement_impliedReturn(exp) {
       const e = exp.rep()
-      if (e) {
+      if (typeof e !== 'string') {
         const noReturn = noReturnExps.some(r => e instanceof r)
         if (!noReturn) {
-          // context = context.parent ?? context
           return new core.ReturnStatement(e)
         }
-        
+
         return e
       }
-        // const name = exp.sourceString
-        // const variable = new core.Var(name, false, false, [d.NIL])
-
-        // context.add(name, variable)
-        // return new core.VarDec(variable)
-      return defineVar(exp.sourceString, context)
+      else {
+        const variable = new core.Var(e, false, false, ['nil'])
+        context.add(e, variable)
+        extraStatements.set(variable, new core.VarDec(variable, new core.Nil()))
+        return variable
+      }
     },
-    Statement_break(_b) { 
+    Statement_break(_b) {
       checkInLoop(context)
       return new core.BreakStatement()
     },
     Exp_ternary(cond, _qMark, block, _c, alt) {
-      const bool = cond.rep()
-      return new core.Ternary(bool, block.rep(), ...alt.rep())
+      let [bool, trueBlock] = [cond.rep(), block.rep()]
+
+      if (!(trueBlock instanceof core.Block)) {
+        const b = new core.Block()
+        context = context.newChildContext({ inLoop: false, block: b })
+
+        b.statements = [trueBlock]
+        if (!(trueBlock instanceof core.ReturnStatement)) {
+          b.statements[0] = new core.ReturnStatement(trueBlock)
+        }
+
+        for (let [_toFind, toAdd] of extraStatements.entries()) {
+          b.statements.unshift(toAdd)
+        }
+
+        extraStatements = new Map()
+        context = context.parent
+        trueBlock = b
+      }
+
+      let [falseBlock] = [...alt.rep()]
+
+      if (!(falseBlock instanceof core.Block)) {
+        const b = new core.Block()
+        context = context.newChildContext({ inLoop: false, block: b })
+
+        b.statements = [falseBlock]
+        if (!(falseBlock instanceof core.ReturnStatement)) {
+          b.statements[0] = new core.ReturnStatement(falseBlock)
+        }
+
+        for (let [_toFind, toAdd] of extraStatements.entries()) {
+          b.statements.unshift(toAdd)
+        }
+
+        extraStatements = new Map()
+        context = context.parent
+        falseBlock = b
+      }
+
+      return new core.Ternary(bool, trueBlock, falseBlock)
     },
     Exp1_equality(left, right) {
       let elements = [...left.rep(), right.rep()].flat()
@@ -490,6 +527,23 @@ export default function analyze(sourceCode) {
     BangFunc(_open, block, _close) {
       return block.rep()
     },
+    // BangFunc(statement) {
+    //   // const block = new core.Block()
+    //   context = context.newChildContext({ inLoop: false, block: context.block })
+
+    //   let s = [statement.rep()]
+
+    //   if (noReturnExps.includes(s[0].constructor)) {
+    //     s[0] = new core.ReturnStatement(s[0])
+    //   }
+
+    //   for (let [_toFind, toAdd] of extraStatements.entries()) {
+    //     s.unshift(toAdd)
+    //   }
+    //   extraStatements = new Map()
+    //   context = context.parent ?? context
+    //   return s
+    // },
     VarAssignment_subscript(target, _open, selector, _close) {
       // TODO check for loop
       let [id, exp] = [target.rep(), selector.rep()]
@@ -527,6 +581,8 @@ export default function analyze(sourceCode) {
       context = context.newChildContext({ inLoop: false, block: block })
       const statements = funcBody.rep()
       context = context.parent
+      // TODO check if block has only 1 statement, and if it should be a return statement
+      // TODO add extra statements
 
       return new core.Func(id, statements)
     },
@@ -613,7 +669,6 @@ export default function analyze(sourceCode) {
       return `${escape.sourceString}${newLine.rep()}`
     },
     id(_first, _rest) {
-      const name = this.sourceString
       // let variable = context.lookup(name)
       // if (!variable) {
       //   variable = new core.Var(name, false, false)
@@ -623,7 +678,7 @@ export default function analyze(sourceCode) {
       //   context.block.statements.unshift(assign)
       // }
       // return variable
-      return context.lookup(name) ?? this.sourceString
+      return context.lookup(this.sourceString) ?? this.sourceString
     },
     boolLit(bool) {
       return new core.Bool(bool.sourceString)

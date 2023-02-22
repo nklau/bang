@@ -274,18 +274,90 @@ const examples = [
    7 | Num val=0
    8 | ReturnStatement exp=#9
    9 | PostIncrement exp=#6`
+  ],
+  [
+    'ternary after statement is not an implied return',
+    `x = 0
+    true ? 1 : 2`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | Ternary cond=#6 block=#7 alt=#10
+   6 | Bool val=true
+   7 | Block statements=[#8]
+   8 | ReturnStatement exp=#9
+   9 | Num val=1
+  10 | Block statements=[#11]
+  11 | ReturnStatement exp=#12
+  12 | Num val=2`
+  ],
+  [
+    'ternary followed by statement is not an implied return',
+    `true ? 1 : 2
+    x = 0`,
+    `   1 | Block statements=[#2,#10]
+   2 | Ternary cond=#3 block=#4 alt=#7
+   3 | Bool val=true
+   4 | Block statements=[#5]
+   5 | ReturnStatement exp=#6
+   6 | Num val=1
+   7 | Block statements=[#8]
+   8 | ReturnStatement exp=#9
+   9 | Num val=2
+  10 | VarDec var=#11 exp=#12
+  11 | Var id='x' local=false readOnly=false type=['number']
+  12 | Num val=0`
+  ],
+  [
+    'ternary on its own is an implied return',
+    `true ? 1 : x`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | Ternary cond=#4 block=#5 alt=#8
+   4 | Bool val=true
+   5 | Block statements=[#6]
+   6 | ReturnStatement exp=#7
+   7 | Num val=1
+   8 | Block statements=[#9,#12]
+   9 | VarDec var=#10 exp=#11
+  10 | Var id='x' local=false readOnly=false type=['nil']
+  11 | Nil 
+  12 | ReturnStatement exp=#10`
+  //   `   1 | Block statements=[#2]
+  //  2 | ReturnStatement exp=#3
+  //  3 | Ternary cond=#4 block=#5 alt=#8
+  //  4 | Bool val=true
+  //  5 | Block statements=[#6]
+  //  6 | ReturnStatement exp=#7
+  //  7 | Num val=1
+  //  8 | Block statements=[#9]
+  //  9 | ReturnStatement exp=#10`
+  ],
+  [
+    'ternary has correct typing',
+    `y = 'str'
+    x = true ? 1 : y`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='y' local=false readOnly=false type=['string']
+   4 | Str val='str'
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='x' local=false readOnly=false type=['number','string']
+   7 | Ternary cond=#8 block=#9 alt=#12
+   8 | Bool val=true
+   9 | Block statements=[#10]
+  10 | ReturnStatement exp=#11
+  11 | Num val=1
+  12 | Block statements=[#13]
+  13 | ReturnStatement exp=#3`
   ]
   // [
-  //   'ternary is not an implied return',
-  //   `true ? 1 : 2`,
-  //   `   1 | Block statements=[#2]
-  //  2 | Ternary cond=#3 block=#4 alt=#6
-  //  3 | Bool val=true
-  //  4 | ReturnStatement exp=#5
-  //  5 | Num val=1
-  //  6 | ReturnStatement exp=#7
-  //  7 | Num val=2`
-  // ],
+  //   'implicitly declared var does not get redeclared later',
+  //   `x == 1
+  //   x = 3`,
+  //   ``
+  // ]
   // [
   //   'postfix op',
   //   `x = 1
