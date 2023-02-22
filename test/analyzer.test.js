@@ -421,131 +421,130 @@ const examples = [
    3 | Var id='x' local=false readOnly=false type=['nil']
    4 | Nil `
   ],
-  // [
-  //   'var as implied return gets recognized as return',
-  //   `x = 1
-  //   x`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=1
-  //  5 | ReturnStatement exp=#3`
-  // ],
-  // [
-  //   'const var dec with value',
-  //   `const x = 5`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=true type='number' exp=#4
-  //  4 | Num val=5`
-  // ],
-  // [
-  //   'local const var dec with value',
-  //   `local const x = 5`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=true readOnly=true type='number' exp=#4
-  //  4 | Num val=5`
-  // ],
-  // [
-  //   'changing variable value affects previously undefined var type',
-  //   `x
-  //   x = 5
-  //   x`,
-  //   `   1 | Block statements=[#2,#5,#7]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Nil 
-  //  5 | VarDec var=#3 op='=' exp=#6
-  //  6 | Num val=5
-  //  7 | ReturnStatement exp=#3`
-  // ],
-  // [
-  //   'changing variable value affects already existing var type',
-  //   `x = 5
-  //   x = 'str'`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='string' exp=#4
-  //  4 | Num val=5
-  //  5 | VarDec var=#3 op='=' exp=#6
-  //  6 | Str val='str'`
-  // ],
-  // [
-  //   'changing variable value with mutating assignment op',
-  //   `x = 5
-  //   x += 'str'`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='string' exp=#4
-  //  4 | Num val=5
-  //  5 | VarDec var=#3 op='=' exp=#6
-  //  6 | NaryExp exp=[#3,'+',#7]
-  //  7 | Str val='str'`
-  // ],
-  // [
-  //   '+= op with chained addition on right',
-  //   `x = 5
-  //   x += 'str' + ['alt']`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='list' exp=#4
-  //  4 | Num val=5
-  //  5 | VarDec var=#3 op='=' exp=#6
-  //  6 | NaryExp exp=[#3,'+',#7,'+',#8]
-  //  7 | Str val='str'
-  //  8 | List val=[#9]
-  //  9 | Str val='alt'`
-  // ],
-  // [
-  //   'y = x++ sets x and y to numbers',
-  //   `y = x++`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='y' local=false readOnly=false type='number' exp=#4
-  //  4 | PostIncrement exp=#5
-  //  5 | Var id='x' local=false readOnly=false type='number' exp=#6
-  //  6 | Num val=0`
-  // ],
-  // [
-  //   'y = (x++) + [] sets y to a list',
-  //   `y = (x++) + []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='y' local=false readOnly=false type='list' exp=#4
-  //  4 | NaryExp exp=[#5,'+',#9]
-  //  5 | NaryExp exp=[#6]
-  //  6 | PostIncrement exp=#7
-  //  7 | Var id='x' local=false readOnly=false type='number' exp=#8
-  //  8 | Num val=0
-  //  9 | List val=[]`
-  // ],
-  // [
-  //   'x = (x++) + [] sets x to a list',
-  //   `x = (x++) + []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#5
-  //  3 | Var id='x' local=false readOnly=false type='list' exp=#4
-  //  4 | Num val=0
-  //  5 | NaryExp exp=[#6,'+',#8]
-  //  6 | NaryExp exp=[#7]
-  //  7 | PostIncrement exp=#3
-  //  8 | List val=[]`
-  // ],
-  // [
-  //   'using post-increment with undefined var points back to same var',
-  //   `x = x++`,
-  //   `   1 | Block statements=[#2]
-  //  2 | Assign var=#3 exp=PostIncrement exp=#3
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | PostIncrement exp=#3
-
-   
-  //  2 | VarDec var=#3 op='=' exp=#5
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=0
-  //  5 | PostIncrement exp=#3`
-  // ],
+  [
+    'var as implied return gets recognized as return',
+    `x = 1
+    x`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=1
+   5 | ReturnStatement exp=#3`
+  ],
+  [
+    'const var dec with value',
+    `const x = 5`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=true type=['number']
+   4 | Num val=5`
+  ],
+  [
+    'local const var dec with value',
+    `local const x = 5`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=true readOnly=true type=['number']
+   4 | Num val=5`
+  ],
+  [
+    'changing variable value affects previously undefined var type',
+    `x
+    x = 5
+    x`,
+    `   1 | Block statements=[#2,#3,#5,#7]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['nil','number']
+   4 | Nil 
+   5 | Assign var=#3 exp=#6
+   6 | Num val=5
+   7 | ReturnStatement exp=#3`
+  ],
+  [
+    'changing variable value affects already existing var type',
+    `x = 5
+    x = 'str'`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number','string']
+   4 | Num val=5
+   5 | Assign var=#3 exp=#6
+   6 | Str val='str'`
+  ],
+  [
+    'changing variable value with mutating assignment op',
+    `x = 5
+    x += 'str'`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number','string']
+   4 | Num val=5
+   5 | Assign var=#3 exp=#6
+   6 | NaryExp exp=[#3,'+',#7]
+   7 | Str val='str'`
+  ],
+  [
+    '+= op with chained addition on right',
+    `x = 5
+    x += 'str' + ['alt']`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number','list']
+   4 | Num val=5
+   5 | Assign var=#3 exp=#6
+   6 | NaryExp exp=[#3,'+',#7,'+',#8]
+   7 | Str val='str'
+   8 | List val=[#9]
+   9 | Str val='alt'`
+  ],
+  [
+    'y = x++ sets x and y to numbers',
+    `y = x++`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['number']
+   7 | PostIncrement exp=#3`
+  ],
+  [
+    'y = (x++) + [] sets y to a list',
+    `y = (x++) + []`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['list']
+   7 | NaryExp exp=[#8,'+',#10]
+   8 | NaryExp exp=[#9]
+   9 | PostIncrement exp=#3
+  10 | List val=[]`
+  ],
+  [
+    'x = (x++) + [] sets x to a list',
+    `x = (x++) + []`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number','list']
+   4 | Num val=0
+   5 | Assign var=#3 exp=#6
+   6 | NaryExp exp=[#7,'+',#9]
+   7 | NaryExp exp=[#8]
+   8 | PostIncrement exp=#3
+   9 | List val=[]`
+  ],
+  [
+    'using post-increment with undefined var points back to same var',
+    `x = x++`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | Assign var=#3 exp=#6
+   6 | PostIncrement exp=#3`
+  ],
   // [
   //   'post increment with undefined var adds to context',
   //   `x++

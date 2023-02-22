@@ -200,12 +200,12 @@ export default function analyze(sourceCode) {
       }
 
       if (o === '=') {
+        let type = val.type ?? val.exp?.type
+        type = type instanceof Set ? Array.from(type) : [type]
         if (isLocal || !variable) {
-          let type = val.type ?? val.exp?.type
-          type = type instanceof Set ? Array.from(type) : [type]
           return defineVar(name, context, val, [...type], isLocal, isReadOnly)
         } else {
-          variable.type.add(val.type ?? val.exp?.type)
+          type.forEach(t => variable.type.add(t))
         }
       } else {
         // Designed to only get here if variable dec is using an eval assignment
