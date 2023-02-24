@@ -173,13 +173,16 @@ export default function analyze(sourceCode) {
       const block = new core.Block()
       context = context.newChildContext({ inLoop: false, block: block })
 
-      block.statements = [...(statements.rep()), ...statement.rep()].flat()
+      statements.children.forEach(s => {
+        block.statements.push(s.rep())
+      })
+      block.statements.push(...statement.rep())
 
       if (block.statements.length === 1 && noReturnExps.includes(block.statements[0].constructor)) {
         block.statements[0] = new core.ReturnStatement(block.statements[0])
       }
 
-      extraStatements.forEach(s => block.statements.unshift(...s))
+      extraStatements.forEach(s => block.statements.unshift(s))
       extraStatements = []
 
       context = context.parent ?? context
@@ -191,9 +194,23 @@ export default function analyze(sourceCode) {
     Statement_varDec(local, readOnly, id, op, exp) {
       let [val, o, isLocal, isReadOnly, name] = [exp.rep(), op.sourceString, local.sourceString === 'local', readOnly.sourceString === 'const', id.sourceString]
       let variable = context.lookup(name)
+
+      if (typeof val === 'string') {
+        const valVariable = new core.Var(val, false, false, [d.NIL])
+        const varDec = new core.VarDec(valVariable, new core.Nil())
+
+        context.add(val, valVariable)
+        extraStatements.push(varDec)
+        val = varDec.exp
+      }
+
       if (val instanceof core.Var) {
         // setting a variable equal to another variable makes a shallow copy
-        val = val.exp
+        context.block.statements.slice().reverse().forEach(s => {
+          if ((s instanceof core.Assign || s instanceof core.VarDec) && s.var === val) {
+            val = s.exp
+          }
+        })
       }
 
       if (o === '=') {
@@ -263,7 +280,7 @@ export default function analyze(sourceCode) {
       else {
         const variable = new core.Var(e, false, false, ['nil'])
         context.add(e, variable)
-        extraStatements.push([new core.VarDec(variable, new core.Nil())])
+        extraStatements.push(new core.VarDec(variable, new core.Nil()))
         return variable
       }
     },
@@ -283,7 +300,7 @@ export default function analyze(sourceCode) {
           b.statements[0] = new core.ReturnStatement(trueBlock)
         }
 
-        extraStatements.forEach(s => b.statements.unshift(...s))
+        extraStatements.forEach(s => b.statements.unshift(s))
         extraStatements = []
 
         context = context.parent
@@ -301,9 +318,9 @@ export default function analyze(sourceCode) {
           b.statements[0] = new core.ReturnStatement(falseBlock)
         }
 
-        extraStatements.forEach(s => b.statements.unshift(...s))
+        extraStatements.forEach(s => b.statements.unshift(s))
         extraStatements = []
-        
+
         context = context.parent
         falseBlock = b
       }
@@ -341,7 +358,8 @@ export default function analyze(sourceCode) {
       const exp = new core.NaryExp(elements)
       statements = statements.filter(s => s)
       if (statements.length > 0) {
-        extraStatements.push(statements)
+        statements.forEach(s => extraStatements.push(s))
+        // extraStatements.push(statements)
       }
 
       return exp
@@ -436,7 +454,7 @@ export default function analyze(sourceCode) {
       const statement = new increment(exp)
 
       if (extra) {
-        extraStatements.push([extra])
+        extraStatements.push(extra)
       }
 
       return statement
@@ -460,7 +478,7 @@ export default function analyze(sourceCode) {
       const statement = new increment(exp)
 
       if (extra) {
-        extraStatements.push([extra])
+        extraStatements.push(extra)
       }
 
       return statement
@@ -631,7 +649,7 @@ export default function analyze(sourceCode) {
           context.add(e, variable)
           elements[index] = variable
 
-          extraStatements.push([new core.VarDec(variable, new core.Nil())])
+          extraStatements.push(new core.VarDec(variable, new core.Nil()))
         }
       })
 

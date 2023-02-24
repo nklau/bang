@@ -590,62 +590,83 @@ const examples = [
    5 | VarDec var=#6 exp=#7
    6 | Var id='y' local=false readOnly=false type=['list']
    7 | List val=[#3]`
-  ]
+  ],
+  [
+    '-= op',
+    `x -= 4`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | NaryExp exp=[#5,'-',#6]
+   5 | Num val=0
+   6 | Num val=4`
+  ],
+  [
+    '-= op with nary exp',
+    `x -= 4 + 'str'`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['string']
+   4 | NaryExp exp=[#5,'-',#6,'+',#7]
+   5 | Str val=''
+   6 | Num val=4
+   7 | Str val='str'`
+  ],
+  [
+    'chaining additive and multiplicative ops',
+    `4 * 'str' + []`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | NaryExp exp=[#4,'+',#7]
+   4 | NaryExp exp=[#5,'*',#6]
+   5 | Num val=4
+   6 | Str val='str'
+   7 | List val=[]`
+  ],
+  [
+    'chaining additive then multiplicative ops',
+    `4 + 'str' * []`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | NaryExp exp=[#4,'+',#5]
+   4 | Num val=4
+   5 | NaryExp exp=[#6,'*',#7]
+   6 | Str val='str'
+   7 | List val=[]`
+  ],
+  [
+    'undefined assignment op with var exp',
+    `y = 1
+    x += y`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='y' local=false readOnly=false type=['number']
+   4 | Num val=1
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='x' local=false readOnly=false type=['number']
+   7 | NaryExp exp=[#8,'+',#4]
+   8 | Num val=0`
+  ],
   // [
-  //   '-= op',
-  //   `x -= 4`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | NaryExp exp=[#5,'-',#6]
-  //  5 | Num val=0
-  //  6 | Num val=4`
+  //   'shared semantics', // should point to same copy of nil
+  //   `x = y`
   // ],
   // [
-  //   '-= op with nary exp',
-  //   `x -= 4 + 'str'`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='string' exp=#4
-  //  4 | NaryExp exp=[#5,'-',#6,'+',#7]
-  //  5 | Str val=''
-  //  6 | Num val=4
-  //  7 | Str val='str'`
+  //   'shared semantics with literals',
+  //   `x = 1
+  //   y = x`
   // ],
   // [
-  //   'chaining additive and multiplicative ops',
-  //   `4 * 'str' + []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | ReturnStatement exp=#3
-  //  3 | NaryExp exp=[#4,'+',#7]
-  //  4 | NaryExp exp=[#5,'*',#6]
-  //  5 | Num val=4
-  //  6 | Str val='str'
-  //  7 | List val=[]`
+  //   'shared semantics with implicitly defined var',
+  //   `x = y
+  //   z = y`,
+
   // ],
   // [
-  //   'chaining additive then multiplicative ops',
-  //   `4 + 'str' * []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | ReturnStatement exp=#3
-  //  3 | NaryExp exp=[#4,'+',#5]
-  //  4 | Num val=4
-  //  5 | NaryExp exp=[#6,'*',#7]
-  //  6 | Str val='str'
-  //  7 | List val=[]`
-  // ],
-  // [
-  //   'undefined assignment op with var exp',
-  //   `y = 1
-  //   x += y`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='y' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=1
-  //  5 | VarDec var=#6 op='=' exp=#7
-  //  6 | Var id='x' local=false readOnly=false type='number' exp=#7
-  //  7 | NaryExp exp=[#8,'+',#4]
-  //  8 | Num val=0`
+  //   'shared semantics with previously defined var',
+  //   `x = 0
+  //   x = 1
+  //   y = x`
   // ],
   // [
   //   'undefined -= op defaults to highest type',
