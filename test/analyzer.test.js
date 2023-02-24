@@ -647,21 +647,43 @@ const examples = [
    7 | NaryExp exp=[#8,'+',#4]
    8 | Num val=0`
   ],
-  // [
-  //   'shared semantics', // should point to same copy of nil
-  //   `x = y`
-  // ],
-  // [
-  //   'shared semantics with literals',
-  //   `x = 1
-  //   y = x`
-  // ],
-  // [
-  //   'shared semantics with implicitly defined var',
-  //   `x = y
-  //   z = y`,
-
-  // ],
+  [
+    'shared semantics',
+    `x = y`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='y' local=false readOnly=false type=['nil']
+   4 | Nil 
+   5 | VarDec var=#6 exp=#4
+   6 | Var id='x' local=false readOnly=false type=['nil']`
+  ],
+  [
+    'shared semantics with literals',
+    `x = 1
+    y = x
+    x = 2`,
+    `   1 | Block statements=[#2,#5,#7]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=1
+   5 | VarDec var=#6 exp=#4
+   6 | Var id='y' local=false readOnly=false type=['number']
+   7 | Assign var=#3 exp=#8
+   8 | Num val=2`
+  ],
+  [
+    'shared semantics with implicitly defined var',
+    `x = y
+    z = y`,
+    `   1 | Block statements=[#2,#5,#7]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='y' local=false readOnly=false type=['nil']
+   4 | Nil 
+   5 | VarDec var=#6 exp=#4
+   6 | Var id='x' local=false readOnly=false type=['nil']
+   7 | VarDec var=#8 exp=#4
+   8 | Var id='z' local=false readOnly=false type=['nil']`
+  ],
   // [
   //   'shared semantics with previously defined var',
   //   `x = 0

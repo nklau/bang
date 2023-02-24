@@ -211,6 +211,14 @@ export default function analyze(sourceCode) {
             val = s.exp
           }
         })
+
+        if (val instanceof core.Var) {
+          extraStatements.slice().reverse().forEach(s => {
+            if ((s instanceof core.Assign || s instanceof core.VarDec) && s.var === val) {
+              val = s.exp
+            }
+          })
+        }
       }
 
       if (o === '=') {
