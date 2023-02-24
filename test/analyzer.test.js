@@ -747,31 +747,68 @@ const examples = [
    6 | Var id='x' local=false readOnly=false type=['string']
    7 | FormattedStr val=['s','t','r',#3]`
   ],
+  [
+    'local x does not change type of global x',
+    `x = 1
+    {
+      local x = 'str'
+    }`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=1
+   5 | ReturnStatement exp=#6
+   6 | Block statements=[#7]
+   7 | VarDec var=#8 exp=#9
+   8 | Var id='x' local=true readOnly=false type=['string']
+   9 | Str val='str'`
+  ],
+  [
+    'var type gets set by return type',
+    `x = { 1 }`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Block statements=[#5]
+   5 | ReturnStatement exp=#6
+   6 | Num val=1`
+  ],
+  [
+    'var type updates for mutliple return types',
+    `x = { 
+      y = true
+      return y ? 1
+      return 'str'
+    }`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number','string']
+   4 | Block statements=[#5,#8,#13]
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['boolean']
+   7 | Bool val=true
+   8 | ReturnStatement exp=#9
+   9 | Ternary cond=#6 block=#10 alt=undefined
+  10 | Block statements=[#11]
+  11 | ReturnStatement exp=#12
+  12 | Num val=1
+  13 | ReturnStatement exp=#14
+  14 | Str val='str'`
+  ],
   // [
-  //   'local x does not change type of global x',
-  //   `x = 1
-  //   {
-  //     local x = 'str'
+  //   'var type updates for mutliple return types',
+  //   `x = { 
+  //     y = true
+  //     return y ? 1 : 'str'
   //   }`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=1
-  //  5 | ReturnStatement exp=#6
-  //  6 | Block statements=[#7]
-  //  7 | VarDec var=#8 op='=' exp=#9
-  //  8 | Var id='x' local=true readOnly=false type='string' exp=#9
-  //  9 | Str val='str'`
+  //   ``
   // ],
   // [
-  //   'var type gets set by return type',
-  //   `x = { 1 }`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Block statements=[#5]
-  //  5 | ReturnStatement exp=#6
-  //  6 | Num val=1`
+  //   'explicit return statement defines previously undefined var',
+  //   `{
+  //     return x
+  //   }`,
+  //   ``
   // ],
   // [
   //   'local x does not change type of global x',

@@ -227,17 +227,24 @@ export class Block {
   }
 
   get type() {
-    const r = this.statements.find(s => s instanceof ReturnStatement)
+    let returns = []
+    this.statements.filter(s => s instanceof ReturnStatement).forEach(r => {
+      let types = r.type
+      types = types instanceof Set ? [...types] : [types]
+      returns.push(types)
+    })
 
-    if (!r) {
+    if (returns.length === 0) {
       return 'any'
     }
 
-    return r.type
+    return new Set(returns.flat())
   }
 
   get default() {
-    return getDefault(this.type)
+    const t = getType(this.type)
+
+    return getDefault(t)
   }
 }
 
@@ -305,10 +312,15 @@ export class Ternary {
   }
 
   get type() {
-    let [blockType, altType] = [this.block.type, this.alt.type]
+    let [blockType, altType] = [this.block.type, this.alt?.type]
     blockType = blockType instanceof Set ? [...blockType] : [blockType]
-    altType = altType instanceof Set ? [...altType] : [altType]
-    return new Set([...blockType, ...altType])
+
+    if (altType) {
+      altType = altType instanceof Set ? [...altType] : [altType]
+      return new Set([...blockType, ...altType])
+    } else {
+      return new Set(blockType)
+    }
   }
 }
 

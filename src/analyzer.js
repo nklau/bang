@@ -315,6 +315,10 @@ export default function analyze(sourceCode) {
         trueBlock = b
       }
 
+      if (alt.children.length === 0) {
+        return new core.Ternary(bool, trueBlock)
+      }
+
       let [falseBlock] = [...alt.rep()]
 
       if (!(falseBlock instanceof core.Block)) {
@@ -670,10 +674,6 @@ export default function analyze(sourceCode) {
       return new core.Str(chars.rep().join(''))
     },
     FormattedStr(_open, chars, _close) {
-      // const elements = chars.rep()
-      // elements.forEach(e => {
-
-      // })
       return new core.FormattedStr(chars.rep())
     },
     FSingleSubstr(exp) {
@@ -693,7 +693,7 @@ export default function analyze(sourceCode) {
         e = variable
         extraStatements.push(varDec)
       }
-      
+
       return e
     },
     fSingleStrChar(char) {
