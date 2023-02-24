@@ -670,6 +670,10 @@ export default function analyze(sourceCode) {
       return new core.Str(chars.rep().join(''))
     },
     FormattedStr(_open, chars, _close) {
+      // const elements = chars.rep()
+      // elements.forEach(e => {
+
+      // })
       return new core.FormattedStr(chars.rep())
     },
     FSingleSubstr(exp) {
@@ -679,7 +683,18 @@ export default function analyze(sourceCode) {
       return exp.rep()
     },
     FStrExp(_open, exp, _close) {
-      return exp.rep()
+      let e = exp.rep()
+
+      if (typeof e === 'string') {
+        const variable = new core.Var(e, false, false, ['nil'])
+        const varDec = new core.VarDec(variable, new core.Nil())
+
+        context.add(e, variable)
+        e = variable
+        extraStatements.push(varDec)
+      }
+      
+      return e
     },
     fSingleStrChar(char) {
       return char.rep()

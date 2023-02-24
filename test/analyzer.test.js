@@ -684,48 +684,69 @@ const examples = [
    7 | VarDec var=#8 exp=#4
    8 | Var id='z' local=false readOnly=false type=['nil']`
   ],
-  // [
-  //   'shared semantics with previously defined var',
-  //   `x = 0
-  //   x = 1
-  //   y = x`
-  // ],
-  // [
-  //   'undefined -= op defaults to highest type',
-  //   `const y = 4
-  //   const z = 'str'
-  //   a = [y]
-  //   x -= y + z * a`,
-  //   `   1 | Block statements=[#2,#5,#8,#11]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='y' local=false readOnly=true type='number' exp=#4
-  //  4 | Num val=4
-  //  5 | VarDec var=#6 op='=' exp=#7
-  //  6 | Var id='z' local=false readOnly=true type='string' exp=#7
-  //  7 | Str val='str'
-  //  8 | VarDec var=#9 op='=' exp=#10
-  //  9 | Var id='a' local=false readOnly=false type='list' exp=#10
-  // 10 | List val=[#3]
-  // 11 | VarDec var=#12 op='=' exp=#13
-  // 12 | Var id='x' local=false readOnly=false type='list' exp=#13
-  // 13 | NaryExp exp=[#14,'-',#3,'+',#15]
-  // 14 | List val=[]
-  // 15 | NaryExp exp=[#6,'*',#9]`
-  // ],
-  // [
-  //   'eval assignment op with formatted str',
-  //   `y = 5
-  //   x += $'str{y}'`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='y' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=5
-  //  5 | VarDec var=#6 op='=' exp=#7
-  //  6 | Var id='x' local=false readOnly=false type='string' exp=#7
-  //  7 | NaryExp exp=[#8,'+',#9]
-  //  8 | FormattedStr val=[]
-  //  9 | FormattedStr val=['s','t','r',#3]`
-  // ],
+  [
+    'shared semantics with previously defined var',
+    `z = x
+    x = 1
+    y = x`,
+    `   1 | Block statements=[#2,#5,#7,#9]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['nil','number']
+   4 | Nil 
+   5 | VarDec var=#6 exp=#4
+   6 | Var id='z' local=false readOnly=false type=['nil']
+   7 | Assign var=#3 exp=#8
+   8 | Num val=1
+   9 | VarDec var=#10 exp=#8
+  10 | Var id='y' local=false readOnly=false type=['number']`
+  ],
+  [
+    'undefined -= op defaults to highest type',
+    `const y = 4
+    const z = 'str'
+    a = [y]
+    x -= y + z * a`,
+    `   1 | Block statements=[#2,#5,#8,#11]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='y' local=false readOnly=true type=['number']
+   4 | Num val=4
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='z' local=false readOnly=true type=['string']
+   7 | Str val='str'
+   8 | VarDec var=#9 exp=#10
+   9 | Var id='a' local=false readOnly=false type=['list']
+  10 | List val=[#3]
+  11 | VarDec var=#12 exp=#13
+  12 | Var id='x' local=false readOnly=false type=['list']
+  13 | NaryExp exp=[#14,'-',#3,'+',#15]
+  14 | List val=[]
+  15 | NaryExp exp=[#6,'*',#9]`
+  ],
+  [
+    'eval assignment op with formatted str',
+    `y = 5
+    x += $'str{y}'`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='y' local=false readOnly=false type=['number']
+   4 | Num val=5
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='x' local=false readOnly=false type=['string']
+   7 | NaryExp exp=[#8,'+',#9]
+   8 | FormattedStr val=[]
+   9 | FormattedStr val=['s','t','r',#3]`
+  ],
+  [
+    'formatted string declared previously unseen var',
+    `x = $'str{y}'`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='y' local=false readOnly=false type=['nil']
+   4 | Nil 
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='x' local=false readOnly=false type=['string']
+   7 | FormattedStr val=['s','t','r',#3]`
+  ],
   // [
   //   'local x does not change type of global x',
   //   `x = 1
