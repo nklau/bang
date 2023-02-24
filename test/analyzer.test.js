@@ -545,41 +545,52 @@ const examples = [
    5 | Assign var=#3 exp=#6
    6 | PostIncrement exp=#3`
   ],
-  // [
-  //   'post increment with undefined var adds to context',
-  //   `x++
-  //   x`,
-  //   `   1 | Block statements=[#2,#6]
-  //  2 | VarDec var=#3 op='=' exp=#5
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=0
-  //  5 | PostIncrement exp=#3
-  //  6 | ReturnStatement exp=#3`
-  // ],
-  // [
-  //   '+= does not nest NaryExps',
-  //   `x += 1 + 2`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | NaryExp exp=[#5,'+',#6,'+',#7]
-  //  5 | Num val=0
-  //  6 | Num val=1
-  //  7 | Num val=2`
-  // ],
-  // [
-  //   'undefined assignment op defaults to highest type',
-  //   `x += 4 + 'str' + [false]`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='list' exp=#4
-  //  4 | NaryExp exp=[#5,'+',#6,'+',#7,'+',#8]
-  //  5 | List val=[]
-  //  6 | Num val=4
-  //  7 | Str val='str'
-  //  8 | List val=[#9]
-  //  9 | Bool val=false`
-  // ],
+  [
+    'post increment with undefined var adds to context',
+    `x++
+    x`,
+    `   1 | Block statements=[#2,#5,#6]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | PostIncrement exp=#3
+   6 | ReturnStatement exp=#3`
+  ],
+  [
+    '+= does not nest NaryExps',
+    `x += 1 + 2`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | NaryExp exp=[#5,'+',#6,'+',#7]
+   5 | Num val=0
+   6 | Num val=1
+   7 | Num val=2`
+  ],
+  [
+    'undefined assignment op defaults to highest type',
+    `x += 4 + 'str' + [false]`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | NaryExp exp=[#5,'+',#6,'+',#7,'+',#8]
+   5 | List val=[]
+   6 | Num val=4
+   7 | Str val='str'
+   8 | List val=[#9]
+   9 | Bool val=false`
+  ],
+  [
+    'unseen var inside list gets declared',
+    `y = [x]`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['nil']
+   4 | Nil 
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['list']
+   7 | List val=[#3]`
+  ]
   // [
   //   '-= op',
   //   `x -= 4`,

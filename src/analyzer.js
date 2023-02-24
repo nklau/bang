@@ -163,7 +163,7 @@ class Context {
 
 export default function analyze(sourceCode) {
   let context = new Context({})
-  let extraStatements = new Map()
+  let extraStatements = []
 
   const analyzer = bangGrammar.createSemantics().addOperation("rep", {
     Program(body) {
@@ -179,12 +179,9 @@ export default function analyze(sourceCode) {
         block.statements[0] = new core.ReturnStatement(block.statements[0])
       }
 
-      for (let [_toFind, toAdd] of extraStatements.entries()) {
-        block.statements.unshift(...toAdd)
-        // const index = block.statements.indexOf(toFind)
-        // block.statements.splice(index, 0, ...toAdd)
-      }
-      extraStatements = new Map()
+      extraStatements.forEach(s => block.statements.unshift(...s))
+      extraStatements = []
+
       context = context.parent ?? context
       return block
     },
@@ -266,7 +263,7 @@ export default function analyze(sourceCode) {
       else {
         const variable = new core.Var(e, false, false, ['nil'])
         context.add(e, variable)
-        extraStatements.set(variable, [new core.VarDec(variable, new core.Nil())])
+        extraStatements.push([new core.VarDec(variable, new core.Nil())])
         return variable
       }
     },
@@ -286,11 +283,9 @@ export default function analyze(sourceCode) {
           b.statements[0] = new core.ReturnStatement(trueBlock)
         }
 
-        for (let [_toFind, toAdd] of extraStatements.entries()) {
-          b.statements.unshift(...toAdd)
-        }
+        extraStatements.forEach(s => b.statements.unshift(...s))
+        extraStatements = []
 
-        extraStatements = new Map()
         context = context.parent
         trueBlock = b
       }
@@ -306,11 +301,9 @@ export default function analyze(sourceCode) {
           b.statements[0] = new core.ReturnStatement(falseBlock)
         }
 
-        for (let [_toFind, toAdd] of extraStatements.entries()) {
-          b.statements.unshift(...toAdd)
-        }
-
-        extraStatements = new Map()
+        extraStatements.forEach(s => b.statements.unshift(...s))
+        extraStatements = []
+        
         context = context.parent
         falseBlock = b
       }
@@ -348,7 +341,7 @@ export default function analyze(sourceCode) {
       const exp = new core.NaryExp(elements)
       statements = statements.filter(s => s)
       if (statements.length > 0) {
-        extraStatements.set(exp, statements)
+        extraStatements.push(statements)
       }
 
       return exp
@@ -443,7 +436,7 @@ export default function analyze(sourceCode) {
       const statement = new increment(exp)
 
       if (extra) {
-        extraStatements.set(statement, [extra])
+        extraStatements.push([extra])
       }
 
       return statement
@@ -467,7 +460,7 @@ export default function analyze(sourceCode) {
       const statement = new increment(exp)
 
       if (extra) {
-        extraStatements.set(statement, [extra])
+        extraStatements.push([extra])
       }
 
       return statement
@@ -629,7 +622,20 @@ export default function analyze(sourceCode) {
       return str.rep()
     },
     ListLit(_open, list, _close) {
-      return new core.List([...list.asIteration().rep()])
+      const elements = [...list.asIteration().rep()]
+
+      elements.forEach((e, index) => {
+        if (typeof e === 'string') {
+          const variable = new core.Var(e, false, false, [d.NIL])
+
+          context.add(e, variable)
+          elements[index] = variable
+
+          extraStatements.push([new core.VarDec(variable, new core.Nil())])
+        }
+      })
+
+      return new core.List(elements)
     },
     Str(str) {
       return str.rep()
