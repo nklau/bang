@@ -795,21 +795,41 @@ const examples = [
   13 | ReturnStatement exp=#14
   14 | Str val='str'`
   ],
-  // [
-  //   'var type updates for mutliple return types',
-  //   `x = { 
-  //     y = true
-  //     return y ? 1 : 'str'
-  //   }`,
-  //   ``
-  // ],
-  // [
-  //   'explicit return statement defines previously undefined var',
-  //   `{
-  //     return x
-  //   }`,
-  //   ``
-  // ],
+  [
+    'var type updates for mutliple return types',
+    `x = { 
+      y = true
+      return y ? 1 : 'str'
+    }`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number','string']
+   4 | Block statements=[#5,#8]
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['boolean']
+   7 | Bool val=true
+   8 | ReturnStatement exp=#9
+   9 | Ternary cond=#6 block=#10 alt=#13
+  10 | Block statements=[#11]
+  11 | ReturnStatement exp=#12
+  12 | Num val=1
+  13 | Block statements=[#14]
+  14 | ReturnStatement exp=#15
+  15 | Str val='str'`
+  ],
+  [
+    'explicit return statement defines previously undefined var',
+    `{
+      return x
+    }`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | Block statements=[#4,#7]
+   4 | VarDec var=#5 exp=#6
+   5 | Var id='x' local=false readOnly=false type=['nil']
+   6 | Nil 
+   7 | ReturnStatement exp=#5`
+  ],
   // [
   //   'local x does not change type of global x',
   //   `const x = 5

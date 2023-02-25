@@ -273,7 +273,21 @@ export default function analyze(sourceCode) {
       // Can only explicitly use 'return' keyword inside a function
       checkInBlock(context)
       const e = exp.rep()
-      return new core.ReturnStatement(...e)
+
+      if (e.length === 0) {
+        // short return statement
+        return new core.ReturnStatement()
+      }
+
+      if (typeof e[0] !== 'string') {
+        return new core.ReturnStatement(...e)
+      }
+      else {
+        const variable = new core.Var(e[0], false, false, ['nil'])
+        context.add(e[0], variable)
+        extraStatements.push(new core.VarDec(variable, new core.Nil()))
+        return new core.ReturnStatement(variable)
+      }
     },
     Statement_impliedReturn(exp) {
       const e = exp.rep()
