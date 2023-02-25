@@ -493,12 +493,12 @@ export const getType = (exps) => {
   const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription]
 
   for (const type of types) {
-    if (exps.some(e => {
+    if (Array.from(exps).some(e => {
       let t = e.type
       if (e instanceof Var) {
         t = e.type.size === 1 ? e.type.values().next().value : t
       }
-      return t === type
+      return t === type || e === type
     })) {
       return type
     }

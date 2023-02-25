@@ -830,37 +830,37 @@ const examples = [
    6 | Nil 
    7 | ReturnStatement exp=#5`
   ],
-  // [
-  //   'local x does not change type of global x',
-  //   `const x = 5
-  //   y = {
-  //     local x = 'str'
-  //     x
-  //   }`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=true type='number' exp=#4
-  //  4 | Num val=5
-  //  5 | VarDec var=#6 op='=' exp=#7
-  //  6 | Var id='y' local=false readOnly=false type='string' exp=#7
-  //  7 | Block statements=[#8,#11]
-  //  8 | VarDec var=#9 op='=' exp=#10
-  //  9 | Var id='x' local=true readOnly=false type='string' exp=#10
-  // 10 | Str val='str'
-  // 11 | ReturnStatement exp=#9`
-  // ],
-  // [
-  //   '+= with block has default value',
-  //   `x += { 1 }`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | NaryExp exp=[#5,'+',#6]
-  //  5 | Num val=0
-  //  6 | Block statements=[#7]
-  //  7 | ReturnStatement exp=#8
-  //  8 | Num val=1`
-  // ],
+  [
+    'local x does not change type of global x',
+    `const x = 5
+    y = {
+      local x = 'str'
+      x
+    }`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=true type=['number']
+   4 | Num val=5
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['string']
+   7 | Block statements=[#8,#11]
+   8 | VarDec var=#9 exp=#10
+   9 | Var id='x' local=true readOnly=false type=['string']
+  10 | Str val='str'
+  11 | ReturnStatement exp=#9`
+  ],
+  [
+    '+= with block has default value',
+    `x += { 1 }`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | NaryExp exp=[#5,'+',#6]
+   5 | Num val=0
+   6 | Block statements=[#7]
+   7 | ReturnStatement exp=#8
+   8 | Num val=1`
+  ],
   // [
   //   'binary exp ==',
   //   `x = 1
