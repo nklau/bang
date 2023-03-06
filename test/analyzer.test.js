@@ -1226,28 +1226,36 @@ const examples = [
    8 | Var id='x' local=false readOnly=false type=['any']
    9 | BinaryExp left=#3 op='.' right='z'`
   ],
-  // [
-  //   'adding to an object alters the already existing core obj',
-  //   `x = {}
-  //   x.y = 1`,
-
-  // ],
-  // // [
-  // //   'chained dot op',
-  // //   `x = { 'y': { 'x': 1 } }
-  // //   x.y.x`,
-  // //   `   1 | Block statements=[#2,#11]
-  // //  2 | VarDec var=#3 op='=' exp=#4
-  // //  3 | Var id='x' local=false readOnly=false type='object' exp=#4
-  // //  4 | Obj val=[#5]
-  // //  5 | ObjField key=#6 val=#7
-  // //  6 | Str val='y'
-  // //  7 | Obj val=[#8]
-  // //  8 | ObjField key=#9 val=#10
-  // //  9 | Str val='x'
-  // // 10 | Num val=1
-  // // 11 | ReturnStatement exp=#9`
-  // // ],
+  [
+    'adding to an object alters the already existing core obj',
+    `x = {}
+    x.y = 1`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['object']
+   4 | Obj val=[]
+   5 | Assign var=#6 exp=#7
+   6 | BinaryExp left=#3 op='.' right='y'
+   7 | Num val=1`
+  ],
+  [
+    'chained dot op',
+    `x = { 'y': { 'x': 1 } }
+    x.y.x`,
+    `   1 | Block statements=[#2,#11]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['object']
+   4 | Obj val=[#5]
+   5 | ObjField key=#6 val=#7
+   6 | Str val='y'
+   7 | Obj val=[#8]
+   8 | ObjField key=#9 val=#10
+   9 | Str val='x'
+  10 | Num val=1
+  11 | ReturnStatement exp=#12
+  12 | BinaryExp left=#13 op='.' right='x'
+  13 | BinaryExp left=#3 op='.' right='y'`
+  ],
   // // TODO: x.y.z
   // [
   //   'var subscript',

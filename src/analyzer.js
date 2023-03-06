@@ -204,6 +204,15 @@ export default function analyze(sourceCode) {
         val = varDec.exp
       }
 
+      // if (val instanceof core.BinaryExp && val.op === '.' && typeof val.left === 'string') {
+      //   val = new core.Var(val.left, false, false, [d.OBJ])
+      //   const obj = new core.Obj([new core.ObjField(val.right, new core.Nil())])
+      //   const assign = new core.VarDec(id, obj)
+
+      //   context.add(val.left, id)
+      //   context.block.statements.unshift(assign)
+      // }
+
       if (val instanceof core.Var) {
         // setting a variable equal to another variable makes a shallow copy
         context.block.statements.slice().reverse().forEach(s => {
@@ -528,17 +537,20 @@ export default function analyze(sourceCode) {
       // TODO how to check context? to see if selector exists/needs to be created
       return new core.VarSubscript(id, exp)
     },
-    Exp9_select(target, dot, selector) {
-      let [id, exp] = [target.rep(), selector.rep()]
-      checkNotType(id, [d.FUNC])
+    Exp9_select(left, right) {
+      let [target, selector] = [left.rep(), right.sourceString]
+      let dot
+      if (target instanceof Array) {
+        [target, dot] = target
+      }
 
-      if (typeof id === 'string') {
-        const name = target.sourceString
-        id = new core.Var(name, false, false, [d.OBJ])
-        const obj = new core.Obj([new core.ObjField(exp, new core.Nil())])
-        const assign = new core.VarDec(id, obj)
+      if (typeof target === 'string') {
+        const name = target
+        target = new core.Var(name, false, false, [d.OBJ])
+        const obj = new core.Obj([new core.ObjField(selector, new core.Nil())])
+        const assign = new core.VarDec(target, obj)
 
-        context.add(name, id)
+        context.add(name, target)
         context.block.statements.unshift(assign)
       }
 
@@ -555,7 +567,7 @@ export default function analyze(sourceCode) {
       // }
 
       // selector.rep() ?? new core.Str(selector.sourceString)
-      return new core.BinaryExp(id, dot.sourceString, exp)
+      return new core.BinaryExp(target, dot, selector)
     },
     Exp9_negative(negate, exp) {
       return new core.UnaryExp(exp.rep(), negate.sourceString)
@@ -576,6 +588,9 @@ export default function analyze(sourceCode) {
       return [exp.rep(), op.sourceString]
     },
     LeftExponent(exp, op) {
+      return [exp.rep(), op.sourceString]
+    },
+    LeftSelect(exp, op) {
       return [exp.rep(), op.sourceString]
     },
     BangFunc(_open, block, _close) {
@@ -614,12 +629,12 @@ export default function analyze(sourceCode) {
       return new core.VarSubscript(id, exp)
     },
     VarAssignment_select(target, dot, selector) {
-      let [id, exp] = [target.rep(), selector.sourceString]
+      let [id, exp] = [target.rep(), selector.rep()]
 
       if (typeof id === 'string') {
         const name = target.sourceString
-        id = new core.Var(name, false, false)
-        const obj = new core.Obj(new core.ObjField(exp, new core.Nil()))
+        id = new core.Var(name, false, false, [d.OBJ])
+        const obj = new core.Obj([new core.ObjField(exp, new core.Nil())])
         const assign = new core.VarDec(id, obj)
 
         context.add(name, id)
