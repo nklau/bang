@@ -534,8 +534,8 @@ export default function analyze(sourceCode) {
 
       if (typeof id === 'string') {
         const name = target.sourceString
-        id = new core.Var(name, false, false)
-        const obj = new core.Obj(new core.ObjField(exp, new core.Nil()))
+        id = new core.Var(name, false, false, [d.OBJ])
+        const obj = new core.Obj([new core.ObjField(exp, new core.Nil())])
         const assign = new core.VarDec(id, obj)
 
         context.add(name, id)

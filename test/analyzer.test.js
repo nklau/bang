@@ -1213,9 +1213,23 @@ const examples = [
    9 | Var id='z' local=false readOnly=false type=['any']
   10 | BinaryExp left=#3 op='.' right='x'`
   ],
+  [
+    'dot operator creates new object',
+    `x = y.z`,
+    `   1 | Block statements=[#2,#7]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='y' local=false readOnly=false type=['object']
+   4 | Obj val=[#5]
+   5 | ObjField key='z' val=#6
+   6 | Nil 
+   7 | VarDec var=#8 exp=#9
+   8 | Var id='x' local=false readOnly=false type=['any']
+   9 | BinaryExp left=#3 op='.' right='z'`
+  ],
   // [
-  //   'dot operator creates new object',
-  //   `x = y.z`,
+  //   'adding to an object alters the already existing core obj',
+  //   `x = {}
+  //   x.y = 1`,
 
   // ],
   // // [
