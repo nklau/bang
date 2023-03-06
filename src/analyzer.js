@@ -231,7 +231,7 @@ export default function analyze(sourceCode) {
       }
 
       if (o === '=') {
-        let type = val.type ?? val.exp?.type
+        let type = val.type ?? val.exp?.type ?? 'any'
         type = type instanceof Set ? Array.from(type) : [type]
         if (isLocal || !variable) {
           return defineVar(name, context, val, [...type], isLocal, isReadOnly)

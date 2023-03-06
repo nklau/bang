@@ -1256,21 +1256,22 @@ const examples = [
   12 | BinaryExp left=#13 op='.' right='x'
   13 | BinaryExp left=#3 op='.' right='y'`
   ],
-  // // TODO: x.y.z
-  // [
-  //   'var subscript',
-  //   `y = { "x": 1 }
-  //   z = y['x']`,
-  //   `   1 | Block statements=[#2,#8]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='y' local=false readOnly=false type='object' exp=#4
-  //  4 | Obj val=[#5]
-  //  5 | ObjField key=#6 val=#7
-  //  6 | Str val='x'
-  //  7 | Num val=1
-  //  8 | VarDec var=#9 op='=' exp=#7
-  //  9 | Var id='z' local=false readOnly=false type='number' exp=#7`
-  // ],
+  [
+    'var subscript',
+    `y = { "x": 1 }
+    z = y['x']`,
+    `   1 | Block statements=[#2,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='y' local=false readOnly=false type=['object']
+   4 | Obj val=[#5]
+   5 | ObjField key=#6 val=#7
+   6 | Str val='x'
+   7 | Num val=1
+   8 | VarDec var=#9 exp=#10
+   9 | Var id='z' local=false readOnly=false type=['any']
+  10 | VarSubscript id=#3 selector=#11
+  11 | Str val='x'`
+  ],
   // [
   //   'empty obj',
   //   `x = {}`,
