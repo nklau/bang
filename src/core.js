@@ -16,6 +16,11 @@ export class List {
     // TODO
   }
 
+  // getVal(key) {
+  //   return this.val[key] ?? new Nil()
+  //   // TODO
+  // }
+
   get len() {
     return this.val.length
   }
@@ -49,10 +54,10 @@ export class Obj {
     // TODO
   }
 
-  getVal(key) {
-    // TODO replace after implementing .equals for strings
-    return this.val.find(field => field.key.val === key)?.val ?? new Nil()
-  }
+  // getVal(key) {
+  //   // TODO replace after implementing .equals for strings
+  //   return this.val.find(field => field.key.val === key)?.val ?? new Nil()
+  // }
 
   get len() {
     return this.val.length
@@ -352,6 +357,10 @@ export class BinaryExp {
     const boolOps = ['||', '&&']
     if (boolOps.includes(this.op)) {
       return Bool.typeDescription
+    }
+
+    if (this.op === '.') {
+      return 'any'
     }
 
     // if (this.op === '.') {

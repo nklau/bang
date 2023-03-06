@@ -529,15 +529,30 @@ export default function analyze(sourceCode) {
       return new core.VarSubscript(id, exp)
     },
     Exp9_select(target, dot, selector) {
-      const [id, exp] = [target.rep(), selector.rep()]
+      let [id, exp] = [target.rep(), selector.rep()]
       checkNotType(id, [d.FUNC])
 
-      if (id.type === d.LIST) {
-        return id.val[exp.val] ?? new core.Nil()
-      } else if (id.type === d.OBJ) {
-        return (id instanceof core.Var ? id.exp : id).getVal(exp.val)
-        // TODO dive further if chained dot ops
+      if (typeof id === 'string') {
+        const name = target.sourceString
+        id = new core.Var(name, false, false)
+        const obj = new core.Obj(new core.ObjField(exp, new core.Nil()))
+        const assign = new core.VarDec(id, obj)
+
+        context.add(name, id)
+        context.block.statements.unshift(assign)
       }
+
+      // TODO check for loop
+      // TODO check for list
+      // return new core.BinaryExp(id, dot.sourceString, exp)
+      // return id.getVal(exp)
+
+      // if (id.type === d.LIST) {
+      //   return id.val[exp.val] ?? new core.Nil()
+      // } else if (id.type === d.OBJ) {
+      //   return (id instanceof core.Var ? id.exp : id).getVal(exp.val)
+      //   // TODO dive further if chained dot ops
+      // }
 
       // selector.rep() ?? new core.Str(selector.sourceString)
       return new core.BinaryExp(id, dot.sourceString, exp)
@@ -587,7 +602,7 @@ export default function analyze(sourceCode) {
       // TODO check for loop
       let [id, exp] = [target.rep(), selector.rep()]
 
-      if (!id) {
+      if (typeof id === 'string') {
         const name = target.sourceString
         id = new core.Var(name, false, false)
         const assign = new core.VarDec(id)
@@ -601,17 +616,20 @@ export default function analyze(sourceCode) {
     VarAssignment_select(target, dot, selector) {
       let [id, exp] = [target.rep(), selector.sourceString]
 
-      if (!id) {
+      if (typeof id === 'string') {
         const name = target.sourceString
         id = new core.Var(name, false, false)
-        const assign = new core.VarDec(id)
+        const obj = new core.Obj(new core.ObjField(exp, new core.Nil()))
+        const assign = new core.VarDec(id, obj)
 
         context.add(name, id)
         context.block.statements.unshift(assign)
       }
 
       // TODO check for loop
+      // TODO check for list
       return new core.BinaryExp(id, dot.sourceString, exp)
+      // return (id instanceof core.Var ? id.exp : id).getVal(exp)
     },
     FuncLit(exp, _arrow, funcBody) {
       const id = exp.rep()

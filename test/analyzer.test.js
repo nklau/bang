@@ -861,328 +861,363 @@ const examples = [
    7 | ReturnStatement exp=#8
    8 | Num val=1`
   ],
+  [
+    'binary exp ==',
+    `x = 1
+    y = false
+    x == y`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=1
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['boolean']
+   7 | Bool val=false
+   8 | ReturnStatement exp=#9
+   9 | NaryExp exp=[#3,'==',#6]`
+  ],
+  [
+    'chained equality exp',
+    `x = 1
+    y = false
+    z = $'{x}'
+    n = x < y <= z == 4 != 'str'`,
+    `   1 | Block statements=[#2,#5,#8,#11]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=1
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['boolean']
+   7 | Bool val=false
+   8 | VarDec var=#9 exp=#10
+   9 | Var id='z' local=false readOnly=false type=['string']
+  10 | FormattedStr val=[#3]
+  11 | VarDec var=#12 exp=#13
+  12 | Var id='n' local=false readOnly=false type=['boolean']
+  13 | NaryExp exp=[#3,'<',#6,'<=',#9,'==',#14,'!=',#15]
+  14 | Num val=4
+  15 | Str val='str'`
+  ],
+  [
+    'setting vars equal to each other does not link by ids',
+    `x = 1
+    y = x`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=1
+   5 | VarDec var=#6 exp=#4
+   6 | Var id='y' local=false readOnly=false type=['number']`
+  ],
+  [
+    `binary exp >`,
+    `1 > 2`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | NaryExp exp=[#4,'>',#5]
+   4 | Num val=1
+   5 | Num val=2`
+  ],
+  [
+    'binary exp >=',
+    `4 >= false`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | NaryExp exp=[#4,'>=',#5]
+   4 | Num val=4
+   5 | Bool val=false`
+  ],
+  [
+    '== op has type boolean',
+    `x = 1
+    y = false
+    z = x == y`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=1
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['boolean']
+   7 | Bool val=false
+   8 | VarDec var=#9 exp=#10
+   9 | Var id='z' local=false readOnly=false type=['boolean']
+  10 | NaryExp exp=[#3,'==',#6]`
+  ],
+  [
+    '|| operator has type boolean',
+    `x = 1 || []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['boolean']
+   4 | BinaryExp left=#5 op='||' right=#6
+   5 | Num val=1
+   6 | List val=[]`
+  ],
+  [
+    '&& op has type bool',
+    `x = 1 && []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['boolean']
+   4 | BinaryExp left=#5 op='&&' right=#6
+   5 | Num val=1
+   6 | List val=[]`
+  ],
+  [
+    '* op',
+    `x = 1 * []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | NaryExp exp=[#5,'*',#6]
+   5 | Num val=1
+   6 | List val=[]`
+  ],
+  [
+    '+= with * op',
+    `x += 1 * []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | NaryExp exp=[#5,'+',#6,'*',#7]
+   5 | List val=[]
+   6 | Num val=1
+   7 | List val=[]`
+  ],
+  [
+    '+= op with () nests nary exps',
+    `x += (1 + [])`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | NaryExp exp=[#5,'+',#6]
+   5 | List val=[]
+   6 | NaryExp exp=[#7,'+',#8]
+   7 | Num val=1
+   8 | List val=[]`
+  ],
+  [
+    '* assignment op',
+    `x *= 1`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | NaryExp exp=[#5,'*',#6]
+   5 | Num val=0
+   6 | Num val=1`
+  ],
+  [
+    '*= with + op does not nest nary exps',
+    `x *= 1 + []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | NaryExp exp=[#5,'*',#6,'+',#7]
+   5 | List val=[]
+   6 | Num val=1
+   7 | List val=[]`
+  ],
+  [
+    '*= op with () nests nary exps',
+    `x *= (1 + [])`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | NaryExp exp=[#5,'*',#6]
+   5 | List val=[]
+   6 | NaryExp exp=[#7,'+',#8]
+   7 | Num val=1
+   8 | List val=[]`
+  ],
+  [
+    '/ op',
+    `x = 1 / []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | NaryExp exp=[#5,'/',#6]
+   5 | Num val=1
+   6 | List val=[]`
+  ],
+  [
+    '/ assignment op',
+    `x /= 1`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | NaryExp exp=[#5,'/',#6]
+   5 | Num val=0
+   6 | Num val=1`
+  ],
+  [
+    '/= with + op does not nest nary exps',
+    `x /= 1 + []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | NaryExp exp=[#5,'/',#6,'+',#7]
+   5 | List val=[]
+   6 | Num val=1
+   7 | List val=[]`
+  ],
+  [
+    '/= op with () nests nary exps',
+    `x /= (1 + [])`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | NaryExp exp=[#5,'/',#6]
+   5 | List val=[]
+   6 | NaryExp exp=[#7,'+',#8]
+   7 | Num val=1
+   8 | List val=[]`
+  ],
+  [
+    '% op',
+    `x = 1 % []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | NaryExp exp=[#5,'%',#6]
+   5 | Num val=1
+   6 | List val=[]`
+  ],
+  [
+    '% assignment op',
+    `x %= 1`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | NaryExp exp=[#5,'%',#6]
+   5 | Num val=0
+   6 | Num val=1`
+  ],
+  [
+    '%= with + op does not nest nary exps',
+    `x %= 1 + []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | NaryExp exp=[#5,'%',#6,'+',#7]
+   5 | List val=[]
+   6 | Num val=1
+   7 | List val=[]`
+  ],
+  [
+    '%= op with () nests nary exps',
+    `x %= (1 + [])`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | NaryExp exp=[#5,'%',#6]
+   5 | List val=[]
+   6 | NaryExp exp=[#7,'+',#8]
+   7 | Num val=1
+   8 | List val=[]`
+  ],
+  [
+    '** op',
+    `x = 1 ** []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | NaryExp exp=[#5,'**',#6]
+   5 | Num val=1
+   6 | List val=[]`
+  ],
+  [
+    '** assignment op',
+    `x **= 1`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | NaryExp exp=[#5,'**',#6]
+   5 | Num val=0
+   6 | Num val=1`
+  ],
+  [
+    '**= with + op does not nest nary exps',
+    `x **= 1 + []`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | NaryExp exp=[#5,'**',#6,'+',#7]
+   5 | List val=[]
+   6 | Num val=1
+   7 | List val=[]`
+  ],
+  [
+    '**= op with () nests nary exps',
+    `x **= (1 + [])`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | NaryExp exp=[#5,'**',#6]
+   5 | List val=[]
+   6 | NaryExp exp=[#7,'+',#8]
+   7 | Num val=1
+   8 | List val=[]`
+  ],
+  [
+    'chained multiplicative ops',
+    `x = 1 * 2 / [3]`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | NaryExp exp=[#5,'*',#6,'/',#7]
+   5 | Num val=1
+   6 | Num val=2
+   7 | List val=[#8]
+   8 | Num val=3`
+  ],
+  [
+    '! op returns a bool',
+    `x = !1`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['boolean']
+   4 | UnaryExp exp=#5 op='!'
+   5 | Num val=1`
+  ],
+  [
+    'var dec with nil',
+    `x = nil`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['nil']
+   4 | Nil `
+  ],
+  [
+    'object literal',
+    `y = { "x": 1 }`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='y' local=false readOnly=false type=['object']
+   4 | Obj val=[#5]
+   5 | ObjField key=#6 val=#7
+   6 | Str val='x'
+   7 | Num val=1`
+  ],
+  [
+    'var select',
+    `y = { "x": 1 }
+    z = y.x`,
+    `   1 | Block statements=[#2,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='y' local=false readOnly=false type=['object']
+   4 | Obj val=[#5]
+   5 | ObjField key=#6 val=#7
+   6 | Str val='x'
+   7 | Num val=1
+   8 | VarDec var=#9 exp=#10
+   9 | Var id='z' local=false readOnly=false type=['any']
+  10 | BinaryExp left=#3 op='.' right='x'`
+  ],
   // [
-  //   'binary exp ==',
-  //   `x = 1
-  //   y = false
-  //   x == y`,
-  //   `   1 | Block statements=[#2,#5,#8]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=1
-  //  5 | VarDec var=#6 op='=' exp=#7
-  //  6 | Var id='y' local=false readOnly=false type='boolean' exp=#7
-  //  7 | Bool val=false
-  //  8 | ReturnStatement exp=#9
-  //  9 | NaryExp exp=[#3,'==',#6]`
+  //   'dot operator creates new object',
+  //   `x = y.z`,
+
   // ],
-  // [
-  //   'chained equality exp',
-  //   `x = 1
-  //   y = false
-  //   z = $'{x}'
-  //   n = x < y <= z == 4 != 'str'`,
-  //   `   1 | Block statements=[#2,#5,#8,#11]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=1
-  //  5 | VarDec var=#6 op='=' exp=#7
-  //  6 | Var id='y' local=false readOnly=false type='boolean' exp=#7
-  //  7 | Bool val=false
-  //  8 | VarDec var=#9 op='=' exp=#10
-  //  9 | Var id='z' local=false readOnly=false type='string' exp=#10
-  // 10 | FormattedStr val=[#3]
-  // 11 | VarDec var=#12 op='=' exp=#13
-  // 12 | Var id='n' local=false readOnly=false type='boolean' exp=#13
-  // 13 | NaryExp exp=[#3,'<',#6,'<=',#9,'==',#14,'!=',#15]
-  // 14 | Num val=4
-  // 15 | Str val='str'`
-  // ],
-  // [
-  //   'setting vars equal to each other does not link by ids',
-  //   `x = 1
-  //   y = x`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=1
-  //  5 | VarDec var=#6 op='=' exp=#4
-  //  6 | Var id='y' local=false readOnly=false type='number' exp=#4`
-  // ],
-  // [
-  //   `binary exp >`,
-  //   `1 > 2`,
-  //   `   1 | Block statements=[#2]
-  //  2 | ReturnStatement exp=#3
-  //  3 | NaryExp exp=[#4,'>',#5]
-  //  4 | Num val=1
-  //  5 | Num val=2`
-  // ],
-  // [
-  //   'binary exp >=',
-  //   `4 >= false`,
-  //   `   1 | Block statements=[#2]
-  //  2 | ReturnStatement exp=#3
-  //  3 | NaryExp exp=[#4,'>=',#5]
-  //  4 | Num val=4
-  //  5 | Bool val=false`
-  // ],
-  // [
-  //   '== op has type boolean',
-  //   `x = 1
-  //   y = false
-  //   z = x == y`,
-  //   `   1 | Block statements=[#2,#5,#8]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=1
-  //  5 | VarDec var=#6 op='=' exp=#7
-  //  6 | Var id='y' local=false readOnly=false type='boolean' exp=#7
-  //  7 | Bool val=false
-  //  8 | VarDec var=#9 op='=' exp=#10
-  //  9 | Var id='z' local=false readOnly=false type='boolean' exp=#10
-  // 10 | NaryExp exp=[#3,'==',#6]`
-  // ],
-  // [
-  //   '|| operator has type boolean',
-  //   `x = 1 || []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='boolean' exp=#4
-  //  4 | BinaryExp left=#5 op='||' right=#6
-  //  5 | Num val=1
-  //  6 | List val=[]`
-  // ],
-  // [
-  //   '&& op has type bool',
-  //   `x = 1 && []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='boolean' exp=#4
-  //  4 | BinaryExp left=#5 op='&&' right=#6
-  //  5 | Num val=1
-  //  6 | List val=[]`
-  // ],
-  // [
-  //   '* op',
-  //   `x = 1 * []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='list' exp=#4
-  //  4 | NaryExp exp=[#5,'*',#6]
-  //  5 | Num val=1
-  //  6 | List val=[]`
-  // ],
-  // [
-  //   '+= with * op',
-  //   `x += 1 * []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='list' exp=#4
-  //  4 | NaryExp exp=[#5,'+',#6,'*',#7]
-  //  5 | List val=[]
-  //  6 | Num val=1
-  //  7 | List val=[]`
-  // ],
-  // [
-  //   '* assignment op',
-  //   `x *= 1`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | NaryExp exp=[#5,'*',#6]
-  //  5 | Num val=0
-  //  6 | Num val=1`
-  // ],
-  // [
-  //   '*= with + op does not nest nary exps',
-  //   `x *= 1 + []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='list' exp=#4
-  //  4 | NaryExp exp=[#5,'*',#6,'+',#7]
-  //  5 | List val=[]
-  //  6 | Num val=1
-  //  7 | List val=[]`
-  // ],
-  // [
-  //   '/ op',
-  //   `x = 1 / []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='list' exp=#4
-  //  4 | NaryExp exp=[#5,'/',#6]
-  //  5 | Num val=1
-  //  6 | List val=[]`
-  // ],
-  // [
-  //   '/ assignment op',
-  //   `x /= 1`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | NaryExp exp=[#5,'/',#6]
-  //  5 | Num val=0
-  //  6 | Num val=1`
-  // ],
-  // [
-  //   '/= with + op does not nest nary exps',
-  //   `x /= 1 + []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='list' exp=#4
-  //  4 | NaryExp exp=[#5,'/',#6,'+',#7]
-  //  5 | List val=[]
-  //  6 | Num val=1
-  //  7 | List val=[]`
-  // ],
-  // [
-  //   '% op',
-  //   `x = 1 % []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='list' exp=#4
-  //  4 | NaryExp exp=[#5,'%',#6]
-  //  5 | Num val=1
-  //  6 | List val=[]`
-  // ],
-  // [
-  //   '% assignment op',
-  //   `x %= 1`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | NaryExp exp=[#5,'%',#6]
-  //  5 | Num val=0
-  //  6 | Num val=1`
-  // ],
-  // [
-  //   '%= with + op does not nest nary exps',
-  //   `x %= 1 + []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='list' exp=#4
-  //  4 | NaryExp exp=[#5,'%',#6,'+',#7]
-  //  5 | List val=[]
-  //  6 | Num val=1
-  //  7 | List val=[]`
-  // ],
-  // [
-  //   '% op',
-  //   `x = 1 % []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='list' exp=#4
-  //  4 | NaryExp exp=[#5,'%',#6]
-  //  5 | Num val=1
-  //  6 | List val=[]`
-  // ],
-  // [
-  //   '% assignment op',
-  //   `x %= 1`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | NaryExp exp=[#5,'%',#6]
-  //  5 | Num val=0
-  //  6 | Num val=1`
-  // ],
-  // [
-  //   '%= with + op does not nest nary exps',
-  //   `x %= 1 + []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='list' exp=#4
-  //  4 | NaryExp exp=[#5,'%',#6,'+',#7]
-  //  5 | List val=[]
-  //  6 | Num val=1
-  //  7 | List val=[]`
-  // ],
-  // [
-  //   '** op',
-  //   `x = 1 ** []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='list' exp=#4
-  //  4 | NaryExp exp=[#5,'**',#6]
-  //  5 | Num val=1
-  //  6 | List val=[]`
-  // ],
-  // [
-  //   '** assignment op',
-  //   `x **= 1`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | NaryExp exp=[#5,'**',#6]
-  //  5 | Num val=0
-  //  6 | Num val=1`
-  // ],
-  // [
-  //   '**= with + op does not nest nary exps',
-  //   `x **= 1 + []`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='list' exp=#4
-  //  4 | NaryExp exp=[#5,'**',#6,'+',#7]
-  //  5 | List val=[]
-  //  6 | Num val=1
-  //  7 | List val=[]`
-  // ],
-  // [
-  //   'chained multiplicative ops',
-  //   `x = 1 * 2 / [3]`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='list' exp=#4
-  //  4 | NaryExp exp=[#5,'*',#6,'/',#7]
-  //  5 | Num val=1
-  //  6 | Num val=2
-  //  7 | List val=[#8]
-  //  8 | Num val=3`
-  // ],
-  // [
-  //   '! op returns a bool',
-  //   `x = !1`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='boolean' exp=#4
-  //  4 | UnaryExp exp=#5 op='!'
-  //  5 | Num val=1`
-  // ],
-  // [
-  //   'var dec with nil',
-  //   `x = nil`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='nil' exp=#4
-  //  4 | Nil `
-  // ],
-  // [
-  //   'object literal',
-  //   `y = { "x": 1 }`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='y' local=false readOnly=false type='object' exp=#4
-  //  4 | Obj val=[#5]
-  //  5 | ObjField key=#6 val=#7
-  //  6 | Str val='x'
-  //  7 | Num val=1`
-  // ],
-  // // [
-  // //   'var select',
-  // //   `y = { "x": 1 }
-  // //   z = y.x`,
-  // //   `   1 | Block statements=[#2,#8]
-  // //  2 | VarDec var=#3 op='=' exp=#4
-  // //  3 | Var id='y' local=false readOnly=false type='object' exp=#4
-  // //  4 | Obj val=[#5]
-  // //  5 | ObjField key=#6 val=#7
-  // //  6 | Str val='x'
-  // //  7 | Num val=1
-  // //  8 | VarDec var=#9 op='=' exp=#7
-  // //  9 | Var id='z' local=false readOnly=false type='number' exp=#7`
-  // // ],
   // // [
   // //   'chained dot op',
   // //   `x = { 'y': { 'x': 1 } }
