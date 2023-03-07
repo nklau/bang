@@ -107,9 +107,13 @@ function checkInLoop(context) {
 
 function mapOps(elements) {
   const ops = ['==', '!=', '<', '>', '<=', '>=', '+', '-']
+  // return elements.reduce(
+  //   (map, val, i) => (ops.includes(val) ? { ...map, [val]: [elements[i - 1], elements[i + 1]] } : map),
+  //   {}
+  // )
   return elements.reduce(
-    (map, val, i) => (ops.includes(val) ? { ...map, [val]: [elements[i - 1], elements[i + 1]] } : map),
-    {}
+    (arr, val, i) => (ops.includes(val) ? [ ...arr, [val, [elements[i - 1], elements[i + 1]]] ] : arr),
+    []
   )
 }
 
@@ -199,7 +203,7 @@ export default function analyze(sourceCode) {
         const varDec = new core.VarDec(valVariable, new core.Nil())
 
         context.add(val, valVariable)
-        context.extraVarDecs.push(varDec)
+        context.extraVarDecs.unshift(varDec)
         val = varDec.exp
       }
 
@@ -284,7 +288,7 @@ export default function analyze(sourceCode) {
       else {
         const variable = new core.Var(e[0], false, false, ['nil'])
         context.add(e[0], variable)
-        context.extraVarDecs.push(new core.VarDec(variable, new core.Nil()))
+        context.extraVarDecs.unshift(new core.VarDec(variable, new core.Nil()))
         return new core.ReturnStatement(variable)
       }
     },
@@ -301,7 +305,7 @@ export default function analyze(sourceCode) {
       else {
         const variable = new core.Var(e, false, false, ['nil'])
         context.add(e, variable)
-        context.extraVarDecs.push(new core.VarDec(variable, new core.Nil()))
+        context.extraVarDecs.unshift(new core.VarDec(variable, new core.Nil()))
         return variable
       }
     },
@@ -316,7 +320,7 @@ export default function analyze(sourceCode) {
         const name = bool
         bool = new core.Var(bool, false, false, [d.BOOL])
         context.add(name, bool)
-        context.extraVarDecs.push(new core.VarDec(bool, bool.default))
+        context.extraVarDecs.unshift(new core.VarDec(bool, bool.default))
       }
 
       let trueBlock
@@ -371,7 +375,7 @@ export default function analyze(sourceCode) {
       const pieces = mapOps(elements)
       let statements = []
 
-      for (let [op, [lhs, rhs]] of Object.entries(pieces)) {
+      for (let [op, [lhs, rhs]] of pieces) {
         if (op === '==') {
           // checkSameTypes(l, r) // TODO: probably don't want to throw error on this - just want to replace with false
         }
@@ -396,7 +400,7 @@ export default function analyze(sourceCode) {
       const exp = new core.NaryExp(elements)
       statements = statements.filter(s => s)
       if (statements.length > 0) {
-        statements.forEach(s => context.extraVarDecs.push(s))
+        statements.forEach(s => context.extraVarDecs.unshift(s))
       }
 
       return exp
@@ -412,10 +416,11 @@ export default function analyze(sourceCode) {
       return new core.BinaryExp(lhs, op, rhs)
     },
     Exp4_addSubtract(left, right) {
-      const elements = [...left.rep(), right.rep()].flat()
+      let elements = [...left.rep(), right.rep()].flat()
       const pieces = mapOps(elements)
+      let operands = []
 
-      for (const [op, [lhs, rhs]] of Object.entries(pieces)) {
+      for (let [op, [lhs, rhs]] of pieces) {
         if (op === '-') {
           if (rhs instanceof core.PreDecrement) {
             core.error('Expected parentheses around pre-decrement operation on the right side of a subtraction')
@@ -429,10 +434,28 @@ export default function analyze(sourceCode) {
             core.error('Expected parentheses around post-increment operation on the left side of an addition')
           }
         }
-        // TODO: check if lhs and rhs are strings
+
+        if (typeof lhs === 'string') {
+          const name = lhs
+          lhs = new core.Var(name, false, false, [d.NUM])
+          context.add(name, lhs)
+          context.extraVarDecs.unshift(new core.VarDec(lhs, lhs.default))
+        }
+
+        operands.push(lhs, op)
       }
 
-      return new core.NaryExp(elements)
+      let lastElement = elements[elements.length - 1]
+      if (typeof lastElement === 'string') {
+        const name = lastElement
+        lastElement = new core.Var(name, false, false, [d.NUM])
+        context.add(name, lastElement)
+        context.extraVarDecs.unshift(new core.VarDec(lastElement, lastElement.default))
+      }
+
+      operands.push(lastElement)
+
+      return new core.NaryExp(operands)
     },
     Exp5_multiplyDivideMod(left, right) {
       const elements = [...left.rep(), right.rep()].flat()
@@ -491,7 +514,7 @@ export default function analyze(sourceCode) {
       const statement = new increment(exp)
 
       if (extra) {
-        context.extraVarDecs.push(extra)
+        context.extraVarDecs.unshift(extra)
       }
 
       return statement
@@ -515,7 +538,7 @@ export default function analyze(sourceCode) {
       const statement = new increment(exp)
 
       if (extra) {
-        context.extraVarDecs.push(extra)
+        context.extraVarDecs.unshift(extra)
       }
 
       return statement
@@ -693,7 +716,7 @@ export default function analyze(sourceCode) {
           context.add(e, variable)
           elements[index] = variable
 
-          context.extraVarDecs.push(new core.VarDec(variable, new core.Nil()))
+          context.extraVarDecs.unshift(new core.VarDec(variable, new core.Nil()))
         }
       })
 
@@ -723,7 +746,7 @@ export default function analyze(sourceCode) {
 
         context.add(e, variable)
         e = variable
-        context.extraVarDecs.push(varDec)
+        context.extraVarDecs.unshift(varDec)
       }
 
       return e
