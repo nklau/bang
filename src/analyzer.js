@@ -23,12 +23,12 @@ function checkSameTypes(e0, e1) {
   check(t0 === t1, `${t0} can never be equal to ${t1}`)
 }
 
-function defineVar(id, context, exp = new core.Nil(), types = [exp?.type ?? d.ANY], local = false, readOnly = false) {
+function defineVar(id, context, types = [exp?.type ?? d.ANY], exp, local = false, readOnly = false) {
   if (typeof id !== 'string') return
 
   const variable = new core.Var(id, local, readOnly, types)
   context.add(id, variable)
-  return new core.VarDec(variable, exp)
+  return new core.VarDec(variable, exp ?? variable.default)
 }
 
 function isVar(e) {
@@ -228,7 +228,7 @@ export default function analyze(sourceCode) {
         let type = val.type ?? val.exp?.type ?? 'any'
         type = type instanceof Set ? Array.from(type) : [type]
         if (isLocal || !variable) {
-          return defineVar(name, context, val, [...type], isLocal, isReadOnly)
+          return defineVar(name, context, [...type], val, isLocal, isReadOnly)
         } else {
           type.forEach(t => variable.type.add(t))
         }
@@ -238,7 +238,7 @@ export default function analyze(sourceCode) {
         const evalOp = (/^(.)=/.exec(o) ?? /(\*\*)=/.exec(o))[1]
         if (!variable) {
           val = new core.NaryExp([val.default, evalOp, ...flatExp])
-          return defineVar(name, context, val, [val.type], isLocal, isReadOnly)
+          return defineVar(name, context, [val.type], val, isLocal, isReadOnly)
         } else {
           val = new core.NaryExp([variable, evalOp, ...flatExp])
           variable.type.add(val.type)
@@ -249,7 +249,7 @@ export default function analyze(sourceCode) {
     },
     Statement_localVar(_local, id) {
       // const [name, exp] = [id.sourceString, new core.Nil()]
-      return defineVar(id.sourceString, context, new core.Nil(), [d.NIL], true)
+      return defineVar(id.sourceString, context, [d.NIL], new core.Nil(), true)
       // const variable = new core.Var(name, true, false, [exp.type])
       // context.add(name, variable)
       // // TODO check if var has already been declared as local within this scope
@@ -411,8 +411,20 @@ export default function analyze(sourceCode) {
       return new core.BinaryExp(lhs, op, rhs)
     },
     Exp3_and(left, and, right) {
-      const [lhs, op, rhs] = [left.rep(), and.sourceString, right.rep()]
-      // TODO check lhs and rhs are strings
+      let [lhs, op, rhs] = [left.rep(), and.sourceString, right.rep()]
+      let leftDefine = defineVar(lhs, context, [d.BOOL])
+      let rightDefine = defineVar(rhs, context, [d.BOOL])
+
+      if (leftDefine) {
+        context.extraVarDecs.unshift(leftDefine)
+        lhs = leftDefine.var
+      }
+
+      if (rightDefine) {
+        context.extraVarDecs.unshift(rightDefine)
+        rhs = rightDefine.var
+      }
+      
       return new core.BinaryExp(lhs, op, rhs)
     },
     Exp4_addSubtract(left, right) {
