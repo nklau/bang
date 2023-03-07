@@ -108,7 +108,7 @@ function checkInLoop(context) {
 // }
 
 function mapOps(elements) {
-  const ops = ['==', '!=', '<', '>', '<=', '>=', '+', '-']
+  const ops = ['==', '!=', '<', '>', '<=', '>=', '+', '-', '/', '*', '%']
   // return elements.reduce(
   //   (map, val, i) => (ops.includes(val) ? { ...map, [val]: [elements[i - 1], elements[i + 1]] } : map),
   //   {}
@@ -415,7 +415,7 @@ export default function analyze(sourceCode) {
       if (rightDefine) {
         rhs = rightDefine.var
       }
-      
+
       return new core.BinaryExp(lhs, op, rhs)
     },
     Exp3_and(left, and, right) {
@@ -434,7 +434,7 @@ export default function analyze(sourceCode) {
       return new core.BinaryExp(lhs, op, rhs)
     },
     Exp4_addSubtract(left, right) {
-      let elements = [...left.rep(), right.rep()].flat()
+      const elements = [...left.rep(), right.rep()].flat()
       const pieces = mapOps(elements)
       let operands = []
 
@@ -473,10 +473,27 @@ export default function analyze(sourceCode) {
     },
     Exp5_multiplyDivideMod(left, right) {
       const elements = [...left.rep(), right.rep()].flat()
-      elements.filter(e => typeof e !== 'string').forEach(e => checkNotType(e, [d.FUNC]))
-      // TODO check e is string
+      const pieces = mapOps(elements)
+      let operands = []
 
-      return new core.NaryExp(elements)
+      for (let [op, [lhs, _rhs]] of pieces) {
+        const notDefined = defineVar(lhs, context, [d.NUM])
+        if (notDefined) {
+          lhs = notDefined.var
+        }
+
+        operands.push(lhs, op)
+      }
+
+      let lastElement = elements[elements.length - 1]
+      const notDefined = defineVar(lastElement, context, [d.NUM])
+      if (notDefined) {
+        lastElement = notDefined.var
+      }
+
+      operands.push(lastElement)
+
+      return new core.NaryExp(operands)
     },
     // TODO implement eval order (l -> r)
     Exp6_exponent(left, right) {
