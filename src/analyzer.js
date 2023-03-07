@@ -108,7 +108,7 @@ function checkInLoop(context) {
 // }
 
 function mapOps(elements) {
-  const ops = ['==', '!=', '<', '>', '<=', '>=', '+', '-', '/', '*', '%']
+  const ops = ['==', '!=', '<', '>', '<=', '>=', '+', '-', '/', '*', '%', '**']
   // return elements.reduce(
   //   (map, val, i) => (ops.includes(val) ? { ...map, [val]: [elements[i - 1], elements[i + 1]] } : map),
   //   {}
@@ -498,19 +498,31 @@ export default function analyze(sourceCode) {
     // TODO implement eval order (l -> r)
     Exp6_exponent(left, right) {
       const elements = [...left.rep(), right.rep()].flat()
-      const exps = elements.filter(e => typeof e !== 'string')
+      const pieces = mapOps(elements)
+      let operands = []
 
-      exps.slice(0, -1).forEach(e => {
-        checkNotType(e, [d.FUNC])
-        if (e instanceof core.UnaryExp && e.op === '-') {
-          core.error('Expected parentheses around negative operation on the left side of an exponential expression')
+      if (elements[0] instanceof core.UnaryExp && elements[0].op === '-') {
+        core.error('Expected parentheses around negative operation on the left side of an exponential expression')
+      }
+
+      for (let [op, [lhs, _rhs]] of pieces) {
+        const notDefined = defineVar(lhs, context, [d.NUM])
+        if (notDefined) {
+          lhs = notDefined.var
         }
-        // TODO check if e is a string
-      })
-      checkNotType(exps[-1], [d.FUNC])
-      // todo check if exps[-1] is a string
 
-      return new core.NaryExp(elements)
+        operands.push(lhs, op)
+      }
+
+      let lastElement = elements[elements.length - 1]
+      const notDefined = defineVar(lastElement, context, [d.NUM])
+      if (notDefined) {
+        lastElement = notDefined.var
+      }
+
+      operands.push(lastElement)
+
+      return new core.NaryExp(operands)
     },
     Exp7_negate(negative, right) {
       const [op, rhs] = [negative.sourceString, right.rep()]
