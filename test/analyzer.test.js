@@ -1495,58 +1495,80 @@ const examples = [
    6 | Var id='x' local=false readOnly=false type=['number']
    7 | UnaryExp exp=#3 op='-'`
   ],
-  // [
-  //   'object with ternaries as values',
-  //   `b = 2e3
-  //   {
-  //     "x": a >= 5 ? b : c,
-  //     'y': d + e > f ? 'hello'
-  //   }`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 exp=#4
-  //  3 | Var id='b' local=false readOnly=false type=['number']
-  //  4 | Num val=8
-  //  5 | ReturnStatement exp=#6
-  //  6 | Obj val=[#7]
-  //  7 | ObjField key=#8 val=#9
-  //  8 | Str val='x'
-  //  9 | Ternary cond=#10 block= alt=
-  // 10 | NaryExp exp=[]`
-  // ],
-//   [
-//     'unary exps',
-//     `x = false
-//     x = !x
-//     y = -x
-//     z = !(y == true) ? [1] : { "n": ...[x, [y]] }
-//     a = z?[0] == nil ? z?.n`,
-//     `   1 | Block statements=[#2,#4,#7,#10,#19]
-//    2 | VarDec var=#3 op='=' exp=false
-//    3 | Var id='x' local=false readOnly=false type=undefined
-//    4 | VarDec var=#5 op='=' exp=#6
-//    5 | Var id='x' local=false readOnly=false type=undefined
-//    6 | UnaryExp exp='x' op='!' returnBeforeEval=false
-//    7 | VarDec var=#8 op='=' exp=#9
-//    8 | Var id='y' local=false readOnly=false type=undefined
-//    9 | UnaryExp exp='x' op='-' returnBeforeEval=false
-//   10 | VarDec var=#11 op='=' exp=#12
-//   11 | Var id='z' local=false readOnly=false type=undefined
-//   12 | Ternary cond=#13 block=[1] alt=#15
-//   13 | UnaryExp exp=#14 op='!' returnBeforeEval=false
-//   14 | BinaryExp left='y' op='==' right=true
-//   15 | Obj fields=[#16]
-//   16 | ObjField key='n' val=#17
-//   17 | UnaryExp exp=['x',#18] op='...' returnBeforeEval=false
-//   18 | Array 0='y'
-//   19 | VarDec var=#20 op='=' exp=#21
-//   20 | Var id='a' local=false readOnly=false type=undefined
-//   21 | Ternary cond=#22 block=#25 alt=undefined
-//   22 | BinaryExp left=#23 op='==' right=undefined
-//   23 | VarSubscript id=#24 selector=0
-//   24 | UnaryExp exp='z' op='?' returnBeforeEval=false
-//   25 | VarSelect id=#26 selector='n'
-//   26 | UnaryExp exp='z' op='?' returnBeforeEval=false`
-//   ],
+  [
+    'object with ternaries as values',
+    `b = 2e3
+    {
+      "x": a >= 5 ? b : c,
+      'y': d + e || f ? 'hello'
+    }`,
+    `   1 | Block statements=[#2,#5,#8,#11,#14,#17]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='a' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='d' local=false readOnly=false type=['number']
+   7 | Num val=0
+   8 | VarDec var=#9 exp=#10
+   9 | Var id='e' local=false readOnly=false type=['number']
+  10 | Num val=0
+  11 | VarDec var=#12 exp=#13
+  12 | Var id='f' local=false readOnly=false type=['boolean']
+  13 | Bool val=false
+  14 | VarDec var=#15 exp=#16
+  15 | Var id='b' local=false readOnly=false type=['number']
+  16 | Num val=2000
+  17 | ReturnStatement exp=#18
+  18 | Obj val=[#19,#31]
+  19 | ObjField key=#20 val=#21
+  20 | Str val='x'
+  21 | Ternary cond=#22 block=#24 alt=#26
+  22 | NaryExp exp=[#3,'>=',#23]
+  23 | Num val=5
+  24 | Block statements=[#25]
+  25 | ReturnStatement exp=#15
+  26 | Block statements=[#27,#30]
+  27 | VarDec var=#28 exp=#29
+  28 | Var id='c' local=false readOnly=false type=['nil']
+  29 | Nil 
+  30 | ReturnStatement exp=#28
+  31 | ObjField key=#32 val=#33
+  32 | Str val='y'
+  33 | Ternary cond=#34 block=#36 alt=undefined
+  34 | BinaryExp left=#35 op='||' right=#12
+  35 | NaryExp exp=[#6,'+',#9]
+  36 | Block statements=[#37]
+  37 | ReturnStatement exp=#38
+  38 | Str val='hello'`
+  ],
+  [
+    'assignment checks for implicit var decs',
+    `x = true
+    x = !x + y`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='y' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='x' local=false readOnly=false type=['boolean','number']
+   7 | Bool val=true
+   8 | Assign var=#6 exp=#9
+   9 | NaryExp exp=[#10,'+',#3]
+  10 | UnaryExp exp=#6 op='!'`
+  ],
+  [
+    'spread op',
+    `y = [...x, 2]`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | List val=[]
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['list']
+   7 | List val=[#8,#9]
+   8 | UnaryExp exp=#3 op='...'
+   9 | Num val=2`
+  ],
 //   [
 //     'function literals',
 //     `x = () -> {}
@@ -1591,7 +1613,7 @@ const examples = [
 //   31 | Block statements=[#32]
 //   32 | BinaryExp left=#33 op='**' right=2
 //   33 | UnaryExp exp='y' op='-' returnBeforeEval=false`
-//   ],
+  // ],
 //   [
 //     'formatted strings',
 //     `x = $'str{ a >= 5 ? b : c }'`,

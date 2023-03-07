@@ -537,8 +537,11 @@ export default function analyze(sourceCode) {
       return new core.UnaryExp(rhs, op)
     },
     Exp7_spread(spread, right) {
-      const [op, rhs] = [spread.sourceString, right.rep()]
-      checkType(rhs, [d.OBJ, d.LIST])
+      let [op, rhs] = [spread.sourceString, right.rep()]
+      const notDefined = defineVar(rhs, context, [d.LIST])
+      if (notDefined) {
+        rhs = notDefined.var
+      }
 
       return new core.UnaryExp(rhs, op)
     },
