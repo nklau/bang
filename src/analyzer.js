@@ -23,12 +23,14 @@ function checkSameTypes(e0, e1) {
   check(t0 === t1, `${t0} can never be equal to ${t1}`)
 }
 
-function defineVar(id, context, types = [exp?.type ?? d.ANY], exp, local = false, readOnly = false) {
+function defineVar(id, context, types = [d.NIL], exp, local = false, readOnly = false) {
   if (typeof id !== 'string') return
 
   const variable = new core.Var(id, local, readOnly, types)
   context.add(id, variable)
-  return new core.VarDec(variable, exp ?? variable.default)
+  const varDec = new core.VarDec(variable, exp ?? variable.default)
+  context.extraVarDecs.unshift(varDec)
+  return varDec
 }
 
 function isVar(e) {
@@ -198,13 +200,9 @@ export default function analyze(sourceCode) {
       let [val, o, isLocal, isReadOnly, name] = [exp.rep(), op.sourceString, local.sourceString === 'local', readOnly.sourceString === 'const', id.sourceString]
       let variable = context.lookup(name)
 
-      if (typeof val === 'string') {
-        const valVariable = new core.Var(val, false, false, [d.NIL])
-        const varDec = new core.VarDec(valVariable, new core.Nil())
-
-        context.add(val, valVariable)
-        context.extraVarDecs.unshift(varDec)
-        val = varDec.exp
+      const notDefined = defineVar(val, context)
+      if (notDefined) {
+        val = notDefined.var
       }
 
       if (val instanceof core.Var) {
@@ -228,7 +226,9 @@ export default function analyze(sourceCode) {
         let type = val.type ?? val.exp?.type ?? 'any'
         type = type instanceof Set ? Array.from(type) : [type]
         if (isLocal || !variable) {
-          return defineVar(name, context, [...type], val, isLocal, isReadOnly)
+          const variable = new core.Var(name, isLocal, isReadOnly, type)
+          context.add(name, variable)
+          return new core.VarDec(variable, val ?? variable.default)
         } else {
           type.forEach(t => variable.type.add(t))
         }
@@ -238,7 +238,9 @@ export default function analyze(sourceCode) {
         const evalOp = (/^(.)=/.exec(o) ?? /(\*\*)=/.exec(o))[1]
         if (!variable) {
           val = new core.NaryExp([val.default, evalOp, ...flatExp])
-          return defineVar(name, context, [val.type], val, isLocal, isReadOnly)
+          const variable = new core.Var(name, isLocal, isReadOnly, [val.type])
+          context.add(name, variable)
+          return new core.VarDec(variable, val ?? variable.default)
         } else {
           val = new core.NaryExp([variable, evalOp, ...flatExp])
           variable.type.add(val.type)
@@ -249,7 +251,10 @@ export default function analyze(sourceCode) {
     },
     Statement_localVar(_local, id) {
       // const [name, exp] = [id.sourceString, new core.Nil()]
-      return defineVar(id.sourceString, context, [d.NIL], new core.Nil(), true)
+      const name = id.sourceString
+      const variable = new core.Var(name, true, false, [d.NIL])
+      context.add(name, variable)
+      return new core.VarDec(variable, variable.default)
       // const variable = new core.Var(name, true, false, [exp.type])
       // context.add(name, variable)
       // // TODO check if var has already been declared as local within this scope
@@ -275,39 +280,34 @@ export default function analyze(sourceCode) {
     Statement_return(_return, exp) {
       // Can only explicitly use 'return' keyword inside a function
       checkInBlock(context)
-      const e = exp.rep()
+      let e = exp.rep()
 
       if (e.length === 0) {
         // short return statement
         return new core.ReturnStatement()
       }
 
-      if (typeof e[0] !== 'string') {
-        return new core.ReturnStatement(...e)
+      const notDefined = defineVar(e[0], context)
+      if (notDefined) {
+        e = [notDefined.var]
       }
-      else {
-        const variable = new core.Var(e[0], false, false, ['nil'])
-        context.add(e[0], variable)
-        context.extraVarDecs.unshift(new core.VarDec(variable, new core.Nil()))
-        return new core.ReturnStatement(variable)
-      }
+
+      return new core.ReturnStatement(...e)
     },
     Statement_impliedReturn(exp) {
-      const e = exp.rep()
-      if (typeof e !== 'string') {
+      let e = exp.rep()
+
+      const notDefined = defineVar(e, context)
+      if (notDefined) {
+        e = notDefined.var
+      } else {
         const noReturn = noReturnExps.some(r => e instanceof r)
         if (!noReturn) {
           return new core.ReturnStatement(e)
         }
+      }
 
-        return e
-      }
-      else {
-        const variable = new core.Var(e, false, false, ['nil'])
-        context.add(e, variable)
-        context.extraVarDecs.unshift(new core.VarDec(variable, new core.Nil()))
-        return variable
-      }
+      return e
     },
     Statement_break(_b) {
       checkInLoop(context)
@@ -316,11 +316,9 @@ export default function analyze(sourceCode) {
     Exp_ternary(cond, _qMark, block, _c, alt) {
       let bool = cond.rep()
 
-      if (typeof bool === 'string') {
-        const name = bool
-        bool = new core.Var(bool, false, false, [d.BOOL])
-        context.add(name, bool)
-        context.extraVarDecs.unshift(new core.VarDec(bool, bool.default))
+      const notDefined = defineVar(bool, context, [d.BOOL])
+      if (notDefined) {
+        bool = notDefined.var
       }
 
       let trueBlock
@@ -412,16 +410,14 @@ export default function analyze(sourceCode) {
     },
     Exp3_and(left, and, right) {
       let [lhs, op, rhs] = [left.rep(), and.sourceString, right.rep()]
-      let leftDefine = defineVar(lhs, context, [d.BOOL])
-      let rightDefine = defineVar(rhs, context, [d.BOOL])
+      const leftDefine = defineVar(lhs, context, [d.BOOL])
+      const rightDefine = defineVar(rhs, context, [d.BOOL])
 
       if (leftDefine) {
-        context.extraVarDecs.unshift(leftDefine)
         lhs = leftDefine.var
       }
 
       if (rightDefine) {
-        context.extraVarDecs.unshift(rightDefine)
         rhs = rightDefine.var
       }
       
@@ -447,22 +443,18 @@ export default function analyze(sourceCode) {
           }
         }
 
-        if (typeof lhs === 'string') {
-          const name = lhs
-          lhs = new core.Var(name, false, false, [d.NUM])
-          context.add(name, lhs)
-          context.extraVarDecs.unshift(new core.VarDec(lhs, lhs.default))
+        const notDefined = defineVar(lhs, context, [d.NUM])
+        if (notDefined) {
+          lhs = notDefined.var
         }
 
         operands.push(lhs, op)
       }
 
       let lastElement = elements[elements.length - 1]
-      if (typeof lastElement === 'string') {
-        const name = lastElement
-        lastElement = new core.Var(name, false, false, [d.NUM])
-        context.add(name, lastElement)
-        context.extraVarDecs.unshift(new core.VarDec(lastElement, lastElement.default))
+      const notDefined = defineVar(lastElement, context, [d.NUM])
+      if (notDefined) {
+        lastElement = notDefined.var
       }
 
       operands.push(lastElement)
@@ -722,13 +714,9 @@ export default function analyze(sourceCode) {
       const elements = [...list.asIteration().rep()]
 
       elements.forEach((e, index) => {
-        if (typeof e === 'string') {
-          const variable = new core.Var(e, false, false, [d.NIL])
-
-          context.add(e, variable)
-          elements[index] = variable
-
-          context.extraVarDecs.unshift(new core.VarDec(variable, new core.Nil()))
+        const notDefined = defineVar(e, context)
+        if (notDefined) {
+          elements[index] = notDefined.var
         }
       })
 
@@ -752,13 +740,9 @@ export default function analyze(sourceCode) {
     FStrExp(_open, exp, _close) {
       let e = exp.rep()
 
-      if (typeof e === 'string') {
-        const variable = new core.Var(e, false, false, ['nil'])
-        const varDec = new core.VarDec(variable, new core.Nil())
-
-        context.add(e, variable)
-        e = variable
-        context.extraVarDecs.unshift(varDec)
+      const notDefined = defineVar(e, context)
+      if (notDefined) {
+        e = notDefined.var
       }
 
       return e
