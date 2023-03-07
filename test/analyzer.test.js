@@ -1569,61 +1569,29 @@ const examples = [
    8 | UnaryExp exp=#3 op='...'
    9 | Num val=2`
   ],
-//   [
-//     'function literals',
-//     `x = () -> {}
-//     x = y -> { return -(y ** 2) }
-//     z = x(5) > 25 ? {
-//       return (y=0) -> {
-//         y ** 2
-//       }
-//     } : {
-//       return (y) -> { (-y) ** 2 }
-//     }`,
-//     `   1 | Block statements=[#2,#7,#14]
-//    2 | VarDec var=#3 op='=' exp=#4
-//    3 | Var id='x' local=false readOnly=false type=undefined
-//    4 | Func params=#5 block=#6
-//    5 | Params params=[]
-//    6 | Block statements=[]
-//    7 | VarDec var=#8 op='=' exp=#9
-//    8 | Var id='x' local=false readOnly=false type=undefined
-//    9 | Func params='y' block=#10
-//   10 | Block statements=[#11]
-//   11 | ReturnStatement exp=#12
-//   12 | UnaryExp exp=#13 op='-' returnBeforeEval=false
-//   13 | BinaryExp left='y' op='**' right=2
-//   14 | VarDec var=#15 op='=' exp=#16
-//   15 | Var id='z' local=false readOnly=false type=undefined
-//   16 | Ternary cond=#17 block=#20 alt=#27
-//   17 | BinaryExp left=#18 op='>' right=25
-//   18 | Call id='x' args=#19
-//   19 | Params params=[5]
-//   20 | Block statements=[#21]
-//   21 | ReturnStatement exp=#22
-//   22 | Func params=#23 block=#25
-//   23 | Params params=[#24]
-//   24 | KeywordParam id='y' val=0
-//   25 | Block statements=[#26]
-//   26 | BinaryExp left='y' op='**' right=2
-//   27 | Block statements=[#28]
-//   28 | ReturnStatement exp=#29
-//   29 | Func params=#30 block=#31
-//   30 | Params params=['y']
-//   31 | Block statements=[#32]
-//   32 | BinaryExp left=#33 op='**' right=2
-//   33 | UnaryExp exp='y' op='-' returnBeforeEval=false`
-  // ],
-//   [
-//     'formatted strings',
-//     `x = $'str{ a >= 5 ? b : c }'`,
-//     `   1 | Block statements=[#2]
-//    2 | VarDec var=#3 op='=' exp=#4
-//    3 | Var id='x' local=false readOnly=false type=undefined
-//    4 | FormattedStr subexps=['s','t','r',#5]
-//    5 | Ternary cond=#6 block='b' alt='c'
-//    6 | BinaryExp left='a' op='>=' right=5`
-//   ],
+  [
+    'formatted strings with ternary',
+    `x = $'str{ a >= 5 ? b : c }'`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='a' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='x' local=false readOnly=false type=['string']
+   7 | FormattedStr val=['s','t','r',#8]
+   8 | Ternary cond=#9 block=#11 alt=#16
+   9 | NaryExp exp=[#3,'>=',#10]
+  10 | Num val=5
+  11 | Block statements=[#12,#15]
+  12 | VarDec var=#13 exp=#14
+  13 | Var id='b' local=false readOnly=false type=['nil']
+  14 | Nil 
+  15 | ReturnStatement exp=#13
+  16 | Block statements=[#17,#20]
+  17 | VarDec var=#18 exp=#19
+  18 | Var id='c' local=false readOnly=false type=['nil']
+  19 | Nil `
+  ],
 //   [
 //     'loops.bang example code lines 9-14',
 //     `i = 0
