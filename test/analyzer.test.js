@@ -310,7 +310,7 @@ const examples = [
   12 | Num val=0`
   ],
   [
-    'ternary on its own is an implied return',
+    'ternary on its own is an implied return and does implicit declaration in the correct alternate block',
     `true ? 1 : x`,
     `   1 | Block statements=[#2]
    2 | ReturnStatement exp=#3
@@ -324,6 +324,22 @@ const examples = [
   10 | Var id='x' local=false readOnly=false type=['nil']
   11 | Nil 
   12 | ReturnStatement exp=#10`
+  ],
+  [
+    'ternary does implicit declaration in the correct block',
+    `true ? x : 1`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | Ternary cond=#4 block=#5 alt=#10
+   4 | Bool val=true
+   5 | Block statements=[#6,#9]
+   6 | VarDec var=#7 exp=#8
+   7 | Var id='x' local=false readOnly=false type=['nil']
+   8 | Nil 
+   9 | ReturnStatement exp=#7
+  10 | Block statements=[#11]
+  11 | ReturnStatement exp=#12
+  12 | Num val=1`
   ],
   [
     'ternary has correct typing',
@@ -1272,79 +1288,90 @@ const examples = [
   10 | VarSubscript id=#3 selector=#11
   11 | Str val='x'`
   ],
-  // [
-  //   'empty obj',
-  //   `x = {}`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='object' exp=#4
-  //  4 | Obj val=[]`
-  // ],
-  // [
-  //   'short return statement',
-  //   `x = { return }`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='nil' exp=#4
-  //  4 | Block statements=[#5]
-  //  5 | ReturnStatement exp=#6
-  //  6 | Nil `
-  // ],
-  // [
-  //   'return var',
-  //   `x = 1
-  //   y = {
-  //     return x
-  //   }`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=1
-  //  5 | VarDec var=#6 op='=' exp=#7
-  //  6 | Var id='y' local=false readOnly=false type='number' exp=#7
-  //  7 | Block statements=[#8]
-  //  8 | ReturnStatement exp=#3`
-  // ],
-  // [
-  //   'local return var',
-  //   `const x = 1
-  //   y = {
-  //     local x = 'str'
-  //     return x
-  //   }`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=true type='number' exp=#4
-  //  4 | Num val=1
-  //  5 | VarDec var=#6 op='=' exp=#7
-  //  6 | Var id='y' local=false readOnly=false type='string' exp=#7
-  //  7 | Block statements=[#8,#11]
-  //  8 | VarDec var=#9 op='=' exp=#10
-  //  9 | Var id='x' local=true readOnly=false type='string' exp=#10
-  // 10 | Str val='str'
-  // 11 | ReturnStatement exp=#9`
-  // ],
-  // [
-  //   'declared var with value of nil still returns',
-  //   `x
-  //   x`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 op='=' exp=#4
-  //  3 | Var id='x' local=false readOnly=false type='nil' exp=#4
-  //  4 | Nil 
-  //  5 | ReturnStatement exp=#3`
-  // ],
-  // [
-  //   'var changes value',
-  //   `x = 1
-  //   x = 2`,
-  //   `   1 | Block statements=[#2,#6]
-  //  2 | VarDec var=#3 op='=' exp=#5
-  //  3 | Var id='x' local=false readOnly=false type='number' exp=#4
-  //  4 | Num val=2
-  //  5 | Num val=1
-  //  6 | VarDec var=#3 op='=' exp=#4`
-  // ]
+  [
+    'short return statement',
+    `x = { return }`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['nil']
+   4 | Block statements=[#5]
+   5 | ReturnStatement exp=#6
+   6 | Nil `
+  ],
+  [
+    'return var',
+    `x = 1
+    y = {
+      return x
+    }`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=1
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['number']
+   7 | Block statements=[#8]
+   8 | ReturnStatement exp=#3`
+  ],
+  [
+    'local return var',
+    `const x = 1
+    y = {
+      local x = 'str'
+      return x
+    }`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=true type=['number']
+   4 | Num val=1
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['string']
+   7 | Block statements=[#8,#11]
+   8 | VarDec var=#9 exp=#10
+   9 | Var id='x' local=true readOnly=false type=['string']
+  10 | Str val='str'
+  11 | ReturnStatement exp=#9`
+  ],
+  [
+    'declared var with value of nil still returns',
+    `x
+    x`,
+    `   1 | Block statements=[#2,#3,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['nil']
+   4 | Nil 
+   5 | ReturnStatement exp=#3`
+  ],
+  [
+    'var changes value',
+    `x = 1
+    x = [2]`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number','list']
+   4 | Num val=1
+   5 | Assign var=#3 exp=#6
+   6 | List val=[#7]
+   7 | Num val=2`
+  ],
+  [
+    'implicit declaration of var within var dec does not fail',
+    `{
+      x ? {
+        return x
+      }
+    }`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | Block statements=[#4,#7]
+   4 | VarDec var=#5 exp=#6
+   5 | Var id='x' local=false readOnly=false type=['boolean']
+   6 | Bool val=false
+   7 | ReturnStatement exp=#8
+   8 | Ternary cond=#5 block=#9 alt=undefined
+   9 | Block statements=[#10]
+  10 | ReturnStatement exp=#5`
+  ],
 
   // { x ? { return x }} type checking
   //[

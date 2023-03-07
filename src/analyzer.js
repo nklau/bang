@@ -128,8 +128,8 @@ function mapOps(elements) {
 // TODO: should be able to say break from inside a block that's nested in a loop
 // TODO: should be able to say return from inside a loop that's nested in a block
 class Context {
-  constructor({ parent = null, locals = new Map(), inLoop = false, block: b = null }) {
-    Object.assign(this, { parent, locals, inLoop, block: b })
+  constructor({ parent = null, locals = new Map(), inLoop = false, block: b = null, extraVarDecs = [] }) {
+    Object.assign(this, { parent, locals, inLoop, block: b, extraVarDecs: extraVarDecs })
   }
 
   sees(name) {
@@ -157,13 +157,12 @@ class Context {
   }
 
   newChildContext(props) {
-    return new Context({ ...this, ...props, parent: this, locals: new Map() })
+    return new Context({ ...this, ...props, parent: this, locals: new Map(), extraVarDecs: [] })
   }
 }
 
 export default function analyze(sourceCode) {
   let context = new Context({})
-  let extraStatements = []
 
   const analyzer = bangGrammar.createSemantics().addOperation("rep", {
     Program(body) {
@@ -182,8 +181,8 @@ export default function analyze(sourceCode) {
         block.statements[0] = new core.ReturnStatement(block.statements[0])
       }
 
-      extraStatements.forEach(s => block.statements.unshift(s))
-      extraStatements = []
+      context.extraVarDecs.forEach(s => block.statements.unshift(s))
+      context.extraVarDecs = []
 
       context = context.parent ?? context
       return block
@@ -200,18 +199,9 @@ export default function analyze(sourceCode) {
         const varDec = new core.VarDec(valVariable, new core.Nil())
 
         context.add(val, valVariable)
-        extraStatements.push(varDec)
+        context.extraVarDecs.push(varDec)
         val = varDec.exp
       }
-
-      // if (val instanceof core.BinaryExp && val.op === '.' && typeof val.left === 'string') {
-      //   val = new core.Var(val.left, false, false, [d.OBJ])
-      //   const obj = new core.Obj([new core.ObjField(val.right, new core.Nil())])
-      //   const assign = new core.VarDec(id, obj)
-
-      //   context.add(val.left, id)
-      //   context.block.statements.unshift(assign)
-      // }
 
       if (val instanceof core.Var) {
         // setting a variable equal to another variable makes a shallow copy
@@ -222,7 +212,7 @@ export default function analyze(sourceCode) {
         })
 
         if (val instanceof core.Var) {
-          extraStatements.slice().reverse().forEach(s => {
+          context.extraVarDecs.slice().reverse().forEach(s => {
             if ((s instanceof core.Assign || s instanceof core.VarDec) && s.var === val) {
               val = s.exp
             }
@@ -294,7 +284,7 @@ export default function analyze(sourceCode) {
       else {
         const variable = new core.Var(e[0], false, false, ['nil'])
         context.add(e[0], variable)
-        extraStatements.push(new core.VarDec(variable, new core.Nil()))
+        context.extraVarDecs.push(new core.VarDec(variable, new core.Nil()))
         return new core.ReturnStatement(variable)
       }
     },
@@ -311,7 +301,7 @@ export default function analyze(sourceCode) {
       else {
         const variable = new core.Var(e, false, false, ['nil'])
         context.add(e, variable)
-        extraStatements.push(new core.VarDec(variable, new core.Nil()))
+        context.extraVarDecs.push(new core.VarDec(variable, new core.Nil()))
         return variable
       }
     },
@@ -320,44 +310,57 @@ export default function analyze(sourceCode) {
       return new core.BreakStatement()
     },
     Exp_ternary(cond, _qMark, block, _c, alt) {
-      let [bool, trueBlock] = [cond.rep(), block.rep()]
+      let bool = cond.rep()
 
-      if (!(trueBlock instanceof core.Block)) {
+      if (typeof bool === 'string') {
+        const name = bool
+        bool = new core.Var(bool, false, false, [d.BOOL])
+        context.add(name, bool)
+        context.extraVarDecs.push(new core.VarDec(bool, bool.default))
+      }
+
+      let trueBlock
+
+      if (block._node.ruleName !== 'BangFunc') {
         const b = new core.Block()
         context = context.newChildContext({ inLoop: false, block: b })
 
-        b.statements = [trueBlock]
-        if (!(trueBlock instanceof core.ReturnStatement)) {
-          b.statements[0] = new core.ReturnStatement(trueBlock)
+        b.statements = [block.rep()]
+        if (!(b.statements[0] instanceof core.ReturnStatement)) {
+          b.statements[0] = new core.ReturnStatement(b.statements[0])
         }
 
-        extraStatements.forEach(s => b.statements.unshift(s))
-        extraStatements = []
+        context.extraVarDecs.forEach(s => b.statements.unshift(s))
+        context.extraVarDecs = []
 
         context = context.parent
         trueBlock = b
+      } else {
+        trueBlock = block.rep()
       }
 
       if (alt.children.length === 0) {
         return new core.Ternary(bool, trueBlock)
       }
+      
+      let falseBlock
 
-      let [falseBlock] = [...alt.rep()]
-
-      if (!(falseBlock instanceof core.Block)) {
+      if (alt.children[0]._node.ruleName !== 'BangFunc') {
         const b = new core.Block()
         context = context.newChildContext({ inLoop: false, block: b })
 
-        b.statements = [falseBlock]
-        if (!(falseBlock instanceof core.ReturnStatement)) {
-          b.statements[0] = new core.ReturnStatement(falseBlock)
+        b.statements = [...alt.rep()]
+        if (!(b.statements[0] instanceof core.ReturnStatement)) {
+          b.statements[0] = new core.ReturnStatement(b.statements[0])
         }
 
-        extraStatements.forEach(s => b.statements.unshift(s))
-        extraStatements = []
+        context.extraVarDecs.forEach(s => b.statements.unshift(s))
+        context.extraVarDecs = []
 
         context = context.parent
         falseBlock = b
+      } else {
+        [falseBlock] = [...alt.rep()]
       }
 
       return new core.Ternary(bool, trueBlock, falseBlock)
@@ -393,8 +396,7 @@ export default function analyze(sourceCode) {
       const exp = new core.NaryExp(elements)
       statements = statements.filter(s => s)
       if (statements.length > 0) {
-        statements.forEach(s => extraStatements.push(s))
-        // extraStatements.push(statements)
+        statements.forEach(s => context.extraVarDecs.push(s))
       }
 
       return exp
@@ -489,7 +491,7 @@ export default function analyze(sourceCode) {
       const statement = new increment(exp)
 
       if (extra) {
-        extraStatements.push(extra)
+        context.extraVarDecs.push(extra)
       }
 
       return statement
@@ -513,7 +515,7 @@ export default function analyze(sourceCode) {
       const statement = new increment(exp)
 
       if (extra) {
-        extraStatements.push(extra)
+        context.extraVarDecs.push(extra)
       }
 
       return statement
@@ -596,23 +598,6 @@ export default function analyze(sourceCode) {
     BangFunc(_open, block, _close) {
       return block.rep()
     },
-    // BangFunc(statement) {
-    //   // const block = new core.Block()
-    //   context = context.newChildContext({ inLoop: false, block: context.block })
-
-    //   let s = [statement.rep()]
-
-    //   if (noReturnExps.includes(s[0].constructor)) {
-    //     s[0] = new core.ReturnStatement(s[0])
-    //   }
-
-    //   for (let [_toFind, toAdd] of extraStatements.entries()) {
-    //     s.unshift(toAdd)
-    //   }
-    //   extraStatements = new Map()
-    //   context = context.parent ?? context
-    //   return s
-    // },
     VarAssignment_subscript(target, _open, selector, _close) {
       // TODO check for loop
       let [id, exp] = [target.rep(), selector.rep()]
@@ -708,7 +693,7 @@ export default function analyze(sourceCode) {
           context.add(e, variable)
           elements[index] = variable
 
-          extraStatements.push(new core.VarDec(variable, new core.Nil()))
+          context.extraVarDecs.push(new core.VarDec(variable, new core.Nil()))
         }
       })
 
@@ -738,7 +723,7 @@ export default function analyze(sourceCode) {
 
         context.add(e, variable)
         e = variable
-        extraStatements.push(varDec)
+        context.extraVarDecs.push(varDec)
       }
 
       return e
