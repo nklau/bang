@@ -404,8 +404,18 @@ export default function analyze(sourceCode) {
       return exp
     },
     Exp2_or(left, or, right) {
-      const [lhs, op, rhs] = [left.rep(), or.sourceString, right.rep()]
-      // TODO check lhs and rhs are strings
+      let [lhs, op, rhs] = [left.rep(), or.sourceString, right.rep()]
+      const leftDefine = defineVar(lhs, context, [d.BOOL])
+      const rightDefine = defineVar(rhs, context, [d.BOOL])
+
+      if (leftDefine) {
+        lhs = leftDefine.var
+      }
+
+      if (rightDefine) {
+        rhs = rightDefine.var
+      }
+      
       return new core.BinaryExp(lhs, op, rhs)
     },
     Exp3_and(left, and, right) {

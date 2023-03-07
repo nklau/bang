@@ -1439,6 +1439,19 @@ const examples = [
    8 | ReturnStatement exp=#9
    9 | BinaryExp left=#3 op='&&' right=#6`
   ],
+  [
+    'or exp with undeclared vars initializes them',
+    `x || y`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['boolean']
+   4 | Bool val=false
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['boolean']
+   7 | Bool val=false
+   8 | ReturnStatement exp=#9
+   9 | BinaryExp left=#3 op='||' right=#6`
+  ],
   // [
   //   'object with ternaries as values',
   //   `b = 2e3
