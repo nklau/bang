@@ -525,11 +525,15 @@ export default function analyze(sourceCode) {
       return new core.NaryExp(operands)
     },
     Exp7_negate(negative, right) {
-      const [op, rhs] = [negative.sourceString, right.rep()]
+      let [op, rhs] = [negative.sourceString, right.rep()]
       if (rhs instanceof core.PreDecrement) {
         core.error('Expected parentheses around pre-decrement operation with a negation')
       }
-      // TODO check if rhs is a string
+
+      const notDefined = defineVar(rhs, context, [d.NUM])
+      if (notDefined) {
+        rhs = notDefined.var
+      }
       return new core.UnaryExp(rhs, op)
     },
     Exp7_spread(spread, right) {
