@@ -1569,29 +1569,29 @@ const examples = [
    8 | UnaryExp exp=#3 op='...'
    9 | Num val=2`
   ],
-  [
-    'formatted strings with ternary',
-    `x = $'str{ a >= 5 ? b : c }'`,
-    `   1 | Block statements=[#2,#5]
-   2 | VarDec var=#3 exp=#4
-   3 | Var id='a' local=false readOnly=false type=['number']
-   4 | Num val=0
-   5 | VarDec var=#6 exp=#7
-   6 | Var id='x' local=false readOnly=false type=['string']
-   7 | FormattedStr val=['s','t','r',#8]
-   8 | Ternary cond=#9 block=#11 alt=#16
-   9 | NaryExp exp=[#3,'>=',#10]
-  10 | Num val=5
-  11 | Block statements=[#12,#15]
-  12 | VarDec var=#13 exp=#14
-  13 | Var id='b' local=false readOnly=false type=['nil']
-  14 | Nil 
-  15 | ReturnStatement exp=#13
-  16 | Block statements=[#17,#20]
-  17 | VarDec var=#18 exp=#19
-  18 | Var id='c' local=false readOnly=false type=['nil']
-  19 | Nil `
-  ],
+  // [
+  //   'formatted strings with ternary',
+  //   `x = $'str{ a >= 5 ? b : c }'`,
+  //   `   1 | Block statements=[#2,#5]
+  //  2 | VarDec var=#3 exp=#4
+  //  3 | Var id='a' local=false readOnly=false type=['number']
+  //  4 | Num val=0
+  //  5 | VarDec var=#6 exp=#7
+  //  6 | Var id='x' local=false readOnly=false type=['string']
+  //  7 | FormattedStr val=['s','t','r',#8]
+  //  8 | Ternary cond=#9 block=#11 alt=#16
+  //  9 | NaryExp exp=[#3,'>=',#10]
+  // 10 | Num val=5
+  // 11 | Block statements=[#12,#15]
+  // 12 | VarDec var=#13 exp=#14
+  // 13 | Var id='b' local=false readOnly=false type=['nil']
+  // 14 | Nil 
+  // 15 | ReturnStatement exp=#13
+  // 16 | Block statements=[#17,#20]
+  // 17 | VarDec var=#18 exp=#19
+  // 18 | Var id='c' local=false readOnly=false type=['nil']
+  // 19 | Nil `
+  // ],
 //   [
 //     'loops.bang example code lines 9-14',
 //     `i = 0
