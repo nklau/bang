@@ -551,23 +551,13 @@ export default function analyze(sourceCode) {
       checkNotLiteral(exp)
 
       const increment = op.includes('+') ? core.PostIncrement : core.PostDecrement
-      let extra
 
-      if (typeof exp === 'string') {
-        const name = target.sourceString
-        exp = new core.Var(name, false, false, [d.NUM])
-
-        context.add(name, exp)
-        extra = new core.VarDec(exp, exp.default)
+      const notDefined = defineVar(exp, context, [d.NUM])
+      if (notDefined) {
+        exp = notDefined.var
       }
 
-      const statement = new increment(exp)
-
-      if (extra) {
-        context.extraVarDecs.unshift(extra)
-      }
-
-      return statement
+      return new increment(exp)
     },
     Exp8_preFix(prefixOp, target) {
       // TODO need to check const
@@ -575,23 +565,13 @@ export default function analyze(sourceCode) {
       checkNotLiteral(exp)
 
       const increment = op.includes('+') ? core.PreIncrement : core.PreDecrement
-      let extra
 
-      if (typeof exp === 'string') {
-        const name = target.sourceString
-        exp = new core.Var(name, false, false, [d.NUM])
-
-        context.add(name, exp)
-        extra = new core.VarDec(exp, exp.default)
+      const notDefined = defineVar(exp, context, [d.NUM])
+      if (notDefined) {
+        exp = notDefined.var
       }
 
-      const statement = new increment(exp)
-
-      if (extra) {
-        context.extraVarDecs.unshift(extra)
-      }
-
-      return statement
+      return new increment(exp)
     },
     Exp9_call(id, _space, params) {
       const [exp, args] = [id.rep(), params.rep()]
@@ -619,7 +599,7 @@ export default function analyze(sourceCode) {
         [target, dot] = target
       }
 
-      const notDefined = defineVar(target, context, [d.OBJ], new core.Obj([new core.ObjField(new core.Str(selector), new core.Nil())]))
+      const notDefined = defineVar(target, context, [d.OBJ], new core.Obj([new core.ObjField(new core.Str(selector), new core.Str(selector))]))
       if (notDefined) {
         target = notDefined.var
       }
@@ -667,13 +647,9 @@ export default function analyze(sourceCode) {
       // TODO check for loop
       let [id, exp] = [target.rep(), selector.rep()]
 
-      if (typeof id === 'string') {
-        const name = target.sourceString
-        id = new core.Var(name, false, false)
-        const assign = new core.VarDec(id)
-
-        context.add(name, id)
-        context.block.statements.unshift(assign)
+      const notDefined = defineVar(id, context, [d.LIST])
+      if (notDefined) {
+        id = notDefined.var
       }
 
       return new core.VarSubscript(id, exp)
@@ -681,14 +657,9 @@ export default function analyze(sourceCode) {
     VarAssignment_select(target, dot, selector) {
       let [id, exp] = [target.rep(), selector.rep()]
 
-      if (typeof id === 'string') {
-        const name = target.sourceString
-        id = new core.Var(name, false, false, [d.OBJ])
-        const obj = new core.Obj([new core.ObjField(exp, new core.Nil())])
-        const assign = new core.VarDec(id, obj)
-
-        context.add(name, id)
-        context.block.statements.unshift(assign)
+      const notDefined = defineVar(id, context, [d.OBJ], new core.Obj([new core.ObjField(new core.Str(exp), new core.Str(exp))]))
+      if (notDefined) {
+        id = notDefined.var
       }
 
       // TODO check for loop
@@ -883,7 +854,7 @@ export default function analyze(sourceCode) {
       } else {
         block = defaultBlock.rep()
       }
-      
+
       return new core.DefaultMatchCase(block)
     },
     nil(_nil) {

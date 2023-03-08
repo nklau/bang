@@ -1240,7 +1240,7 @@ const examples = [
    4 | Obj val=[#5]
    5 | ObjField key=#6 val=#7
    6 | Str val='z'
-   7 | Nil 
+   7 | Str val='z'
    8 | VarDec var=#9 exp=#10
    9 | Var id='x' local=false readOnly=false type=['any']
   10 | BinaryExp left=#3 op='.' right='z'`
@@ -1731,7 +1731,7 @@ const examples = [
    4 | Obj val=[#5]
    5 | ObjField key=#6 val=#7
    6 | Str val='fall'
-   7 | Nil 
+   7 | Str val='fall'
    8 | VarDec var=#9 exp=#10
    9 | Var id='s' local=false readOnly=false type=['any']
   10 | BinaryExp left=#3 op='.' right='fall'
