@@ -325,9 +325,9 @@ const Season = Object.freeze({
 ```swift
 s = season.fall
 result = match s {
-  case .spring: "spring!"
-  case .summer: { "summer!" }
-  case .fall, .winter: {
+  case season.spring: "spring!"
+  case season.summer: { "summer!" }
+  case season.fall, season.winter: {
     str = "is cold!"
     str
   }

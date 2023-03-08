@@ -1234,15 +1234,16 @@ const examples = [
   [
     'dot operator creates new object',
     `x = y.z`,
-    `   1 | Block statements=[#2,#7]
+    `   1 | Block statements=[#2,#8]
    2 | VarDec var=#3 exp=#4
    3 | Var id='y' local=false readOnly=false type=['object']
    4 | Obj val=[#5]
-   5 | ObjField key='z' val=#6
-   6 | Nil 
-   7 | VarDec var=#8 exp=#9
-   8 | Var id='x' local=false readOnly=false type=['any']
-   9 | BinaryExp left=#3 op='.' right='z'`
+   5 | ObjField key=#6 val=#7
+   6 | Str val='z'
+   7 | Nil 
+   8 | VarDec var=#9 exp=#10
+   9 | Var id='x' local=false readOnly=false type=['any']
+  10 | BinaryExp left=#3 op='.' right='z'`
   ],
   [
     'adding to an object alters the already existing core obj',
@@ -1701,8 +1702,47 @@ const examples = [
   19 | Args args=[]
   20 | Call id='print' args=#21
   21 | Args args=[]`
-  ]
-//   // TODO: escaped chars (formatted and regular strs)
+  ],
+  // [
+  //   'escaped new line',
+  //   `'\\n'`,
+  //   `   1 | Block statements=[#2]
+  //  2 | ReturnStatement exp=#3
+  //  3 | Str val='\\n'`
+  // ] // TODO not sure whats happening here
+  // TODO: escaped chars (formatted and regular strs)
+  // [
+  //   'match.bang example code',
+  //   `s = season.fall
+  //   result = match s {
+  //     case season.spring: "spring!"
+  //     case season.summer: { "summer!" }
+  //     case season.fall, season.winter: {
+  //       str = "is cold!"
+  //       str
+  //     }
+  //     default: "California!"
+  //   }
+  //   print(result)
+  //   // prints "is cold!"`,
+  //   `   1 | Block statements=[#2,#8]
+  //  2 | VarDec var=#3 exp=#4
+  //  3 | Var id='season' local=false readOnly=false type=['object']
+  //  4 | Obj val=[#5]
+  //  5 | ObjField key=#6 val=#7
+  //  6 | Str val='fall'
+  //  7 | Nil 
+  //  8 | VarDec var=#9 exp=#10
+  //  9 | Var id='s' local=false readOnly=false type=['any']
+  // 10 | BinaryExp left=#3 op='.' right='fall'
+  // 11 | VarDec var=#12 exp=#13
+  // 12 | Var id='result' local=false readOnly=false type=['any']
+  // 13 | MatchExp cond=#9 clauses=#14
+  // 14 | MatchBlock cases=[#15]
+  // 15 | MatchCase conds=[#16] block=
+  // 16 | BinaryExp left=#3 op='.' right='spring'
+  // 17 | `
+  // ] // TODO: think default vals for objects should be string values, not nil
 ]
 
 describe('The analyzer', () => {

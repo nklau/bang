@@ -619,14 +619,9 @@ export default function analyze(sourceCode) {
         [target, dot] = target
       }
 
-      if (typeof target === 'string') {
-        const name = target
-        target = new core.Var(name, false, false, [d.OBJ])
-        const obj = new core.Obj([new core.ObjField(selector, new core.Nil())])
-        const assign = new core.VarDec(target, obj)
-
-        context.add(name, target)
-        context.block.statements.unshift(assign)
+      const notDefined = defineVar(target, context, [d.OBJ], new core.Obj([new core.ObjField(new core.Str(selector), new core.Nil())]))
+      if (notDefined) {
+        target = notDefined.var
       }
 
       // TODO check for loop
@@ -838,7 +833,12 @@ export default function analyze(sourceCode) {
       return this.sourceString
     },
     MatchExp(_match, id, block) {
-      return new core.MatchExp(id.sourceString, block.rep())
+      let cond = id.rep()
+      const notDefined = defineVar(cond, context)
+      if (notDefined) {
+        cond = notDefined.var
+      }
+      return new core.MatchExp(cond, block.rep())
     },
     MatchBlock(_open, cases, defaultCase, _close) {
       return new core.MatchBlock([...cases.rep(), ...defaultCase.rep()])
