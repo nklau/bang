@@ -1669,37 +1669,38 @@ const examples = [
   39 | Num val=6
   40 | Args args=['print']`
   ],
-//   // [
-//   //   'strings.bang example code lines 1-11',
-//   //   `const name = "John Smith"
-//   //   name = "Sally"
+  [
+    'strings.bang example code lines 4-11',
+    `firstName = "Ray"
+    lastName = "Toal"
+    combinedName = firstName + " " + lastName
+    interpolatedName = $'{firstName} {lastName}'
     
-//   //   firstName = "Ray"
-//   //   lastName = "Toal"
-//   //   combinedName = firstName + " " + lastName
-//   //   interpolatedName = $'{firstName} {lastName}'
-    
-//   //   print("//")
-//   //   print(/* */)
-//   //   print(/* // */)`,
-//   //   `   1 | Block statements=[#2,#4,#6,#8,#10,#14]
-//   //  2 | VarDec var=#3 op='=' exp='John Smith'
-//   //  3 | Var id='name' local=false readOnly=true type=undefined
-//   //  4 | VarDec var=#5 op='=' exp='Sally'
-//   //  5 | Var id='name' local=false readOnly=false type=undefined
-//   //  6 | VarDec var=#7 op='=' exp='Ray'
-//   //  7 | Var id='firstName' local=false readOnly=false type=undefined
-//   //  8 | VarDec var=#9 op='=' exp='Toal'
-//   //  9 | Var id='lastName' local=false readOnly=false type=undefined
-//   // 10 | VarDec var=#11 op='=' exp=#12
-//   // 11 | Var id='combinedName' local=false readOnly=false type=undefined
-//   // 12 | BinaryExp left=#13 op='+' right='lastName'
-//   // 13 | BinaryExp left='firstName' op='+' right=' '
-//   // 14 | VarDec var=#15 op='=' exp=#16
-//   // 15 | Var id='interpolatedName' local=false readOnly=false type=undefined
-//   // 16 | FormattedStr subexps=[#17,' ']
-//   // 17 | Var `
-//   // ]
+    print("//")
+    print(/* */)
+    print(/* // */)`,
+    `   1 | Block statements=[#2,#5,#8,#12,#15,#18,#20]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='firstName' local=false readOnly=false type=['string']
+   4 | Str val='Ray'
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='lastName' local=false readOnly=false type=['string']
+   7 | Str val='Toal'
+   8 | VarDec var=#9 exp=#10
+   9 | Var id='combinedName' local=false readOnly=false type=['string']
+  10 | NaryExp exp=[#3,'+',#11,'+',#6]
+  11 | Str val=' '
+  12 | VarDec var=#13 exp=#14
+  13 | Var id='interpolatedName' local=false readOnly=false type=['string']
+  14 | FormattedStr val=[#3,' ',#6]
+  15 | Call id='print' args=#16
+  16 | Args args=[#17]
+  17 | Str val='//'
+  18 | Call id='print' args=#19
+  19 | Args args=[]
+  20 | Call id='print' args=#21
+  21 | Args args=[]`
+  ]
 //   // TODO: escaped chars (formatted and regular strs)
 // TODO 1 +++x, 1 ---x
 ]

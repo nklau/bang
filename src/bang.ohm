@@ -69,10 +69,8 @@ Bang {
   Str                   = strLit | FormattedStr
   strLit                = "'" singleStrChar* "'"
                         | "\"" doubleStrChar* "\""
-  FormattedStr          = "$'" FSingleSubstr* "'"
-                        | "$\"" FDoubleSubstr* "\""
-  FSingleSubstr         = fSingleStrChar | FStrExp
-  FDoubleSubstr         = fDoubleStrChar | FStrExp
+  FormattedStr          = "$'" (#fSingleStrChar | FStrExp)* "'"
+                        | "$\"" (#fDoubleStrChar | FStrExp)* "\""
   FStrExp               = "{" Exp "}"
   
   // special chars

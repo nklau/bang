@@ -785,12 +785,6 @@ export default function analyze(sourceCode) {
     FormattedStr(_open, chars, _close) {
       return new core.FormattedStr(chars.rep())
     },
-    FSingleSubstr(exp) {
-      return exp.rep()
-    },
-    FDoubleSubstr(exp) {
-      return exp.rep()
-    },
     FStrExp(_open, exp, _close) {
       let e = exp.rep()
 
