@@ -574,7 +574,20 @@ export default function analyze(sourceCode) {
       return new increment(exp)
     },
     Exp9_call(id, _space, params) {
-      const [exp, args] = [id.rep(), params.rep()]
+      if (id.sourceString === 'print' || id.sourceString === 'range') {
+        // TODO
+        return new core.Call(id.sourceString, params.rep())
+      }
+      let [exp, args] = [id.rep(), params.rep()]
+      // new core.Func(new core.Params(), new core.Block([new core.ReturnStatement(new core.Str(exp))]))
+      let notDefined = defineVar(exp, context, [d.FUNC])
+      if (notDefined) {
+        const ret = new core.ReturnStatement(notDefined.var)
+        notDefined.exp.block.statements.push(ret)
+        notDefined.exp.params.params = []
+        exp = notDefined.var
+      }
+
       return new core.Call(exp, args)
     },
     Exp9_subscript(target, _open, selector, _close) {

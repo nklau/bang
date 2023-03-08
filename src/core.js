@@ -214,7 +214,7 @@ export class Func {
 }
 
 export class Params {
-  constructor(params) {
+  constructor(params = []) {
     this.params = params
   }
 }
@@ -487,7 +487,7 @@ Block.prototype[util.inspect.custom] = function () {
 }
 
 const getDefault = (t) => {
-  const types = { [List.typeDescription]: List, [Obj.typeDescription]: Obj, [Str.typeDescription]: Str, [Num.typeDescription]: Num, [Bool.typeDescription]: Bool }
+  const types = { [List.typeDescription]: List, [Obj.typeDescription]: Obj, [Str.typeDescription]: Str, [Num.typeDescription]: Num, [Bool.typeDescription]: Bool, [Func.typeDescription]: Func }
 
   for (const [typeDescription, type] of Object.entries(types)) {
     if (t === typeDescription) {

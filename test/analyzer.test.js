@@ -1871,11 +1871,20 @@ const examples = [
   40 | Num val=3
   41 | Num val=4`
   ],
-  // [
-  //   'calling an undefined var initializes it as a function',
-  //   `x()`,
-  //   ``
-  // ],
+  [
+    'calling an undefined var initializes it as a function',
+    `x()`,
+    `   1 | Block statements=[#2,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['function']
+   4 | Func params=#5 block=#6
+   5 | Params params=[]
+   6 | Block statements=[#7]
+   7 | ReturnStatement exp=#3
+   8 | ReturnStatement exp=#9
+   9 | Call id=#3 args=#10
+  10 | Args args=[]`
+  ]
 ]
 
 describe('The analyzer', () => {
