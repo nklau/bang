@@ -706,15 +706,40 @@ export default function analyze(sourceCode) {
     },
     FuncLit(exp, _arrow, funcBody) {
       const id = exp.rep()
+      let block
 
-      const block = new core.Block()
-      context = context.newChildContext({ inLoop: false, block: block })
-      const statements = funcBody.rep()
-      context = context.parent
+      if (funcBody._node.ruleName !== 'BangFunc') {
+        const b = new core.Block()
+        context = context.newChildContext({ inLoop: false, block: b })
+
+        b.statements = [funcBody.rep()]
+        if (!(b.statements[0] instanceof core.ReturnStatement)) {
+          b.statements[0] = new core.ReturnStatement(b.statements[0])
+        }
+
+        context.extraVarDecs.forEach(s => b.statements.unshift(s))
+        context.extraVarDecs = []
+
+        context = context.parent
+        block = b
+      } else {
+        const b = new core.Block()
+        context = context.newChildContext({ inLoop: false, block: b })
+        block = funcBody.rep()
+        context = context.parent
+      }
+
+
+      // const id = exp.rep()
+
+      // const block = new core.Block()
+      // context = context.newChildContext({ inLoop: false, block: block })
+      // const statements = funcBody.rep()
+      // context = context.parent
       // TODO check if block has only 1 statement, and if it should be a return statement
       // TODO add extra statements
 
-      return new core.Func(id, statements)
+      return new core.Func(id, block)
     },
     Params(_open, params, _close) {
       return new core.Params(params.asIteration().rep())

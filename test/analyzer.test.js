@@ -145,7 +145,8 @@ const examples = [
    4 | Func params=#5 block=#7
    5 | Params params=[#6]
    6 | Var id='i' local=true readOnly=false type=['any']
-   7 | ReturnStatement exp=#6`
+   7 | Block statements=[#8]
+   8 | ReturnStatement exp=#6`
   ],
   [
     '2 arg function call', 
@@ -1569,90 +1570,105 @@ const examples = [
    8 | UnaryExp exp=#3 op='...'
    9 | Num val=2`
   ],
-  // [
-  //   'formatted strings with ternary',
-  //   `x = $'str{ a >= 5 ? b : c }'`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 exp=#4
-  //  3 | Var id='a' local=false readOnly=false type=['number']
-  //  4 | Num val=0
-  //  5 | VarDec var=#6 exp=#7
-  //  6 | Var id='x' local=false readOnly=false type=['string']
-  //  7 | FormattedStr val=['s','t','r',#8]
-  //  8 | Ternary cond=#9 block=#11 alt=#16
-  //  9 | NaryExp exp=[#3,'>=',#10]
-  // 10 | Num val=5
-  // 11 | Block statements=[#12,#15]
-  // 12 | VarDec var=#13 exp=#14
-  // 13 | Var id='b' local=false readOnly=false type=['nil']
-  // 14 | Nil 
-  // 15 | ReturnStatement exp=#13
-  // 16 | Block statements=[#17,#20]
-  // 17 | VarDec var=#18 exp=#19
-  // 18 | Var id='c' local=false readOnly=false type=['nil']
-  // 19 | Nil `
-  // ],
-//   [
-//     'loops.bang example code lines 9-14',
-//     `i = 0
-//     (i < 10).loop({
-//       print(i)
-//       i += 1
-//     })
-//     // prints 0-9 on separate lines`,
-//     `   1 | Block statements=[#2,#4]
-//    2 | VarDec var=#3 op='=' exp=0
-//    3 | Var id='i' local=false readOnly=false type=undefined
-//    4 | Call id=#5 args=#7
-//    5 | VarSelect id=#6 selector='loop'
-//    6 | BinaryExp left='i' op='<' right=10
-//    7 | Params params=[#8]
-//    8 | Block statements=[#9,#11]
-//    9 | Call id='print' args=#10
-//   10 | Params params=['i']
-//   11 | VarDec var=#12 op='+=' exp=1
-//   12 | Var id='i' local=false readOnly=false type=undefined`
-//   ],
-//   [
-//     'loops.bang example code lines 16-22',
-//     `range(5).loop((i) -> { print(i) })
-//     range(5).loop((i) -> print(i))
-//     range(5).loop(print)
-//     // prints 0-4 on separate lines
+  [
+    'formatted strings with ternary',
+    `x = $'str{ a >= 5 ? b : c }'`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='a' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='x' local=false readOnly=false type=['string']
+   7 | FormattedStr val=['s','t','r',#8]
+   8 | Ternary cond=#9 block=#11 alt=#16
+   9 | NaryExp exp=[#3,'>=',#10]
+  10 | Num val=5
+  11 | Block statements=[#12,#15]
+  12 | VarDec var=#13 exp=#14
+  13 | Var id='b' local=false readOnly=false type=['nil']
+  14 | Nil 
+  15 | ReturnStatement exp=#13
+  16 | Block statements=[#17,#20]
+  17 | VarDec var=#18 exp=#19
+  18 | Var id='c' local=false readOnly=false type=['nil']
+  19 | Nil 
+  20 | ReturnStatement exp=#18`
+  ],
+  [
+    'loops.bang example code lines 9-14',
+    `i = 0
+    (i < 10).loop({
+      print(i)
+      i += 1
+    })
+    // prints 0-9 on separate lines`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='i' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | Call id=#6 args=#10
+   6 | BinaryExp left=#7 op='.' right='loop'
+   7 | NaryExp exp=[#8]
+   8 | NaryExp exp=[#3,'<',#9]
+   9 | Num val=10
+  10 | Args args=[#11]
+  11 | Block statements=[#12,#14]
+  12 | Call id='print' args=#13
+  13 | Args args=[#3]
+  14 | Assign var=#3 exp=#15
+  15 | NaryExp exp=[#3,'+',#16]
+  16 | Num val=1`
+  ],
+  [
+    'loops.bang example code lines 16-22',
+    `range(5).loop((i) -> { print(i) })
+    range(5).loop((i) -> print(i))
+    range(5).loop(print)
+    // prints 0-4 on separate lines
     
-//     range(1, 6).loop(print)
-//     // prints 1-5 on separate lines`,
-//     `   1 | Block statements=[#2,#12,#21,#26]
-//    2 | Call id=#3 args=#6
-//    3 | VarSelect id=#4 selector='loop'
-//    4 | Call id='range' args=#5
-//    5 | Params params=[5]
-//    6 | Params params=[#7]
-//    7 | Func params=#8 block=#9
-//    8 | Params params=['i']
-//    9 | Block statements=[#10]
-//   10 | Call id='print' args=#11
-//   11 | Params params=['i']
-//   12 | Call id=#13 args=#16
-//   13 | VarSelect id=#14 selector='loop'
-//   14 | Call id='range' args=#15
-//   15 | Params params=[5]
-//   16 | Params params=[#17]
-//   17 | Func params=#18 block=#19
-//   18 | Params params=['i']
-//   19 | Call id='print' args=#20
-//   20 | Params params=['i']
-//   21 | Call id=#22 args=#25
-//   22 | VarSelect id=#23 selector='loop'
-//   23 | Call id='range' args=#24
-//   24 | Params params=[5]
-//   25 | Params params=['print']
-//   26 | Call id=#27 args=#30
-//   27 | VarSelect id=#28 selector='loop'
-//   28 | Call id='range' args=#29
-//   29 | Params params=[1,6]
-//   30 | Params params=['print']`
-//   ]//,
+    range(1, 6).loop(print)
+    // prints 1-5 on separate lines`,
+    `   1 | Block statements=[#2,#15,#28,#34]
+   2 | Call id=#3 args=#7
+   3 | BinaryExp left=#4 op='.' right='loop'
+   4 | Call id='range' args=#5
+   5 | Args args=[#6]
+   6 | Num val=5
+   7 | Args args=[#8]
+   8 | Func params=#9 block=#11
+   9 | Params params=[#10]
+  10 | Var id='i' local=true readOnly=false type=['any']
+  11 | Block statements=[#12]
+  12 | ReturnStatement exp=#13
+  13 | Call id='print' args=#14
+  14 | Args args=[#10]
+  15 | Call id=#16 args=#20
+  16 | BinaryExp left=#17 op='.' right='loop'
+  17 | Call id='range' args=#18
+  18 | Args args=[#19]
+  19 | Num val=5
+  20 | Args args=[#21]
+  21 | Func params=#22 block=#24
+  22 | Params params=[#23]
+  23 | Var id='i' local=true readOnly=false type=['any']
+  24 | Block statements=[#25]
+  25 | ReturnStatement exp=#26
+  26 | Call id='print' args=#27
+  27 | Args args=[#23]
+  28 | Call id=#29 args=#33
+  29 | BinaryExp left=#30 op='.' right='loop'
+  30 | Call id='range' args=#31
+  31 | Args args=[#32]
+  32 | Num val=5
+  33 | Args args=['print']
+  34 | Call id=#35 args=#40
+  35 | BinaryExp left=#36 op='.' right='loop'
+  36 | Call id='range' args=#37
+  37 | Args args=[#38,#39]
+  38 | Num val=1
+  39 | Num val=6
+  40 | Args args=['print']`
+  ],
 //   // [
 //   //   'strings.bang example code lines 1-11',
 //   //   `const name = "John Smith"
