@@ -863,8 +863,28 @@ export default function analyze(sourceCode) {
 
       return new core.MatchCase(matches.asIteration().rep(), block)
     },
-    DefaultClause(_default, _colon, block) {
-      return new core.DefaultMatchCase(block.rep())
+    DefaultClause(_default, _colon, defaultBlock) {
+      let block
+
+      if (defaultBlock._node.ruleName !== 'BangFunc') {
+        const b = new core.Block()
+        context = context.newChildContext({ inLoop: false, block: b })
+
+        b.statements = [defaultBlock.rep()]
+        if (!(b.statements[0] instanceof core.ReturnStatement)) {
+          b.statements[0] = new core.ReturnStatement(b.statements[0])
+        }
+
+        context.extraVarDecs.forEach(s => b.statements.unshift(s))
+        context.extraVarDecs = []
+
+        context = context.parent
+        block = b
+      } else {
+        block = defaultBlock.rep()
+      }
+      
+      return new core.DefaultMatchCase(block)
     },
     nil(_nil) {
       return new core.Nil()
