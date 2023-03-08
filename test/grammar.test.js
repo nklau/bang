@@ -68,7 +68,6 @@ const exps = [
   ['true boolean literal', 'true'],
   ['two literal list literal', '[1, 2]'],
   ['two variable list literal', '[x, y]'],
-  ['unwrapped exp', 'x?'],
   ['variable name', 'x']
 ]
 const assignmentOps = ['=', '+=', '-=', '*=', '/=', '%=']
@@ -420,7 +419,7 @@ const syntaxErrors = [
   ['mismatched parens', '(', /Line 1, col 2/],
   ['mismatched parens', ')', /Line 1, col 1/],
   ['multiple statements per line', 'x = 2 x = 3', /Line 1, col 7/],
-  ['multiple statements per line', 'x = y? { "str" }', /Line 1, col 8/],
+  ['multiple statements per line', 'x = y { "str" }', /Line 1, col 7/],
   ['multiline comment with //', '// comment \n rest of comment', /Line 2, col 7/],
   ['mismatched apostrophes', "'", /Line 1, col 2/],
   ['mismatched quotes', '"', /Line 1, col 2/],
@@ -553,15 +552,6 @@ describe("The grammar", () => {
     it(`properly accepts the ! operator on a ${scenario}`, () => {
       const match = grammar.match(`!${source}`)
       if (scenario.includes('negative exp') || scenario.includes('pre-decremented') || scenario.includes('pre-incremented')) {
-        assert(!match.succeeded())
-      } else {
-        assert(match.succeeded())
-      }
-    })
-    it(`properly accepts the ? operator on a ${scenario}\n${source}?`, () => {
-      // console.log(`${scenario}?`)
-      const match = grammar.match(`${source}?`)
-      if (scenario.includes('post-decremented') || scenario.includes('post-incremented')) {
         assert(!match.succeeded())
       } else {
         assert(match.succeeded())

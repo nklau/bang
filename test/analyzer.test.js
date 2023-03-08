@@ -1709,7 +1709,7 @@ const examples = [
   //   `   1 | Block statements=[#2]
   //  2 | ReturnStatement exp=#3
   //  3 | Str val='\\n'`
-  // ] // TODO not sure whats happening here
+  // ], // TODO not sure whats happening here
   // TODO: escaped chars (formatted and regular strs)
   // [
   //   'match.bang example code',
@@ -1738,10 +1738,25 @@ const examples = [
   // 11 | VarDec var=#12 exp=#13
   // 12 | Var id='result' local=false readOnly=false type=['any']
   // 13 | MatchExp cond=#9 clauses=#14
-  // 14 | MatchBlock cases=[#15]
-  // 15 | MatchCase conds=[#16] block=
+  // 14 | MatchBlock cases=[#15,#20,#25]
+  // 15 | MatchCase conds=[#16] block=#17
   // 16 | BinaryExp left=#3 op='.' right='spring'
-  // 17 | `
+  // 17 | Block statements=[#18]
+  // 18 | ReturnStatement exp=#19
+  // 19 | Str val='spring!'
+  // 20 | MatchCase conds=[#21] block=#22
+  // 21 | BinaryExp left=#3 op='.' right='summer'
+  // 22 | Block statements=[#23]
+  // 23 | ReturnStatement exp=#24
+  // 24 | Str val='summer!'
+  // 25 | MatchCase conds=[#26,#27] block=#28
+  // 26 | BinaryExp left=#3 op='.' right='fall'
+  // 27 | BinaryExp left=#3 op='.' right='winter'
+  // 28 | Block statements=[#29,#32]
+  // 29 | VarDec var=#30 exp=#31
+  // 30 | Var id='str' local=false readOnly=false type=['string']
+  // 31 | Str val='is cold!'
+  // 32 | ReturnStatement`
   // ] // TODO: think default vals for objects should be string values, not nil
 ]
 

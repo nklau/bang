@@ -642,9 +642,6 @@ export default function analyze(sourceCode) {
     Exp9_negative(negate, exp) {
       return new core.UnaryExp(exp.rep(), negate.sourceString)
     },
-    Exp9_unwrap(exp, unwrap) {
-      return new core.UnaryExp(exp.rep(), unwrap.sourceString)
-    },
     Exp10_enclosed(_open, exp, _close) {
       return new core.NaryExp([exp.rep()])
     },
@@ -843,8 +840,28 @@ export default function analyze(sourceCode) {
     MatchBlock(_open, cases, defaultCase, _close) {
       return new core.MatchBlock([...cases.rep(), ...defaultCase.rep()])
     },
-    CaseClause(_case, matches, _colon, block) {
-      return new core.MatchCase(matches.asIteration().rep(), block.rep())
+    CaseClause(_case, matches, _colon, caseBlock) {
+      let block
+
+      if (caseBlock._node.ruleName !== 'BangFunc') {
+        const b = new core.Block()
+        context = context.newChildContext({ inLoop: false, block: b })
+
+        b.statements = [caseBlock.rep()]
+        if (!(b.statements[0] instanceof core.ReturnStatement)) {
+          b.statements[0] = new core.ReturnStatement(b.statements[0])
+        }
+
+        context.extraVarDecs.forEach(s => b.statements.unshift(s))
+        context.extraVarDecs = []
+
+        context = context.parent
+        block = b
+      } else {
+        block = caseBlock.rep()
+      }
+
+      return new core.MatchCase(matches.asIteration().rep(), block)
     },
     DefaultClause(_default, _colon, block) {
       return new core.DefaultMatchCase(block.rep())

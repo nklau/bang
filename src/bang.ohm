@@ -33,7 +33,6 @@ Bang {
                         | Exp9 #"[" Exp "]"                                                 -- subscript
                         | LeftSelect id                                                     -- select
                         | "!" Exp9                                                          -- negative
-                        | Exp9 #"?"                                                         -- unwrap
                         | Exp10
   Exp10                 = nil       | Str       | num       | Obj       
                         | boolLit   | BangFunc  | MatchExp  | ListLit   
