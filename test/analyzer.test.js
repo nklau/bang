@@ -1614,12 +1614,13 @@ const examples = [
    8 | NaryExp exp=[#3,'<',#9]
    9 | Num val=10
   10 | Args args=[#11]
-  11 | Block statements=[#12,#14]
-  12 | Call id='print' args=#13
-  13 | Args args=[#3]
-  14 | Assign var=#3 exp=#15
-  15 | NaryExp exp=[#3,'+',#16]
-  16 | Num val=1`
+  11 | Block statements=[#12,#15]
+  12 | Call id=#13 args=#14
+  13 | Var id='print' local=false readOnly=true type=['function']
+  14 | Args args=[#3]
+  15 | Assign var=#3 exp=#16
+  16 | NaryExp exp=[#3,'+',#17]
+  17 | Num val=1`
   ],
   [
     'loops.bang example code lines 16-22',
@@ -1630,46 +1631,48 @@ const examples = [
     
     range(1, 6).loop(print)
     // prints 1-5 on separate lines`,
-    `   1 | Block statements=[#2,#15,#28,#34]
-   2 | Call id=#3 args=#7
+    `   1 | Block statements=[#2,#17,#30,#36]
+   2 | Call id=#3 args=#8
    3 | BinaryExp left=#4 op='.' right='loop'
-   4 | Call id='range' args=#5
-   5 | Args args=[#6]
-   6 | Num val=5
-   7 | Args args=[#8]
-   8 | Func params=#9 block=#11
-   9 | Params params=[#10]
-  10 | Var id='i' local=true readOnly=false type=['any']
-  11 | Block statements=[#12]
-  12 | ReturnStatement exp=#13
-  13 | Call id='print' args=#14
-  14 | Args args=[#10]
-  15 | Call id=#16 args=#20
-  16 | BinaryExp left=#17 op='.' right='loop'
-  17 | Call id='range' args=#18
-  18 | Args args=[#19]
-  19 | Num val=5
+   4 | Call id=#5 args=#6
+   5 | Var id='range' local=false readOnly=true type=['function']
+   6 | Args args=[#7]
+   7 | Num val=5
+   8 | Args args=[#9]
+   9 | Func params=#10 block=#12
+  10 | Params params=[#11]
+  11 | Var id='i' local=true readOnly=false type=['any']
+  12 | Block statements=[#13]
+  13 | ReturnStatement exp=#14
+  14 | Call id=#15 args=#16
+  15 | Var id='print' local=false readOnly=true type=['function']
+  16 | Args args=[#11]
+  17 | Call id=#18 args=#22
+  18 | BinaryExp left=#19 op='.' right='loop'
+  19 | Call id=#5 args=#20
   20 | Args args=[#21]
-  21 | Func params=#22 block=#24
-  22 | Params params=[#23]
-  23 | Var id='i' local=true readOnly=false type=['any']
-  24 | Block statements=[#25]
-  25 | ReturnStatement exp=#26
-  26 | Call id='print' args=#27
-  27 | Args args=[#23]
-  28 | Call id=#29 args=#33
-  29 | BinaryExp left=#30 op='.' right='loop'
-  30 | Call id='range' args=#31
-  31 | Args args=[#32]
-  32 | Num val=5
-  33 | Args args=['print']
-  34 | Call id=#35 args=#40
-  35 | BinaryExp left=#36 op='.' right='loop'
-  36 | Call id='range' args=#37
-  37 | Args args=[#38,#39]
-  38 | Num val=1
-  39 | Num val=6
-  40 | Args args=['print']`
+  21 | Num val=5
+  22 | Args args=[#23]
+  23 | Func params=#24 block=#26
+  24 | Params params=[#25]
+  25 | Var id='i' local=true readOnly=false type=['any']
+  26 | Block statements=[#27]
+  27 | ReturnStatement exp=#28
+  28 | Call id=#15 args=#29
+  29 | Args args=[#25]
+  30 | Call id=#31 args=#35
+  31 | BinaryExp left=#32 op='.' right='loop'
+  32 | Call id=#5 args=#33
+  33 | Args args=[#34]
+  34 | Num val=5
+  35 | Args args=[#15]
+  36 | Call id=#37 args=#42
+  37 | BinaryExp left=#38 op='.' right='loop'
+  38 | Call id=#5 args=#39
+  39 | Args args=[#40,#41]
+  40 | Num val=1
+  41 | Num val=6
+  42 | Args args=[#15]`
   ],
   [
     'strings.bang example code lines 4-11',
@@ -1681,7 +1684,7 @@ const examples = [
     print("//")
     print(/* */)
     print(/* // */)`,
-    `   1 | Block statements=[#2,#5,#8,#12,#15,#18,#20]
+    `   1 | Block statements=[#2,#5,#8,#12,#15,#19,#21]
    2 | VarDec var=#3 exp=#4
    3 | Var id='firstName' local=false readOnly=false type=['string']
    4 | Str val='Ray'
@@ -1695,13 +1698,14 @@ const examples = [
   12 | VarDec var=#13 exp=#14
   13 | Var id='interpolatedName' local=false readOnly=false type=['string']
   14 | FormattedStr val=[#3,' ',#6]
-  15 | Call id='print' args=#16
-  16 | Args args=[#17]
-  17 | Str val='//'
-  18 | Call id='print' args=#19
-  19 | Args args=[]
-  20 | Call id='print' args=#21
-  21 | Args args=[]`
+  15 | Call id=#16 args=#17
+  16 | Var id='print' local=false readOnly=true type=['function']
+  17 | Args args=[#18]
+  18 | Str val='//'
+  19 | Call id=#16 args=#20
+  20 | Args args=[]
+  21 | Call id=#16 args=#22
+  22 | Args args=[]`
   ],
   // [
   //   'escaped new line',
@@ -1761,8 +1765,9 @@ const examples = [
   34 | Block statements=[#35]
   35 | ReturnStatement exp=#36
   36 | Str val='California!'
-  37 | Call id='print' args=#38
-  38 | Args args=[#12]`
+  37 | Call id=#38 args=#39
+  38 | Var id='print' local=false readOnly=true type=['function']
+  39 | Args args=[#12]`
   ],
   [
     'twoSum.bang example code lines 1-10',
@@ -1808,15 +1813,16 @@ const examples = [
   30 | VarSubscript id=#13 selector=#31
   31 | NaryExp exp=[#7,'-',#21]
   32 | ReturnStatement exp=#10
-  33 | Call id='print' args=#34
-  34 | Args args=[#35]
-  35 | Call id=#3 args=#36
-  36 | Args args=[#37,#41]
-  37 | List val=[#38,#39,#40]
-  38 | Num val=1
-  39 | Num val=2
-  40 | Num val=3
-  41 | Num val=4`
+  33 | Call id=#34 args=#35
+  34 | Var id='print' local=false readOnly=true type=['function']
+  35 | Args args=[#36]
+  36 | Call id=#3 args=#37
+  37 | Args args=[#38,#42]
+  38 | List val=[#39,#40,#41]
+  39 | Num val=1
+  40 | Num val=2
+  41 | Num val=3
+  42 | Num val=4`
   ],
   [
     'twoSum.bang example code lines 12-20',
@@ -1861,15 +1867,16 @@ const examples = [
   30 | ReturnStatement exp=#31
   31 | NaryExp exp=[#10,'>=',#32]
   32 | Num val=0
-  33 | Call id='print' args=#34
-  34 | Args args=[#35]
-  35 | Call id=#3 args=#36
-  36 | Args args=[#37,#41]
-  37 | List val=[#38,#39,#40]
-  38 | Num val=1
-  39 | Num val=2
-  40 | Num val=3
-  41 | Num val=4`
+  33 | Call id=#34 args=#35
+  34 | Var id='print' local=false readOnly=true type=['function']
+  35 | Args args=[#36]
+  36 | Call id=#3 args=#37
+  37 | Args args=[#38,#42]
+  38 | List val=[#39,#40,#41]
+  39 | Num val=1
+  40 | Num val=2
+  41 | Num val=3
+  42 | Num val=4`
   ],
   [
     'calling an undefined var initializes it as a function',

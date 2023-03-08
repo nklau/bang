@@ -1,6 +1,7 @@
 import fs from "fs"
 import ohm from "ohm-js"
 import * as core from "./core.js"
+import * as stdlib from "./stdlib.js"
 
 const bangGrammar = ohm.grammar(fs.readFileSync("src/bang.ohm"))
 const d = { LIST: 'list', OBJ: 'object', STR: 'string', NUM: 'number', BOOL: 'boolean', NIL: 'nil', FUNC: 'function', ANY: 'any' }
@@ -574,10 +575,10 @@ export default function analyze(sourceCode) {
       return new increment(exp)
     },
     Exp9_call(id, _space, params) {
-      if (id.sourceString === 'print' || id.sourceString === 'range') {
-        // TODO
-        return new core.Call(id.sourceString, params.rep())
-      }
+      // if (id.sourceString === 'print' || id.sourceString === 'range') {
+      //   // TODO
+      //   return new core.Call(id.sourceString, params.rep())
+      // }
       let [exp, args] = [id.rep(), params.rep()]
       // new core.Func(new core.Params(), new core.Block([new core.ReturnStatement(new core.Str(exp))]))
       let notDefined = defineVar(exp, context, [d.FUNC])
@@ -880,6 +881,10 @@ export default function analyze(sourceCode) {
       return children.map(child => child.rep())
     },
   })
+
+  for (const [name, obj] of Object.entries(stdlib.contents)) {
+    context.add(name, obj)
+  }
 
   const match = bangGrammar.match(sourceCode)
   if (!match.succeeded()) core.error(match.message)
