@@ -9,6 +9,7 @@ import analyze from "../src/analyzer.js"
 // -2 ** 2
 // 2 ** -2 ** 2
 // return outside block
+// TODO 1 +++x, 1 ---x
 
 const examples = [
   [
@@ -1702,7 +1703,6 @@ const examples = [
   21 | Args args=[]`
   ]
 //   // TODO: escaped chars (formatted and regular strs)
-// TODO 1 +++x, 1 ---x
 ]
 
 describe('The analyzer', () => {

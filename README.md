@@ -211,25 +211,25 @@ if (isValid) {
 <td>
 
 ```swift
-optional = isValid
+x = isValid
   ? { object }
   : { print("invalid") }
-optional = isValid ? object : print("invalid")
+x = isValid ? object : print("invalid")
 
-const objectField = optional?.fieldName
+const objectField = x.fieldName
 ```
 
 </td>
 <td>
 
 ```javascript
-let optional
+let x
 if (isValid) {
-  optional = object
+  x = object
 } else {
   console.log("invalid")
 }
-const objectField = optional?.fieldName
+const objectField = x?.fieldName
 ```
 
 </td>
@@ -240,10 +240,10 @@ const objectField = optional?.fieldName
 
 ```swift
 const isValid = false
-optional = isValid ? object : print("invalid")
+x = isValid ? object : print("invalid")
 // prints "invalid"
 
-const objectField = optional?.fieldName
+const objectField = x.fieldName
 // objectField = nil
 ```
 
@@ -252,15 +252,15 @@ const objectField = optional?.fieldName
 
 ```javascript
 const isValid = false
-let optional
+let x
 if (isValid) {
-  optional = object
+  x = object
 } else {
   console.log("invalid")
 }
 // prints "invalid"
 
-const objectField = optional?.fieldName
+const objectField = x?.fieldName
 // objectField is undefined
 ```
 
@@ -272,10 +272,10 @@ const objectField = optional?.fieldName
 
 ```swift
 isValid = false
-optional = isValid
+x = isValid
   ? object
   : () -> print("invalid")
-optional?() // prints "invalid"
+x() // prints "invalid"
 ```
 
 </td>
@@ -283,8 +283,8 @@ optional?() // prints "invalid"
 
 ```javascript
 let isValid = false
-let optional = isValid ? object : () => console.log("invalid")
-optional() // prints "invalid"
+let x = isValid ? object : () => console.log("invalid")
+x() // prints "invalid"
 ```
 
 </td>

@@ -6,16 +6,16 @@ optional = isValid
   : { print("invalid") }
 optional = isValid ? object : print("invalid")
 
-objectField = optional?.fieldName
+objectField = optional.fieldName
 isValid = false
 optional = isValid ? object : print("invalid")
 // prints "invalid"
 
-objectField = optional?.fieldName
+objectField = optional.fieldName
 // objectField = nil
 
 isValid = false
 optional = isValid
   ? object
   : () -> print("invalid")
-optional?() // prints "invalid"
+optional() // prints "invalid"
