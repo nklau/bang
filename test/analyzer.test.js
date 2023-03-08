@@ -1817,7 +1817,65 @@ const examples = [
   39 | Num val=2
   40 | Num val=3
   41 | Num val=4`
-  ] // TODO should we be updating types of parameters when we see them used in block statements?? prob not?
+  ],
+  [
+    'twoSum.bang example code lines 12-20',
+    `twoSum = (nums, target) -> {
+      j = -1
+      [nums.findIndex((num, i) -> {
+        j = nums.indexOf(target - num, i + 1)
+        j >= 0
+      }), j]
+    }
+    
+    print(twoSum([1,2,3], 4)) // [0, 2]`,
+    `   1 | Block statements=[#2,#33]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='twoSum' local=false readOnly=false type=['function']
+   4 | Func params=#5 block=#8
+   5 | Params params=[#6,#7]
+   6 | Var id='nums' local=true readOnly=false type=['any']
+   7 | Var id='target' local=true readOnly=false type=['any']
+   8 | Block statements=[#9,#13]
+   9 | VarDec var=#10 exp=#11
+  10 | Var id='j' local=false readOnly=false type=['number','any']
+  11 | UnaryExp exp=#12 op='-'
+  12 | Num val=1
+  13 | ReturnStatement exp=#14
+  14 | List val=[#15,#10]
+  15 | Call id=#16 args=#17
+  16 | BinaryExp left=#6 op='.' right='findIndex'
+  17 | Args args=[#18]
+  18 | Func params=#19 block=#22
+  19 | Params params=[#20,#21]
+  20 | Var id='num' local=true readOnly=false type=['any']
+  21 | Var id='i' local=true readOnly=false type=['any']
+  22 | Block statements=[#23,#30]
+  23 | Assign var=#10 exp=#24
+  24 | Call id=#25 args=#26
+  25 | BinaryExp left=#6 op='.' right='indexOf'
+  26 | Args args=[#27,#28]
+  27 | NaryExp exp=[#7,'-',#20]
+  28 | NaryExp exp=[#21,'+',#29]
+  29 | Num val=1
+  30 | ReturnStatement exp=#31
+  31 | NaryExp exp=[#10,'>=',#32]
+  32 | Num val=0
+  33 | Call id='print' args=#34
+  34 | Args args=[#35]
+  35 | Call id=#3 args=#36
+  36 | Args args=[#37,#41]
+  37 | List val=[#38,#39,#40]
+  38 | Num val=1
+  39 | Num val=2
+  40 | Num val=3
+  41 | Num val=4`
+  ],
+  // [
+  //   'calling an undefined var initializes it as a function',
+  //   `x()`,
+  //   ``
+  // ],
 ]
 
 describe('The analyzer', () => {
