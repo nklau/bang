@@ -1977,25 +1977,106 @@ const examples = [
    8 | Num val=0
    9 | Num val=1`
   ],
-  // [
-  //   '1010-ps3-q5.bang example code',
-  //   `name = 'Harry Potter'
-  //   greeting = 'Hello, world!'
-  //   goodbye = 'Goodbye, all!'
-  //   space = ' '
-  //   star = '*'
+  [
+    '1010-ps3-q5.bang example code',
+    `name = 'Harry Potter'
+    greeting = 'Hello, world!'
+    goodbye = 'Goodbye, all!'
+    const space = ' '
+    const star = '*'
     
-  //   greeting = greeting.list
-  //   name = name.split()
-  //   goodbye = goodbye.list
-  //   print(star+(space*16) +star)
-  //   print(star+space+''.join(greeting[:5])+space+name[0]+''.join(greeting[12])*3+space+star)
-  //   print(star+space+''.join(goodbye[:7])+space+name[1]+''.join(greeting[12])*3+space+star)
-  //   print(star+(space*19)+star)
-  //   print(star*21)`,
-  //   `   1 | Block statements=[#2]
-  //  2 | VarDec`
-  // ]
+    greeting = greeting.list
+    name = name.split()
+    goodbye = goodbye.list
+    print(star+(space*16) +star)
+    print(star+space+''.join(greeting[:5])+space+name[0]+''.join(greeting[12])*3+space+star)
+    print(star+space+''.join(goodbye[:7])+space+name[1]+''.join(greeting[12])*3+space+star)
+    print(star+(space*19)+star)
+    print(star*21)`,
+    `   1 | Block statements=[#2,#5,#8,#11,#14,#17,#19,#23,#25,#32,#53,#74,#80]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='name' local=false readOnly=false type=['string','any']
+   4 | Str val='Harry Potter'
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='greeting' local=false readOnly=false type=['string','any']
+   7 | Str val='Hello, world!'
+   8 | VarDec var=#9 exp=#10
+   9 | Var id='goodbye' local=false readOnly=false type=['string','any']
+  10 | Str val='Goodbye, all!'
+  11 | VarDec var=#12 exp=#13
+  12 | Var id='space' local=false readOnly=true type=['string']
+  13 | Str val=' '
+  14 | VarDec var=#15 exp=#16
+  15 | Var id='star' local=false readOnly=true type=['string']
+  16 | Str val='*'
+  17 | Assign var=#6 exp=#18
+  18 | BinaryExp left=#6 op='.' right='list'
+  19 | Assign var=#3 exp=#20
+  20 | Call id=#21 args=#22
+  21 | BinaryExp left=#3 op='.' right='split'
+  22 | Args args=[]
+  23 | Assign var=#9 exp=#24
+  24 | BinaryExp left=#9 op='.' right='list'
+  25 | Call id=#26 args=#27
+  26 | Var id='print' local=false readOnly=true type=['function']
+  27 | Args args=[#28]
+  28 | NaryExp exp=[#15,'+',#29,'+',#15]
+  29 | NaryExp exp=[#30]
+  30 | NaryExp exp=[#12,'*',#31]
+  31 | Num val=16
+  32 | Call id=#26 args=#33
+  33 | Args args=[#34]
+  34 | NaryExp exp=[#15,'+',#12,'+',#35,'+',#12,'+',#43,'+',#45,'+',#12,'+',#15]
+  35 | Call id=#36 args=#38
+  36 | BinaryExp left=#37 op='.' right='join'
+  37 | Str val=''
+  38 | Args args=[#39]
+  39 | VarSubscript id=#6 selector=#40
+  40 | Subscription left=#41 right=#42
+  41 | Num val=0
+  42 | Num val=5
+  43 | VarSubscript id=#3 selector=#44
+  44 | Num val=0
+  45 | NaryExp exp=[#46,'*',#52]
+  46 | Call id=#47 args=#49
+  47 | BinaryExp left=#48 op='.' right='join'
+  48 | Str val=''
+  49 | Args args=[#50]
+  50 | VarSubscript id=#6 selector=#51
+  51 | Num val=12
+  52 | Num val=3
+  53 | Call id=#26 args=#54
+  54 | Args args=[#55]
+  55 | NaryExp exp=[#15,'+',#12,'+',#56,'+',#12,'+',#64,'+',#66,'+',#12,'+',#15]
+  56 | Call id=#57 args=#59
+  57 | BinaryExp left=#58 op='.' right='join'
+  58 | Str val=''
+  59 | Args args=[#60]
+  60 | VarSubscript id=#9 selector=#61
+  61 | Subscription left=#62 right=#63
+  62 | Num val=0
+  63 | Num val=7
+  64 | VarSubscript id=#3 selector=#65
+  65 | Num val=1
+  66 | NaryExp exp=[#67,'*',#73]
+  67 | Call id=#68 args=#70
+  68 | BinaryExp left=#69 op='.' right='join'
+  69 | Str val=''
+  70 | Args args=[#71]
+  71 | VarSubscript id=#6 selector=#72
+  72 | Num val=12
+  73 | Num val=3
+  74 | Call id=#26 args=#75
+  75 | Args args=[#76]
+  76 | NaryExp exp=[#15,'+',#77,'+',#15]
+  77 | NaryExp exp=[#78]
+  78 | NaryExp exp=[#12,'*',#79]
+  79 | Num val=19
+  80 | Call id=#26 args=#81
+  81 | Args args=[#82]
+  82 | NaryExp exp=[#15,'*',#83]
+  83 | Num val=21`
+  ]
 ]
 
 describe('The analyzer', () => {

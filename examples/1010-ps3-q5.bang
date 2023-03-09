@@ -1,20 +1,14 @@
 name = 'Harry Potter'
 greeting = 'Hello, world!'
 goodbye = 'Goodbye, all!'
-space = ' '
-star = '*'
+const space = ' '
+const star = '*'
 
 greeting = greeting.list
 name = name.split()
 goodbye = goodbye.list
-print(star * 18)
 print(star+(space*16) +star)
 print(star+space+''.join(greeting[:5])+space+name[0]+''.join(greeting[12])*3+space+star)
-print(star+(space*16)+star)
-print(star*18)
-
-print(star*21)
-print(star+(space*19)+star)
 print(star+space+''.join(goodbye[:7])+space+name[1]+''.join(greeting[12])*3+space+star)
 print(star+(space*19)+star)
 print(star*21)
