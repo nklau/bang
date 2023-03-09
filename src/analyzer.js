@@ -665,8 +665,8 @@ export default function analyze(sourceCode) {
       return exp.rep()
     },
     KeywordArg(id, _e, exp) {
-      // TODO create new var and add to context
-      return new core.KeywordArg(id.sourceString, exp.rep())
+      // const [name, val] = [id.rep(), exp.rep()]
+      return new core.KeywordArg(id.rep(), exp.rep())
     },
     KeywordParam(id, _e, exp) {
       const [name, val] = [id.sourceString, exp.rep()]

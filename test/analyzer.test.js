@@ -2385,7 +2385,7 @@ const examples = [
    8 | Num val=1
    9 | Block statements=[#10]
   10 | ReturnStatement exp=#7`
-  ]
+  ],
   // [
   //   'keyword args in function call',
   //   `x = (y) -> y
@@ -2402,7 +2402,21 @@ const examples = [
   // 10 | Args args=[#11]
   // 11 | KeywordParam id=#6 val=#12
   // 12 | Num val=2`
-  // ]
+  // ],
+  [
+    'var select on left side of vardec checks for implicit vardec',
+    `x.y = 2`,
+    `   1 | Block statements=[#2,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['object']
+   4 | Obj val=[#5]
+   5 | ObjField key=#6 val=#7
+   6 | Str val='y'
+   7 | Str val='y'
+   8 | Assign var=#9 exp=#10
+   9 | BinaryExp left=#3 op='.' right='y'
+  10 | Num val=2`
+  ]
 ]
 
 describe('The analyzer', () => {
