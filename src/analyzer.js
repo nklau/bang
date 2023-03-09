@@ -618,14 +618,13 @@ export default function analyze(sourceCode) {
       // return (id instanceof core.Var ? id.exp : id).getVal(exp)
     },
     FuncLit(exp, _arrow, funcBody) {
+      let block = new core.Block()
+      context = context.newChildContext({ inLoop: false, block: block })
+
       const params = exp.rep()
-      let block
 
       if (funcBody._node.ruleName !== 'BangFunc') {
         // Designed to only get here if the function body is a single statement
-
-        block = new core.Block()
-        context = context.newChildContext({ inLoop: false, block: block })
 
         block.statements = [funcBody.rep()]
         if (!(block.statements[0] instanceof core.ReturnStatement)) {
@@ -634,11 +633,11 @@ export default function analyze(sourceCode) {
 
         context.extraVarDecs.forEach(s => block.statements.unshift(s))
         context.extraVarDecs = []
-        context = context.parent
       } else {
         block = funcBody.rep()
       }
 
+      context = context.parent
       return new core.Func(params, block)
     },
     Params(_open, params, _close) {
@@ -651,18 +650,29 @@ export default function analyze(sourceCode) {
       return arg.rep()
     },
     Param(param) {
-      const name = param.sourceString
-      const variable = new core.Var(name, true, false, [d.ANY])
+      const name = param.rep()
+      let variable
+      if (typeof name === 'string') {
+        variable = new core.Var(name, true, false, [d.ANY])
+        context.add(name, variable)
+      } else {
+        variable = name
+      }
 
-      context.add(name, variable)
       return variable
     },
     PositionalArg(exp) {
       return exp.rep()
     },
     KeywordArg(id, _e, exp) {
-      // TODO: this may need to be a separate core.KeywordArg class
-      return new core.KeywordParam(id.sourceString, exp.rep())
+      // TODO create new var and add to context
+      return new core.KeywordArg(id.sourceString, exp.rep())
+    },
+    KeywordParam(id, _e, exp) {
+      const [name, val] = [id.sourceString, exp.rep()]
+      const variable = new core.Var(name, true, false, [d.ANY, val.type])
+      context.add(name, variable)
+      return new core.KeywordParam(variable, val)
     },
     oneParam(id) {
       const name = id.sourceString

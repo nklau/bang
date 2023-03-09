@@ -57,9 +57,10 @@ Bang {
   Params                = "(" ListOf<Param, ","> ")"
   Args                  = "(" ListOf<Arg, ","> ")"
   Arg                   = KeywordArg | PositionalArg
-  Param                 = KeywordArg | id
+  Param                 = KeywordParam | id
   PositionalArg         = Exp
   KeywordArg            = id "=" Exp
+  KeywordParam          = id "=" Exp
   oneParam              = id
 
   Obj                   = "{" ListOf<ObjField, ","> "}"

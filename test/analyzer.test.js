@@ -2329,7 +2329,80 @@ const examples = [
   23 | ReturnStatement exp=#24
   24 | Call id=#18 args=#25
   25 | Args args=[]`
+  ],
+  [
+    'call as return statement of match clause in match exp',
+    `match x {
+      case y: z()
+    }`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['nil']
+   4 | Nil 
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['nil']
+   7 | Nil 
+   8 | ReturnStatement exp=#9
+   9 | MatchExp cond=#3 clauses=#10
+  10 | MatchBlock cases=[#11]
+  11 | MatchCase conds=[#6] block=#12
+  12 | Block statements=[#13,#19]
+  13 | VarDec var=#14 exp=#15
+  14 | Var id='z' local=false readOnly=false type=['function']
+  15 | Func params=#16 block=#17
+  16 | Params params=[]
+  17 | Block statements=[#18]
+  18 | ReturnStatement exp=#14
+  19 | ReturnStatement exp=#20
+  20 | Call id=#14 args=#21
+  21 | Args args=[]`
+  ],
+  [
+    'escaped char in quoted str',
+    `"\\t"`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | Str val='\\\\t'`
+  ],
+  [
+    'line continuation in str',
+    `'\\
+'`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | Str val='\\\\\\n'`
+  ],
+  [
+    'default value in function param',
+    `x = (y = 1) -> y`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['function']
+   4 | Func params=#5 block=#9
+   5 | Params params=[#6]
+   6 | KeywordParam id=#7 val=#8
+   7 | Var id='y' local=true readOnly=false type=['any','number']
+   8 | Num val=1
+   9 | Block statements=[#10]
+  10 | ReturnStatement exp=#7`
   ]
+  // [
+  //   'keyword args in function call',
+  //   `x = (y) -> y
+  //   x(y = 2)`,
+  //   `   1 | Block statements=[#2,#9]
+  //  2 | VarDec var=#3 exp=#4
+  //  3 | Var id='x' local=false readOnly=false type=['function']
+  //  4 | Func params=#5 block=#7
+  //  5 | Params params=[#6]
+  //  6 | Var id='y' local=true readOnly=false type=['any']
+  //  7 | Block statements=[#8]
+  //  8 | ReturnStatement exp=#6
+  //  9 | Call id=#3 args=#10
+  // 10 | Args args=[#11]
+  // 11 | KeywordParam id=#6 val=#12
+  // 12 | Num val=2`
+  // ]
 ]
 
 describe('The analyzer', () => {

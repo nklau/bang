@@ -423,6 +423,13 @@ export class Args {
   }
 }
 
+export class KeywordArg {
+  constructor(id, val) {
+    this.id = id
+    this.val = val
+  }
+}
+
 export class MatchExp {
   constructor(cond, clauses) {
     this.cond = cond
