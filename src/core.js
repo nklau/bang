@@ -1,10 +1,9 @@
 import util from 'util'
 
 export class List {
-  static defaultVal = []
   static typeDescription = 'list'
 
-  constructor(val) {
+  constructor(val = []) {
     this.val = val
   }
 
@@ -26,7 +25,7 @@ export class List {
   }
 
   get default() {
-    return new List(List.defaultVal)
+    return new List()
   }
 
   get type() {
@@ -35,10 +34,9 @@ export class List {
 }
 
 export class Obj {
-  static defaultVal = []
   static typeDescription = 'object'
 
-  constructor(val) {
+  constructor(val = []) {
     this.val = val
   }
 
@@ -64,7 +62,7 @@ export class Obj {
   }
 
   get default() {
-    return new Obj(Obj.defaultVal)
+    return new Obj()
   }
 
   get type() {
@@ -80,10 +78,9 @@ export class ObjField {
 }
 
 export class Str {
-  static defaultVal = ''
   static typeDescription = 'string'
 
-  constructor(val) {
+  constructor(val = '') {
     this.val = val
   }
 
@@ -100,7 +97,7 @@ export class Str {
   }
 
   get default() {
-    return new Str(Str.defaultVal)
+    return new Str()
   }
 
   get type() {
@@ -109,9 +106,7 @@ export class Str {
 }
 
 export class FormattedStr extends Str {
-  static defaultVal = []
-
-  constructor(val) {
+  constructor(val = []) {
     super(val)
   }
 
@@ -120,15 +115,14 @@ export class FormattedStr extends Str {
   }
 
   get default() {
-    return new FormattedStr(FormattedStr.defaultVal)
+    return new FormattedStr()
   }
 }
 
 export class Num {
-  static defaultVal = 0
   static typeDescription = 'number'
 
-  constructor(val) {
+  constructor(val = 0) {
     this.val = Number(val)
   }
 
@@ -141,7 +135,7 @@ export class Num {
   }
 
   get default() {
-    return new Num(Num.defaultVal)
+    return new Num()
   }
 
   get type() {
@@ -150,10 +144,9 @@ export class Num {
 }
 
 export class Bool {
-  static defaultVal = 'false'
   static typeDescription = 'boolean'
 
-  constructor(val) {
+  constructor(val = false) {
     this.val = val === 'true' || val === true
   }
 
@@ -166,7 +159,7 @@ export class Bool {
   }
 
   get default() {
-    return new Bool(Bool.defaultVal)
+    return new Bool()
   }
 
   get type() {
@@ -187,7 +180,6 @@ export class Nil {
 }
 
 export class Func {
-  static defaultVal = []
   static typeDescription = 'function'
 
   constructor(params, block) {
@@ -203,8 +195,8 @@ export class Func {
 
   get default() {
     return new Func(
-      new Params(Func.defaultVal),
-      new Block(Func.defaultVal)
+      new Params(),
+      new Block()
     )
   }
 

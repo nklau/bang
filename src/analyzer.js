@@ -496,7 +496,7 @@ export default function analyze(sourceCode) {
       // }
       let [exp, args] = [id.rep(), params.rep()]
       // new core.Func(new core.Params(), new core.Block([new core.ReturnStatement(new core.Str(exp))]))
-      let notDefined = defineVar(exp, context, [d.FUNC])
+      const notDefined = defineVar(exp, context, [d.FUNC])
       if (notDefined) {
         const ret = new core.ReturnStatement(notDefined.var)
         notDefined.exp.block.statements.push(ret)
@@ -618,11 +618,15 @@ export default function analyze(sourceCode) {
       // return (id instanceof core.Var ? id.exp : id).getVal(exp)
     },
     FuncLit(exp, _arrow, funcBody) {
-      const id = exp.rep()
-      let block = new core.Block()
-      context = context.newChildContext({ inLoop: false, block: block })
+      const params = exp.rep()
+      let block
 
       if (funcBody._node.ruleName !== 'BangFunc') {
+        // Designed to only get here if the function body is a single statement
+
+        block = new core.Block()
+        context = context.newChildContext({ inLoop: false, block: block })
+
         block.statements = [funcBody.rep()]
         if (!(block.statements[0] instanceof core.ReturnStatement)) {
           block.statements[0] = new core.ReturnStatement(block.statements[0])
@@ -630,12 +634,12 @@ export default function analyze(sourceCode) {
 
         context.extraVarDecs.forEach(s => block.statements.unshift(s))
         context.extraVarDecs = []
+        context = context.parent
       } else {
         block = funcBody.rep()
       }
 
-      context = context.parent
-      return new core.Func(id, block)
+      return new core.Func(params, block)
     },
     Params(_open, params, _close) {
       return new core.Params(params.asIteration().rep())
@@ -730,15 +734,6 @@ export default function analyze(sourceCode) {
       return `${escape.sourceString}${newLine.rep()}`
     },
     id(_first, _rest) {
-      // let variable = context.lookup(name)
-      // if (!variable) {
-      //   variable = new core.Var(name, false, false)
-      //   const assign = new core.Assign(variable)
-
-      //   context.add(name, variable)
-      //   context.block.statements.unshift(assign)
-      // }
-      // return variable
       return context.lookup(this.sourceString) ?? this.sourceString
     },
     boolLit(bool) {
@@ -765,6 +760,8 @@ export default function analyze(sourceCode) {
       let block
 
       if (caseBlock._node.ruleName !== 'BangFunc') {
+        // Designed to only get here if block is a single statement
+
         const b = new core.Block()
         context = context.newChildContext({ inLoop: false, block: b })
 
@@ -782,25 +779,30 @@ export default function analyze(sourceCode) {
         block = caseBlock.rep()
       }
 
-      return new core.MatchCase(matches.asIteration().rep(), block)
+      let conds = matches.asIteration().rep()
+      conds = conds.map(c => {
+        const notDefined = defineVar(c, context)
+        return notDefined ? notDefined.var : c
+      })
+
+      return new core.MatchCase(conds, block)
     },
     DefaultClause(_default, _colon, defaultBlock) {
       let block
 
       if (defaultBlock._node.ruleName !== 'BangFunc') {
-        const b = new core.Block()
-        context = context.newChildContext({ inLoop: false, block: b })
+        block = new core.Block()
+        context = context.newChildContext({ inLoop: false, block: block })
 
-        b.statements = [defaultBlock.rep()]
-        if (!(b.statements[0] instanceof core.ReturnStatement)) {
-          b.statements[0] = new core.ReturnStatement(b.statements[0])
+        block.statements = [defaultBlock.rep()]
+        if (!(block.statements[0] instanceof core.ReturnStatement)) {
+          block.statements[0] = new core.ReturnStatement(block.statements[0])
         }
-
-        context.extraVarDecs.forEach(s => b.statements.unshift(s))
+        
+        context.extraVarDecs.forEach(s => block.statements.unshift(s))
         context.extraVarDecs = []
 
         context = context.parent
-        block = b
       } else {
         block = defaultBlock.rep()
       }

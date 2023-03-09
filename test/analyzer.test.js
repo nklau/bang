@@ -2297,6 +2297,38 @@ const examples = [
   81 | Args args=[#82]
   82 | NaryExp exp=[#15,'*',#83]
   83 | Num val=21`
+  ],
+  [
+    'call as return statement of default clause in match exp',
+    `match x {
+      case y: 1
+      default: z()
+    }`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['nil']
+   4 | Nil 
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['nil']
+   7 | Nil 
+   8 | ReturnStatement exp=#9
+   9 | MatchExp cond=#3 clauses=#10
+  10 | MatchBlock cases=[#11,#15]
+  11 | MatchCase conds=[#6] block=#12
+  12 | Block statements=[#13]
+  13 | ReturnStatement exp=#14
+  14 | Num val=1
+  15 | DefaultMatchCase block=#16
+  16 | Block statements=[#17,#23]
+  17 | VarDec var=#18 exp=#19
+  18 | Var id='z' local=false readOnly=false type=['function']
+  19 | Func params=#20 block=#21
+  20 | Params params=[]
+  21 | Block statements=[#22]
+  22 | ReturnStatement exp=#18
+  23 | ReturnStatement exp=#24
+  24 | Call id=#18 args=#25
+  25 | Args args=[]`
   ]
 ]
 
