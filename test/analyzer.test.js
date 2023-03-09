@@ -2,14 +2,56 @@ import util from "util"
 import assert from "assert/strict"
 import analyze from "../src/analyzer.js"
 
-// TODO const w/out val should error
-// TODO: local const w/out val should error
 // TODO: changing const val should error
 // TODO: x += x++ // x = 0 \n x = x + 1
 // -2 ** 2
 // 2 ** -2 ** 2
 // return outside block
 // TODO 1 +++x, 1 ---x
+const semanticErrors = [
+  [
+    'changing const value',
+    `const x = 5
+    x = 6`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'changing const value with +=',
+    `const x = 5
+    x += 6`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'changing const value with -=',
+    `const x = 5
+    x -= 6`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'changing const value with *=',
+    `const x = 5
+    x *= 6`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'changing const value with /=',
+    `const x = 5
+    x /= 6`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'changing const value with **=',
+    `const x = 5
+    x **= 6`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'changing const value with %=',
+    `const x = 5
+    x %= 6`,
+    /Cannot assign to constant variable x/
+  ],
+]
 
 const examples = [
   [
@@ -2084,5 +2126,10 @@ describe('The analyzer', () => {
     it(`produces the expected ast for ${scenario}`, () => {
       assert.deepEqual(util.format(analyze(example)), expected)
     }) 
+  }
+  for (const [scenario, source, errorMessagePattern] of semanticErrors) {
+    it(`throws on ${scenario}`, () => {
+      assert.throws(() => analyze(source), errorMessagePattern)
+    })
   }
 })

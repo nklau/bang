@@ -150,17 +150,10 @@ class Context {
   }
 
   add(name, entity) {
-    // check(
-    //   !(!entity.local && entity.readOnly && this.locals.has(name)), 
-    //   `Cannot assign to constant variable ${name}`, 
-    //   node
-    // )
     if (!entity.local && this.lookup(name)?.readOnly) {
       core.error(`Cannot assign to constant variable ${name}`)
     }
-    // entity.local ? `_${name}` : name
     this.locals.set(name, entity)
-    // return entity
   }
 
   newChildContext(props) {
@@ -200,6 +193,10 @@ export default function analyze(sourceCode) {
     Statement_varDec(local, readOnly, id, op, exp) {
       let [val, o, isLocal, isReadOnly, name] = [exp.rep(), op.sourceString, local.sourceString === 'local', readOnly.sourceString === 'const', id.sourceString]
       let variable = context.lookup(name)
+
+      if (!isLocal && variable?.readOnly) {
+        core.error(`Cannot assign to constant variable ${name}`)
+      }
 
       const notDefined = defineVar(val, context)
       if (notDefined) {
