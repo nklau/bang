@@ -2,10 +2,6 @@ import util from "util"
 import assert from "assert/strict"
 import analyze from "../src/analyzer.js"
 
-// TODO: changing const val should error
-// TODO: x += x++ // x = 0 \n x = x + 1
-// -2 ** 2
-// 2 ** -2 ** 2
 // return outside block
 // TODO 1 +++x, 1 ---x
 const semanticErrors = [
@@ -51,6 +47,11 @@ const semanticErrors = [
     x %= 6`,
     /Cannot assign to constant variable x/
   ],
+  [
+    'negative number on left side of exponential op',
+    `-2 ** 2`,
+    /Expected parentheses around negative operation on the left side of an exponential expression/
+  ]
 ]
 
 const examples = [
@@ -236,6 +237,17 @@ const examples = [
    7 | Num val=4
    8 | UnaryExp exp=#9 op='-'
    9 | Num val=1`
+  ],
+  [
+    'chained exponential exp',
+    `2 ** -2 ** 2`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | NaryExp exp=[#4,'**',#5,'**',#7]
+   4 | Num val=2
+   5 | UnaryExp exp=#6 op='-'
+   6 | Num val=2
+   7 | Num val=2`
   ],
   [
     'post increment creates a vardec',
