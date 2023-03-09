@@ -61,10 +61,112 @@ const semanticErrors = [
     'negated pre-decrement op with spaces',
     `- --x`,
     /Expected parentheses around pre-decrement operation with a negation/
-  ]
+  ],
+  [
+    '3 subtraction ops in a row without spaces',
+    `x---y`,
+    /Expected parentheses around post-decrement operation on the left side of a subtraction/
+  ],
+  [
+    'pre-decrement op on right of subtraction',
+    `x - --y`,
+    /Expected parentheses around pre-decrement operation on the right side of a subtraction/
+  ],
+  [
+    'post-decrement op on left of subtraction',
+    `x-- -y`,
+    /Expected parentheses around post-decrement operation on the left side of a subtraction/
+  ],
+  [
+    '3 addition ops in a row without spaces',
+    `x+++y`,
+    /Expected parentheses around post-increment operation on the left side of an addition/
+  ],
+  [
+    'post-increment on left of addition',
+    `x++ +y`,
+    /Expected parentheses around post-increment operation on the left side of an addition/
+  ],
+  [
+    'pre-increment on right of addition',
+    `x+ ++y`,
+    /Expected parentheses around pre-increment operation on the right side of an addition/
+  ],
 ]
 
 const examples = [
+  [
+    'enclosed pre-decrement on right of subtraction',
+    `x -(--y)`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='y' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='x' local=false readOnly=false type=['number']
+   7 | Num val=0
+   8 | ReturnStatement exp=#9
+   9 | NaryExp exp=[#6,'-',#10]
+  10 | NaryExp exp=[#11]
+  11 | PreDecrement exp=#3`
+  ],
+  [
+    'enclosed post-decrement on left of subtraction',
+    `(x--)-y`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['number']
+   7 | Num val=0
+   8 | ReturnStatement exp=#9
+   9 | NaryExp exp=[#10,'-',#6]
+  10 | NaryExp exp=[#11]
+  11 | PostDecrement exp=#3`
+  ],
+  [
+    'enclosed post-increment on left of addition',
+    `(x++)+y`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['number']
+   7 | Num val=0
+   8 | ReturnStatement exp=#9
+   9 | NaryExp exp=[#10,'+',#6]
+  10 | NaryExp exp=[#11]
+  11 | PostIncrement exp=#3`
+  ],
+  [
+    'enclosed pre-increment on right of addition',
+    `x+(++y)`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='y' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='x' local=false readOnly=false type=['number']
+   7 | Num val=0
+   8 | ReturnStatement exp=#9
+   9 | NaryExp exp=[#6,'+',#10]
+  10 | NaryExp exp=[#11]
+  11 | PreIncrement exp=#3`
+  ],
+  [
+    'two post-increments with the same uninitialized var does not make two new vars',
+    `x++ - x++`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | ReturnStatement exp=#6
+   6 | NaryExp exp=[#7,'-',#8]
+   7 | PostIncrement exp=#3
+   8 | PostIncrement exp=#3`
+  ],
   [
     'numeric variable declaration',
     'x = 1',
