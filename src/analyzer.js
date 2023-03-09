@@ -7,8 +7,6 @@ const bangGrammar = ohm.grammar(fs.readFileSync("src/bang.ohm"))
 const d = { LIST: 'list', OBJ: 'object', STR: 'string', NUM: 'number', BOOL: 'boolean', NIL: 'nil', FUNC: 'function', ANY: 'any' }
 const noReturnExps = [core.Ternary, core.PreIncrement, core.PreDecrement, core.PostIncrement, core.PostDecrement, core.Call]
 
-// TODO: function to get type
-
 function check(condition, message, node) {
   if (!condition) core.error(message, node)
 }
@@ -17,11 +15,6 @@ function check(condition, message, node) {
 function checkNotType(e, types) {
   const t = e?.type
   check(!types.includes(t), `Unexpected type ${t}`)
-}
-
-function checkSameTypes(e0, e1) {
-  const [t0, t1] = [e0?.type, e1?.type]
-  check(t0 === t1, `${t0} can never be equal to ${t1}`)
 }
 
 function defineVar(id, context, types = [d.NIL], exp, local = false, readOnly = false) {
@@ -33,47 +26,6 @@ function defineVar(id, context, types = [d.NIL], exp, local = false, readOnly = 
   context.extraVarDecs.unshift(varDec)
   return varDec
 }
-
-function isVar(e) {
-  return e instanceof core.Var
-}
-
-function isList(e) {
-  return e.type === d.LIST
-}
-
-function isObj(e) {
-  return e.type === d.OBJ
-}
-
-function isStr(e) {
-  return e.type === d.STR
-}
-
-function isNum(e) {
-  return e.type === d.NUM
-}
-
-function isBool(e) {
-  return e.type === d.BOOL
-}
-
-// TODO: is this needed?
-function isNil(e) {
-  return e.type === d.NIL
-}
-
-function isFunc(e) {
-  return e.type === d.FUNC
-}
-
-function checkType(e, types) {
-  check(types.includes(e?.type), `Unexpected type ${e?.type}`)
-}
-
-// function checkNotUndefined(e, name) {
-//   check(e, `Variable may not have been initialized`)
-// }
 
 function checkNotLiteral(e) {
   const lits = [core.Str, core.Num, core.Bool, core.Nil]
@@ -88,52 +40,18 @@ function checkInLoop(context) {
   check(context.inLoop, 'Cannot break outside of loop')
 }
 
-// function checkBool(e) {
-//   check(e.type.constructor === core.BoolType, 'Expected boolean')
-// }
-
-// function checkNum(e) {
-//   check(e.type.constructor === core.NumType, 'Expected number')
-// }
-
-// function isList(e) {
-//   return e.type.constructor === core.ListType
-// }
-
-// function isVar(e) {
-//   return e.constructor === core.Var
-// }
-
 // function coerceToBool(e) {
 //   return new core.Bool(!e?.equals(e?.default))
 // }
 
 function mapOps(elements) {
   const ops = ['==', '!=', '<', '>', '<=', '>=', '+', '-', '/', '*', '%', '**']
-  // return elements.reduce(
-  //   (map, val, i) => (ops.includes(val) ? { ...map, [val]: [elements[i - 1], elements[i + 1]] } : map),
-  //   {}
-  // )
   return elements.reduce(
     (arr, val, i) => (ops.includes(val) ? [ ...arr, [val, [elements[i - 1], elements[i + 1]]] ] : arr),
     []
   )
 }
 
-// function isPreIncrement(e) {
-//   return e instanceof core.UnaryExp
-//     && e.op === '++'
-//     && !e.postOp
-// }
-
-// function isPreDecrement(e) {
-//   return e instanceof core.UnaryExp
-//     && e.op === '--'
-//     && !e.postOp
-// }
-
-// TODO: should be able to say break from inside a block that's nested in a loop
-// TODO: should be able to say return from inside a loop that's nested in a block
 class Context {
   constructor({ parent = null, locals = new Map(), inLoop = false, block: b = null, extraVarDecs = [] }) {
     Object.assign(this, { parent, locals, inLoop, block: b, extraVarDecs: extraVarDecs })

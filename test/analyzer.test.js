@@ -2,7 +2,6 @@ import util from "util"
 import assert from "assert/strict"
 import analyze from "../src/analyzer.js"
 
-// return outside block
 const semanticErrors = [
   [
     'changing const value',
