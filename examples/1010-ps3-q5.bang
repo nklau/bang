@@ -4,9 +4,9 @@ goodbye = 'Goodbye, all!'
 space = ' '
 star = '*'
 
-greeting = list(greeting)
+greeting = greeting.list
 name = name.split()
-goodbye = list(goodbye)
+goodbye = goodbye.list
 print(star * 18)
 print(star+(space*16) +star)
 print(star+space+''.join(greeting[:5])+space+name[0]+''.join(greeting[12])*3+space+star)

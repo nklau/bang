@@ -285,6 +285,14 @@ export class VarSubscript {
   }
 }
 
+export class Subscription {
+  constructor(left, right) {
+    this.left = left
+    this.right = right
+    // indices may be out of bounds
+  }
+}
+
 // export class VarSelect {
 //   constructor(id, selector) {
 //     this.id = id

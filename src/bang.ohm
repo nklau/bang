@@ -30,7 +30,7 @@ Bang {
                         | ("++" | "--") Exp9                                                -- preFix
                         | Exp9
   Exp9                  = Exp9 #(~newLine space)* ~#newLine Args                            -- call
-                        | Exp9 #"[" Exp "]"                                                 -- subscript
+                        | Exp9 #"[" Subscription "]"                                        -- subscript
                         | LeftSelect id                                                     -- select
                         | "!" Exp9                                                          -- negative
                         | Exp10
@@ -44,6 +44,9 @@ Bang {
   LeftMultiply          = Exp6 multiplicationOp
   LeftExponent          = Exp7 "**"
   LeftSelect            = Exp9 #"."
+  Subscription			= ":" Exp?															-- rightSlice
+  						| Exp ":" Exp?														-- slice
+  						| Exp
 
   BangFunc              = "{" Block "}"
   VarAssignment         = VarAssignment #"[" Exp "]"                                        -- subscript

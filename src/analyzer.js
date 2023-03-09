@@ -593,17 +593,21 @@ export default function analyze(sourceCode) {
     },
     Exp9_subscript(target, _open, selector, _close) {
       // TODO check for loop
-      const [id, exp] = [target.rep(), selector.rep()]
+      let id = target.rep()
       checkNotType(id, [d.FUNC])
-      if (id.type === d.LIST) {
-        // TODO is this how we should handle this
-        return id.val[exp.val]
-      } else if (id.type === d.OBJ) {
-        // TODO is this how we should handle this
-        return (id instanceof core.Var ? id.exp : id).getVal(exp.val)
-        // TODO dive further if chained dot ops
+
+      const idNotDefined = defineVar(id, context, [d.LIST])
+      if (idNotDefined) {
+        id = idNotDefined.var
       }
-      // TODO how to check context? to see if selector exists/needs to be created
+    
+      let exp = selector.rep()
+
+      const expNotDefined = defineVar(exp, context, [d.NUM])
+      if (expNotDefined) {
+        exp = expNotDefined.var
+      }
+
       return new core.VarSubscript(id, exp)
     },
     Exp9_select(left, right) {
@@ -653,6 +657,23 @@ export default function analyze(sourceCode) {
     },
     LeftSelect(exp, op) {
       return [exp.rep(), op.sourceString]
+    },
+    Subscription_rightSlice(_colon, right) {
+      let rhs = right.rep()
+      if (rhs.length === 0) {
+        rhs = [new core.Num(Infinity)]
+      }
+      return new core.Subscription(new core.Num(0), ...rhs)
+    },
+    Subscription_slice(left, _colon, right) {
+      let [lhs, rhs] = [left.rep(), right.rep()]
+      if (rhs.length === 0) {
+        rhs = [new core.Num(Infinity)]
+      }
+      return new core.Subscription(lhs, ...rhs)
+    },
+    Subscription(exp) {
+      return exp.rep()
     },
     BangFunc(_open, block, _close) {
       return block.rep()

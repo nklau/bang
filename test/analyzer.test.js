@@ -1707,14 +1707,13 @@ const examples = [
   21 | Call id=#16 args=#22
   22 | Args args=[]`
   ],
-  // [
-  //   'escaped new line',
-  //   `'\\n'`,
-  //   `   1 | Block statements=[#2]
-  //  2 | ReturnStatement exp=#3
-  //  3 | Str val='\\n'`
-  // ], // TODO not sure whats happening here
-  // TODO: escaped chars (formatted and regular strs)
+  [
+    'escaped new line',
+    `'\\n'`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | Str val='\\\\n'`
+  ],
   [
     'match.bang example code',
     `s = season.fall
@@ -1891,7 +1890,112 @@ const examples = [
    8 | ReturnStatement exp=#9
    9 | Call id=#3 args=#10
   10 | Args args=[]`
-  ]
+  ],
+  [
+    'indexing a list',
+    `x[1]`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | List val=[]
+   5 | ReturnStatement exp=#6
+   6 | VarSubscript id=#3 selector=#7
+   7 | Num val=1`
+  ],
+  [
+    'indexing a list with an undeclared var initializes it as a num',
+    `x[y]`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | List val=[]
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['number']
+   7 | Num val=0
+   8 | ReturnStatement exp=#9
+   9 | VarSubscript id=#3 selector=#6`
+  ],
+  [
+    'indexing into an undefined var with itself does not create two new vars',
+    `x[x]`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | List val=[]
+   5 | ReturnStatement exp=#6
+   6 | VarSubscript id=#3 selector=#3`
+  ],
+  [
+    ': with no nums',
+    `x[ :]`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | List val=[]
+   5 | ReturnStatement exp=#6
+   6 | VarSubscript id=#3 selector=#7
+   7 | Subscription left=#8 right=#9
+   8 | Num val=0
+   9 | Num val=Infinity`
+  ],
+  [
+    ': with right num',
+    `x[: 1]`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | List val=[]
+   5 | ReturnStatement exp=#6
+   6 | VarSubscript id=#3 selector=#7
+   7 | Subscription left=#8 right=#9
+   8 | Num val=0
+   9 | Num val=1`
+  ],
+  [
+    ': with left num',
+    `x[1:]`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | List val=[]
+   5 | ReturnStatement exp=#6
+   6 | VarSubscript id=#3 selector=#7
+   7 | Subscription left=#8 right=#9
+   8 | Num val=1
+   9 | Num val=Infinity`
+  ],
+  [
+    ': with both nums',
+    `x[0:1]`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | List val=[]
+   5 | ReturnStatement exp=#6
+   6 | VarSubscript id=#3 selector=#7
+   7 | Subscription left=#8 right=#9
+   8 | Num val=0
+   9 | Num val=1`
+  ],
+  // [
+  //   '1010-ps3-q5.bang example code',
+  //   `name = 'Harry Potter'
+  //   greeting = 'Hello, world!'
+  //   goodbye = 'Goodbye, all!'
+  //   space = ' '
+  //   star = '*'
+    
+  //   greeting = greeting.list
+  //   name = name.split()
+  //   goodbye = goodbye.list
+  //   print(star+(space*16) +star)
+  //   print(star+space+''.join(greeting[:5])+space+name[0]+''.join(greeting[12])*3+space+star)
+  //   print(star+space+''.join(goodbye[:7])+space+name[1]+''.join(greeting[12])*3+space+star)
+  //   print(star+(space*19)+star)
+  //   print(star*21)`,
+  //   `   1 | Block statements=[#2]
+  //  2 | VarDec`
+  // ]
 ]
 
 describe('The analyzer', () => {
