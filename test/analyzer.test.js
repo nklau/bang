@@ -2416,7 +2416,21 @@ const examples = [
    8 | Assign var=#9 exp=#10
    9 | BinaryExp left=#3 op='.' right='y'
   10 | Num val=2`
-  ]
+  ],
+  [
+    'var subscript on left of assignment',
+    `x[y] = 2`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | List val=[]
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['number']
+   7 | Num val=0
+   8 | Assign var=#9 exp=#10
+   9 | VarSubscript id=#3 selector=#6
+  10 | Num val=2`
+  ],
 ]
 
 describe('The analyzer', () => {

@@ -597,9 +597,14 @@ export default function analyze(sourceCode) {
       // TODO check for loop
       let [id, exp] = [target.rep(), selector.rep()]
 
-      const notDefined = defineVar(id, context, [d.LIST])
-      if (notDefined) {
-        id = notDefined.var
+      const idNotDefined = defineVar(id, context, [d.LIST])
+      if (idNotDefined) {
+        id = idNotDefined.var
+      }
+
+      const expNotDefined = defineVar(exp, context, [d.NUM])
+      if (expNotDefined) {
+        exp = expNotDefined.var
       }
 
       return new core.VarSubscript(id, exp)
