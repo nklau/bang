@@ -51,6 +51,16 @@ const semanticErrors = [
     'negative number on left side of exponential op',
     `-2 ** 2`,
     /Expected parentheses around negative operation on the left side of an exponential expression/
+  ],
+  [
+    'negated pre-decrement op without spaces',
+    `---x`,
+    /Expected parentheses around pre-decrement operation with a negation/
+  ],
+  [
+    'negated pre-decrement op with spaces',
+    `- --x`,
+    /Expected parentheses around pre-decrement operation with a negation/
   ]
 ]
 
@@ -315,6 +325,58 @@ const examples = [
    3 | Var id='x' local=false readOnly=false type=['number']
    4 | Num val=0
    5 | PreDecrement exp=#3`
+  ],
+  [
+    'pre-decrement op checks for implied vardecs',
+    `--x`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | ReturnStatement exp=#6
+   6 | PreDecrement exp=#3`
+  ],
+  [
+    'post-decrement op checks for implied vardecs',
+    `x--`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | ReturnStatement exp=#6
+   6 | PostDecrement exp=#3`
+  ],
+  [
+    'pre-increment op checks for implied vardecs',
+    `++x`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | ReturnStatement exp=#6
+   6 | PreIncrement exp=#3`
+  ],
+  [
+    'post-increment op checks for implied vardecs',
+    `x++`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | ReturnStatement exp=#6
+   6 | PostIncrement exp=#3`
+  ],
+  [
+    'negated pre-decrement op with parens',
+    `-(--x)`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | ReturnStatement exp=#6
+   6 | UnaryExp exp=#7 op='-'
+   7 | NaryExp exp=[#8]
+   8 | PreDecrement exp=#3`
   ],
   [
     'postfix op adds a var dec to the correct block',
