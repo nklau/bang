@@ -81,7 +81,7 @@ function checkNotLiteral(e) {
 }
 
 function checkInBlock(context) {
-  check(context.block, 'Cannot return outside a function')
+  check(context.parent?.block, 'Cannot return outside a function')
 }
 
 function checkInLoop(context) {

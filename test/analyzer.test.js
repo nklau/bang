@@ -3,7 +3,6 @@ import assert from "assert/strict"
 import analyze from "../src/analyzer.js"
 
 // return outside block
-// TODO 1 +++x, 1 ---x
 const semanticErrors = [
   [
     'changing const value',
@@ -92,6 +91,11 @@ const semanticErrors = [
     `x+ ++y`,
     /Expected parentheses around pre-increment operation on the right side of an addition/
   ],
+  [
+    'return outside block',
+    `return x`,
+    /Cannot return outside a function/
+  ]
 ]
 
 const examples = [
