@@ -311,9 +311,6 @@ export default function analyze(sourceCode) {
       let statements = []
 
       for (let [op, [lhs, rhs]] of pieces) {
-        if (op === '==') {
-          // checkSameTypes(l, r) // TODO: probably don't want to throw error on this - just want to replace with false
-        }
         if (op.includes('<') || op.includes('>')) {
           checkNotType(lhs, [d.FUNC])
           checkNotType(rhs, [d.FUNC])
@@ -858,6 +855,5 @@ export default function analyze(sourceCode) {
   }
 
   const match = bangGrammar.match(sourceCode)
-  if (!match.succeeded()) core.error(match.message)
   return analyzer(match).rep()
 }

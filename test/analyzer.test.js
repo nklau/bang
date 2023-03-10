@@ -2818,6 +2818,47 @@ const examples = [
   11 | NaryExp exp=[#12,'+',#13]
   12 | Num val=1
   13 | Num val=2`
+  ],
+  [
+    '** eval assignment with . op',
+    `x.y **= 1`,
+    `   1 | Block statements=[#2,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['object']
+   4 | Obj val=[#5]
+   5 | ObjField key=#6 val=#7
+   6 | Str val='y'
+   7 | Str val='y'
+   8 | Assign var=#9 exp=#10
+   9 | BinaryExp left=#3 op='.' right='y'
+  10 | NaryExp exp=[#9,'**',#11]
+  11 | Num val=1`
+  ],
+  [
+    'equality check between two functions',
+    `() -> {} == () -> {}`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | NaryExp exp=[#4,'==',#7]
+   4 | Func params=#5 block=#6
+   5 | Params params=[]
+   6 | Block statements=[]
+   7 | Func params=#8 block=#9
+   8 | Params params=[]
+   9 | Block statements=[]`
+  ],
+  [
+    'equality check between two undefined vars',
+    `x == y`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['nil']
+   4 | Nil 
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['nil']
+   7 | Nil 
+   8 | ReturnStatement exp=#9
+   9 | NaryExp exp=[#3,'==',#6]`
   ]
 ]
 
