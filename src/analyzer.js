@@ -54,8 +54,8 @@ function mapOps(elements) {
 }
 
 class Context {
-  constructor({ parent = null, locals = new Map(), inLoop = false, block: b = null, extraVarDecs = [] }) {
-    Object.assign(this, { parent, locals, inLoop, block: b, extraVarDecs: extraVarDecs })
+  constructor({ parent = null, locals = new Map(), block: b = null, extraVarDecs = [] }) {
+    Object.assign(this, { parent, locals, block: b, extraVarDecs: extraVarDecs })
   }
 
   // sees(name) {
@@ -86,7 +86,7 @@ export default function analyze(sourceCode) {
     },
     Block(_n0, statements, statement, _n1) {
       const block = new core.Block()
-      context = context.newChildContext({ inLoop: false, block: block })
+      context = context.newChildContext({ block: block })
 
       statements.children.forEach(s => {
         block.statements.push(s.rep())
@@ -262,7 +262,7 @@ export default function analyze(sourceCode) {
 
       if (block._node.ruleName !== 'BangFunc') {
         const b = new core.Block()
-        context = context.newChildContext({ inLoop: false, block: b })
+        context = context.newChildContext({ block: b })
 
         b.statements = [block.rep()]
         if (!(b.statements[0] instanceof core.ReturnStatement)) {
@@ -286,7 +286,7 @@ export default function analyze(sourceCode) {
 
       if (alt.children[0]._node.ruleName !== 'BangFunc') {
         const b = new core.Block()
-        context = context.newChildContext({ inLoop: false, block: b })
+        context = context.newChildContext({ block: b })
 
         b.statements = [...alt.rep()]
         if (!(b.statements[0] instanceof core.ReturnStatement)) {
@@ -642,7 +642,7 @@ export default function analyze(sourceCode) {
     },
     FuncLit(exp, _arrow, funcBody) {
       let block = new core.Block()
-      context = context.newChildContext({ inLoop: false, block: block })
+      context = context.newChildContext({ block: block })
 
       const params = exp.rep()
 
@@ -793,7 +793,7 @@ export default function analyze(sourceCode) {
         // Designed to only get here if block is a single statement
 
         const b = new core.Block()
-        context = context.newChildContext({ inLoop: false, block: b })
+        context = context.newChildContext({ block: b })
 
         b.statements = [caseBlock.rep()]
         if (!(b.statements[0] instanceof core.ReturnStatement)) {
@@ -822,7 +822,7 @@ export default function analyze(sourceCode) {
 
       if (defaultBlock._node.ruleName !== 'BangFunc') {
         block = new core.Block()
-        context = context.newChildContext({ inLoop: false, block: block })
+        context = context.newChildContext({ block: block })
 
         block.statements = [defaultBlock.rep()]
         if (!(block.statements[0] instanceof core.ReturnStatement)) {
