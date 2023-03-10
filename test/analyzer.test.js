@@ -2680,23 +2680,145 @@ const examples = [
    7 | VarDec var=#8 exp=#3
    8 | Var id='y' local=false readOnly=false type=['number']` // TODO #7: #3 -> #4
   ],
-  // [
-  //   'keyword args in function call',
-  //   `x = (y) -> y
-  //   x(y = 2)`,
-  //   `   1 | Block statements=[#2,#9]
-  //  2 | VarDec var=#3 exp=#4
-  //  3 | Var id='x' local=false readOnly=false type=['function']
-  //  4 | Func params=#5 block=#7
-  //  5 | Params params=[#6]
-  //  6 | Var id='y' local=true readOnly=false type=['any']
-  //  7 | Block statements=[#8]
-  //  8 | ReturnStatement exp=#6
-  //  9 | Call id=#3 args=#10
-  // 10 | Args args=[#11]
-  // 11 | KeywordParam id=#6 val=#12
-  // 12 | Num val=2`
-  // ],
+  [
+    'bang function as block in default case of match exp',
+    `match x {
+      case 1: 1
+      default: {
+        return z
+      }
+    }`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['nil']
+   4 | Nil 
+   5 | ReturnStatement exp=#6
+   6 | MatchExp cond=#3 clauses=#7
+   7 | MatchBlock cases=[#8,#13]
+   8 | MatchCase conds=[#9] block=#10
+   9 | Num val=1
+  10 | Block statements=[#11]
+  11 | ReturnStatement exp=#12
+  12 | Num val=1
+  13 | DefaultMatchCase block=#14
+  14 | Block statements=[#15,#18]
+  15 | VarDec var=#16 exp=#17
+  16 | Var id='z' local=false readOnly=false type=['nil']
+  17 | Nil 
+  18 | ReturnStatement exp=#16`
+  ],
+  [
+    'keyword args in function call',
+    `x = (y) -> y
+    x(y = 2)`,
+    `   1 | Block statements=[#2,#9]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['function']
+   4 | Func params=#5 block=#7
+   5 | Params params=[#6]
+   6 | Var id='y' local=true readOnly=false type=['any']
+   7 | Block statements=[#8]
+   8 | ReturnStatement exp=#6
+   9 | Call id=#3 args=#10
+  10 | Args args=[#11]
+  11 | KeywordArg id='y' val=#12
+  12 | Num val=2`
+  ],
+  [
+    '*= op does not nest nary exps for . op',
+    `x.y *= 1 + 2`,
+    `   1 | Block statements=[#2,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['object']
+   4 | Obj val=[#5]
+   5 | ObjField key=#6 val=#7
+   6 | Str val='y'
+   7 | Str val='y'
+   8 | Assign var=#9 exp=#10
+   9 | BinaryExp left=#3 op='.' right='y'
+  10 | NaryExp exp=[#9,'*',#11,'+',#12]
+  11 | Num val=1
+  12 | Num val=2`
+  ],
+  [
+    '*= op nests nary exps for . op with enclosed right side',
+    `x.y *= (1 + 2)`,
+    `   1 | Block statements=[#2,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['object']
+   4 | Obj val=[#5]
+   5 | ObjField key=#6 val=#7
+   6 | Str val='y'
+   7 | Str val='y'
+   8 | Assign var=#9 exp=#10
+   9 | BinaryExp left=#3 op='.' right='y'
+  10 | NaryExp exp=[#9,'*',#11]
+  11 | NaryExp exp=[#12,'+',#13]
+  12 | Num val=1
+  13 | Num val=2`
+  ],
+  [
+    '*= op does not nest nary exps for [] op with num',
+    `x[0] *= 1 + 2`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | List val=[]
+   5 | Assign var=#6 exp=#8
+   6 | VarSubscript id=#3 selector=#7
+   7 | Num val=0
+   8 | NaryExp exp=[#6,'*',#9,'+',#10]
+   9 | Num val=1
+  10 | Num val=2`
+  ],
+  [
+    '*= op nests nary exps for [] op with num with enclosed right side',
+    `x[0] *= (1 + 2)`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | List val=[]
+   5 | Assign var=#6 exp=#8
+   6 | VarSubscript id=#3 selector=#7
+   7 | Num val=0
+   8 | NaryExp exp=[#6,'*',#9]
+   9 | NaryExp exp=[#10,'+',#11]
+  10 | Num val=1
+  11 | Num val=2`
+  ],
+  [
+    '*= op does not nest nary exps for [] op with var',
+    `x[y] *= 1 + 2`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | List val=[]
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['number']
+   7 | Num val=0
+   8 | Assign var=#9 exp=#10
+   9 | VarSubscript id=#3 selector=#6
+  10 | NaryExp exp=[#9,'*',#11,'+',#12]
+  11 | Num val=1
+  12 | Num val=2`
+  ],
+  [
+    '*= op nests nary exps for [] op with var with enclosed right side',
+    `x[y] *= (1 + 2)`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | List val=[]
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['number']
+   7 | Num val=0
+   8 | Assign var=#9 exp=#10
+   9 | VarSubscript id=#3 selector=#6
+  10 | NaryExp exp=[#9,'*',#11]
+  11 | NaryExp exp=[#12,'+',#13]
+  12 | Num val=1
+  13 | Num val=2`
+  ]
 ]
 
 describe('The analyzer', () => {

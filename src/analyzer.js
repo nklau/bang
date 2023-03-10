@@ -100,7 +100,7 @@ export default function analyze(sourceCode) {
       context.extraVarDecs.forEach(s => block.statements.unshift(s))
       context.extraVarDecs = []
 
-      context = context.parent ?? context
+      context = context.parent
       return block
     },
     StatementNewLine(statement, _space, _n) {
@@ -146,7 +146,7 @@ export default function analyze(sourceCode) {
         if (isLocal || !variable) {
           const variable = new core.Var(name, isLocal, isReadOnly, type)
           context.add(name, variable)
-          return new core.VarDec(variable, val ?? variable.default)
+          return new core.VarDec(variable, val)
         } else {
           type.forEach(t => variable.type.add(t))
         }
@@ -158,7 +158,7 @@ export default function analyze(sourceCode) {
           val = new core.NaryExp([val.default, evalOp, ...flatExp])
           const variable = new core.Var(name, isLocal, isReadOnly, [val.type])
           context.add(name, variable)
-          return new core.VarDec(variable, val ?? variable.default)
+          return new core.VarDec(variable, val)
         } else {
           val = new core.NaryExp([variable, evalOp, ...flatExp])
           variable.type.add(val.type)
