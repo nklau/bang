@@ -2869,6 +2869,19 @@ const examples = [
    2 | ReturnStatement exp=#3
    3 | Block statements=[#4]
    4 | BreakStatement `
+  ],
+  [
+    'block with no return statement',
+    `x = {
+      y = 1
+    }`,
+    `   1 | Block statements=[#2]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['any']
+   4 | Block statements=[#5]
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['number']
+   7 | Num val=1`
   ]
 ]
 
