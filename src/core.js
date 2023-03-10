@@ -228,7 +228,7 @@ export class Block {
     })
 
     if (returns.length === 0) {
-      return 'any'
+      return Nil.typeDescription
     }
 
     return new Set(returns.flat())
