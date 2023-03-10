@@ -245,6 +245,12 @@ const semanticErrors = [
     `const x = 1
     x[1][2] += 2`,
     /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant by chaining [] and . ops',
+    `const x = 1
+    x[1][1].y.z[0].a.b.c[2] = 2`,
+    /Cannot assign to constant variable x/
   ]
 ]
 

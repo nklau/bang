@@ -190,9 +190,6 @@ export default function analyze(sourceCode) {
       while (variable instanceof core.VarSubscript) {
         variable = variable.id
       }
-      while (variable instanceof core.BinaryExp && variable.op === '.') {
-        variable = variable.left
-      }
 
       if (variable.readOnly) {
         const constTypes = [d.NIL, d.BOOL, d.NUM, d.STR]
