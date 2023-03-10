@@ -778,9 +778,6 @@ export default function analyze(sourceCode) {
     num(_whole, _dot, _fraction, _e, _sign, _exponent) {
       return new core.Num(this.sourceString)
     },
-    compareOp(_o0, _o1) {
-      return this.sourceString
-    },
     MatchExp(_match, id, block) {
       let cond = id.rep()
       const notDefined = defineVar(cond, context)
