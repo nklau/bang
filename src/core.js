@@ -170,10 +170,6 @@ export class Bool {
 export class Nil {
   static typeDescription = 'nil'
 
-  static get default() {
-    return new Nil()
-  }
-
   get type() {
     return Nil.typeDescription
   }
@@ -456,10 +452,7 @@ export class DefaultMatchCase {
 }
 
 // Throw an error message that takes advantage of Ohm's messaging
-export function error(message, node) {
-  if (node) {
-    throw new Error(`${node.source.getLineAndColumnMessage()}${message}`)
-  }
+export function error(message) {
   throw new Error(message)
 }
 

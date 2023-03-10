@@ -2859,6 +2859,16 @@ const examples = [
    7 | Nil 
    8 | ReturnStatement exp=#9
    9 | NaryExp exp=[#3,'==',#6]`
+  ],
+  [
+    'break statement',
+    `{
+      break
+    }`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | Block statements=[#4]
+   4 | BreakStatement `
   ]
 ]
 
@@ -2874,3 +2884,4 @@ describe('The analyzer', () => {
     })
   }
 })
+// to generate code coverage html: node_modules/.bin/c8 report --reporter html

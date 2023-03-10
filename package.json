@@ -5,7 +5,7 @@
   "main": "bang.js",
   "type": "module",
   "scripts": {
-    "test": "c8 node_modules/.bin/mocha --reporter spec; c8 report --reporter html"
+    "test": "c8 node_modules/.bin/mocha --reporter spec"
   },
   "repository": {
     "type": "git",
