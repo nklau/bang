@@ -69,9 +69,6 @@ class Context {
   }
 
   add(name, entity) {
-    if (!entity.local && this.lookup(name)?.readOnly) {
-      core.error(`Cannot assign to constant variable ${name}`)
-    }
     this.locals.set(name, entity)
   }
 
