@@ -186,14 +186,12 @@ export default function analyze(sourceCode) {
       // If a variable is a constant list or object, changing its elements is allowed
       let [assign, o, val] = [target.rep(), op.sourceString, exp.rep()]
 
-      let variable
-      if (assign instanceof core.VarSubscript) {
-        variable = assign.id
-      } else if (assign instanceof core.BinaryExp && assign.op === '.') {
-        variable = assign.left
-        while (variable instanceof core.BinaryExp && variable.op === '.') {
-          variable = variable.left
-        }
+      let variable = assign.id || assign.left
+      while (variable instanceof core.VarSubscript) {
+        variable = variable.id
+      }
+      while (variable instanceof core.BinaryExp && variable.op === '.') {
+        variable = variable.left
       }
 
       if (variable.readOnly) {
