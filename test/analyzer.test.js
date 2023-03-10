@@ -173,6 +173,60 @@ const semanticErrors = [
     `const x = nil
     x[y] = 2`,
     /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant by using += op',
+    `const x = 1
+    x += 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant by using -= op',
+    `const x = 1
+    x += 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant by using /= op',
+    `const x = 1
+    x += 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant by using *= op',
+    `const x = 1
+    x += 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant by using **= op',
+    `const x = 1
+    x += 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant by using %= op',
+    `const x = 1
+    x += 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant by using . op with assignment op',
+    `const x = 1
+    x.y += 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant by using [] op with num and assignment op',
+    `const x = 1
+    x[1] += 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant by using [] op with var and assignment op',
+    `const x = 1
+    x[y] += 2`,
+    /Cannot assign to constant variable x/
   ]
 ]
 
