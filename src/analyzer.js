@@ -37,7 +37,8 @@ function checkInBlock(context) {
 }
 
 function checkInLoop(context) {
-  check(context.inLoop, 'Cannot break outside of loop')
+  // loops must always be in the block of a function
+  check(context.parent?.block, 'Cannot break outside of loop')
 }
 
 // function coerceToBool(e) {

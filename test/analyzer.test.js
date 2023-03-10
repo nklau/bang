@@ -94,6 +94,11 @@ const semanticErrors = [
     'return outside block',
     `return x`,
     /Cannot return outside a function/
+  ],
+  [
+    'break outside loop',
+    `break`,
+    /Cannot break outside of loop/
   ]
 ]
 
@@ -2386,23 +2391,6 @@ const examples = [
    9 | Block statements=[#10]
   10 | ReturnStatement exp=#7`
   ],
-  // [
-  //   'keyword args in function call',
-  //   `x = (y) -> y
-  //   x(y = 2)`,
-  //   `   1 | Block statements=[#2,#9]
-  //  2 | VarDec var=#3 exp=#4
-  //  3 | Var id='x' local=false readOnly=false type=['function']
-  //  4 | Func params=#5 block=#7
-  //  5 | Params params=[#6]
-  //  6 | Var id='y' local=true readOnly=false type=['any']
-  //  7 | Block statements=[#8]
-  //  8 | ReturnStatement exp=#6
-  //  9 | Call id=#3 args=#10
-  // 10 | Args args=[#11]
-  // 11 | KeywordParam id=#6 val=#12
-  // 12 | Num val=2`
-  // ],
   [
     'var select on left side of vardec checks for implicit vardec',
     `x.y = 2`,
@@ -2431,6 +2419,40 @@ const examples = [
    9 | VarSubscript id=#3 selector=#6
   10 | Num val=2`
   ],
+  [
+    'ternary with bang function as false block',
+    `x ? y : { x }`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['boolean']
+   4 | Bool val=false
+   5 | ReturnStatement exp=#6
+   6 | Ternary cond=#3 block=#7 alt=#12
+   7 | Block statements=[#8,#11]
+   8 | VarDec var=#9 exp=#10
+   9 | Var id='y' local=false readOnly=false type=['nil']
+  10 | Nil 
+  11 | ReturnStatement exp=#9
+  12 | Block statements=[#13]
+  13 | ReturnStatement exp=#3`
+  ],
+  // [
+  //   'keyword args in function call',
+  //   `x = (y) -> y
+  //   x(y = 2)`,
+  //   `   1 | Block statements=[#2,#9]
+  //  2 | VarDec var=#3 exp=#4
+  //  3 | Var id='x' local=false readOnly=false type=['function']
+  //  4 | Func params=#5 block=#7
+  //  5 | Params params=[#6]
+  //  6 | Var id='y' local=true readOnly=false type=['any']
+  //  7 | Block statements=[#8]
+  //  8 | ReturnStatement exp=#6
+  //  9 | Call id=#3 args=#10
+  // 10 | Args args=[#11]
+  // 11 | KeywordParam id=#6 val=#12
+  // 12 | Num val=2`
+  // ],
 ]
 
 describe('The analyzer', () => {
