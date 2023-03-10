@@ -2,6 +2,8 @@ import util from "util"
 import assert from "assert/strict"
 import analyze from "../src/analyzer.js"
 
+// TODO 'const x = 1   x.y = 2' should throw error because x.y = nil, and nil = 2 is an error
+
 const semanticErrors = [
   [
     'changing const value',
@@ -99,6 +101,78 @@ const semanticErrors = [
     'break outside loop',
     `break`,
     /Cannot break outside of loop/
+  ],
+  [
+    'reassigning to constant bool by using dot op',
+    `const x = true
+    x.y = 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant bool by using [] op and num',
+    `const x = true
+    x[1] = 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant bool by using [] op and var',
+    `const x = true
+    x[y] = 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant num by using dot op',
+    `const x = 1
+    x.y = 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant num by using [] op and num',
+    `const x = 1
+    x[1] = 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant num by using [] op and var',
+    `const x = 1
+    x[y] = 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant string by using dot op',
+    `const x = 'str'
+    x.y = 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant string by using [] op and num',
+    `const x = 'str'
+    x[1] = 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant string by using [] op and var',
+    `const x = 'str'
+    x[y] = 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant nil by using dot op',
+    `const x = nil
+    x.y = 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant nil by using [] op and num',
+    `const x = nil
+    x[1] = 2`,
+    /Cannot assign to constant variable x/
+  ],
+  [
+    'reassigning to constant nil by using [] op and var',
+    `const x = nil
+    x[y] = 2`,
+    /Cannot assign to constant variable x/
   ]
 ]
 

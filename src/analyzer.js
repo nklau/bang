@@ -48,7 +48,7 @@ function checkInLoop(context) {
 function mapOps(elements) {
   const ops = ['==', '!=', '<', '>', '<=', '>=', '+', '-', '/', '*', '%', '**']
   return elements.reduce(
-    (arr, val, i) => (ops.includes(val) ? [ ...arr, [val, [elements[i - 1], elements[i + 1]]] ] : arr),
+    (arr, val, i) => (ops.includes(val) ? [...arr, [val, [elements[i - 1], elements[i + 1]]]] : arr),
     []
   )
 }
@@ -58,10 +58,10 @@ class Context {
     Object.assign(this, { parent, locals, inLoop, block: b, extraVarDecs: extraVarDecs })
   }
 
-  sees(name) {
-    // Search "outward" through enclosing scopes
-    return this.locals.has(name) || this.parent?.sees(name)
-  }
+  // sees(name) {
+  //   // Search "outward" through enclosing scopes
+  //   return this.locals.has(name) || this.parent?.sees(name)
+  // }
 
   lookup(name) {
     const entity = this.locals.get(name)
@@ -182,7 +182,27 @@ export default function analyze(sourceCode) {
       // return new core.VarDec(variable, exp)
     },
     Statement_varAssignment(target, op, exp) {
-      let [variable, o, val] = [target.rep(), op.sourceString, exp.rep()]
+      // Designed to only get here if assignment is using the . or [] operator
+      // If a variable is a constant list or object, changing its elements is allowed
+      let [assign, o, val] = [target.rep(), op.sourceString, exp.rep()]
+
+      let variable
+      if (assign instanceof core.VarSubscript) {
+        variable = assign.id
+      } else if (assign instanceof core.BinaryExp && assign.op === '.') {
+        variable = assign.left
+        while (variable instanceof core.BinaryExp && variable.op === '.') {
+          variable = variable.left
+        }
+      }
+
+      if (variable.readOnly) {
+        const constTypes = [d.NIL, d.BOOL, d.NUM, d.STR]
+        if ([...variable.type].some(t => constTypes.includes(t))) {
+          core.error(`Cannot assign to constant variable ${variable.id}`)
+        }
+      }
+
       // if (val instanceof core.Var) {
       //   // setting a variable equal to another variable makes a shallow copy
       //   context.block.statements.forEach(s => {
@@ -197,10 +217,10 @@ export default function analyze(sourceCode) {
         // Using eval assignment
         const flatExp = val instanceof core.NaryExp ? val.exp : [val]
         const evalOp = (/^(.)=/.exec(o) ?? /(\*\*)=/.exec(o))[1]
-        val = new core.NaryExp([variable, evalOp, ...flatExp])
+        val = new core.NaryExp([assign, evalOp, ...flatExp])
       }
 
-      return new core.Assign(variable, val)
+      return new core.Assign(assign, val)
     },
     Statement_return(_return, exp) {
       // Can only explicitly use 'return' keyword inside a function
@@ -269,7 +289,7 @@ export default function analyze(sourceCode) {
       if (alt.children.length === 0) {
         return new core.Ternary(bool, trueBlock)
       }
-      
+
       let falseBlock
 
       if (alt.children[0]._node.ruleName !== 'BangFunc') {
@@ -355,7 +375,7 @@ export default function analyze(sourceCode) {
       if (rightDefine) {
         rhs = rightDefine.var
       }
-      
+
       return new core.BinaryExp(lhs, op, rhs)
     },
     Exp4_addSubtract(left, right) {
@@ -524,7 +544,7 @@ export default function analyze(sourceCode) {
       if (idNotDefined) {
         id = idNotDefined.var
       }
-    
+
       let exp = selector.rep()
 
       const expNotDefined = defineVar(exp, context, [d.NUM])
@@ -822,7 +842,7 @@ export default function analyze(sourceCode) {
         if (!(block.statements[0] instanceof core.ReturnStatement)) {
           block.statements[0] = new core.ReturnStatement(block.statements[0])
         }
-        
+
         context.extraVarDecs.forEach(s => block.statements.unshift(s))
         context.extraVarDecs = []
 
