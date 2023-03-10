@@ -888,8 +888,17 @@ const examples = [
    4 | Num val=1
    5 | VarDec var=#6 exp=#7
    6 | Var id='x' local=false readOnly=false type=['number']
-   7 | NaryExp exp=[#8,'+',#4]
+   7 | NaryExp exp=[#8,'+',#3]
    8 | Num val=0`
+   // TODO
+  //  `   1 | Block statements=[#2,#5]
+  //  2 | VarDec var=#3 exp=#4
+  //  3 | Var id='y' local=false readOnly=false type=['number']
+  //  4 | Num val=1
+  //  5 | VarDec var=#6 exp=#7
+  //  6 | Var id='x' local=false readOnly=false type=['number']
+  //  7 | NaryExp exp=[#8,'+',#4]
+  //  8 | Num val=0`
   ],
   [
     'shared semantics',
@@ -898,8 +907,15 @@ const examples = [
    2 | VarDec var=#3 exp=#4
    3 | Var id='y' local=false readOnly=false type=['nil']
    4 | Nil 
-   5 | VarDec var=#6 exp=#4
+   5 | VarDec var=#6 exp=#3
    6 | Var id='x' local=false readOnly=false type=['nil']`
+   // TODO
+  //  `   1 | Block statements=[#2,#5]
+  //  2 | VarDec var=#3 exp=#4
+  //  3 | Var id='y' local=false readOnly=false type=['nil']
+  //  4 | Nil 
+  //  5 | VarDec var=#6 exp=#4
+  //  6 | Var id='x' local=false readOnly=false type=['nil']`
   ],
   [
     'shared semantics with literals',
@@ -910,10 +926,19 @@ const examples = [
    2 | VarDec var=#3 exp=#4
    3 | Var id='x' local=false readOnly=false type=['number']
    4 | Num val=1
-   5 | VarDec var=#6 exp=#4
+   5 | VarDec var=#6 exp=#3
    6 | Var id='y' local=false readOnly=false type=['number']
    7 | Assign var=#3 exp=#8
    8 | Num val=2`
+   // TODO
+  //  `   1 | Block statements=[#2,#5,#7]
+  //  2 | VarDec var=#3 exp=#4
+  //  3 | Var id='x' local=false readOnly=false type=['number']
+  //  4 | Num val=1
+  //  5 | VarDec var=#6 exp=#4
+  //  6 | Var id='y' local=false readOnly=false type=['number']
+  //  7 | Assign var=#3 exp=#8
+  //  8 | Num val=2`
   ],
   [
     'shared semantics with implicitly defined var',
@@ -923,10 +948,19 @@ const examples = [
    2 | VarDec var=#3 exp=#4
    3 | Var id='y' local=false readOnly=false type=['nil']
    4 | Nil 
-   5 | VarDec var=#6 exp=#4
+   5 | VarDec var=#6 exp=#3
    6 | Var id='x' local=false readOnly=false type=['nil']
-   7 | VarDec var=#8 exp=#4
+   7 | VarDec var=#8 exp=#3
    8 | Var id='z' local=false readOnly=false type=['nil']`
+   // TODO
+  //  `   1 | Block statements=[#2,#5,#7]
+  //  2 | VarDec var=#3 exp=#4
+  //  3 | Var id='y' local=false readOnly=false type=['nil']
+  //  4 | Nil 
+  //  5 | VarDec var=#6 exp=#4
+  //  6 | Var id='x' local=false readOnly=false type=['nil']
+  //  7 | VarDec var=#8 exp=#4
+  //  8 | Var id='z' local=false readOnly=false type=['nil']`
   ],
   [
     'shared semantics with previously defined var',
@@ -937,12 +971,23 @@ const examples = [
    2 | VarDec var=#3 exp=#4
    3 | Var id='x' local=false readOnly=false type=['nil','number']
    4 | Nil 
-   5 | VarDec var=#6 exp=#4
+   5 | VarDec var=#6 exp=#3
    6 | Var id='z' local=false readOnly=false type=['nil']
    7 | Assign var=#3 exp=#8
    8 | Num val=1
-   9 | VarDec var=#10 exp=#8
-  10 | Var id='y' local=false readOnly=false type=['number']`
+   9 | VarDec var=#10 exp=#3
+  10 | Var id='y' local=false readOnly=false type=['nil','number']`
+  // TODO
+  // `   1 | Block statements=[#2,#5,#7,#9]
+  //  2 | VarDec var=#3 exp=#4
+  //  3 | Var id='x' local=false readOnly=false type=['nil','number']
+  //  4 | Nil 
+  //  5 | VarDec var=#6 exp=#4
+  //  6 | Var id='z' local=false readOnly=false type=['nil']
+  //  7 | Assign var=#3 exp=#8
+  //  8 | Num val=1
+  //  9 | VarDec var=#10 exp=#8
+  // 10 | Var id='y' local=false readOnly=false type=['number']`
   ],
   [
     'undefined -= op defaults to highest type',
@@ -1142,17 +1187,17 @@ const examples = [
   14 | Num val=4
   15 | Str val='str'`
   ],
-  [
-    'setting vars equal to each other does not link by ids',
-    `x = 1
-    y = x`,
-    `   1 | Block statements=[#2,#5]
-   2 | VarDec var=#3 exp=#4
-   3 | Var id='x' local=false readOnly=false type=['number']
-   4 | Num val=1
-   5 | VarDec var=#6 exp=#4
-   6 | Var id='y' local=false readOnly=false type=['number']`
-  ],
+  // [
+  //   'setting vars equal to each other does not link by ids',
+  //   `x = 1
+  //   y = x`,
+  //   `   1 | Block statements=[#2,#5]
+  //  2 | VarDec var=#3 exp=#4
+  //  3 | Var id='x' local=false readOnly=false type=['number']
+  //  4 | Num val=1
+  //  5 | VarDec var=#6 exp=#4
+  //  6 | Var id='y' local=false readOnly=false type=['number']`
+  // ],
   [
     `binary exp >`,
     `1 > 2`,
@@ -2435,6 +2480,53 @@ const examples = [
   11 | ReturnStatement exp=#9
   12 | Block statements=[#13]
   13 | ReturnStatement exp=#3`
+  ],
+  [
+    'varselect on left side of += assignment op',
+    `x.y += 2`,
+    `   1 | Block statements=[#2,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['object']
+   4 | Obj val=[#5]
+   5 | ObjField key=#6 val=#7
+   6 | Str val='y'
+   7 | Str val='y'
+   8 | Assign var=#9 exp=#10
+   9 | BinaryExp left=#3 op='.' right='y'
+  10 | NaryExp exp=[#9,'+',#11]
+  11 | Num val=2`
+  ],
+  [
+    'var assignment using . op has shared semantics',
+    `x = 1
+    y.z = x`,
+    `   1 | Block statements=[#2,#8,#11]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='y' local=false readOnly=false type=['object']
+   4 | Obj val=[#5]
+   5 | ObjField key=#6 val=#7
+   6 | Str val='z'
+   7 | Str val='z'
+   8 | VarDec var=#9 exp=#10
+   9 | Var id='x' local=false readOnly=false type=['number']
+  10 | Num val=1
+  11 | Assign var=#12 exp=#9
+  12 | BinaryExp left=#3 op='.' right='z'` // TODO #11: #9 -> #10
+  ],
+  [
+    'shared semantics across blocks',
+    `x = 1
+    {
+      y = x
+    }`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=1
+   5 | ReturnStatement exp=#6
+   6 | Block statements=[#7]
+   7 | VarDec var=#8 exp=#3
+   8 | Var id='y' local=false readOnly=false type=['number']` // TODO #7: #3 -> #4
   ],
   // [
   //   'keyword args in function call',

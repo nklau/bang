@@ -122,22 +122,26 @@ export default function analyze(sourceCode) {
         val = notDefined.var
       }
 
-      if (val instanceof core.Var) {
-        // setting a variable equal to another variable makes a shallow copy
-        context.block.statements.slice().reverse().forEach(s => {
-          if ((s instanceof core.Assign || s instanceof core.VarDec) && s.var === val) {
-            val = s.exp
-          }
-        })
+      // TODO at code generation will need to use shared semantics, although js might handle that already
 
-        if (val instanceof core.Var) {
-          context.extraVarDecs.slice().reverse().forEach(s => {
-            if ((s instanceof core.Assign || s instanceof core.VarDec) && s.var === val) {
-              val = s.exp
-            }
-          })
-        }
-      }
+      // TODO this is a problem because can't guarantee the most recent assignment actually happened, or that it's not skipping 
+      // over some nested assignment in a ternary or something
+      // if (val instanceof core.Var) {
+      //   // setting a variable equal to another variable makes a shallow copy
+      //   context.block.statements.forEach(s => {
+      //     if ((s instanceof core.Assign || s instanceof core.VarDec) && s.var === val) {
+      //       val = s.exp
+      //     }
+      //   })
+
+      //   if (val instanceof core.Var) {
+      //     context.extraVarDecs.forEach(s => {
+      //       if ((s instanceof core.Assign || s instanceof core.VarDec) && s.var === val) {
+      //         val = s.exp
+      //       }
+      //     })
+      //   }
+      // }
 
       if (o === '=') {
         let type = val.type ?? val.exp?.type ?? 'any'
@@ -179,10 +183,14 @@ export default function analyze(sourceCode) {
     },
     Statement_varAssignment(target, op, exp) {
       let [variable, o, val] = [target.rep(), op.sourceString, exp.rep()]
-      if (val instanceof core.Var) {
-        // setting a variable equal to another variable makes a shallow copy
-        val = val.exp
-      }
+      // if (val instanceof core.Var) {
+      //   // setting a variable equal to another variable makes a shallow copy
+      //   context.block.statements.forEach(s => {
+      //     if ((s instanceof core.Assign || s instanceof core.VarDec) && s.var === val) {
+      //       val = s.exp
+      //     }
+      //   })
+      // }
 
       // variable will never be undefined because the "id" rule is caught by Statement_varDec
       if (o !== '=') {
