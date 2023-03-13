@@ -2916,6 +2916,17 @@ const examples = [
   12 | VarDec var=#13 exp=#14
   13 | Var id='y' local=false readOnly=false type=['number']
   14 | Num val=1`
+  ],
+  [
+    '! op checks for uninitialized vars',
+    '!!x',
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['boolean']
+   4 | Bool val=false
+   5 | ReturnStatement exp=#6
+   6 | UnaryExp exp=#7 op='!'
+   7 | UnaryExp exp=#3 op='!'`
   ]
 ]
 

@@ -458,7 +458,7 @@ export default function analyze(sourceCode) {
 
       return new core.NaryExp(operands)
     },
-    Exp7_negate(negative, right) {
+    Exp7_negative(negative, right) {
       let [op, rhs] = [negative.sourceString, right.rep()]
       if (rhs instanceof core.PreDecrement) {
         core.error('Expected parentheses around pre-decrement operation with a negation')
@@ -570,8 +570,15 @@ export default function analyze(sourceCode) {
       // selector.rep() ?? new core.Str(selector.sourceString)
       return new core.BinaryExp(target, dot, selector)
     },
-    Exp9_negative(negate, exp) {
-      return new core.UnaryExp(exp.rep(), negate.sourceString)
+    Exp9_negate(negate, exp) {
+      let [target, negation] = [exp.rep(), negate.sourceString]
+
+      const notDefined = defineVar(target, context, [d.BOOL])
+      if (notDefined) {
+        target = notDefined.var
+      }
+      
+      return new core.UnaryExp(target, negation)
     },
     Exp10_enclosed(_open, exp, _close) {
       return new core.NaryExp([exp.rep()])
