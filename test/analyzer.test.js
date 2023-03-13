@@ -2927,6 +2927,16 @@ const examples = [
    5 | ReturnStatement exp=#6
    6 | UnaryExp exp=#7 op='!'
    7 | UnaryExp exp=#3 op='!'`
+  ],
+  [
+    'spread op checks for uninitialized vars',
+    `...x`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['list']
+   4 | List val=[]
+   5 | ReturnStatement exp=#6
+   6 | UnaryExp exp=#3 op='...'`
   ]
 ]
 
