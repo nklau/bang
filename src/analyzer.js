@@ -155,7 +155,7 @@ export default function analyze(sourceCode) {
       })
       block.statements.push(...statement.rep())
 
-      if (block.statements.length === 1 && noReturnExps.includes(block.statements[0].constructor)) {
+      if (block.statements.length === 1 && (noReturnExps.includes(block.statements[0].constructor) || block.statements[0] instanceof core.Var)) {
         block.statements[0] = new core.ReturnStatement(block.statements[0])
       }
 
@@ -431,7 +431,6 @@ export default function analyze(sourceCode) {
     },
     Exp4_addSubtract(left, right) {
       const elements = [...left.rep(), right.rep()].flat()
-
       const type = core.getType(elements, d.NUM)
 
       const pieces = mapOps(elements)
@@ -508,6 +507,7 @@ export default function analyze(sourceCode) {
     // TODO implement eval order (l -> r)
     Exp6_exponent(left, right) {
       const elements = [...left.rep(), right.rep()].flat()
+      const type = core.getType(elements, d.NUM)
       const pieces = mapOps(elements)
       let operands = []
 
@@ -516,7 +516,7 @@ export default function analyze(sourceCode) {
       }
 
       for (let [op, [lhs, _rhs]] of pieces) {
-        const notDefined = defineVar(lhs, context, [d.NUM])
+        const notDefined = defineVar(lhs, context, [type])
         if (notDefined) {
           lhs = notDefined.var
         }
@@ -525,7 +525,7 @@ export default function analyze(sourceCode) {
       }
 
       let lastElement = elements[elements.length - 1]
-      const notDefined = defineVar(lastElement, context, [d.NUM])
+      const notDefined = defineVar(lastElement, context, [type])
       if (notDefined) {
         lastElement = notDefined.var
       }

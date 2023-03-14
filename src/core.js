@@ -610,7 +610,7 @@ const arrayEquals = (a, b) => {
 }
 
 export const getType = (exps, defaultType = 'any', weakest = false) => {
-  const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription, Nil.typeDescription]
+  const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription]
 
   for (const type of weakest ? types.slice().reverse() : types) {
     if ([...exps].some(e => {
