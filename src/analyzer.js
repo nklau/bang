@@ -432,10 +432,7 @@ export default function analyze(sourceCode) {
     Exp4_addSubtract(left, right) {
       const elements = [...left.rep(), right.rep()].flat()
 
-      let type = core.getType(elements)
-      if (type === d.ANY) {
-        type = d.NUM
-      }
+      const type = core.getType(elements, d.NUM)
 
       const pieces = mapOps(elements)
       let operands = []
@@ -484,11 +481,13 @@ export default function analyze(sourceCode) {
     },
     Exp5_multiplyDivideMod(left, right) {
       const elements = [...left.rep(), right.rep()].flat()
+      const type = core.getType(elements, d.NUM)
+
       const pieces = mapOps(elements)
       let operands = []
 
       for (let [op, [lhs, _rhs]] of pieces) {
-        const notDefined = defineVar(lhs, context, [d.NUM])
+        const notDefined = defineVar(lhs, context, [type])
         if (notDefined) {
           lhs = notDefined.var
         }
@@ -497,7 +496,7 @@ export default function analyze(sourceCode) {
       }
 
       let lastElement = elements[elements.length - 1]
-      const notDefined = defineVar(lastElement, context, [d.NUM])
+      const notDefined = defineVar(lastElement, context, [type])
       if (notDefined) {
         lastElement = notDefined.var
       }

@@ -2979,7 +2979,72 @@ const examples = [
   13 | Block statements=[#14]
   14 | ReturnStatement exp=#15
   15 | Num val=1`
-  ]
+  ],
+  [
+    'nary exps default to highest types',
+    `x = { a ? 1 : 'str' }
+    y + x * z + []`,
+    `   1 | Block statements=[#2,#5,#8,#22]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='z' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['list']
+   7 | List val=[]
+   8 | VarDec var=#9 exp=#10
+   9 | Var id='x' local=false readOnly=false type=['number','string']
+  10 | Block statements=[#11,#14]
+  11 | VarDec var=#12 exp=#13
+  12 | Var id='a' local=false readOnly=false type=['boolean']
+  13 | Bool val=false
+  14 | ReturnStatement exp=#15
+  15 | Ternary cond=#12 block=#16 alt=#19
+  16 | Block statements=[#17]
+  17 | ReturnStatement exp=#18
+  18 | Num val=1
+  19 | Block statements=[#20]
+  20 | ReturnStatement exp=#21
+  21 | Str val='str'
+  22 | ReturnStatement exp=#23
+  23 | NaryExp exp=[#6,'+',#24,'+',#25]
+  24 | NaryExp exp=[#9,'*',#3]
+  25 | List val=[]`
+  ],
+  [
+    'nary exps default to highest types',
+    `x = { a ? 1 : 'str' }
+    y + x * z`,
+    `   1 | Block statements=[#2,#5,#8,#22]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='z' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['number']
+   7 | Num val=0
+   8 | VarDec var=#9 exp=#10
+   9 | Var id='x' local=false readOnly=false type=['number','string']
+  10 | Block statements=[#11,#14]
+  11 | VarDec var=#12 exp=#13
+  12 | Var id='a' local=false readOnly=false type=['boolean']
+  13 | Bool val=false
+  14 | ReturnStatement exp=#15
+  15 | Ternary cond=#12 block=#16 alt=#19
+  16 | Block statements=[#17]
+  17 | ReturnStatement exp=#18
+  18 | Num val=1
+  19 | Block statements=[#20]
+  20 | ReturnStatement exp=#21
+  21 | Str val='str'
+  22 | ReturnStatement exp=#23
+  23 | NaryExp exp=[#6,'+',#24]
+  24 | NaryExp exp=[#9,'*',#3]`
+  ],
+  // [
+  //   'internal blocks do not refer to vars declared later in the program',
+  //   `x = { y }
+  //   x + y`,
+
+  // ]
 ]
 
 describe('The analyzer', () => {

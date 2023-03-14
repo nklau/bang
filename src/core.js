@@ -609,14 +609,14 @@ const arrayEquals = (a, b) => {
   return a.length === b.length && a.every((val, index) => val === b[index] || (typeof val.equals === 'function' && val.equals(b[index])))
 }
 
-export const getType = (exps, weakest = false) => {
+export const getType = (exps, defaultType = 'any', weakest = false) => {
   const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription, Nil.typeDescription]
 
   for (const type of weakest ? types.slice().reverse() : types) {
     if ([...exps].some(e => {
       let t = e.type
       if (e instanceof Var) {
-        t = getType(e.type, true)
+        t = getType(e.type, 'any', true)
       }
       return t === type || e === type
     })) {
@@ -624,5 +624,5 @@ export const getType = (exps, weakest = false) => {
     }
   }
 
-  return 'any'
+  return defaultType
 }
