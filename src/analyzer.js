@@ -103,10 +103,6 @@ function checkInLoop(context) {
   check(context.parent?.block, 'Cannot break outside of loop')
 }
 
-// function coerceToBool(e) {
-//   return new core.Bool(!e?.equals(e?.default))
-// }
-
 function mapOps(elements) {
   const ops = ['==', '!=', '<', '>', '<=', '>=', '+', '-', '/', '*', '%', '**']
   return elements.reduce(
