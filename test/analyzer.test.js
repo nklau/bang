@@ -1939,10 +1939,10 @@ const examples = [
     x = !x + y`,
     `   1 | Block statements=[#2,#5,#8]
    2 | VarDec var=#3 exp=#4
-   3 | Var id='y' local=false readOnly=false type=['number']
-   4 | Num val=0
+   3 | Var id='y' local=false readOnly=false type=['boolean']
+   4 | Bool val=false
    5 | VarDec var=#6 exp=#7
-   6 | Var id='x' local=false readOnly=false type=['boolean','number']
+   6 | Var id='x' local=false readOnly=false type=['boolean']
    7 | Bool val=true
    8 | Assign var=#6 exp=#9
    9 | NaryExp exp=[#10,'+',#3]

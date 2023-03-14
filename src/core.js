@@ -616,7 +616,7 @@ export const getType = (exps, weakest = false) => {
     if ([...exps].some(e => {
       let t = e.type
       if (e instanceof Var) {
-        t = e.type.size === 1 ? e.type.values().next().value : t
+        t = getType(e.type, true)
       }
       return t === type || e === type
     })) {
