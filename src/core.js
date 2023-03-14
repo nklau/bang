@@ -358,7 +358,7 @@ export class Var {
   }
 
   get default() {
-    return getDefault(this.type.size === 1 ? this.type.values().next().value : Nil.typeDescription)
+    return getDefault(this.type.size === 1 ? this.type.values().next().value : getType(this.type, true))
   }
 
   toString() {
@@ -609,10 +609,10 @@ const arrayEquals = (a, b) => {
   return a.length === b.length && a.every((val, index) => val === b[index] || (typeof val.equals === 'function' && val.equals(b[index])))
 }
 
-export const getType = (exps) => {
-  const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription]
+export const getType = (exps, weakest = false) => {
+  const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription, Nil.typeDescription]
 
-  for (const type of types) {
+  for (const type of weakest ? types.slice().reverse() : types) {
     if ([...exps].some(e => {
       let t = e.type
       if (e instanceof Var) {
