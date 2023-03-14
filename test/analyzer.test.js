@@ -1042,15 +1042,6 @@ const examples = [
    6 | Var id='x' local=false readOnly=false type=['number']
    7 | NaryExp exp=[#8,'+',#3]
    8 | Num val=0`
-   // TODO
-  //  `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 exp=#4
-  //  3 | Var id='y' local=false readOnly=false type=['number']
-  //  4 | Num val=1
-  //  5 | VarDec var=#6 exp=#7
-  //  6 | Var id='x' local=false readOnly=false type=['number']
-  //  7 | NaryExp exp=[#8,'+',#4]
-  //  8 | Num val=0`
   ],
   [
     'shared semantics',
@@ -1061,13 +1052,6 @@ const examples = [
    4 | Nil 
    5 | VarDec var=#6 exp=#3
    6 | Var id='x' local=false readOnly=false type=['nil']`
-   // TODO
-  //  `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 exp=#4
-  //  3 | Var id='y' local=false readOnly=false type=['nil']
-  //  4 | Nil 
-  //  5 | VarDec var=#6 exp=#4
-  //  6 | Var id='x' local=false readOnly=false type=['nil']`
   ],
   [
     'shared semantics with literals',
@@ -1082,15 +1066,6 @@ const examples = [
    6 | Var id='y' local=false readOnly=false type=['number']
    7 | Assign var=#3 exp=#8
    8 | Num val=2`
-   // TODO
-  //  `   1 | Block statements=[#2,#5,#7]
-  //  2 | VarDec var=#3 exp=#4
-  //  3 | Var id='x' local=false readOnly=false type=['number']
-  //  4 | Num val=1
-  //  5 | VarDec var=#6 exp=#4
-  //  6 | Var id='y' local=false readOnly=false type=['number']
-  //  7 | Assign var=#3 exp=#8
-  //  8 | Num val=2`
   ],
   [
     'shared semantics with implicitly defined var',
@@ -1104,15 +1079,6 @@ const examples = [
    6 | Var id='x' local=false readOnly=false type=['nil']
    7 | VarDec var=#8 exp=#3
    8 | Var id='z' local=false readOnly=false type=['nil']`
-   // TODO
-  //  `   1 | Block statements=[#2,#5,#7]
-  //  2 | VarDec var=#3 exp=#4
-  //  3 | Var id='y' local=false readOnly=false type=['nil']
-  //  4 | Nil 
-  //  5 | VarDec var=#6 exp=#4
-  //  6 | Var id='x' local=false readOnly=false type=['nil']
-  //  7 | VarDec var=#8 exp=#4
-  //  8 | Var id='z' local=false readOnly=false type=['nil']`
   ],
   [
     'shared semantics with previously defined var',
@@ -1129,17 +1095,6 @@ const examples = [
    8 | Num val=1
    9 | VarDec var=#10 exp=#3
   10 | Var id='y' local=false readOnly=false type=['nil','number']`
-  // TODO
-  // `   1 | Block statements=[#2,#5,#7,#9]
-  //  2 | VarDec var=#3 exp=#4
-  //  3 | Var id='x' local=false readOnly=false type=['nil','number']
-  //  4 | Nil 
-  //  5 | VarDec var=#6 exp=#4
-  //  6 | Var id='z' local=false readOnly=false type=['nil']
-  //  7 | Assign var=#3 exp=#8
-  //  8 | Num val=1
-  //  9 | VarDec var=#10 exp=#8
-  // 10 | Var id='y' local=false readOnly=false type=['number']`
   ],
   [
     'undefined -= op defaults to highest type',
@@ -1339,17 +1294,6 @@ const examples = [
   14 | Num val=4
   15 | Str val='str'`
   ],
-  // [
-  //   'setting vars equal to each other does not link by ids',
-  //   `x = 1
-  //   y = x`,
-  //   `   1 | Block statements=[#2,#5]
-  //  2 | VarDec var=#3 exp=#4
-  //  3 | Var id='x' local=false readOnly=false type=['number']
-  //  4 | Num val=1
-  //  5 | VarDec var=#6 exp=#4
-  //  6 | Var id='y' local=false readOnly=false type=['number']`
-  // ],
   [
     `binary exp >`,
     `1 > 2`,
@@ -1403,6 +1347,28 @@ const examples = [
    4 | BinaryExp left=#5 op='&&' right=#6
    5 | Num val=1
    6 | List val=[]`
+  ],
+  [
+    'chained && op',
+    `1 && true && 3`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | BinaryExp left=#4 op='&&' right=#7
+   4 | BinaryExp left=#5 op='&&' right=#6
+   5 | Num val=1
+   6 | Bool val=true
+   7 | Num val=3`
+  ],
+  [
+    'chained || op',
+    `1 || true || 3`,
+    `   1 | Block statements=[#2]
+   2 | ReturnStatement exp=#3
+   3 | BinaryExp left=#4 op='||' right=#7
+   4 | BinaryExp left=#5 op='||' right=#6
+   5 | Num val=1
+   6 | Bool val=true
+   7 | Num val=3`
   ],
   [
     '* op',
@@ -2663,7 +2629,7 @@ const examples = [
    9 | Var id='x' local=false readOnly=false type=['number']
   10 | Num val=1
   11 | Assign var=#12 exp=#9
-  12 | BinaryExp left=#3 op='.' right='z'` // TODO #11: #9 -> #10
+  12 | BinaryExp left=#3 op='.' right='z'`
   ],
   [
     'shared semantics across blocks',
@@ -2678,7 +2644,7 @@ const examples = [
    5 | ReturnStatement exp=#6
    6 | Block statements=[#7]
    7 | VarDec var=#8 exp=#3
-   8 | Var id='y' local=false readOnly=false type=['number']` // TODO #7: #3 -> #4
+   8 | Var id='y' local=false readOnly=false type=['number']`
   ],
   [
     'bang function as block in default case of match exp',
@@ -2861,6 +2827,19 @@ const examples = [
    9 | NaryExp exp=[#3,'==',#6]`
   ],
   [
+    'inequality check between two undefined vars',
+    `x != y`,
+    `   1 | Block statements=[#2,#5,#8]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['nil']
+   4 | Nil 
+   5 | VarDec var=#6 exp=#7
+   6 | Var id='y' local=false readOnly=false type=['nil']
+   7 | Nil 
+   8 | ReturnStatement exp=#9
+   9 | NaryExp exp=[#3,'!=',#6]`
+  ],
+  [
     'break statement',
     `{
       break
@@ -2937,6 +2916,69 @@ const examples = [
    4 | List val=[]
    5 | ReturnStatement exp=#6
    6 | UnaryExp exp=#3 op='...'`
+  ],
+  [
+    'less than op checks for uninitialized vars',
+    `x < 1`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | ReturnStatement exp=#6
+   6 | NaryExp exp=[#3,'<',#7]
+   7 | Num val=1`
+  ],
+  [
+    'greater than op checks for uninitialized vars',
+    `x > 1`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | ReturnStatement exp=#6
+   6 | NaryExp exp=[#3,'>',#7]
+   7 | Num val=1`
+  ],
+  [
+    'less than or equal op checks for uninitialized vars',
+    `x <= 1`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | ReturnStatement exp=#6
+   6 | NaryExp exp=[#3,'<=',#7]
+   7 | Num val=1`
+  ],
+  [
+    'greater than or equal op checks for uninitialized vars',
+    `x >= 1`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['number']
+   4 | Num val=0
+   5 | ReturnStatement exp=#6
+   6 | NaryExp exp=[#3,'>=',#7]
+   7 | Num val=1`
+  ],
+  [
+    'chained conditionals',
+    `x ? y ? 1`,
+    `   1 | Block statements=[#2,#5]
+   2 | VarDec var=#3 exp=#4
+   3 | Var id='x' local=false readOnly=false type=['boolean']
+   4 | Bool val=false
+   5 | ReturnStatement exp=#6
+   6 | Ternary cond=#3 block=#7 alt=undefined
+   7 | Block statements=[#8,#11]
+   8 | VarDec var=#9 exp=#10
+   9 | Var id='y' local=false readOnly=false type=['boolean']
+  10 | Bool val=false
+  11 | ReturnStatement exp=#12
+  12 | Ternary cond=#9 block=#13 alt=undefined
+  13 | Block statements=[#14]
+  14 | ReturnStatement exp=#15
+  15 | Num val=1`
   ]
 ]
 

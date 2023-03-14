@@ -31,6 +31,21 @@ export class List {
   get type() {
     return List.typeDescription
   }
+
+  equals(other) {
+    return this.type === other.type && arrayEquals(this.val, other.val)
+  }
+
+  toString() {
+    if (this.val.length === 0) {
+      return `[]`
+    }
+
+    const str = this.val.reduce((str, element) => {
+      str += `${element.toString()}, `
+    }, '')
+    return `[${str.slice(0, -2)}]`
+  }
 }
 
 export class Obj {
@@ -68,12 +83,35 @@ export class Obj {
   get type() {
     return Obj.typeDescription
   }
+
+  equals(other) {
+    return this.type === other.type && arrayEquals(this.val, other.val)
+  }
+
+  toString() {
+    if (this.val.length === 0) {
+      return `{}`
+    }
+
+    const str = this.val.reduce((str, field) => {
+      str += `${field.toString()}, `
+    }, '')
+    return `{${str.slice(0, -2)}}`
+  }
 }
 
 export class ObjField {
   constructor(key, val) {
     this.key = key
     this.val = val
+  }
+
+  equals(other) {
+    return other instanceof ObjField && this.key === other.key && this.val === other.val
+  }
+
+  toString() {
+    return `${this.key.toString()}: ${this.val.toString()}`
   }
 }
 
@@ -103,6 +141,14 @@ export class Str {
   get type() {
     return Str.typeDescription
   }
+
+  equals(other) {
+    return other instanceof Str && this.val === other.val
+  }
+
+  toString() {
+    return this.val
+  }
 }
 
 export class FormattedStr extends Str {
@@ -111,11 +157,25 @@ export class FormattedStr extends Str {
   }
 
   equals(other) {
-    // TODO
+    return other instanceof FormattedStr && arrayEquals(this.val, other.val)
   }
 
   get default() {
     return new FormattedStr()
+  }
+
+  toString() {
+    if (this.val.length === 0) {
+      return ''
+    }
+
+    return this.val.reduce((str, element) => {
+      if (typeof element === 'str') {
+        str += element
+      } else {
+        str += `\${${element.toString()}}`
+      }
+    }, '')
   }
 }
 
@@ -131,7 +191,7 @@ export class Num {
   }
 
   equals(other) {
-    // TODO
+    return this.type === other.type && this.val === other.val
   }
 
   get default() {
@@ -140,6 +200,10 @@ export class Num {
 
   get type() {
     return Num.typeDescription
+  }
+
+  toString() {
+    return String(this.val)
   }
 }
 
@@ -155,7 +219,7 @@ export class Bool {
   }
 
   equals(other) {
-    // TODO
+    return this.type === other.type && this.val === other.val
   }
 
   get default() {
@@ -164,6 +228,10 @@ export class Bool {
 
   get type() {
     return Bool.typeDescription
+  }
+
+  toString() {
+    return String(this.val)
   }
 }
 
@@ -185,8 +253,8 @@ export class Func {
 
   equals(other) {
     return this.type === other.type
-      && this.params.params === other.params.params
-      && this.block.statements === other.block.statements
+      && this.params.equals(other.params)
+      && this.block.equals(other.block)
   }
 
   get default() {
@@ -199,11 +267,30 @@ export class Func {
   get type() {
     return Func.typeDescription
   }
+
+  toString() {
+    return `${this.params.toString()} -> ${this.block.toString()}`
+  }
 }
 
 export class Params {
   constructor(params = []) {
     this.params = params
+  }
+
+  equals(other) {
+    return other instanceof Params && arrayEquals(this.params, other.params)
+  }
+
+  toString() {
+    if (this.params.length === 0) {
+      return '()'
+    }
+
+    const str = this.params.reduce((str, param) => {
+      str += `${param.toString()}, `
+    }, '')
+    return `(${str.slice(0, -2)})`
   }
 }
 
@@ -211,6 +298,14 @@ export class KeywordParam {
   constructor(id, val) {
     this.id = id
     this.val = val
+  }
+
+  equals(other) {
+    return other instanceof KeywordParam && this.id === other.id && this.val === other.val
+  }
+
+  toString() {
+    return `${this.id} = ${this.val.toString()}`
   }
 }
 
@@ -239,6 +334,14 @@ export class Block {
 
     return getDefault(t)
   }
+
+  equals(other) {
+    return other instanceof Block && JSON.stringify(this.statements) === JSON.stringify(other.statements)
+  }
+
+  toString() {
+    return `{\n${this.statements.join('\n')}\n}`
+  }
 }
 
 export class VarDec {
@@ -256,6 +359,10 @@ export class Var {
 
   get default() {
     return getDefault(this.type.size === 1 ? this.type.values().next().value : Nil.typeDescription)
+  }
+
+  toString() {
+    return this.id
   }
 }
 
@@ -498,11 +605,15 @@ const getDefault = (t) => {
   return new Nil()
 }
 
+const arrayEquals = (a, b) => {
+  return a.length === b.length && a.every((val, index) => val === b[index] || (typeof val.equals === 'function' && val.equals(b[index])))
+}
+
 export const getType = (exps) => {
   const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription]
 
   for (const type of types) {
-    if (Array.from(exps).some(e => {
+    if ([...exps].some(e => {
       let t = e.type
       if (e instanceof Var) {
         t = e.type.size === 1 ? e.type.values().next().value : t

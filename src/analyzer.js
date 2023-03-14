@@ -17,6 +17,68 @@ function checkNotType(e, types) {
   check(!types.includes(t), `Unexpected type ${t}`)
 }
 
+// function coerceToType(e, type) {
+//   if (e.type === type) { return e }
+//   // TODO check if e is a var
+//   if (e instanceof core.Var) {
+//     // TODO what if I don't know the value of the thing that needs to be coerced?
+//     // ex:
+//     /*
+//     x = 1
+//     x ? 'hi'
+//     */
+//   }
+  
+// }
+
+// function coerceToNil(e) {
+//   return new core.Nil()
+// }
+
+// function coerceToBool(e) {
+//   // Should always be a core object that is one of the main types
+//   return new core.Bool(e.type === d.NIL ? false : (!e.equals(e.default)))
+// }
+
+// function coerceToNum(e) {
+//   const exps = {[d.NIL]: 0, [d.BOOL]: e.val ? 1 : 0,[d.NUM]: e.val, [d.STR]: e.val.length, [d.OBJ]: e.val.length, [d.LIST]: e.val.length}
+//   return new core.Num(exps[e.type] ?? 0)
+// }
+
+// function coerceToStr(e) {
+//   return new core.Str(e.type === d.NIL ? '' : e.toString())
+// }
+
+// function coerceToObj(e) {
+//   // const toObjField = (val) => {
+//   //   return new core.ObjField(new core.Str(val.toString()), val)
+//   // }
+
+//   // let exp
+
+//   // if (e.type === d.NIL) {
+//   //   exp = []
+//   // } else if (e.type === d.OBJ) {
+//   //   exp = e.val
+//   // } else {
+//   //   exp = [new core.ObjField(new core.Str(e.toString()), e)]
+//   // }
+
+//   return new core.Obj(e.type === d.NIL ? [] : e.type === d.OBJ ? e.val : [new core.ObjField(new core.Str(e.toString()), e)])
+// }
+
+// function coerceToList(e) {
+//   if (e.type === d.OBJ) {
+//     const vals = e.val.reduce((list, field) => {
+//       list.push([field.key, field.val])
+//     }, [])
+
+//     return new core.List(vals)
+//   }
+
+//   return new core.List(e.type === d.NIL ? [] : e.type === d.LIST ? e.val : [e.val])
+// }
+
 function defineVar(id, context, types = [d.NIL], exp, local = false, readOnly = false) {
   if (typeof id !== 'string') return
 
@@ -403,6 +465,15 @@ export default function analyze(sourceCode) {
 
       operands.push(lastElement)
 
+      // const type = core.getType(operands)
+      // for (let op of operands) {
+      //   if (typeof op === 'string') {
+      //     continue
+      //   }
+
+      //   coerceToType(op, type)
+      // }
+
       return new core.NaryExp(operands)
     },
     Exp5_multiplyDivideMod(left, right) {
@@ -577,7 +648,7 @@ export default function analyze(sourceCode) {
       if (notDefined) {
         target = notDefined.var
       }
-      
+
       return new core.UnaryExp(target, negation)
     },
     Exp10_enclosed(_open, exp, _close) {
