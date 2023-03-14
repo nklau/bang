@@ -35,11 +35,200 @@ Aidan Srjoui, Natalie Lau, and Abe Moore Odell have competed as a team in the LM
 |`string`|`'str'`,`"str"`,`$'str {var}'`,`$"str {var}"`|`string`|`'str'`,`"str"`,`` `str ${var}` ``|
 |`object`|`{}`,`{ 'x': 1, "y": 'str', '1': true }`|`object`|`{}`,`{ 'x': 1, 'y': 'str', '1': true }`|
 |`list`|`[]`,`[1, 'hi', {}]`|`array`|`[]`,`[1, 'hi', {}]`|
-|`function`|See code examples|`function`|See code examples|
+|`function`|`() -> {}`, `i -> i`|`function`|`() => {}`, `i => i`|
 
-<!-- TODO: type coercion table (see photos) -->
 ### Type Hierarchy
-<!-- |Type| -->
+
+
+Types in Bang! are always implicitly coerced upwards, from the weakest type to the strongest. Following the mission statement of a dynamic and flexible language, coerced types evaluate to the most logical value (at least we think so!). The Type Hierarchy table shows the coercion values of a variable 'e'. The weakest type, nil, is in the first row, and the strongest type, list, is in the final row. Within each row, the general converstions are given, as well as select examples.
+
+<table>
+<tr> <th> Target type -> </th> <th> nil </th> <th> boolean </th> <th> number </th> <th> string </th> <th> object </th> <th> list </th></tr>
+
+<tr>
+<td>
+<b>e = nil</b>
+</td>
+
+<td>
+
+`nil`
+</td>
+<td>
+
+`false`
+</td>
+<td>
+
+`0`
+</td>
+<td>
+
+`''`
+</td>
+<td>
+
+`{}`
+</td>
+<td>
+
+`[]`
+</td>
+</tr>
+
+<tr>
+<td>
+
+<b>e = boolean</b>
+</td>
+<td>
+
+`nil`
+</td>
+<td>
+
+`false` -> `false`<br>`true` -> `true`
+</td>
+<td>
+
+`false` -> `0`<br>`true` -> `1`
+</td>
+<td>
+
+`false` -> `'false'`<br>`true` -> `'true'`
+</td>
+<td>
+
+`false`->`{'false': false}`<br>`true`->`{'true': true}`
+</td>
+<td>
+
+`false`->`[false]`<br>`true`->`[true]`
+</td>
+</tr>
+
+<tr>
+<td>
+<b>e = number</b>
+</td>
+<td>
+
+`nil`
+</td>
+<td>
+
+`0` -> `false`<br>else -> `true`
+</td>
+<td>
+
+`e` -> `e`<br>`5` -> `5`
+</td>
+<td>
+
+`e` -> `'e'`<br>`5` -> `'5'`
+</td>
+<td>
+
+`e` -> `{'e': e}`<br>`5` -> `{'5': 5}`
+</td>
+<td>
+
+`e` -> `[e]`<br>`5` -> `[5]`
+</td>
+</tr>
+<tr>
+<td>
+
+<b>e = string</b>
+</td>
+<td>
+
+`nil`
+</td>
+<td>
+
+`''` -> `false`<br>else -> `true`
+</td>
+<td>
+
+`e` -> `len(e)`<br>`'string'` -> `6`
+</td>
+<td>
+
+`e` -> `e`<br>`'string'` -> `'string'`
+</td>
+<td>
+
+`e` -> `{e: e}`<br>`'string'` -> `{'string': 'string'}`
+</td>
+<td>
+
+`e` -> `[e]`<br>`'string'` -> `['string']`
+</td>
+</tr>
+
+<tr>
+<td>
+
+<b>e = object</b>
+</td>
+<td>
+
+`nil`
+</td>
+<td>
+
+`{}` -> `false`<br>else -> `true`
+</td>
+<td>
+
+`e` -> `numKeys(e)`<br>`{'x': 0, 'y': false}` -> `2`
+</td>
+<td>
+
+`e` -> `'e'`<br>`{'x': 0, 'y': false}` -> `'{'x': 0, 'y': false}'`
+</td>
+<td>
+
+`e` -> `e`<br>`{'x': 0, 'y': false}` -> `{'x': 0, 'y': false}`
+</td>
+<td>
+
+`e` -> `[e]`<br>`{'x': 0, 'y': false}` -> `[{'x': 0, 'y': false}]`
+</td>
+</tr>
+
+<tr>
+<td>
+<b>e = list</b>
+</td>
+<td>
+
+`nil`
+</td>
+<td>
+
+`[]` -> `false`<br>else -> `true`
+</td>
+<td>
+
+`e` -> `len(e)`<br>`[x, false]` -> `2`
+</td>
+<td>
+
+`e` -> `'e'`<br>`[x, false]` -> `'[x, false]'`
+</td>
+<td>
+
+`e` -> `{'i': i}` for all `i` in `e`<br>`[x, false]` -> `{'x': x, 'false': false}`
+</td>
+<td>
+
+`e` -> `e`<br>`[x, false]` -> `[x, false]`
+</td>
+</tr>
+
+</table>
 
 ### Operators and Precedence
 **All operators evaluate left to right.**
@@ -73,11 +262,9 @@ Aidan Srjoui, Natalie Lau, and Abe Moore Odell have competed as a team in the LM
 |Conditional|`<exp> ? <exp>`|Booleans, Nil|11|R to L|
 |Conditional Alt|`<exp> ? <exp> : <exp>`|Booleans, Nil, Nil|11|R to L|
 
-*Note: Primary operational types are displayed above because all types are valid for all operators. The primary operational type is the type an operator will default to if given an uninitialzed variable*
+*Note: Primary operational types are displayed above because all types are valid for all operators. The primary operational type is the type an operator will default to if given an uninitialized variable*
 
 ## Sample Code
-
-<!-- TODO: examples of implicit vardecs -->
 
 <table>
 <tr>
@@ -98,10 +285,14 @@ const decayRate = 0.05
 <td>
 
 ```javascript
-let x = 17
-let greeting = "hello"
-greeting = "bye"
-const decayRate = 0.05
+function _main() {
+  let x = 17
+  let greeting = "hello"
+  greeting = "bye"
+  const decayRate = 0.05
+}
+
+_main()
 ```
 
 </td>
@@ -121,10 +312,14 @@ print($"Hello, {firstName} {lastName}!")
 <td>
 
 ```javascript
-let firstName = "John"
-let lastName = "Doe"
+function _main() {
+  let firstName = "John"
+  let lastName = "Doe"
 
-console.log(`Hello, ${firstName} ${lastName}!`)
+  console.log(`Hello, ${firstName} ${lastName}!`)
+}
+
+_main()
 ```
 
 </td>
@@ -135,15 +330,64 @@ console.log(`Hello, ${firstName} ${lastName}!`)
 
 ```javascript
 -2**2
-// syntax error
+// semantic error
 ```
 
 </td>
 <td>
 
 ```javascript
--2**2
+function _main() {
+  return -2**2
 // syntax error
+}
+
+_main()
+```
+
+</td>
+</tr>
+<tr></tr>
+<tr>
+<td>
+
+```javascript
+x++ + 1
+// semantic error
+```
+
+</td>
+<td>
+
+```javascript
+function _main() {
+  let x = 0
+  return x++ + 1
+}
+
+_main()
+```
+
+</td>
+</tr>
+<tr></tr>
+<tr>
+<td>
+
+```javascript
+(x++) + 1
+```
+
+</td>
+<td>
+
+```javascript
+function _main() {
+  let x = 0
+  x++ + 1
+}
+
+_main()
 ```
 
 </td>
@@ -155,16 +399,26 @@ console.log(`Hello, ${firstName} ${lastName}!`)
 ```
 sum = (x, y) -> { x + y }
 sum = (x, y) -> x + y
+sum(x, y)
 ```
 
 </td>
 <td>
 
 ```javascript
-let sum = function (x, y) {
-  return x + y
+function _main() {
+  let x = undefined
+  let y = undefined
+
+  let sum = (x, y) => {
+    return x + y
+  }
+  sum = (x, y) => x + y
+
+  return sum(x, y)
 }
-let sum = (x, y) => x + y
+
+_main()
 ```
 
 </td>
@@ -174,9 +428,6 @@ let sum = (x, y) => x + y
 <td>
 
 ```javascript
-5.loop(() -> { print("hello world") })
-5.loop(() -> print("hello world"))
-5.loop({ print("hello world") })
 5.loop(print("hello world"))
 ```
 
@@ -184,7 +435,11 @@ let sum = (x, y) => x + y
 <td>
 
 ```javascript
-for (let _ = 0; _ < 5; _++) console.log("hello world")
+function _main() {
+  for (let _ = 0; _ < 5; _++) console.log("hello world")
+}
+
+_main()
 ```
 
 </td>
@@ -194,8 +449,6 @@ for (let _ = 0; _ < 5; _++) console.log("hello world")
 <td>
 
 ```javascript
-5.loop(i -> { print(i)) })
-5.loop(i -> print(i))
 5.loop(print)
 ```
 
@@ -203,7 +456,11 @@ for (let _ = 0; _ < 5; _++) console.log("hello world")
 <td>
 
 ```javascript
-for (let i = 0; i < 5; i++) console.log(i)
+function _main() {
+  for (let i = 0; i < 5; i++) console.log(i)
+}
+
+_main()
 ```
 
 </td>
@@ -213,8 +470,6 @@ for (let i = 0; i < 5; i++) console.log(i)
 <td>
 
 ```javascript
-range(5).loop((i) -> { print(i) })
-range(5).loop((i) -> print(i))
 range(5).loop(print)
 // prints 0-4 on separate lines
 
@@ -226,13 +481,15 @@ range(1, 6).loop(print)
 <td>
 
 ```javascript
-for (let i = 0; i < 5; i++) console.log(i)
-[...Array(5).keys()].forEach(i => console.log(i))
-// prints 0-4 on separate lines
+function _main() {
+  [...Array(5).keys()].forEach(i => console.log(i))
+  // prints 0-4 on separate lines
 
-for (let i = 1; i < 6; i++) console.log(i)
-[...Array(5).keys()].map(i => i + 1).forEach(i => console.log(i))
-// prints 1-5 on separate lines
+  [...Array(5).keys()].map(i => i + 1).forEach(i => console.log(i))
+  // prints 1-5 on separate lines
+}
+
+_main()
 ```
 
 </td>
@@ -249,9 +506,14 @@ isValid ? print("valid!")
 <td>
 
 ```javascript
-if (isValid) {
-  console.log("valid!")
+function _main() {
+  let isValid = false
+  if (isValid) {
+    console.log("valid!")
+  }
 }
+
+_main()
 ```
 
 </td>
@@ -268,11 +530,17 @@ isValid ? print("valid!") : print("invalid!")
 <td>
 
 ```javascript
-if (isValid) {
-  console.log("valid!")
-} else {
-  console.log("invalid!")
+function _main() {
+  let isValid = false
+
+  if (isValid) {
+    console.log("valid!")
+  } else {
+    console.log("invalid!")
+  }
 }
+
+_main()
 ```
 
 </td>
@@ -282,9 +550,6 @@ if (isValid) {
 <td>
 
 ```swift
-x = isValid
-  ? { object }
-  : { print("invalid") }
 x = isValid ? object : print("invalid")
 
 const objectField = x.fieldName
@@ -294,13 +559,22 @@ const objectField = x.fieldName
 <td>
 
 ```javascript
-let x
-if (isValid) {
-  x = object
-} else {
-  console.log("invalid")
+function _main() {
+  let x
+  let isValid = false
+
+  if (isValid) {
+    x = () => {
+      let object
+      return object
+    }()
+  } else {
+    console.log("invalid")
+  }
+  const objectField = x?.fieldName
 }
-const objectField = x?.fieldName
+
+_main()
 ```
 
 </td>
@@ -322,17 +596,21 @@ const objectField = x.fieldName
 <td>
 
 ```javascript
-const isValid = false
-let x
-if (isValid) {
-  x = object
-} else {
-  console.log("invalid")
-}
-// prints "invalid"
+function _main() {
+  const isValid = false
+  let x
+  if (isValid) {
+    x = object
+  } else {
+    console.log("invalid")
+  }
+  // prints "invalid"
 
-const objectField = x?.fieldName
-// objectField is undefined
+  const objectField = x?.fieldName
+  // objectField is undefined
+}
+
+_main()
 ```
 
 </td>
@@ -353,9 +631,35 @@ x() // prints "invalid"
 <td>
 
 ```javascript
-let isValid = false
-let x = isValid ? object : () => console.log("invalid")
-x() // prints "invalid"
+function _main() {
+  let isValid = false
+  let x = isValid ? object : () => console.log("invalid")
+  x() // prints "invalid"
+}
+
+_main()
+```
+
+</td>
+</tr>
+<tr></tr>
+<tr>
+<td>
+
+```swift
+x()
+```
+
+</td>
+<td>
+
+```javascript
+function _main() {
+  let x = () => this
+  return x()
+}
+
+_main()
 ```
 
 </td>
@@ -371,6 +675,7 @@ const season = {
   'fall': 'fall',
   'winter': 'winter' 
 }
+
 print(season.spring) 
 // prints 'spring'
 ```
@@ -379,12 +684,18 @@ print(season.spring)
 <td>
 
 ```javascript
-const Season = Object.freeze({
-  spring: "spring",
-  summer: "summer",
-  fall: "fall",
-  winter: "winter",
-})
+function _main() {
+  const season = Object.freeze({
+    spring: "spring",
+    summer: "summer",
+    fall: "fall",
+    winter: "winter",
+  })
+
+  console.log(season.spring)
+}
+
+_main()
 ```
 
 </td>
@@ -412,25 +723,31 @@ print(result)
 <td>
 
 ```javascript
-let season = Season.spring
-let result
-switch (season) {
-  case "spring":
-    result = "spring!"
-    break
-  case "summer":
-    result = "summer!"
-    break
-  case "fall":
-  case "winter":
-    let str = "is cold!"
-    result = str
-    break
-  default:
-    result = "California!"
+function _main() {
+  let season = {'fall': 'fall'}
+  let s = season.fall
+  let result
+
+  switch (s) {
+    case "spring":
+      result = "spring!"
+      break
+    case "summer":
+      result = "summer!"
+      break
+    case "fall":
+    case "winter":
+      let str = "is cold!"
+      result = str
+      break
+    default:
+      result = "California!"
+  }
+  console.log(result)
+  // prints "is cold!"
 }
-console.log(result)
-// prints "is cold!"
+
+_main()
 ```
 
 </td>
