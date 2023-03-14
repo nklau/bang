@@ -6,7 +6,78 @@ A compiler for the programming language "bang!"
 
 Aidan Srjoui, Natalie Lau, and Abe Moore Odell have competed as a team in the LMU Git Gud programming competition for the past two years. After losing to the professors by 0.3 points in the last competition, the team decided to create a programming language specifically designed for the type of coding done in limited time competitions and interviews. Their creation, known as "Bang!", is a dynamically typed language that makes use of concise and clear syntax to create a pleasant and swift programming experience. By treating everything as an object, Bang! gives programmers many time-saving options, such as the ability to create loops from numbers and its signature "bang functions". The mission? Minimize typing, and maximize winning.
 
+## Language Overview
+
+### Comments
+|Comment|Description|
+|-------|-----------|
+|`// comment goes here`|Single line comment|
+|`/* comment goes here*/`|Multi line comment|
+
+### Keywords
+|Keyword|Description|
+|-------|-----------|
+|`const`|Used to initialize a variable as read-only<br>Note: Modifying the elements of a constant list or object variable is allowed|
+|`true`|Boolean value true|
+|`false`|Boolean value false|
+|`match`|Used to specify the value used as the conditional in a match expression|
+|`nil`|Used to represent the absence of a value|
+|`break`|Used to return from within a loop function and skip all future iterations of that loop function|
+|`return`|Used to specify when a function ends and what value it gives as a result of a call|
+|`local`|Used to force variable shadowing within the current scope|
+
+### Data Types
+|Type|Value|JavaScript Type Equivalent|JavaScript Value Equivalent|
+|----|-----|--------------------------|---------------------------|
+|`nil`|`Nil`|`undefined`|`undefined`|
+|`boolean`|`true`,`false`|`boolean`|`true`,`false`|
+|`number`|`1`,`1.5`,`1e2`,`1E2`,`1e+2`,`1e-2`|`number`|`1`,`1.5`,`1e2`,`1E2`,`1e+2`,`1e-2`|
+|`string`|`'str'`,`"str"`,`$'str {var}'`,`$"str {var}"`|`string`|`'str'`,`"str"`,`` `str ${var}` ``|
+|`object`|`{}`,`{ 'x': 1, "y": 'str', '1': true }`|`object`|`{}`,`{ 'x': 1, 'y': 'str', '1': true }`|
+|`list`|`[]`,`[1, 'hi', {}]`|`array`|`[]`,`[1, 'hi', {}]`|
+|`function`|See code examples|`function`|See code examples|
+
+<!-- TODO: type coercion table (see photos) -->
+### Type Hierarchy
+<!-- |Type| -->
+
+### Operators and Precedence
+**All operators evaluate left to right.**
+|Operator|Symbol|Primary Operational Types|Precedence|Associativity|
+|--------|------|-----------------|:--------:|:-----------:|
+|Grouping|`(<exp>)`|Expressions|1|None|
+|Negation|`!`|Booleans|2|R to L|
+|Selector|`.`|Objects|2|L to R|
+|Indexer|`[]`|Lists|2|L to R|
+|Call|`()`|Functions|2|L to R|
+|Pre-Increment|`++<exp>`|Numbers|3|R to L|
+|Pre-Decrement|`--<exp>`|Numbers|3|R to L|
+|Post-Increment|`<exp>++`|Numbers|3|L to R|
+|Post-Decrement|`<exp>++`|Numbers|3|L to R|
+|Spread|`...`|Lists|4|R to L|
+|Negative|`-`|Numbers|4|R to L|
+|Exponentiation|`**`|Numbers|5|None|
+|Multiplication|`*`|Numbers|6|None|
+|Division|`/`|Numbers|6|None|
+|Modulus|`%`|Numbers|6|None|
+|Addition|`+`|Numbers|7|None|
+|Subtraction|`-`|Numbers|7|None|
+|Logical AND|`&&`|Booleans|8|L to R|
+|Logical OR|`\|\|`|Booleans|9|L to R|
+|Equality|`==`|Nil|10|None|
+|Inequality|`!=`|Nil|10|None|
+|Less Than|`<`|Numbers|10|None|
+|Less Than or Equal|`<=`|Numbers|10|None|
+|Greater Than|`>`|Numbers|10|None|
+|Greater Than or Equal|`>=`|Numbers|10|None|
+|Conditional|`<exp> ? <exp>`|Booleans, Nil|11|R to L|
+|Conditional Alt|`<exp> ? <exp> : <exp>`|Booleans, Nil, Nil|11|R to L|
+
+*Note: Primary operational types are displayed above because all types are valid for all operators. The primary operational type is the type an operator will default to if given an uninitialzed variable*
+
 ## Sample Code
+
+<!-- TODO: examples of implicit vardecs -->
 
 <table>
 <tr>
