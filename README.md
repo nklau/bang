@@ -9,15 +9,17 @@ Aidan Srjoui, Natalie Lau, and Abe Moore Odell have competed as a team in the LM
 ## Language Overview
 
 ### Comments
+
 |Comment|Description|
 |-------|-----------|
 |`// comment goes here`|Single line comment|
-|`/* comment goes here*/`|Multi line comment|
+|`/*comment goes here*/`|Multi line comment|
 
 ### Keywords
+
 |Keyword|Description|
 |-------|-----------|
-|`const`|Used to initialize a variable as read-only<br>Note: Modifying the elements of a constant list or object variable is allowed|
+|`const`|Used to initialize a variable as read-only<br>*Note: Modifying the elements of a constant list or object variable is allowed*|
 |`true`|Boolean value true|
 |`false`|Boolean value false|
 |`match`|Used to specify the value used as the conditional in a match expression|
@@ -27,22 +29,21 @@ Aidan Srjoui, Natalie Lau, and Abe Moore Odell have competed as a team in the LM
 |`local`|Used to force variable shadowing within the current scope|
 
 ### Data Types
+
 |Type|Value|JavaScript Type Equivalent|JavaScript Value Equivalent|
 |----|-----|--------------------------|---------------------------|
 |`nil`|`Nil`|`undefined`|`undefined`|
 |`boolean`|`true`,`false`|`boolean`|`true`,`false`|
-|`number`|`1`,`1.5`,`1e2`,`1E2`,`1e+2`,<br>`1e-2`|`number`|`1`,`1.5`,`1e2`,`1E2`,`1e+2`,<br>`1e-2`|
-|`string`|`'str'`,`"str"`,<br>`$'str {var}'`,`$"str {var}"`|`string`|`'str'`,`"str"`,`` `str ${var}` ``|
-|`object`|`{}`,<br><nobr>`{ 'x': 1, "y": 'str', '1': true }`</nobr>|`object`|`{}`,<br><nobr>`{ 'x': 1, 'y': 'str', '1': true }`</nobr>|
-|`list`|`[]`,`[1, 'hi', {}]`|`array`|`[]`,`[1, 'hi', {}]`|
+|`number`|`1, 1.5, 1e2, 1E2, 1e+2, 1e-2`|`number`|`1, 1.5, 1e2, 1E2. 1e+2, 1e-2`|
+|`string`|`'str', "str", $'str {var}', $"str {var}"`|`string`|``'str', "str", `str ${var}` ``|
+|`object`|`{}, {'x': 1, "y": 'str', '1': true}`|`object`|`{}, {'x': 1, 'y': 'str', '1': true}`|
+|`list`|`[], [1, 'hi', {}]`|`array`|`[], [1, 'hi', {}]`|
 |`function`|`() -> {}`, `i -> i`|`function`|`() => {}`, `i => i`|
 
 ### Type Hierarchy
-
-
 Types in Bang! are always implicitly coerced upwards, from the weakest type to the strongest. Following the mission statement of a dynamic and flexible language, coerced types evaluate to the most logical value (at least we think so!). The Type Hierarchy table shows a variable `e` and its coerced values, `e.<type>`. The weakest type, `nil`, is in the first row, and the strongest type, `list`, is in the final row. Within each row, single values are given if the coercion always results in the same value, otherwise, a general case rule and select examples and/or exceptions to the general rule are given.
 
-<table>
+<table border="1px">
 <tr> <th> Target type &#x2011;> </th> <th> nil </th> <th> boolean </th> <th> number </th> <th> string </th> <th> object </th> <th> list </th></tr>
 
 <tr>
@@ -52,27 +53,33 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 
 <td align="center">
 
-`nil`
+<pre><code>nil</code></pre>
+
 </td>
 <td align="center">
 
-`false`
+<pre><code>false</code></pre>
+
 </td>
 <td align="center">
 
-`0`
+<pre><code>0</code></pre>
+
 </td>
 <td align="center">
 
-`''`
+<pre><code>''</code></pre>
+
 </td>
 <td align="center">
 
-`{}`
+<pre><code>{}</code></pre>
+
 </td>
 <td align="center">
 
-`[]`
+<pre><code>[]</code></pre>
+
 </td>
 </tr>
 
@@ -83,42 +90,108 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 </td>
 <td align="center">
 
-`nil`
+<pre><code>nil</code></pre>
+
 </td>
 <td align="center">
 
-|e|e.bool|
-|:-:|:-:|
-|`false`|`false`|
-|`true`|`true`|
+<table>
+<tr>
+<th> e </th>
+<th> e.bool </th>
+</tr>
+
+<tr>
+<td><pre><code>false</code></pre></td>
+<td><pre><code>false</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>true</code></pre></td>
+<td><pre><code>true</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.num|
-|:-:|:-:|
-|`false`|`0`|
-|`true`|`1`|
+<table>
+<tr>
+<th> e </th>
+<th> e.num </th>
+</tr>
+
+<tr>
+<td><pre><code>false</code></pre></td>
+<td><pre><code>0</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>true</code></pre></td>
+<td><pre><code>1</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.str|
-|:-:|:-:|
-|`false`|`'false'`|
-|`true`|`'true'`|
+<table>
+<tr>
+<th> e </th>
+<th> e.str </th>
+</tr>
+
+<tr>
+<td><pre><code>false</code></pre></td>
+<td><pre><code>'false'</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>true</code></pre></td>
+<td><pre><code>'true'</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.obj|
-|:-:|:-:|
-|`false`|`{'false': false}`|
-|`true`|`{'true': true}`|
+<table>
+<tr>
+<th> e </th>
+<th> e.obj </th>
+</tr>
+
+<tr>
+<td><pre><code>false</code></pre></td>
+<td><pre><code>{'false': false}</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>true</code></pre></td>
+<td><pre><code>{'true': true}</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.list|
-|:-:|:-:|
-|`false`|`[false]`|
-|`true`|`[true]`|
+<table>
+<tr>
+<th> e </th>
+<th> e.list </th>
+</tr>
+
+<tr>
+<td><pre><code>false</code></pre></td>
+<td><pre><code>[false]</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>true</code></pre></td>
+<td><pre><code>[true]</code></pre></td>
+</tr>
+</table>
+
 </td>
 </tr>
 
@@ -128,43 +201,113 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 </td>
 <td align="center">
 
-`nil`
+<pre><code>nil</code></pre>
+
 </td>
 <td align="center">
 
-|e|e.bool|
-|:-:|:-:|
-|`0`|`false`|
-|`e`|`true`|
-|`5`|`true`|
+<table>
+<tr>
+<th> e </th>
+<th> e.bool </th>
+</tr>
+
+<tr>
+<td><pre><code>0</code></pre></td>
+<td><pre><code>false</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>true</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>5</code></pre></td>
+<td><pre><code>true</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.num|
-|:-:|:-:|
-|`e`|`e`|
-|`5`|`5`|
+<table>
+<tr>
+<th> e </th>
+<th> e.num </th>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>e</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>5</code></pre></td>
+<td><pre><code>5</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.str|
-|:-:|:-:|
-|`e`|`'e'`|
-|`5`|`'5'`|
+<table>
+<tr>
+<th> e </th>
+<th> e.str </th>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>'e'</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>5</code></pre></td>
+<td><pre><code>'5'</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.obj|
-|:-:|:-:|
-|`e`|`{'e': e}`|
-|`5`|`{'5': 5}`|
+<table>
+<tr>
+<th> e </th>
+<th> e.obj </th>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>{'e': e}</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>5</code></pre></td>
+<td><pre><code>{'5': 5}</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.list|
-|:-:|:-:|
-|`e`|`[e]`|
-|`5`|`[5]`|
+<table>
+<tr>
+<th> e </th>
+<th> e.list </th>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>[e]</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>5</code></pre></td>
+<td><pre><code>[5]</code></pre></td>
+</tr>
+</table>
+
 </td>
 </tr>
 <tr>
@@ -174,43 +317,113 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 </td>
 <td align="center">
 
-`nil`
+<pre><code>nil</code></pre>
+
 </td>
 <td align="center">
 
-|e|e.bool|
-|:-:|:-:|
-|`''`|`false`|
-|`e`|`true`|
-|`'string'`|`true`|
+<table>
+<tr>
+<th> e </th>
+<th> e.bool </th>
+</tr>
+
+<tr>
+<td><pre><code>''</code></pre></td>
+<td><pre><code>false</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>true</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>'string'</code></pre></td>
+<td><pre><code>true</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.num|
-|:-:|:-:|
-|`e`|`len(e)`|
-|`'string'`|`6`|
+<table>
+<tr>
+<th> e </th>
+<th> e.num </th>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>len(e)</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>'string'</code></pre></td>
+<td><pre><code>6</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.str|
-|:-:|:-:|
-|`e`|`e`|
-|`'string'`|`'string'`|
+<table>
+<tr>
+<th> e </th>
+<th> e.str </th>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>e</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>'string'</code></pre></td>
+<td><pre><code>'string'</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.obj|
-|:-:|:-:|
-|`e`|`{e: e}`|
-|`'string'`|<nobr>`{'string': 'string'}`</nobr>|
+<table>
+<tr>
+<th> e </th>
+<th> e.obj </th>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>{e: e}</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>'string'</code></pre></td>
+<td><pre><code>{'string': 'string'}</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.list|
-|:-:|:-:|
-|`e`|`[e]`|
-|`'string'`|`['string']`|
+<table>
+<tr>
+<th> e </th>
+<th> e.list </th>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>[e]</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>'string'</code></pre></td>
+<td><pre><code>['string']</code></pre></td>
+</tr>
+</table>
+
 </td>
 </tr>
 
@@ -221,43 +434,113 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 </td>
 <td align="center">
 
-`nil`
+<pre><code>nil</code></pre>
+
 </td>
 <td align="center">
 
-|e|e.bool|
-|:-:|:-:|
-|`{}`|`false`
-|`e`|`true`|
-|<nobr>`{'x': 0, 'y': 1}`</nobr>|`true`|
+<table>
+<tr>
+<th> e </th>
+<th> e.bool </th>
+</tr>
+
+<tr>
+<td><pre><code>{}</code></pre></td>
+<td><pre><code>false</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>true</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>{'x': 0, 'y': 1}</code></pre></td>
+<td><pre><code>true</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.num|
-|:-:|:-:|
-|`e`|`numKeys(e)`|
-|<nobr>`{'x': 0, 'y': 1}`</nobr>|`2`|
+<table>
+<tr>
+<th> e </th>
+<th> e.num </th>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>numKeys(e)</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>{'x': 0, 'y': 1}</code></pre></td>
+<td><pre><code>2</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.str|
-|:-:|:-:|
-|`e`|`'e'`|
-|<nobr>`{'x': 0, 'y': 1}`</nobr>|<nobr>`'{'x': 0, 'y': 1}'`</nobr>|
+<table>
+<tr>
+<th> e </th>
+<th> e.str </th>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>'e'</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>{'x': 0, 'y': 1}</code></pre></td>
+<td><pre><code>'{'x': 0, 'y': 1}'</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.obj|
-|:-:|:-:|
-|`e`|`e`|
-|<nobr>`{'x': 0, 'y': 1}`</nobr>|<nobr>`{'x': 0, 'y': 1}`</nobr>|
+<table>
+<tr>
+<th> e </th>
+<th> e.obj </th>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>e</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>{'x': 0, 'y': 1}</code></pre></td>
+<td><pre><code>{'x': 0, 'y': 1}</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.list|
-|:-:|:-:|
-|`e`|`[e]`|
-|<nobr>`{'x': 0, 'y': 1}`</nobr>|<nobr>`[{'x': 0, 'y': 1}]`</nobr>|
+<table>
+<tr>
+<th> e </th>
+<th> e.list </th>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>[e]</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>{'x': 0, 'y': 1}</code></pre></td>
+<td><pre><code>[{'x': 0, 'y': 1}]</code></pre></td>
+</tr>
+</table>
+
 </td>
 </tr>
 
@@ -267,50 +550,122 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 </td>
 <td align="center">
 
-`nil`
+<pre><code>nil</code></pre>
+
 </td>
 <td align="center">
 
-|e|e.bool|
-|:-:|:-:|
-|`[]`|`false`|
-|`e`|`true`|
-|`[5, false]`|`true`|
+<table>
+<tr>
+<th> e </th>
+<th> e.bool </th>
+</tr>
+
+<tr>
+<td><pre><code>[]</code></pre></td>
+<td><pre><code>false</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>true</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>[5, false]</code></pre></td>
+<td><pre><code>true</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.num|
-|:-:|:-:|
-|`e`|`len(e)`|
-|`[5, false]`|`2`|
+<table>
+<tr>
+<th> e </th>
+<th> e.num </th>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>len(e)</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>[5, false]</code></pre></td>
+<td><pre><code>2</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.str|
-|:-:|:-:|
-|`e`|`'e'`|
-|`[5, false]`|`'[5, false]'`|
+<table>
+<tr>
+<th> e </th>
+<th> e.str </th>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>'e'</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>[5, false]</code></pre></td>
+<td><pre><code>'[5, false]'</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.obj|
-|:-:|:-:|
-|`e`|`{'E', E}` for all `E` in `e`|
-|<nobr>`[5, false]`</nobr>|<nobr>`{'5': 5, 'false': false}`</nobr>|
+<table>
+<tr>
+<th> e </th>
+<th> e.obj </th>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>{'E': E}</code> for all <code>E</code> in <code>e</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>[5, false]</code></pre></td>
+<td><pre><code>{'5': 5, 'false': false}</code></pre></td>
+</tr>
+</table>
+
 </td>
 <td align="center">
 
-|e|e.list|
-|:-:|:-:|
-|`e`|`e`|
-|`[5, false]`|`[5, false]`|
+<table>
+<tr>
+<th> e </th>
+<th> e.list </th>
+</tr>
+
+<tr>
+<td><pre><code>e</code></pre></td>
+<td><pre><code>e</code></pre></td>
+</tr>
+
+<tr>
+<td><pre><code>[5, false]</code></pre></td>
+<td><pre><code>[5, false]</code></pre></td>
+</tr>
+</table>
+
 </td>
 </tr>
 
 </table>
 
 ### Operators and Precedence
+
 **All operators evaluate left to right.**
+
 |Operator|Symbol|Primary Operational Types|Precedence|Associativity|
 |--------|------|-----------------|:--------:|:-----------:|
 |Grouping|`(<exp>)`|Expressions|1|None|
@@ -353,17 +708,17 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <tr>
 <td>
 
-```javascript
+<pre><code>
 x = 17
 greeting = "hello"
 greeting = "bye"
 const decayRate = 0.05
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   let x = 17
   let greeting = "hello"
@@ -372,7 +727,7 @@ function _main() {
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>
@@ -380,17 +735,17 @@ _main()
 <tr>
 <td>
 
-```cs
+<pre><code>
 firstName = "John"
 lastName = "Doe"
 
 print($"Hello, {firstName} {lastName}!")
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   let firstName = "John"
   let lastName = "Doe"
@@ -399,7 +754,7 @@ function _main() {
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>
@@ -407,22 +762,22 @@ _main()
 <tr>
 <td>
 
-```javascript
+<pre><code>
 -2**2
 // semantic error
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   return -2**2
 // syntax error
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>
@@ -430,22 +785,22 @@ _main()
 <tr>
 <td>
 
-```javascript
+<pre><code>
 x++ + 1
 // semantic error
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   let x = 0
   return x++ + 1
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>
@@ -453,21 +808,21 @@ _main()
 <tr>
 <td>
 
-```javascript
+<pre><code>
 (x++) + 1
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   let x = 0
   x++ + 1
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>
@@ -475,16 +830,16 @@ _main()
 <tr>
 <td>
 
-```
+<pre><code>
 sum = (x, y) -> { x + y }
 sum = (x, y) -> x + y
 sum(x, y)
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   let x = undefined
   let y = undefined
@@ -498,7 +853,7 @@ function _main() {
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>
@@ -506,20 +861,20 @@ _main()
 <tr>
 <td>
 
-```javascript
+<pre><code>
 5.loop(print("hello world"))
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   for (let _ = 0; _ < 5; _++) console.log("hello world")
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>
@@ -527,20 +882,20 @@ _main()
 <tr>
 <td>
 
-```javascript
+<pre><code>
 5.loop(print)
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   for (let i = 0; i < 5; i++) console.log(i)
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>
@@ -548,18 +903,18 @@ _main()
 <tr>
 <td>
 
-```javascript
+<pre><code>
 range(5).loop(print)
 // prints 0-4 on separate lines
 
 range(1, 6).loop(print)
 // prints 1-5 on separate lines
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   [...Array(5).keys()].forEach(i => console.log(i))
   // prints 0-4 on separate lines
@@ -569,7 +924,7 @@ function _main() {
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>
@@ -577,14 +932,14 @@ _main()
 <tr>
 <td>
 
-```swift
+<pre><code>
 isValid ? print("valid!")
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   let isValid = false
   if (isValid) {
@@ -593,7 +948,7 @@ function _main() {
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>
@@ -601,14 +956,14 @@ _main()
 <tr>
 <td>
 
-```swift
+<pre><code>
 isValid ? print("valid!") : print("invalid!")
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   let isValid = false
 
@@ -620,7 +975,7 @@ function _main() {
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>
@@ -628,16 +983,16 @@ _main()
 <tr>
 <td>
 
-```swift
+<pre><code>
 x = isValid ? object : print("invalid")
 
 const objectField = x.fieldName
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   let x
   let isValid = false
@@ -654,7 +1009,7 @@ function _main() {
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>
@@ -662,19 +1017,19 @@ _main()
 <tr>
 <td>
 
-```swift
+<pre><code>
 const isValid = false
 x = isValid ? object : print("invalid")
 // prints "invalid"
 
 const objectField = x.fieldName
 // objectField = nil
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   const isValid = false
   let x
@@ -690,7 +1045,7 @@ function _main() {
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>
@@ -698,18 +1053,18 @@ _main()
 <tr>
 <td>
 
-```swift
+<pre><code>
 isValid = false
 x = isValid
   ? object
   : () -> print("invalid")
 x() // prints "invalid"
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   let isValid = false
   let x = isValid ? object : () => console.log("invalid")
@@ -717,7 +1072,7 @@ function _main() {
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>
@@ -725,21 +1080,21 @@ _main()
 <tr>
 <td>
 
-```swift
+<pre><code>
 x()
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   let x = () => this
   return x()
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>
@@ -747,7 +1102,7 @@ _main()
 <tr>
 <td>
 
-```js
+<pre><code>
 const season = { 
   'spring': 'spring', 
   'summer': 'summer', 
@@ -757,12 +1112,12 @@ const season = {
 
 print(season.spring) 
 // prints 'spring'
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   const season = Object.freeze({
     spring: "spring",
@@ -775,7 +1130,7 @@ function _main() {
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>
@@ -783,7 +1138,7 @@ _main()
 <tr>
 <td>
 
-```swift
+<pre><code>
 s = season.fall
 result = match s {
   case season.spring: "spring!"
@@ -796,12 +1151,12 @@ result = match s {
 }
 print(result)
 // prints "is cold!"
-```
+</code></pre>
 
 </td>
 <td>
 
-```javascript
+<pre><code>
 function _main() {
   let season = {'fall': 'fall'}
   let s = season.fall
@@ -827,7 +1182,7 @@ function _main() {
 }
 
 _main()
-```
+</code></pre>
 
 </td>
 </tr>

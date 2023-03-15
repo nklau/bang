@@ -1,0 +1,11 @@
+---
+---
+
+@import "{{ site.theme }}";
+table {
+  border-collapse: collapse;
+  border-style: hidden;
+}
+table td, th {
+  border: 0.25px solid blanchedalmond;
+}
