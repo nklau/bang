@@ -85,35 +85,35 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 
 `nil`
 </td>
-<td align="center">
+<td>
 
 |e|e.bool|
 |:-:|:-:|
 |`false`|`false`|
 |`true`|`true`|
 </td>
-<td align="center">
+<td>
 
 |e|e.num|
 |:-:|:-:|
 |`false`|`0`|
 |`true`|`1`|
 </td>
-<td align="center">
+<td>
 
 |e|e.str|
 |:-:|:-:|
 |`false`|`'false'`|
 |`true`|`'true'`|
 </td>
-<td align="center">
+<td>
 
 |e|e.obj|
 |:-:|:-:|
 |`false`|`{'false': false}`|
 |`true`|`{'true': true}`|
 </td>
-<td align="center">
+<td>
 
 |e|e.list|
 |:-:|:-:|
@@ -130,7 +130,7 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 
 `nil`
 </td>
-<td align="center">
+<td>
 
 |e|e.bool|
 |:-:|:-:|
@@ -138,28 +138,28 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 |`e`|`true`|
 |`5`|`true`|
 </td>
-<td align="center">
+<td>
 
 |e|e.num|
 |:-:|:-:|
 |`e`|`e`|
 |`5`|`5`|
 </td>
-<td align="center">
+<td>
 
 |e|e.str|
 |:-:|:-:|
 |`e`|`'e'`|
 |`5`|`'5'`|
 </td>
-<td align="center">
+<td>
 
 |e|e.obj|
 |:-:|:-:|
 |`e`|`{'e': e}`|
 |`5`|`{'5': 5}`|
 </td>
-<td align="center">
+<td>
 
 |e|e.list|
 |:-:|:-:|
@@ -176,7 +176,7 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 
 `nil`
 </td>
-<td align="center">
+<td>
 
 |e|e.bool|
 |:-:|:-:|
@@ -184,28 +184,28 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 |`e`|`true`|
 |`'string'`|`true`|
 </td>
-<td align="center">
+<td>
 
 |e|e.num|
 |:-:|:-:|
 |`e`|`len(e)`|
 |`'string'`|`6`|
 </td>
-<td align="center">
+<td>
 
 |e|e.str|
 |:-:|:-:|
 |`e`|`e`|
 |`'string'`|`'string'`|
 </td>
-<td align="center">
+<td>
 
 |e|e.obj|
 |:-:|:-:|
 |`e`|`{e: e}`|
 |`'string'`|<nobr>`{'string': 'string'}`</nobr>|
 </td>
-<td align="center">
+<td>
 
 |e|e.list|
 |:-:|:-:|
@@ -223,7 +223,7 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 
 `nil`
 </td>
-<td align="center">
+<td>
 
 |e|e.bool|
 |:-:|:-:|
@@ -231,28 +231,28 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 |`e`|`true`|
 |<nobr>`{'x': 0, 'y': 1}`</nobr>|`true`|
 </td>
-<td align="center">
+<td>
 
 |e|e.num|
 |:-:|:-:|
 |`e`|`numKeys(e)`|
 |<nobr>`{'x': 0, 'y': 1}`</nobr>|`2`|
 </td>
-<td align="center">
+<td>
 
 |e|e.str|
 |:-:|:-:|
 |`e`|`'e'`|
 |<nobr>`{'x': 0, 'y': 1}`</nobr>|<nobr>`'{'x': 0, 'y': 1}'`</nobr>|
 </td>
-<td align="center">
+<td>
 
 |e|e.obj|
 |:-:|:-:|
 |`e`|`e`|
 |<nobr>`{'x': 0, 'y': 1}`</nobr>|<nobr>`{'x': 0, 'y': 1}`</nobr>|
 </td>
-<td align="center">
+<td>
 
 |e|e.list|
 |:-:|:-:|
@@ -269,7 +269,7 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 
 `nil`
 </td>
-<td align="center">
+<td>
 
 |e|e.bool|
 |:-:|:-:|
@@ -277,28 +277,28 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 |`e`|`true`|
 |`[5, false]`|`true`|
 </td>
-<td align="center">
+<td>
 
 |e|e.num|
 |:-:|:-:|
 |`e`|`len(e)`|
 |`[5, false]`|`2`|
 </td>
-<td align="center">
+<td>
 
 |e|e.str|
 |:-:|:-:|
 |`e`|`'e'`|
 |`[5, false]`|`'[5, false]'`|
 </td>
-<td align="center">
+<td>
 
 |e|e.obj|
 |:-:|:-:|
 |`e`|`{'E', E}` for all `E` in `e`|
 |<nobr>`[5, false]`</nobr>|<nobr>`{'5': 5, 'false': false}`</nobr>|
 </td>
-<td align="center">
+<td>
 
 |e|e.list|
 |:-:|:-:|
