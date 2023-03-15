@@ -32,199 +32,278 @@ Aidan Srjoui, Natalie Lau, and Abe Moore Odell have competed as a team in the LM
 |`nil`|`Nil`|`undefined`|`undefined`|
 |`boolean`|`true`,`false`|`boolean`|`true`,`false`|
 |`number`|`1`,`1.5`,`1e2`,`1E2`,`1e+2`,`1e-2`|`number`|`1`,`1.5`,`1e2`,`1E2`,`1e+2`,`1e-2`|
-|`string`|`'str'`,`"str"`,`$'str {var}'`,`$"str {var}"`|`string`|`'str'`,`"str"`,`` `str ${var}` ``|
-|`object`|`{}`,`{ 'x': 1, "y": 'str', '1': true }`|`object`|`{}`,`{ 'x': 1, 'y': 'str', '1': true }`|
+|`string`|`'str'`,`"str"`,<br>`$'str {var}'`,`$"str {var}"`|`string`|`'str'`,`"str"`,`` `str ${var}` ``|
+|`object`|`{}`,<br><nobr>`{ 'x': 1, "y": 'str', '1': true }`|`object`|`{}`,<br><nobr>`{ 'x': 1, 'y': 'str', '1': true }`|
 |`list`|`[]`,`[1, 'hi', {}]`|`array`|`[]`,`[1, 'hi', {}]`|
 |`function`|`() -> {}`, `i -> i`|`function`|`() => {}`, `i => i`|
 
 ### Type Hierarchy
 
 
-Types in Bang! are always implicitly coerced upwards, from the weakest type to the strongest. Following the mission statement of a dynamic and flexible language, coerced types evaluate to the most logical value (at least we think so!). The Type Hierarchy table shows the coercion values of a variable 'e'. The weakest type, nil, is in the first row, and the strongest type, list, is in the final row. Within each row, the general converstions are given, as well as select examples.
+Types in Bang! are always implicitly coerced upwards, from the weakest type to the strongest. Following the mission statement of a dynamic and flexible language, coerced types evaluate to the most logical value (at least we think so!). The Type Hierarchy table shows a variable `e` and its coerced values, `e.<type>`. The weakest type, `nil`, is in the first row, and the strongest type, `list`, is in the final row. Within each row, single values are given if the coercion always results in the same value, otherwise, a general case rule and select examples and/or exceptions to the general rule are given.
 
 <table>
-<tr> <th> Target type -> </th> <th> nil </th> <th> boolean </th> <th> number </th> <th> string </th> <th> object </th> <th> list </th></tr>
+<tr> <th> Target type &#x2011;> </th> <th> nil </th> <th> boolean </th> <th> number </th> <th> string </th> <th> object </th> <th> list </th></tr>
 
 <tr>
-<td>
+<td align="center">
 <b>e = nil</b>
 </td>
 
-<td>
+<td align="center">
 
 `nil`
 </td>
-<td>
+<td align="center">
 
 `false`
 </td>
-<td>
+<td align="center">
 
 `0`
 </td>
-<td>
+<td align="center">
 
 `''`
 </td>
-<td>
+<td align="center">
 
 `{}`
 </td>
-<td>
+<td align="center">
 
 `[]`
 </td>
 </tr>
 
 <tr>
-<td>
+<td align="center">
 
-<b>e = boolean</b>
+<b>e&#160;=&#160;boolean</b>
 </td>
-<td>
+<td align="center">
 
 `nil`
 </td>
-<td>
+<td align="center">
 
-`false` -> `false`<br>`true` -> `true`
+|e|e.bool|
+|:-:|:-:|
+|`false`|`false`|
+|`true`|`true`|
 </td>
-<td>
+<td align="center">
 
-`false` -> `0`<br>`true` -> `1`
+|e|e.num|
+|:-:|:-:|
+|`false`|`0`|
+|`true`|`1`|
 </td>
-<td>
+<td align="center">
 
-`false` -> `'false'`<br>`true` -> `'true'`
+|e|e.str|
+|:-:|:-:|
+|`false`|`'false'`|
+|`true`|`'true'`|
 </td>
-<td>
+<td align="center">
 
-`false`->`{'false': false}`<br>`true`->`{'true': true}`
+|e|e.obj|
+|:-:|:-:|
+|`false`|`{'false': false}`|
+|`true`|`{'true': true}`|
 </td>
-<td>
+<td align="center">
 
-`false`->`[false]`<br>`true`->`[true]`
+|e|e.list|
+|:-:|:-:|
+|`false`|`[false]`|
+|`true`|`[true]`|
 </td>
 </tr>
 
 <tr>
-<td>
+<td align="center">
 <b>e = number</b>
 </td>
-<td>
+<td align="center">
 
 `nil`
 </td>
-<td>
+<td align="center">
 
-`0` -> `false`<br>else -> `true`
+|e|e.bool|
+|:-:|:-:|
+|`0`|`false`|
+|`e`|`true`|
+|`5`|`true`|
 </td>
-<td>
+<td align="center">
 
-`e` -> `e`<br>`5` -> `5`
+|e|e.num|
+|:-:|:-:|
+|`e`|`e`|
+|`5`|`5`|
 </td>
-<td>
+<td align="center">
 
-`e` -> `'e'`<br>`5` -> `'5'`
+|e|e.str|
+|:-:|:-:|
+|`e`|`'e'`|
+|`5`|`'5'`|
 </td>
-<td>
+<td align="center">
 
-`e` -> `{'e': e}`<br>`5` -> `{'5': 5}`
+|e|e.obj|
+|:-:|:-:|
+|`e`|`{'e': e}`|
+|`5`|`{'5': 5}`|
 </td>
-<td>
+<td align="center">
 
-`e` -> `[e]`<br>`5` -> `[5]`
+|e|e.list|
+|:-:|:-:|
+|`e`|`[e]`|
+|`5`|`[5]`|
 </td>
 </tr>
 <tr>
-<td>
+<td align="center">
 
 <b>e = string</b>
 </td>
-<td>
+<td align="center">
 
 `nil`
 </td>
-<td>
+<td align="center">
 
-`''` -> `false`<br>else -> `true`
+|e|e.bool|
+|:-:|:-:|
+|`''`|`false`|
+|`e`|`true`|
+|`'string'`|`true`|
 </td>
-<td>
+<td align="center">
 
-`e` -> `len(e)`<br>`'string'` -> `6`
+|e|e.num|
+|:-:|:-:|
+|`e`|`len(e)`|
+|`'string'`|`6`|
 </td>
-<td>
+<td align="center">
 
-`e` -> `e`<br>`'string'` -> `'string'`
+|e|e.str|
+|:-:|:-:|
+|`e`|`e`|
+|`'string'`|`'string'`|
 </td>
-<td>
+<td align="center">
 
-`e` -> `{e: e}`<br>`'string'` -> `{'string': 'string'}`
+|e|e.obj|
+|:-:|:-:|
+|`e`|`{e: e}`|
+|`'string'`|<nobr>`{'string': 'string'}`</nobr>|
 </td>
-<td>
+<td align="center">
 
-`e` -> `[e]`<br>`'string'` -> `['string']`
+|e|e.list|
+|:-:|:-:|
+|`e`|`[e]`|
+|`'string'`|`['string']`|
 </td>
 </tr>
 
 <tr>
-<td>
+<td align="center">
 
 <b>e = object</b>
 </td>
-<td>
+<td align="center">
 
 `nil`
 </td>
-<td>
+<td align="center">
 
-`{}` -> `false`<br>else -> `true`
+|e|e.bool|
+|:-:|:-:|
+|`{}`|`false`
+|`e`|`true`|
+|<nobr>`{'x': 0, 'y': 1}`</nobr>|`true`|
 </td>
-<td>
+<td align="center">
 
-`e` -> `numKeys(e)`<br>`{'x': 0, 'y': false}` -> `2`
+|e|e.num|
+|:-:|:-:|
+|`e`|`numKeys(e)`|
+|<nobr>`{'x': 0, 'y': 1}`</nobr>|`2`|
 </td>
-<td>
+<td align="center">
 
-`e` -> `'e'`<br>`{'x': 0, 'y': false}` -> `'{'x': 0, 'y': false}'`
+|e|e.str|
+|:-:|:-:|
+|`e`|`'e'`|
+|<nobr>`{'x': 0, 'y': 1}`</nobr>|<nobr>`'{'x': 0, 'y': 1}'`</nobr>|
 </td>
-<td>
+<td align="center">
 
-`e` -> `e`<br>`{'x': 0, 'y': false}` -> `{'x': 0, 'y': false}`
+|e|e.obj|
+|:-:|:-:|
+|`e`|`e`|
+|<nobr>`{'x': 0, 'y': 1}`</nobr>|<nobr>`{'x': 0, 'y': 1}`</nobr>|
 </td>
-<td>
+<td align="center">
 
-`e` -> `[e]`<br>`{'x': 0, 'y': false}` -> `[{'x': 0, 'y': false}]`
+|e|e.list|
+|:-:|:-:|
+|`e`|`[e]`|
+|<nobr>`{'x': 0, 'y': 1}`</nobr>|<nobr>`[{'x': 0, 'y': 1}]`</nobr>|
 </td>
 </tr>
 
 <tr>
-<td>
+<td align="center">
 <b>e = list</b>
 </td>
-<td>
+<td align="center">
 
 `nil`
 </td>
-<td>
+<td align="center">
 
-`[]` -> `false`<br>else -> `true`
+|e|e.bool|
+|:-:|:-:|
+|`[]`|`false`|
+|`e`|`true`|
+|`[5, false]`|`true`|
 </td>
-<td>
+<td align="center">
 
-`e` -> `len(e)`<br>`[x, false]` -> `2`
+|e|e.num|
+|:-:|:-:|
+|`e`|`len(e)`|
+|`[5, false]`|`2`|
 </td>
-<td>
+<td align="center">
 
-`e` -> `'e'`<br>`[x, false]` -> `'[x, false]'`
+|e|e.str|
+|:-:|:-:|
+|`e`|`'e'`|
+|`[5, false]`|`'[5, false]'`|
 </td>
-<td>
+<td align="center">
 
-`e` -> `{'i': i}` for all `i` in `e`<br>`[x, false]` -> `{'x': x, 'false': false}`
+|e|e.obj|
+|:-:|:-:|
+|`e`|`{'E', E}` for all `E` in `e`|
+|<nobr>`[5, false]`</nobr>|<nobr>`{'5': 5, 'false': false}`</nobr>|
 </td>
-<td>
+<td align="center">
 
-`e` -> `e`<br>`[x, false]` -> `[x, false]`
+|e|e.list|
+|:-:|:-:|
+|`e`|`e`|
+|`[5, false]`|`[5, false]`|
 </td>
 </tr>
 
