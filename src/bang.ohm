@@ -44,9 +44,9 @@ Bang {
   LeftMultiply          = Exp6 multiplicationOp
   LeftExponent          = Exp7 "**"
   LeftSelect            = Exp9 #"."
-  Subscription			= ":" Exp?															-- rightSlice
-  						| Exp ":" Exp?														-- slice
-  						| Exp
+  Subscription			    = ":" Exp?															                            -- rightSlice
+  						          | Exp ":" Exp?														                          -- slice
+  						          | Exp
 
   BangFunc              = "{" Block "}"
   VarAssignment         = VarAssignment #"[" Exp "]"                                        -- subscript
