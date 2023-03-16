@@ -473,9 +473,10 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <tr></tr>
 
 <tr>
-<th align="center">
+<td align="center">
+
 <b>e = object</b>
-</th>
+</td>
 <td align="center">
 
 <pre><code>nil</code></pre>
