@@ -108,6 +108,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>false</code></pre></td>
 </tr>
 
+<tr></tr>
+
 <tr>
 <td><pre><code>true</code></pre></td>
 <td><pre><code>true</code></pre></td>
@@ -127,6 +129,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>false</code></pre></td>
 <td><pre><code>0</code></pre></td>
 </tr>
+
+<tr></tr>
 
 <tr>
 <td><pre><code>true</code></pre></td>
@@ -148,6 +152,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>'false'</code></pre></td>
 </tr>
 
+<tr></tr>
+
 <tr>
 <td><pre><code>true</code></pre></td>
 <td><pre><code>'true'</code></pre></td>
@@ -168,6 +174,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>{'false': false}</code></pre></td>
 </tr>
 
+<tr></tr>
+
 <tr>
 <td><pre><code>true</code></pre></td>
 <td><pre><code>{'true': true}</code></pre></td>
@@ -187,6 +195,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>false</code></pre></td>
 <td><pre><code>[false]</code></pre></td>
 </tr>
+
+<tr></tr>
 
 <tr>
 <td><pre><code>true</code></pre></td>
@@ -219,10 +229,14 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>false</code></pre></td>
 </tr>
 
+<tr></tr>
+
 <tr>
 <td><pre><code>e</code></pre></td>
 <td><pre><code>true</code></pre></td>
 </tr>
+
+<tr></tr>
 
 <tr>
 <td><pre><code>5</code></pre></td>
@@ -244,6 +258,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>e</code></pre></td>
 </tr>
 
+<tr></tr>
+
 <tr>
 <td><pre><code>5</code></pre></td>
 <td><pre><code>5</code></pre></td>
@@ -263,6 +279,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>e</code></pre></td>
 <td><pre><code>'e'</code></pre></td>
 </tr>
+
+<tr></tr>
 
 <tr>
 <td><pre><code>5</code></pre></td>
@@ -284,6 +302,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>{'e': e}</code></pre></td>
 </tr>
 
+<tr></tr>
+
 <tr>
 <td><pre><code>5</code></pre></td>
 <td><pre><code>{'5': 5}</code></pre></td>
@@ -303,6 +323,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>e</code></pre></td>
 <td><pre><code>[e]</code></pre></td>
 </tr>
+
+<tr></tr>
 
 <tr>
 <td><pre><code>5</code></pre></td>
@@ -335,10 +357,14 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>false</code></pre></td>
 </tr>
 
+<tr></tr>
+
 <tr>
 <td><pre><code>e</code></pre></td>
 <td><pre><code>true</code></pre></td>
 </tr>
+
+<tr></tr>
 
 <tr>
 <td><pre><code>'string'</code></pre></td>
@@ -360,6 +386,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>len(e)</code></pre></td>
 </tr>
 
+<tr></tr>
+
 <tr>
 <td><pre><code>'string'</code></pre></td>
 <td><pre><code>6</code></pre></td>
@@ -379,6 +407,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>e</code></pre></td>
 <td><pre><code>e</code></pre></td>
 </tr>
+
+<tr></tr>
 
 <tr>
 <td><pre><code>'string'</code></pre></td>
@@ -400,6 +430,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>{e: e}</code></pre></td>
 </tr>
 
+<tr></tr>
+
 <tr>
 <td><pre><code>'string'</code></pre></td>
 <td><pre><code>{'string': 'string'}</code></pre></td>
@@ -419,6 +451,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>e</code></pre></td>
 <td><pre><code>[e]</code></pre></td>
 </tr>
+
+<tr></tr>
 
 <tr>
 <td><pre><code>'string'</code></pre></td>
@@ -452,10 +486,14 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>false</code></pre></td>
 </tr>
 
+<tr></tr>
+
 <tr>
 <td><pre><code>e</code></pre></td>
 <td><pre><code>true</code></pre></td>
 </tr>
+
+<tr></tr>
 
 <tr>
 <td><pre><code>{'x': 0, 'y': 1}</code></pre></td>
@@ -477,6 +515,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>numKeys(e)</code></pre></td>
 </tr>
 
+<tr></tr>
+
 <tr>
 <td><pre><code>{'x': 0, 'y': 1}</code></pre></td>
 <td><pre><code>2</code></pre></td>
@@ -496,6 +536,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>e</code></pre></td>
 <td><pre><code>'e'</code></pre></td>
 </tr>
+
+<tr></tr>
 
 <tr>
 <td><pre><code>{'x': 0, 'y': 1}</code></pre></td>
@@ -517,6 +559,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>e</code></pre></td>
 </tr>
 
+<tr></tr>
+
 <tr>
 <td><pre><code>{'x': 0, 'y': 1}</code></pre></td>
 <td><pre><code>{'x': 0, 'y': 1}</code></pre></td>
@@ -536,6 +580,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>e</code></pre></td>
 <td><pre><code>[e]</code></pre></td>
 </tr>
+
+<tr></tr>
 
 <tr>
 <td><pre><code>{'x': 0, 'y': 1}</code></pre></td>
@@ -568,10 +614,14 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>false</code></pre></td>
 </tr>
 
+<tr></tr>
+
 <tr>
 <td><pre><code>e</code></pre></td>
 <td><pre><code>true</code></pre></td>
 </tr>
+
+<tr></tr>
 
 <tr>
 <td><pre><code>[5, false]</code></pre></td>
@@ -593,6 +643,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>len(e)</code></pre></td>
 </tr>
 
+<tr></tr>
+
 <tr>
 <td><pre><code>[5, false]</code></pre></td>
 <td><pre><code>2</code></pre></td>
@@ -612,6 +664,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>e</code></pre></td>
 <td><pre><code>'e'</code></pre></td>
 </tr>
+
+<tr></tr>
 
 <tr>
 <td><pre><code>[5, false]</code></pre></td>
@@ -633,6 +687,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>{'E': E}</code> for all <code>E</code> in <code>e</code></pre></td>
 </tr>
 
+<tr></tr>
+
 <tr>
 <td><pre><code>[5, false]</code></pre></td>
 <td><pre><code>{'5': 5, 'false': false}</code></pre></td>
@@ -652,6 +708,8 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td><pre><code>e</code></pre></td>
 <td><pre><code>e</code></pre></td>
 </tr>
+
+<tr></tr>
 
 <tr>
 <td><pre><code>[5, false]</code></pre></td>
