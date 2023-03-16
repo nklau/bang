@@ -1,8 +1,10 @@
-import { contents } from './stdlib.js'
+import { contents, types } from './stdlib.js'
 import * as core from './core.js'
 
 export default function generate(program) {
   const output = []
+
+  types.forEach(t => output.push(t))
 
   /* var names will be suffixed with _1, _2, _3, etc in JS. This is because
   JS has reserved keywords that Bang! does not have. */
@@ -65,7 +67,7 @@ export default function generate(program) {
       // slice()?
     },
     Func(f) {
-      // TODO
+      // TODO construct function
     },
     Params(p) {
       // TODO
@@ -80,25 +82,25 @@ export default function generate(program) {
       // TODO
     },
     Obj(o) {
-      // TODO
+      // TODO construct object
     },
     ObjField(o) {
       // TODO
     },
     List(l) {
-      // TODO
+      return `new List(${l.val})`
     },
     Str(s) {
-      // TODO
+      return `new Str(${s.val})`
     },
     FormattedStr(f) {
-      // TODO
+      return `new Str(${f.toString()})`
     },
     Num(n) {
-      // TODO
+      return `new Num(${n.val})`
     },
     Bool(b) {
-      // TODO
+      return `new Bool(${b.val})`
     },
     MatchExp(m) {
       // TODO use JS switch

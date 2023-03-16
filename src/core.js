@@ -170,7 +170,7 @@ export class FormattedStr extends Str {
     }
 
     return this.val.reduce((str, element) => {
-      if (typeof element === 'str') {
+      if (typeof element === 'string') {
         str += element
       } else {
         str += `\${${element.toString()}}`
