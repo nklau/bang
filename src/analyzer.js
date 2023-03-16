@@ -579,12 +579,12 @@ export default function analyze(sourceCode) {
 
       return new increment(exp)
     },
-    Exp9_call(id, _space, params) {
+    Exp9_call(id, _space, inputs) {
       // if (id.sourceString === 'print' || id.sourceString === 'range') {
       //   // TODO
       //   return new core.Call(id.sourceString, params.rep())
       // }
-      let [exp, args] = [id.rep(), params.rep()]
+      let [exp, args] = [id.rep(), inputs.rep()]
       // new core.Func(new core.Params(), new core.Block([new core.ReturnStatement(new core.Str(exp))]))
       const notDefined = defineVar(exp, context, [d.FUNC])
       if (notDefined) {
