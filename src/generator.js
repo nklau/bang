@@ -41,8 +41,13 @@ export default function generate(program) {
       return `${gen(t.cond)} ? ${gen(t.block)} : ${t.alt ? gen(t.alt) : 'undefined'};`
     },
     BinaryExp(b) {
-      const op = { '==': '===', '!=': '!==' }[b.op] ?? b.op
-      return `(${b.left}${op}${b.right})`
+      if (b.op === '==') {
+        return `(${b.left}.equals(${b.right}))`
+      } else if (b.op === '!=') {
+        return `!(${b.left}.equals(${b.right}))`
+      }
+      
+      return `(${b.left}${b.op}${b.right})`
     },
     NaryExp(n) {
       // TODO embed in ()
