@@ -15,10 +15,58 @@ export const contents = Object.freeze({
   _objMerge: new core.Var('add', false, true, ['function']),
 })
 
+/*
+let x = new Num(0)
+let y = new Num(5)
+[...Array(coerce(y, 'number').val - (coerce(x, 'number')).val).keys().map(i => i + coerce(x, 'number').val)]
+*/
+
+// export const coerce = 
+// `const coerce = (exp, targetType) => {
+
+// }`
+
+const coerce = (exp, targetType) => {
+  const targets = {
+    nil: () => nil,
+    boolean: e => {
+      const eTypes = {
+        nil: false,
+        boolean: e.val,
+        number: e.val !== 0,
+        string: e.val !== '',
+        object: Object.keys(e.val).length > 0,
+        list: e.val.length > 0,
+        function: !(e.params.equals(new List())) || e.block.val !== ''
+      }
+
+      return new Bool(eTypes[e.type])
+    },
+    number: e => {
+      const eTypes = {
+        nil: 0,
+        boolean: e.val ? 1 : 0,
+        number: e.val,
+        string: e.val.toString(),
+        // object:
+      }
+    },
+    string: () => {},
+    object: () => {},
+    list: () => {},
+    function: () => {}
+  }
+
+  
+}
+
+// TODO function to convert between types, will get pushed to top of file along with type classes
+
 export const stdFuncs = {
-  [contents.print]: x => `console.log(${x}.str.val)`,
-  [contents.range]: (start, end) => {
-    return `[...Array(${end}.num.val - ${start}.num.val).keys().map(i => i + ${start}.num.val)]`
+  [contents.print]: x => `console.log(${stdFuncs.string(x)})`, // TODO don't think i can call this here, think it has to be called in the file
+  [contents.range]: (start, end) => { // TODO are these actually strings? or are they the class objs from below?
+    // TODO need to convert (coerce) start and end to nums
+    return `[...Array(${end}.val - ${start}.val).keys().map(i => i + ${start}.val)]`
   },
   nil: () => `nil`,
   boolean: x => {
@@ -209,9 +257,9 @@ const str =
 
 const obj = 
 `class Obj {
-  static typeDescription = 'object'
+  static typeDescription = new Str('object');
 
-  constructor(val = {}) {
+  constructor(val = new Map()) {
     this.val = val;
   }
 
@@ -219,18 +267,22 @@ const obj =
     // TODO
   }
 
-  equals(other) {
-    if (!this.type.equals(other.type) || !this.keys().equals(other.keys()) ) { return false; }
-    
-    for (const [key, val] of Object.entries(this.val)) {
-      if (!val.equals(other.val[key])) { return false; }
-    }
+  getVal(key) {
+    return this.val(coerce(key, 'string').val);
+  }
 
-    return true;
+  equals(other) {
+    if (!this.type.equals(other.type) || !this.keys().equals(other.keys()) ) { return new Bool(false); }
+
+    this.val.forEach((value, key) => {
+      if (!value.equals(other.getVal(key))) { return new Bool(false); }
+    })
+
+    return new Bool(true);
   }
 
   get len() {
-    return new Num(Object.keys(this.val).length);
+    return new Num(this.val.size);
   }
 
   get default() {
@@ -242,23 +294,24 @@ const obj =
   }
 
   get str() {
-    if (this.val.len === 0) {
+    if (this.len === 0) {
       return new Str('{}');
     }
 
-    const str = Object.entries(this.val).forEach(([key, val]) => {
-      str += \`\${key.str()}: \${val.str()}, \`;
-    });
+    let str = '';
+    this.val.forEach((val, key) => {
+      str += \`\${coerce(key, 'string')}: \${coerce(val, 'string')}, \`;
+    })
 
     return new Str(\`\${str.slice(0, -2)}\`);
   }
 
   keys() {
-    return new List(Object.keys(this.val));
+    return new List([...this.val.keys()]);
   }
 
   vals() {
-    return new List(Object.values(this.val));
+    return new List([...this.val.values()]);
   }
 }`
 // TODO all type coercions to all other types using getters

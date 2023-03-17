@@ -6,6 +6,7 @@ export default function generate(program) {
 
   types.forEach(t => output.push(t))
 
+  // TODO change this to be randomly generated?
   /* var names will be suffixed with _1, _2, _3, etc in JS. This is because
   JS has reserved keywords that Bang! does not have. */
 
