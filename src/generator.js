@@ -26,9 +26,11 @@ export default function generate(program) {
       gen(b.statements)
     },
     VarDec(v) {
+      // TODO what if v.exp is a var
       output.push(`let ${varName(v.var)} = ${gen(v.exp)};`)
     },
     Assign(a) {
+      // TODO what if v.exp is a var
       output.push(`${varName(a.var)} = ${gen(a.exp)};`)
     },
     ReturnStatement(r) {
@@ -41,16 +43,22 @@ export default function generate(program) {
       return `${gen(t.cond)} ? ${gen(t.block)} : ${t.alt ? gen(t.alt) : 'undefined'};`
     },
     BinaryExp(b) {
-      if (b.op === '==') {
-        return `(${b.left}.equals(${b.right}))`
-      } else if (b.op === '!=') {
-        return `!(${b.left}.equals(${b.right}))`
-      }
-      
+      // switch b.right
+        // case 'nil'
+        // case 'bool'
+        // case 'num'
+        // case 'str'
+        // case 'obj'
+        // case 'list'
       return `(${b.left}${b.op}${b.right})`
     },
     NaryExp(n) {
       // TODO embed in ()
+      // if (b.op === '==') {
+      //   return `(${b.left}.equals(${b.right}))`
+      // } else if (b.op === '!=') {
+      //   return `!(${b.left}.equals(${b.right}))`
+      // }
     },
     UnaryExp(u) {
       // TODO
@@ -63,6 +71,10 @@ export default function generate(program) {
     },
     Call(c) {
       // TODO embed in try catch
+      // if c.id instanceof core.BinaryExp {
+        // switch c.id.right
+        // case 'loop'
+      // }
     },
     VarSubscript(v) {
       // TODO

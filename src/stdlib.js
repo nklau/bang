@@ -15,18 +15,114 @@ export const contents = Object.freeze({
   _objMerge: new core.Var('add', false, true, ['function']),
 })
 
+export const stdFuncs = {
+  [contents.print]: x => `console.log(${x}.str.val)`,
+  [contents.range]: (start, end) => {
+    return `[...Array(${end}.num.val - ${start}.num.val).keys().map(i => i + ${start}.num.val)]`
+  },
+  nil: () => `nil`,
+  boolean: x => {
+    return `new Bool(${{
+      nil: false,
+      boolean: x.val,
+      number: x.val !== 0,
+      string: x.val !== '',
+      object: x.val.length > 0,
+      list: x.val.length > 0,
+      function: x.params.params.length > 0 && x.block.statements.length > 0
+    }[x.type]})`
+  },
+  number: x => {
+    return `new Num(${{
+      nil: 0,
+      boolean: x.val ? 1 : 0,
+      number: x.val,
+      string: x.val.length,
+      object: x.val.length,
+      list: x.val.length,
+      function: x.params.params.length
+    }[x.type]})`
+  },
+  string: x => {
+    return `new Str(${({
+      nil: () => '',
+      boolean: x => x.val.toString(),
+      number: x => x.val.toString(),
+      string: x => x.val,
+      object: _toStrRec,
+      list: _toStrRec,
+      function: _convertFunc
+    }[x.type])(x)})`
+  },
+  object: x => {
+    const key = stdFuncs.string(x)
+
+    return `new Obj(${{
+      nil: `{}`,
+      object: `{ [${key}]: ${_toStrRec(x)} }`,
+    }[x.type] ?? `{ [${key}]: ${stdFuncs[x.type](x)} }`})`
+  },
+  list: x => {
+    const converted = stdFuncs[x.type](x)
+
+    return `new List(${{
+      nil: `[]`,
+      boolean: `[${converted}]`,
+      number: `[${converted}]`,
+      string: `[${converted}]`,
+      object: `[${converted}]`,
+      list: ``
+    }[x.type]})`
+  } // i might be overcomplicating this? am i supposed to assume all objs are the core ones or the ones pushed to the compiled js file?
+  // p sure they're actually supposed to be the ones in the compiled file (from the stdlib, not core)
+}
+
+/*
+
+let x = new List([])
+x.list -> stdlib.stdFuncs[list](x)
+
+*/
+
+const _toStrRec = e => {
+  if (e instanceof core.Obj) {
+    let str = ''
+
+    e.val.forEach(field => {
+      str += `${field.key.val}: ${stdFuncs.str(field.val)}, `
+    })
+
+    return `{ ${str.slice(0, -2)} }`
+  } else if (e instanceof core.List) {
+    let str = ''
+
+    e.val.forEach(v => {
+      str += `${stdFuncs.str(v)}, `
+    })
+
+    return `[${str.slice(0, -2)}]`
+  } else {
+    return stdFuncs.str(e)
+  }
+}
+
+const _convertFunc = e => {
+  if (!(e instanceof core.Func)) { return e }
+
+  let str = '('
+
+  e.params.params.forEach(p => {
+    str += `${p.id}, `
+  })
+
+  return str.slice(0, -2) + `) -> {\n${util.format(e.block)}\n}`
+}
+
 const nil = 
-`class Nil {
-  static typeDescription = new Str('nil');
-
-  get type() {
-    return Nil.typeDescription;
-  }
-
-  equals(other) {
-    return this.type.equals(other.type);
-  }
-}`
+`const nil = Object.freeze({
+  type: new Str('nil'),
+  equals: other => this.type.equals(other.type)
+});`
 
 const bool =
 `class Bool {
