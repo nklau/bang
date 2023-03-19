@@ -16,7 +16,7 @@ export default function generate(program) {
         mapping.set(entity, mapping.size + 1)
       }
 
-      return `${entity.name}_${mapping.get(entity)}`
+      return `${entity.id}_${mapping.get(entity)}`
     }
   })(new Map())
 
@@ -27,11 +27,9 @@ export default function generate(program) {
       gen(b.statements)
     },
     VarDec(v) {
-      // TODO what if v.exp is a var
       output.push(`let ${varName(v.var)} = ${gen(v.exp)};`)
     },
     Assign(a) {
-      // TODO what if v.exp is a var
       output.push(`${varName(a.var)} = ${gen(a.exp)};`)
     },
     ReturnStatement(r) {
@@ -76,6 +74,9 @@ export default function generate(program) {
         // switch c.id.right
         // case 'loop'
       // }
+    },
+    Var(v) {
+      return varName(v)
     },
     VarSubscript(v) {
       // TODO
