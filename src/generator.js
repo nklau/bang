@@ -42,13 +42,22 @@ export default function generate(program) {
       return `${gen(t.cond)} ? ${gen(t.block)} : ${t.alt ? gen(t.alt) : 'undefined'};`
     },
     BinaryExp(b) {
-      // switch b.right
-        // case 'nil'
-        // case 'bool'
-        // case 'num'
-        // case 'str'
-        // case 'obj'
-        // case 'list'
+      if (b.op === '.') {
+        const coercion = {
+          nil: 'nil',
+          bool: 'boolean',
+          num: 'number',
+          str: 'string',
+          obj: 'object',
+          list: 'list',
+          func: 'function'
+        }[b.right]
+
+        if (coercion) {
+          return `coerce(${b.left}, ${coercion})`
+        }
+      }
+      
       return `(${b.left}${b.op}${b.right})`
     },
     NaryExp(n) {
