@@ -21,44 +21,114 @@ let y = new Num(5)
 [...Array(coerce(y, 'number').val - (coerce(x, 'number')).val).keys().map(i => i + coerce(x, 'number').val)]
 */
 
-// export const coerce = 
-// `const coerce = (exp, targetType) => {
-
-// }`
-
-const coerce = (exp, targetType) => {
+export const coerce = `const coerce = (exp, targetType) => {
   const targets = {
     nil: () => nil,
     boolean: e => {
       const eTypes = {
-        nil: false,
-        boolean: e.val,
-        number: e.val !== 0,
-        string: e.val !== '',
-        object: Object.keys(e.val).length > 0,
-        list: e.val.length > 0,
-        function: !(e.params.equals(new List())) || e.block.val !== ''
+        nil: () => false,
+        boolean: x => x.val,
+        number: x => x.val !== 0,
+        string: x => x.val !== '',
+        object: x => x.len.val > 0,
+        list: x => x.val.length > 0,
+        function: x => !(x.params.equals(new List())) || x.block.val !== ''
       }
 
-      return new Bool(eTypes[e.type])
+      return new Bool(eTypes[e.type](e))
     },
     number: e => {
       const eTypes = {
-        nil: 0,
-        boolean: e.val ? 1 : 0,
-        number: e.val,
-        string: e.val.toString(),
-        // object:
+        nil: () => 0,
+        boolean: x => x.val ? 1 : 0,
+        number: x => x.val,
+        string: x => x.val.toString(),
+        object: x => x.len.val,
+        list: x => x.len.val,
+        function: x => x.params.len.val
       }
+
+      return new Num(eTypes[e.type](e))
     },
-    string: () => {},
-    object: () => {},
-    list: () => {},
-    function: () => {}
+    string: e => {
+      const eTypes = {
+        nil: () => '',
+        boolean: x => x.val.toString(),
+        number: x => x.val.toString(),
+        string: x => x.val,
+        object: x => {
+          if (x.len.val === 0) {
+            return '{ }'
+          }
+
+          const str = [...(x.val)].reduce((s, [key, value]) => {
+            s += \`'\${key.val}\': \${coerce(value, 'string').val}\`
+          }, '') 
+
+          return \`{ \${str.slice(0, -2)} }\`
+        },
+        list: x => {
+          if (x.len.val === 0) {
+            return \`[]\`
+          }
+
+          const str = x.val.reduce((s, element) => {
+            s += \`\${coerce(element, 'string')}, \`
+          }, '')
+
+          return \`[\${str.slice(0, -2)}]\`
+        },
+        function: x => {
+          let str = '() -> '
+
+          if (x.params.len.val !== 0) {
+            str = x.params.val.reduce((s, param) => {
+              s += \`\${param.id}, \`
+            }, '(')
+
+            str = \`\${str.slice(0, -2)}) -> \`
+          }
+
+          str += x.block.val
+        }
+      }
+
+      return new Str(eTypes[e.type](e))
+    },
+    object: e => {
+      const eTypes = {
+        nil: () => new Map(),
+        object: x => x.val,
+        list: x => x.val.reduce((map, element) => {
+          map.set(coerce(element, 'string'), element)
+        }, new Map())
+      }
+
+      return new Obj((eTypes[e.type] ?? (x => new Map([[coerce(e, 'string'), x]])))(e))
+    },
+    list: e => {
+      const eTypes = {
+        nil: () => [],
+        object: x => [...(x.val)].reduce((list, keyVal) => {
+          list.push(new List(keyVal))
+        }, []),
+        list: x => x.val
+      }
+
+      return new List((eTypes[e.type] ?? (x => [x]))(e))
+    },
+    function: e => {
+      const eTypes = {
+        nil: () => new Func(() => {}),
+        function: x => x
+      }
+
+      return (eTypes[e.type] ?? (x => new Func(() => x, new List(), new Str(x.val.toString()))))(e)
+    }
   }
 
-  
-}
+  return targets[targetType.val ?? targetType](exp)
+}`
 
 // TODO function to convert between types, will get pushed to top of file along with type classes
 

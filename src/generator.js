@@ -1,8 +1,8 @@
-import { contents, types } from './stdlib.js'
+import { contents, types, coerce } from './stdlib.js'
 import * as core from './core.js'
 
 export default function generate(program) {
-  const output = []
+  const output = [coerce]
 
   types.forEach(t => output.push(t))
 
