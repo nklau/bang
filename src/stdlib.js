@@ -3,17 +3,20 @@ import * as core from "./core.js"
 export const contents = Object.freeze({
   print: new core.Var('print', false, true, ['function']),
   range: new core.Var('range', false, true, ['function']),
-  _numLoop: new core.Var('loop', false, true, ['function']),
-  _boolLoop: new core.Var('loop', false, true, ['function']),
-  _strLoop: new core.Var('loop', false, true, ['function']),
-  _listLoop: new core.Var('loop', false, true, ['function']),
-  _objLoop: new core.Var('loop', false, true, ['function']),
-  _numAdd: new core.Var('add', false, true, ['function']),
-  _boolAdd: new core.Var('add', false, true, ['function']),
-  _strConcat: new core.Var('add', false, true, ['function']),
-  _listConcat: new core.Var('add', false, true, ['function']),
-  _objMerge: new core.Var('add', false, true, ['function']),
+  // _numLoop: new core.Var('loop', false, true, ['function']),
+  // _boolLoop: new core.Var('loop', false, true, ['function']),
+  // _strLoop: new core.Var('loop', false, true, ['function']),
+  // _listLoop: new core.Var('loop', false, true, ['function']),
+  // _objLoop: new core.Var('loop', false, true, ['function']),
+  // _numAdd: new core.Var('add', false, true, ['function']),
+  // _boolAdd: new core.Var('add', false, true, ['function']),
+  // _strConcat: new core.Var('add', false, true, ['function']),
+  // _listConcat: new core.Var('add', false, true, ['function']),
+  // _objMerge: new core.Var('add', false, true, ['function']),
 })
+
+// also does subtraction
+// const add = 
 
 /*
 let x = new Num(0)
@@ -21,7 +24,7 @@ let y = new Num(5)
 [...Array(coerce(y, 'number').val - (coerce(x, 'number')).val).keys().map(i => i + coerce(x, 'number').val)]
 */
 
-export const coerce = `const coerce = (exp, targetType) => {
+const coerce = `const coerce = (exp, targetType) => {
   const targets = {
     nil: () => nil,
     boolean: e => {
@@ -132,8 +135,8 @@ export const coerce = `const coerce = (exp, targetType) => {
 
 // TODO function to convert between types, will get pushed to top of file along with type classes
 
-export const stdFuncs = {
-  [contents.print]: x => `console.log(${stdFuncs.string(x)})`, // TODO don't think i can call this here, think it has to be called in the file
+export const stdLibFuncs = {
+  [contents.print]: x => `console.log(${stdLibFuncs.string(x)})`, // TODO don't think i can call this here, think it has to be called in the file
   [contents.range]: (start, end) => { // TODO are these actually strings? or are they the class objs from below?
     // TODO need to convert (coerce) start and end to nums
     return `[...Array(${end}.val - ${start}.val).keys().map(i => i + ${start}.val)]`
@@ -457,3 +460,4 @@ const func =
 }`
 
 export const types = [nil, bool, num, str, obj, list, func]
+export const stdFuncs = [coerce]

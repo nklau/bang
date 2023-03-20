@@ -1,8 +1,8 @@
-import { contents, types, coerce } from './stdlib.js'
+import { contents, types, stdFuncs } from './stdlib.js'
 import * as core from './core.js'
 
 export default function generate(program) {
-  const output = [coerce]
+  const output = stdFuncs
 
   types.forEach(t => output.push(t))
 
@@ -54,19 +54,51 @@ export default function generate(program) {
         }[b.right]
 
         if (coercion) {
-          return `coerce(${b.left}, ${coercion})`
+          return `(coerce(${b.left}, ${coercion}))`
         }
       }
-      
+
       return `(${b.left}${b.op}${b.right})`
     },
     NaryExp(n) {
-      // TODO embed in ()
-      // if (b.op === '==') {
-      //   return `(${b.left}.equals(${b.right}))`
-      // } else if (b.op === '!=') {
-      //   return `!(${b.left}.equals(${b.right}))`
-      // }
+      if (n.exp.length === 1) {
+        // else, n.exp must have at least length 3
+        return `(${gen(n.exp[0])})`
+      }
+
+      const equalityOps = ['==', '!=', '<', '>', '<=', '>=']
+      
+      if (equalityOps.includes(n.exp[1])) {
+        let elements = []
+
+        const subExps = n.exp.reduce(
+          (arr, val, i) => (typeof val === 'string' ? [...arr, [val, [n.exp[i - 1], n.exp[i + 1]]]] : arr),
+          []
+        )
+
+        subExps.forEach(([op, [left, right]]) => {
+          const [lhs, rhs] = [gen(left), gen(right)]
+          const translations = {
+            '==': `${lhs}.equals(${rhs})`,
+            '!=': `!(${lhs}.equals(${rhs}))`,
+            '<': `coerce(${lhs}, 'number').val < coerce(${rhs}, 'number).val`,
+            '>': `coerce(${lhs}, 'number').val > coerce(${rhs}, 'number).val`,
+            '<=': `(coerce(${lhs}, 'number').val < coerce(${rhs}, 'number).val || ${lhs}.equals(${rhs}))`,
+            '>=': `(coerce(${lhs}, 'number').val > coerce(${rhs}, 'number).val || ${lhs}.equals(${rhs}))`
+          }
+
+          elements.push(translations[op])
+        })
+
+        return `(${elements.join(' && ')})`
+      } else {
+        const addOps = ['+', '-']
+        const multOps = ['/', '*', '%']
+        
+        const elements = n.exp.filter(e => typeof e !== 'string').map(gen)
+        const opType = addOps.includes(n.exp[1]) ? 'add' : multOps.includes(n.exp[1]) ? 'multiply' : 'exponentiate'
+        return `(${opType}(${elements}))`
+      }
     },
     UnaryExp(u) {
       // TODO
@@ -145,6 +177,19 @@ export default function generate(program) {
     Nil(n) {
       return 'undefined'
     },
+    PostIncrement(p) {
+      // TODO replace with += or smth
+      // nvm JS allows (x++) + (x++)
+    },
+    PostDecrement(p) {
+      // TODO replace with -= or smth
+    },
+    PreIncrement(p) {
+      // TODO replace with += or smth
+    },
+    PreDecrement(p) {
+      // TODO replace with -= or smth
+    }
   }
 
   gen(program)
