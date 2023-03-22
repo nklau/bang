@@ -12,37 +12,38 @@ Aidan Srouji, Natalie Lau, and Abe Moore Odell have competed as a team in the LM
 
 ### Comments
 
-|Comment|Description|
-|-------|-----------|
-|`// comment goes here`|Single line comment|
-|`/*comment goes here*/`|Multi line comment|
+| Comment                 | Description         |
+| ----------------------- | ------------------- |
+| `// comment goes here`  | Single line comment |
+| `/*comment goes here*/` | Multi line comment  |
 
 ### Keywords
 
-|Keyword|Description|
-|-------|-----------|
-|`const`|Used to initialize a variable as read-only<br>*Note: Modifying the elements of a constant list or object variable is allowed*|
-|`true`|Boolean value true|
-|`false`|Boolean value false|
-|`match`|Used to specify the value used as the conditional in a match expression|
-|`nil`|Used to represent the absence of a value|
-|`break`|Used to return from within a loop function and skip all future iterations of that loop function|
-|`return`|Used to specify when a function ends and what value it gives as a result of a call|
-|`local`|Used to force variable shadowing within the current scope|
+| Keyword  | Description                                                                                                                   |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `const`  | Used to initialize a variable as read-only<br>_Note: Modifying the elements of a constant list or object variable is allowed_ |
+| `true`   | Boolean value true                                                                                                            |
+| `false`  | Boolean value false                                                                                                           |
+| `match`  | Used to specify the value used as the conditional in a match expression                                                       |
+| `nil`    | Used to represent the absence of a value                                                                                      |
+| `break`  | Used to return from within a loop function and skip all future iterations of that loop function                               |
+| `return` | Used to specify when a function ends and what value it gives as a result of a call                                            |
+| `local`  | Used to force variable shadowing within the current scope                                                                     |
 
 ### Data Types
 
-|Type|Value|JavaScript Type Equivalent|JavaScript Value Equivalent|
-|----|-----|--------------------------|---------------------------|
-|`nil`|`Nil`|`undefined`|`undefined`|
-|`boolean`|`true`,`false`|`boolean`|`true`,`false`|
-|`number`|`1, 1.5, 1e2, 1E2, 1e+2, 1e-2`|`number`|`1, 1.5, 1e2, 1E2. 1e+2, 1e-2`|
-|`string`|`'str', "str", $'str {var}', $"str {var}"`|`string`|``'str', "str", `str ${var}` ``|
-|`object`|`{}, {'x': 1, "y": 'str', '1': true}`|`object`|`{}, {'x': 1, 'y': 'str', '1': true}`|
-|`list`|`[], [1, 'hi', {}]`|`array`|`[], [1, 'hi', {}]`|
-|`function`|`() -> {}`, `i -> i`|`function`|`() => {}`, `i => i`|
+| Type       | Value                                      | JavaScript Type Equivalent | JavaScript Value Equivalent           |
+| ---------- | ------------------------------------------ | -------------------------- | ------------------------------------- |
+| `nil`      | `Nil`                                      | `undefined`                | `undefined`                           |
+| `boolean`  | `true`,`false`                             | `boolean`                  | `true`,`false`                        |
+| `number`   | `1, 1.5, 1e2, 1E2, 1e+2, 1e-2`             | `number`                   | `1, 1.5, 1e2, 1E2. 1e+2, 1e-2`        |
+| `string`   | `'str', "str", $'str {var}', $"str {var}"` | `string`                   | `` 'str', "str", `str ${var}`  ``     |
+| `object`   | `{}, {'x': 1, "y": 'str', '1': true}`      | `object`                   | `{}, {'x': 1, 'y': 'str', '1': true}` |
+| `list`     | `[], [1, 'hi', {}]`                        | `array`                    | `[], [1, 'hi', {}]`                   |
+| `function` | `() -> {}`, `i -> i`                       | `function`                 | `() => {}`, `i => i`                  |
 
 ### Type Hierarchy
+
 Types in Bang! are always implicitly coerced upwards, from the weakest type to the strongest. Following the mission statement of a dynamic and flexible language, coerced types evaluate to the most logical value (at least we think so!). The Type Hierarchy table shows a variable `e` and its coerced values, `e.<type>`. The weakest type, `nil`, is in the first row, and the strongest type, `list`, is in the final row. Within each row, single values are given if the coercion always results in the same value, otherwise, a general case rule and select examples and/or exceptions to the general rule are given.
 
 <table border="1px">
@@ -91,6 +92,7 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td align="center">
 
 <b>e&#160;=&#160;boolean</b>
+
 </td>
 <td align="center">
 
@@ -345,6 +347,7 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td align="center">
 
 <b>e = string</b>
+
 </td>
 <td align="center">
 
@@ -476,6 +479,7 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 <td align="center">
 
 <b>e = object</b>
+
 </td>
 <td align="center">
 
@@ -737,37 +741,37 @@ Types in Bang! are always implicitly coerced upwards, from the weakest type to t
 
 **All operators evaluate left to right.**
 
-|Operator|Symbol|Primary Operational Types|Precedence|Associativity|
-|--------|------|-----------------|:--------:|:-----------:|
-|Grouping|`(<exp>)`|Expressions|1|None|
-|Negation|`!`|Booleans|2|R to L|
-|Selector|`.`|Objects|2|L to R|
-|Indexer|`[]`|Lists|2|L to R|
-|Call|`()`|Functions|2|L to R|
-|Pre-Increment|`++<exp>`|Numbers|3|R to L|
-|Pre-Decrement|`--<exp>`|Numbers|3|R to L|
-|Post-Increment|`<exp>++`|Numbers|3|L to R|
-|Post-Decrement|`<exp>++`|Numbers|3|L to R|
-|Spread|`...`|Lists|4|R to L|
-|Negative|`-`|Numbers|4|R to L|
-|Exponentiation|`**`|Numbers|5|None|
-|Multiplication|`*`|Numbers|6|None|
-|Division|`/`|Numbers|6|None|
-|Modulus|`%`|Numbers|6|None|
-|Addition|`+`|Numbers|7|None|
-|Subtraction|`-`|Numbers|7|None|
-|Logical AND|`&&`|Booleans|8|L to R|
-|Logical OR|`\|\|`|Booleans|9|L to R|
-|Equality|`==`|Nil|10|None|
-|Inequality|`!=`|Nil|10|None|
-|Less Than|`<`|Numbers|10|None|
-|Less Than or Equal|`<=`|Numbers|10|None|
-|Greater Than|`>`|Numbers|10|None|
-|Greater Than or Equal|`>=`|Numbers|10|None|
-|Conditional|`<exp> ? <exp>`|Booleans, Nil|11|R to L|
-|Conditional Alt|`<exp> ? <exp> : <exp>`|Booleans, Nil, Nil|11|R to L|
+| Operator              | Symbol                  | Primary Operational Types | Precedence | Associativity |
+| --------------------- | ----------------------- | ------------------------- | :--------: | :-----------: |
+| Grouping              | `(<exp>)`               | Expressions               |     1      |     None      |
+| Negation              | `!`                     | Booleans                  |     2      |    R to L     |
+| Selector              | `.`                     | Objects                   |     2      |    L to R     |
+| Indexer               | `[]`                    | Lists                     |     2      |    L to R     |
+| Call                  | `()`                    | Functions                 |     2      |    L to R     |
+| Pre-Increment         | `++<exp>`               | Numbers                   |     3      |    R to L     |
+| Pre-Decrement         | `--<exp>`               | Numbers                   |     3      |    R to L     |
+| Post-Increment        | `<exp>++`               | Numbers                   |     3      |    L to R     |
+| Post-Decrement        | `<exp>++`               | Numbers                   |     3      |    L to R     |
+| Spread                | `...`                   | Lists                     |     4      |    R to L     |
+| Negative              | `-`                     | Numbers                   |     4      |    R to L     |
+| Exponentiation        | `**`                    | Numbers                   |     5      |     None      |
+| Multiplication        | `*`                     | Numbers                   |     6      |     None      |
+| Division              | `/`                     | Numbers                   |     6      |     None      |
+| Modulus               | `%`                     | Numbers                   |     6      |     None      |
+| Addition              | `+`                     | Numbers                   |     7      |     None      |
+| Subtraction           | `-`                     | Numbers                   |     7      |     None      |
+| Logical AND           | `&&`                    | Booleans                  |     8      |    L to R     |
+| Logical OR            | `\|\|`                  | Booleans                  |     9      |    L to R     |
+| Equality              | `==`                    | Nil                       |     10     |     None      |
+| Inequality            | `!=`                    | Nil                       |     10     |     None      |
+| Less Than             | `<`                     | Numbers                   |     10     |     None      |
+| Less Than or Equal    | `<=`                    | Numbers                   |     10     |     None      |
+| Greater Than          | `>`                     | Numbers                   |     10     |     None      |
+| Greater Than or Equal | `>=`                    | Numbers                   |     10     |     None      |
+| Conditional           | `<exp> ? <exp>`         | Booleans, Nil             |     11     |    R to L     |
+| Conditional Alt       | `<exp> ? <exp> : <exp>` | Booleans, Nil, Nil        |     11     |    R to L     |
 
-*Note: Primary operational types are displayed above because all types are valid for all operators. The primary operational type is the type an operator will default to if given an uninitialized variable*
+_Note: Primary operational types are displayed above because all types are valid for all operators. The primary operational type is the type an operator will default to if given an uninitialized variable_
 
 ## Sample Code
 
@@ -1263,7 +1267,7 @@ Natalie "nat" Lau is a third-year CS student at Loyola Marymount University inte
 
 Abraham "Abe" Moore Odell is a computer science student at Loyola Marymount University with interests in AI, language design, and game design. Some of his past projects include AI game playing agents, and a video generator.
 
-Aidan Srouji is a third-year CS student at LMU, interested in applying artificial intelligence agents to the field of video game development. Some of his past projects include implementing an automatic speech recognition deep learning model, and creating a text-based multiplayer game run through the Discord platform.
+Aidan "Aidan" Srouji is a third-year CS student at LMU, interested in applying artificial intelligence agents to the field of video game development. Some of his past projects include implementing an automatic speech recognition deep learning model, and creating a text-based multiplayer game run through the Discord platform.
 
 ## Code of Conduct
 
