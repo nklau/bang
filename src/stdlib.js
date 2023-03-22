@@ -65,7 +65,7 @@ const add = (...exps) => {
       let toSubtract = [];
       let toAdd = [];
 
-      for (const i = 0; i < exps.length; i++) {
+      for (let i = 0; i < exps.length; i++) {
         if (typeof exps[i] === 'string') {
           if (exps[i] === '-') {
             if (exps[i + 1].type.equals(List.typeDescription)) {
@@ -105,7 +105,7 @@ const add = (...exps) => {
       let toSubtract = [];
       let toAdd = [];
 
-      for (const i = 0; i < exps.length; i++) {
+      for (let i = 0; i < exps.length; i++) {
         if (typeof exps[i] === 'string') {
           if (exps[i] === '-') {
             if (exps[i + 1].type.equals(Obj.typeDescription)) {
@@ -124,10 +124,10 @@ const add = (...exps) => {
       }
 
       toSubtract.forEach(exp => {
-          const index = toAdd.findIndex(e => e.equals(exp));
-          if (index > -1) {
-            toAdd.splice(index, 1);
-          }
+        const index = toAdd.findIndex(e => e.equals(exp));
+        if (index > -1) {
+          toAdd.splice(index, 1);
+        }
       });
 
       let added = toAdd.reduce((map, element) => {
@@ -141,10 +141,37 @@ const add = (...exps) => {
         return map;
       }, new Map());
 
-      return new Obj(added)
+      return new Obj(added);
     },
     [Str.typeDescription.val]: () => {
+      let toSubtract = [];
+      let toAdd = [];
 
+      for (let i = 0; i < exps.length; i++) {
+        if (typeof exps[i] === 'string') {
+          if (exps[i] === '-') {
+            toSubtract.push(exps[i + 1]);
+            i++;
+          }
+
+          continue;
+        }
+
+        toAdd.push(exps[i]);
+      }
+
+      toSubtract.forEach(exp => {
+        const index = toAdd.findIndex(e => e.equals(exp));
+        if (index > -1) {
+          toAdd.splice(index, 1);
+        }
+      });
+
+      let added = toAdd.reduce((str, substr) => {
+        str += coerce(substr, Str.typeDescription).val;
+      }, '');
+
+      return new Str(added);
     }
   }[type.val]
 
