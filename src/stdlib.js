@@ -172,6 +172,29 @@ const add = (...exps) => {
       }, '');
 
       return new Str(added);
+    },
+    [Num.typeDescription.val]: () => {
+      let toSubtract = [];
+      let toAdd = [];
+
+      const coerced = exps.map(e => typeof e === 'string' ? e : coerce(e, Num.typeDescription).val);
+      for (let i = 0; i < coerced.length; i++) {
+        if (typeof coerced[i] === 'string') {
+          (e === '-' ? toSubtract : toAdd).push(coerced[i + 1]);
+          i++;
+          continue;
+        }
+
+        toAdd.push(coerced[i]);
+      }
+
+      let sum = toAdd.reduce((num, e) => {
+        num += e;
+      }, 0);
+
+      return toSubtract.reduce((num, e) => {
+        num -= e;
+      }, sum);
     }
   }[type.val]
 
