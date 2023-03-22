@@ -1,5 +1,37 @@
 import * as core from "./core.js"
 
+// object todo list
+  // function to get by index (loop that just counts upwards)
+  // function to check if has element
+  /*
+  function has(map, string) {
+  let found = false;
+  
+  map.forEach((val, key) => {
+    if (key.equals(string)) {
+      found = true;
+    }
+  })
+
+  return found;
+}
+  */
+ // function to remove element
+ /*
+ function delete(map, string) {
+  let found = false;
+  
+  map.forEach((val, key) => {
+    if (key.equals(string)) {
+      found = map.delete(key);
+    }
+  })
+
+  return found;
+}
+ */
+ // function to remove element at index
+
 export const contents = Object.freeze({
   print: new core.Var('print', false, true, ['function']),
   range: new core.Var('range', false, true, ['function']),
@@ -16,7 +48,119 @@ export const contents = Object.freeze({
 })
 
 // also does subtraction
-// const add = 
+// using core classes!!
+const add = (...exps) => {
+  // TODO what about functions
+  // can assume exps always has at least 3 elements
+  const type = strongestType(exps.filter(e => typeof e !== 'string'));
+  // const coerced = exps.reduce((arr, e) => {
+  //   if (typeof e === 'string') {
+  //     arr.push(e);
+  //   } else {
+  //     arr.push(coerce(e, type));
+  //   }
+  // }, []);
+  const addFunc = {
+    [List.typeDescription.val]: () => {
+      let toSubtract = [];
+      let toAdd = [];
+
+      for (const i = 0; i < exps.length; i++) {
+        if (typeof exps[i] === 'string') {
+          if (exps[i] === '-') {
+            if (exps[i + 1].type.equals(List.typeDescription)) {
+              // subtracting a list does set difference, but only flattens once
+              exps[i + 1].val.forEach(e => toSubtract.push(e));
+            } else {
+              toSubtract.push(exps[i + 1]);
+            }
+            i++;
+          }
+
+          continue;
+        }
+
+        toAdd.push(exps[i]);
+      }
+
+      toSubtract.forEach(exp => {
+        const index = toAdd.findIndex(e => e.equals(exp));
+        if (index > -1) {
+          toAdd.splice(index, 1);
+        }
+      });
+
+      let added = toAdd.reduce((arr, element) => {
+        // adding two lists flattens once
+        if (element.type.equals(List.typeDescription)) {
+          arr = [...arr, ...element.val];
+        } else {
+          arr.push(element);
+        }
+      }, []);
+
+      return new List(added);
+    },
+    [Obj.typeDescription.val]: () => {
+      let toSubtract = [];
+      let toAdd = [];
+
+      for (const i = 0; i < exps.length; i++) {
+        if (typeof exps[i] === 'string') {
+          if (exps[i] === '-') {
+            if (exps[i + 1].type.equals(Obj.typeDescription)) {
+              // subtracting an object does set difference by keys, but only flattens once
+              exps[i + 1].val.forEach(([_val, key]) => toSubtract.push(key));
+            } else {
+              toSubtract.push(exps[i + 1]);
+            }
+            i++;
+          }
+
+          continue;
+        }
+
+        toAdd.push(exps[i]);
+      }
+
+      toSubtract.forEach(exp => {
+          const index = toAdd.findIndex(e => e.equals(exp));
+          if (index > -1) {
+            toAdd.splice(index, 1);
+          }
+      });
+
+      let added = toAdd.reduce((map, element) => {
+        if (element.type.equals(Obj.typeDescription)) {
+          element.val.forEach((val, key) => {
+            map.set(key, val);
+          })
+        } else {
+          map.set(coerce(element, Str.typeDescription), element);
+        }
+        return map;
+      }, new Map());
+
+      return new Obj(added)
+    },
+    [Str.typeDescription.val]: () => {
+
+    }
+  }[type.val]
+
+  return addFunc()
+}
+
+const strongestType = `const strongestType = (...exps) => {
+  const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription];
+  types.forEach(type => {
+    if (exps.some(e => {
+      return e.type.equals(type);
+    })) {
+      return type;
+    }
+  });
+}`
 
 /*
 let x = new Num(0)
@@ -26,62 +170,62 @@ let y = new Num(5)
 
 const coerce = `const coerce = (exp, targetType) => {
   const targets = {
-    nil: () => nil,
-    boolean: e => {
+    [nil.type.val]: () => nil,
+    [Bool.typeDescription.val]: e => {
       const eTypes = {
-        nil: () => false,
-        boolean: x => x.val,
-        number: x => x.val !== 0,
-        string: x => x.val !== '',
-        object: x => x.len.val > 0,
-        list: x => x.val.length > 0,
-        function: x => !(x.params.equals(new List())) || x.block.val !== ''
+        [nil.type.val]: () => false,
+        [Bool.typeDescription.val]: x => x.val,
+        [Num.typeDescription.val]: x => x.val !== 0,
+        [Str.typeDescription.val]: x => x.val !== '',
+        [Obj.typeDescription.val]: x => x.len.val > 0,
+        [List.typeDescription.val]: x => x.val.length > 0,
+        [Func.typeDescription.val]: x => !(x.params.equals(new List())) || x.block.val !== ''
       }
 
-      return new Bool(eTypes[e.type](e))
+      return new Bool(eTypes[e.type.val](e))
     },
-    number: e => {
+    [Num.typeDescription.val]: e => {
       const eTypes = {
-        nil: () => 0,
-        boolean: x => x.val ? 1 : 0,
-        number: x => x.val,
-        string: x => x.val.toString(),
-        object: x => x.len.val,
-        list: x => x.len.val,
-        function: x => x.params.len.val
+        [nil.type.val]: () => 0,
+        [Bool.typeDescription.val]: x => x.val ? 1 : 0,
+        [Num.typeDescription.val]: x => x.val,
+        [Str.typeDescription.val]: x => x.val.toString(),
+        [Obj.typeDescription.val]: x => x.len.val,
+        [List.typeDescription.val]: x => x.len.val,
+        [Func.typeDescription.val]: x => x.params.len.val
       }
 
-      return new Num(eTypes[e.type](e))
+      return new Num(eTypes[e.type.val](e))
     },
-    string: e => {
+    [Str.typeDescription.val]: e => {
       const eTypes = {
-        nil: () => '',
-        boolean: x => x.val.toString(),
-        number: x => x.val.toString(),
-        string: x => x.val,
-        object: x => {
+        [nil.type.val]: () => '',
+        [Bool.typeDescription.val]: x => x.val.toString(),
+        [Num.typeDescription.val]: x => x.val.toString(),
+        [Str.typeDescription.val]: x => x.val,
+        [Obj.typeDescription.val]: x => {
           if (x.len.val === 0) {
             return '{ }'
           }
 
           const str = [...(x.val)].reduce((s, [key, value]) => {
-            s += \`'\${key.val}\': \${coerce(value, 'string').val}\`
+            s += \`'\${key.val}\': \${coerce(value, Str.typeDescription).val}\`
           }, '') 
 
           return \`{ \${str.slice(0, -2)} }\`
         },
-        list: x => {
+        [List.typeDescription.val]: x => {
           if (x.len.val === 0) {
             return \`[]\`
           }
 
           const str = x.val.reduce((s, element) => {
-            s += \`\${coerce(element, 'string')}, \`
+            s += \`\${coerce(element, Str.typeDescription)}, \`
           }, '')
 
           return \`[\${str.slice(0, -2)}]\`
         },
-        function: x => {
+        [Func.typeDescription.val]: x => {
           let str = '() -> '
 
           if (x.params.len.val !== 0) {
@@ -96,37 +240,37 @@ const coerce = `const coerce = (exp, targetType) => {
         }
       }
 
-      return new Str(eTypes[e.type](e))
+      return new Str(eTypes[e.type.val](e))
     },
-    object: e => {
+    [Obj.typeDescription.val]: e => {
       const eTypes = {
-        nil: () => new Map(),
-        object: x => x.val,
-        list: x => x.val.reduce((map, element) => {
-          map.set(coerce(element, 'string'), element)
+        [nil.type.val]: () => new Map(),
+        [Obj.typeDescription.val]: x => x.val,
+        [List.typeDescription.val]: x => x.val.reduce((map, element) => {
+          map.set(coerce(element, Str.typeDescription), element)
         }, new Map())
       }
 
-      return new Obj((eTypes[e.type] ?? (x => new Map([[coerce(e, 'string'), x]])))(e))
+      return new Obj((eTypes[e.type.val] ?? (x => new Map([[coerce(e, Str.typeDescription), x]])))(e))
     },
-    list: e => {
+    [List.typeDescription.val]: e => {
       const eTypes = {
-        nil: () => [],
-        object: x => [...(x.val)].reduce((list, keyVal) => {
+        [nil.type.val]: () => [],
+        [Obj.typeDescription.val]: x => [...(x.val)].reduce((list, keyVal) => {
           list.push(new List(keyVal))
         }, []),
-        list: x => x.val
+        [List.typeDescription.val]: x => x.val
       }
 
-      return new List((eTypes[e.type] ?? (x => [x]))(e))
+      return new List((eTypes[e.type.val] ?? (x => [x]))(e))
     },
-    function: e => {
+    [Func.typeDescription.val]: e => {
       const eTypes = {
-        nil: () => new Func(() => {}),
-        function: x => x
+        [nil.type.val]: () => new Func(() => {}),
+        [Func.typeDescription.val]: x => x
       }
 
-      return (eTypes[e.type] ?? (x => new Func(() => x, new List(), new Str(x.val.toString()))))(e)
+      return (eTypes[e.type.val] ?? (x => new Func(() => x, new List(), new Str(x.val.toString()))))(e)
     }
   }
 
@@ -386,6 +530,11 @@ const obj =
   vals() {
     return new List([...this.val.values()]);
   }
+
+  reverse() {
+    let reversed = new Map();
+    this.val = Array.from(this.val).reverse().reduce((map, [key, val]) => map.set(key, val), new Map());
+  }
 }`
 // TODO all type coercions to all other types using getters
 const list =
@@ -460,4 +609,4 @@ const func =
 }`
 
 export const types = [nil, bool, num, str, obj, list, func]
-export const stdFuncs = [coerce]
+export const stdFuncs = [strongestType, coerce, add]

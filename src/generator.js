@@ -2,9 +2,11 @@ import { contents, types, stdFuncs } from './stdlib.js'
 import * as core from './core.js'
 
 export default function generate(program) {
-  const output = stdFuncs
+  let output = []
 
   types.forEach(t => output.push(t))
+
+  output = [...output, ...stdFuncs]
 
   // TODO change this to be randomly generated?
   /* var names will be suffixed with _1, _2, _3, etc in JS. This is because
@@ -94,8 +96,8 @@ export default function generate(program) {
       } else {
         const addOps = ['+', '-']
         const multOps = ['/', '*', '%']
-        
-        const elements = n.exp.filter(e => typeof e !== 'string').map(gen)
+
+        const elements = n.exp.map(e => typeof e === 'string' ? e : gen(e))
         const opType = addOps.includes(n.exp[1]) ? 'add' : multOps.includes(n.exp[1]) ? 'multiply' : 'exponentiate'
         return `(${opType}(${elements}))`
       }
