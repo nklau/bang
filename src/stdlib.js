@@ -196,8 +196,24 @@ const add = (...exps) => {
     },
     [Bool.typeDescription.val]: () => {
       const coerced = exps.map(e => typeof e === 'string' ? e : coerce(e, Bool.typeDescription).val);
-      let sum = 0;
-      
+      let retVal = false;
+
+      for (let i = 0; i < coerced.length; i++) {
+        if (typeof coerced[i] === 'string') {
+          if (coerced[i] === '+') {
+            retVal = coerced[i + 1];
+          } else {
+            retVal = (retVal || coerced[i + 1]) && !(coerced[i] && retVal);
+          }
+
+          i++;
+          continue;
+        }
+
+        retVal = coerced[i] ? coerced[i] : retVal;
+      }
+
+      return new Bool(retVal);
     },
     [Nil.typeDescription.val]: () => nil,
     [Func.typeDescription.val]: () => {
