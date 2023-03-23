@@ -176,8 +176,8 @@ export default function generate(program) {
     DefaultMatchCase(d) {
       // TODO
     },
-    Nil(n) {
-      return 'undefined'
+    Nil(_n) {
+      return 'nil'
     },
     PostIncrement(p) {
       // TODO replace with += or smth
