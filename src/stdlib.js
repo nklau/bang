@@ -160,16 +160,14 @@ const add = (...exps) => {
         toAdd.push(exps[i]);
       }
 
-      toSubtract.forEach(exp => {
-        const index = toAdd.findIndex(e => e.equals(exp));
-        if (index > -1) {
-          toAdd.splice(index, 1);
-        }
-      });
-
       let added = toAdd.reduce((str, substr) => {
         str += coerce(substr, Str.typeDescription).val;
+        return str;
       }, '');
+
+      toSubtract.forEach(exp => {
+        added = added.replace(coerce(exp, Str.typeDescription).val, '');
+      });
 
       return new Str(added);
     },
@@ -195,6 +193,53 @@ const add = (...exps) => {
       return toSubtract.reduce((num, e) => {
         num -= e;
       }, sum);
+    },
+    [Bool.typeDescription.val]: () => {
+      const coerced = exps.map(e => typeof e === 'string' ? e : coerce(e, Bool.typeDescription).val);
+      let sum = 0;
+      
+    },
+    [Nil.typeDescription.val]: () => nil,
+    [Func.typeDescription.val]: () => {
+      let toAdd = [];
+      let toSubtract = [];
+      let params = [];
+
+      for (let i = 0; i < exps.length; i++) {
+        if (typeof exps[i] === 'string' && exps[i] === '-') {
+          toSubtract.push(exps[i + 1]);
+          i++;
+          continue;
+        } else {
+          if (exps[i].type.equals(Func.typeDescription)) {
+            params.push(exp.params.val);
+          }
+
+          toAdd.push(exps[i]);
+        }
+      }
+
+      toSubtract.forEach(exp => {
+        const index = toAdd.findIndex(e => e.equals(exp));
+        if (index > -1) {
+          toAdd.splice(index, 1);
+        }
+      });
+
+      return new Func((...funcParams) => {
+        let retVal = []
+        let paramIndex = 0;
+
+        toAdd.forEach(exp => {
+          if (exp.type.equals(Func.typeDescription)) {
+            retVal.push(exp.val(...funcParams[paramIndex]));
+          } else {
+            retVal.push(exp);
+          }
+        });
+
+        return add(...retVal);
+      }, new List(params));
     }
   }[type.val]
 
@@ -202,7 +247,7 @@ const add = (...exps) => {
 }
 
 const strongestType = `const strongestType = (...exps) => {
-  const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription];
+  const types = [Func.typeDescription, List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription];
   types.forEach(type => {
     if (exps.some(e => {
       return e.type.equals(type);
@@ -335,103 +380,7 @@ export const stdLibFuncs = {
     // TODO need to convert (coerce) start and end to nums
     return `[...Array(${end}.val - ${start}.val).keys().map(i => i + ${start}.val)]`
   },
-  // nil: () => `nil`,
-  // boolean: x => {
-  //   return `new Bool(${{
-  //     nil: false,
-  //     boolean: x.val,
-  //     number: x.val !== 0,
-  //     string: x.val !== '',
-  //     object: x.val.length > 0,
-  //     list: x.val.length > 0,
-  //     function: x.params.params.length > 0 && x.block.statements.length > 0
-  //   }[x.type]})`
-  // },
-  // number: x => {
-  //   return `new Num(${{
-  //     nil: 0,
-  //     boolean: x.val ? 1 : 0,
-  //     number: x.val,
-  //     string: x.val.length,
-  //     object: x.val.length,
-  //     list: x.val.length,
-  //     function: x.params.params.length
-  //   }[x.type]})`
-  // },
-  // string: x => {
-  //   return `new Str(${({
-  //     nil: () => '',
-  //     boolean: x => x.val.toString(),
-  //     number: x => x.val.toString(),
-  //     string: x => x.val,
-  //     object: _toStrRec,
-  //     list: _toStrRec,
-  //     function: _convertFunc
-  //   }[x.type])(x)})`
-  // },
-  // object: x => {
-  //   const key = stdFuncs.string(x)
-
-  //   return `new Obj(${{
-  //     nil: `{}`,
-  //     object: `{ [${key}]: ${_toStrRec(x)} }`,
-  //   }[x.type] ?? `{ [${key}]: ${stdFuncs[x.type](x)} }`})`
-  // },
-  // list: x => {
-  //   const converted = stdFuncs[x.type](x)
-
-  //   return `new List(${{
-  //     nil: `[]`,
-  //     boolean: `[${converted}]`,
-  //     number: `[${converted}]`,
-  //     string: `[${converted}]`,
-  //     object: `[${converted}]`,
-  //     list: ``
-  //   }[x.type]})`
-  // } // i might be overcomplicating this? am i supposed to assume all objs are the core ones or the ones pushed to the compiled js file?
-  // // p sure they're actually supposed to be the ones in the compiled file (from the stdlib, not core)
 }
-
-/*
-
-let x = new List([])
-x.list -> stdlib.stdFuncs[list](x)
-
-*/
-
-// const _toStrRec = e => {
-//   if (e instanceof core.Obj) {
-//     let str = ''
-
-//     e.val.forEach(field => {
-//       str += `${field.key.val}: ${stdFuncs.str(field.val)}, `
-//     })
-
-//     return `{ ${str.slice(0, -2)} }`
-//   } else if (e instanceof core.List) {
-//     let str = ''
-
-//     e.val.forEach(v => {
-//       str += `${stdFuncs.str(v)}, `
-//     })
-
-//     return `[${str.slice(0, -2)}]`
-//   } else {
-//     return stdFuncs.str(e)
-//   }
-// }
-
-// const _convertFunc = e => {
-//   if (!(e instanceof core.Func)) { return e }
-
-//   let str = '('
-
-//   e.params.params.forEach(p => {
-//     str += `${p.id}, `
-//   })
-
-//   return str.slice(0, -2) + `) -> {\n${util.format(e.block)}\n}`
-// }
 
 const nil = 
 `const nil = Object.freeze({
@@ -631,14 +580,13 @@ const func =
 `class Func {
   static typeDescription = 'function';
 
-  constructor(val, params = new List(), block = new Str()) {
+  constructor(val, params = new List()) {
     this.val = val;
     this.params = params;
-    this.block = block;
   }
 
   equals(other) {
-    return this.type.equals(other.type) && this.params.equals(other.params) && this.block.equals(other.block);
+    return this.type.equals(other.type) && this.val.toString() === other.val.toString();
   }
 
   get len() {
@@ -647,6 +595,10 @@ const func =
 
   get default() {
     return new Func(() => {});
+  }
+
+  get block() {
+    return this.val.toString().substring(this.val.toString().indexOf('=>') + 2);
   }
 
   get type() {
