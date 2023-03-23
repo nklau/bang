@@ -48,18 +48,8 @@ export const contents = Object.freeze({
 })
 
 // also does subtraction
-// using core classes!!
-const add = (...exps) => {
-  // TODO what about functions
-  // can assume exps always has at least 3 elements
+const add = `const add = (...exps) => {
   const type = strongestType(exps.filter(e => typeof e !== 'string'));
-  // const coerced = exps.reduce((arr, e) => {
-  //   if (typeof e === 'string') {
-  //     arr.push(e);
-  //   } else {
-  //     arr.push(coerce(e, type));
-  //   }
-  // }, []);
   const addFunc = {
     [List.typeDescription.val]: () => {
       let toSubtract = [];
@@ -260,7 +250,7 @@ const add = (...exps) => {
   }[type.val]
 
   return addFunc()
-}
+}`
 
 const strongestType = `const strongestType = (...exps) => {
   const types = [Func.typeDescription, List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription];
