@@ -168,7 +168,7 @@ const add = `const add = (...exps) => {
       const coerced = exps.map(e => typeof e === 'string' ? e : coerce(e, Num.typeDescription).val);
       for (let i = 0; i < coerced.length; i++) {
         if (typeof coerced[i] === 'string') {
-          (e === '-' ? toSubtract : toAdd).push(coerced[i + 1]);
+          (coerced[i] === '-' ? toSubtract : toAdd).push(coerced[i + 1]);
           i++;
           continue;
         }
@@ -176,9 +176,7 @@ const add = `const add = (...exps) => {
         toAdd.push(coerced[i]);
       }
 
-      let sum = toAdd.reduce((num, e) => {
-        num += e;
-      }, 0);
+      let sum = toAdd.reduce((num, e) => num += e, 0);
 
       return toSubtract.reduce((num, e) => {
         num -= e;
@@ -205,7 +203,7 @@ const add = `const add = (...exps) => {
 
       return new Bool(retVal);
     },
-    [Nil.typeDescription.val]: () => nil,
+    [nil.type.val]: () => nil,
     [Func.typeDescription.val]: () => {
       let toAdd = [];
       let toSubtract = [];
@@ -252,15 +250,17 @@ const add = `const add = (...exps) => {
   return addFunc()
 }`
 
-const strongestType = `const strongestType = (...exps) => {
+const strongestType = `const strongestType = (exps) => {
   const types = [Func.typeDescription, List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription];
-  types.forEach(type => {
+  for (let type of types) {
     if (exps.some(e => {
       return e.type.equals(type);
     })) {
       return type;
     }
-  });
+  }
+
+  return nil.type;
 }`
 
 /*
@@ -457,7 +457,7 @@ const str =
   }
 
   equals(other) {
-    return this.type.equals(other.type) && this.val === other.val;
+    return this.type.val === other.type.val && this.val === other.val;
   }
 
   get len() {
@@ -584,7 +584,7 @@ const list =
 
 const func =
 `class Func {
-  static typeDescription = 'function';
+  static typeDescription = new Str('function');
 
   constructor(val, params = new List()) {
     this.val = val;
@@ -616,5 +616,5 @@ const func =
   }
 }`
 
-export const types = [nil, bool, num, str, obj, list, func]
+export const types = [str, nil, bool, num, obj, list, func]
 export const stdFuncs = [strongestType, coerce, add]

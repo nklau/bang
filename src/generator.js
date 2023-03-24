@@ -26,7 +26,9 @@ export default function generate(program) {
 
   const generators = {
     Block(b) {
+      output.push('{')
       gen(b.statements)
+      output.push('}')
     },
     VarDec(v) {
       output.push(`let ${varName(v.var)} = ${gen(v.exp)};`)
@@ -97,7 +99,7 @@ export default function generate(program) {
         const addOps = ['+', '-']
         const multOps = ['/', '*', '%']
 
-        const elements = n.exp.map(e => typeof e === 'string' ? e : gen(e))
+        const elements = n.exp.map(e => typeof e === 'string' ? `'${e}'` : gen(e))
         const opType = addOps.includes(n.exp[1]) ? 'add' : multOps.includes(n.exp[1]) ? 'multiply' : 'exponentiate'
         return `(${opType}(${elements}))`
       }
@@ -191,9 +193,14 @@ export default function generate(program) {
     },
     PreDecrement(p) {
       // TODO replace with -= or smth
+    },
+    Array(a) {
+      return a.map(gen)
     }
   }
 
+  output.push('function main()')
   gen(program)
+  output.push('main()')
   return output.join('\n')
 }
