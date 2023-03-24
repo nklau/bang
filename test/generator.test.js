@@ -75,6 +75,17 @@ const fixtures = [
       }
       main();
     `
+  },
+  {
+    name: 'over-subtraction',
+    source: `3 - 5`,
+    expected: dedent`
+    function main()
+      {
+        return (add(new Num(3),'-',new Num(5)));
+      }
+      main();
+    `
   }
 ]
 
@@ -84,11 +95,11 @@ describe("The code generator", () => {
       const actual = generate(optimize(analyze(fixture.source)))
       // console.log(actual) // for debug
       assert(actual.endsWith(fixture.expected))
-      if (fixture.name === 'subtraction') {
-        fs.writeFile(`output/${fixture.name}.js`, actual, (err) => { // for debug
-          if (err) throw err
-        })
-      }
+      // if (fixture.name === 'over-subtraction') {
+      //   fs.writeFile(`output/${fixture.name}.js`, actual, (err) => { // for debug
+      //     if (err) throw err
+      //   })
+      // }
     })
   }
 })
