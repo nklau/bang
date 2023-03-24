@@ -211,6 +211,7 @@ export default function generate(program) {
 
   output.push('function main()')
   gen(program)
-  output.push('main();')
+  output.push('const output = main();')
+  output.push('if (output) console.log(coerce(main(), Str.typeDescription).val);')
   return output.join('\n')
 }
