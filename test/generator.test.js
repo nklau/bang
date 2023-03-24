@@ -36,6 +36,21 @@ const fixtures = [
       }
       main();
     `
+  },
+  {
+    name: 'print num add',
+    source: `
+    print(1 + 2)
+    `,
+    expected: dedent`
+      function main()
+      {
+        try {
+          return console.log(coerce((add(new Num(1),'+',new Num(2))), Str.typeDescription).val);
+        } catch {}
+      }
+      main();
+    `
   }
 ]
 
@@ -43,13 +58,13 @@ describe("The code generator", () => {
   for (const fixture of fixtures) {
     it(`produces expected js output for the ${fixture.name} program`, () => {
       const actual = generate(optimize(analyze(fixture.source)))
-      console.log(actual) // for debug
+      // console.log(actual) // for debug
       assert(actual.endsWith(fixture.expected))
-      if (fixture.name === 'print') {
-        fs.writeFile(`output/${fixture.name}.js`, actual, (err) => { // for debug
-          if (err) throw err
-        })
-      }
+      // if (fixture.name === 'print num add') {
+      //   fs.writeFile(`output/${fixture.name}.js`, actual, (err) => { // for debug
+      //     if (err) throw err
+      //   })
+      // }
     })
   }
 })

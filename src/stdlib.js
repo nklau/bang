@@ -178,9 +178,9 @@ const add = `const add = (...exps) => {
 
       let sum = toAdd.reduce((num, e) => num += e, 0);
 
-      return toSubtract.reduce((num, e) => {
+      return new Num(toSubtract.reduce((num, e) => {
         num -= e;
-      }, sum);
+      }, sum));
     },
     [Bool.typeDescription.val]: () => {
       const coerced = exps.map(e => typeof e === 'string' ? e : coerce(e, Bool.typeDescription).val);
