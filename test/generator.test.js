@@ -19,7 +19,22 @@ const fixtures = [
       {
         return (add(new Num(1),'+',new Num(2)));
       }
-      main()
+      main();
+    `
+  },
+  {
+    name: 'print',
+    source: `
+    print(1)
+    `,
+    expected: dedent`
+      function main()
+      {
+        try {
+          return console.log(coerce(new Num(1), Str.typeDescription).val);
+        } catch {}
+      }
+      main();
     `
   }
 ]
@@ -28,11 +43,13 @@ describe("The code generator", () => {
   for (const fixture of fixtures) {
     it(`produces expected js output for the ${fixture.name} program`, () => {
       const actual = generate(optimize(analyze(fixture.source)))
-      // console.log(actual) // for debug
+      console.log(actual) // for debug
       assert(actual.endsWith(fixture.expected))
-      // fs.writeFile('out.js', actual, (err) => { // for debug
-      //   if (err) throw err
-      // })
+      if (fixture.name === 'print') {
+        fs.writeFile(`output/${fixture.name}.js`, actual, (err) => { // for debug
+          if (err) throw err
+        })
+      }
     })
   }
 })

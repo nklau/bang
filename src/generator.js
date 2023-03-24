@@ -1,4 +1,4 @@
-import { contents, types, stdFuncs } from './stdlib.js'
+import { contents, types, stdFuncs, stdLibFuncs } from './stdlib.js'
 import * as core from './core.js'
 
 export default function generate(program) {
@@ -37,7 +37,12 @@ export default function generate(program) {
       output.push(`${varName(a.var)} = ${gen(a.exp)};`)
     },
     ReturnStatement(r) {
-      output.push(`return ${gen(r.exp)};`)
+      const exp = `return ${gen(r.exp)};`
+      if (r.exp instanceof core.Call) {
+        output.push('try {', exp, '} catch {}')
+      } else {
+        output.push(exp)
+      }
     },
     BreakStatement(_b) {
       output.push(`throw new Error('break');`)
@@ -114,7 +119,12 @@ export default function generate(program) {
         // handle all types
     },
     Call(c) {
-      // TODO embed in try catch
+      const target = stdLibFuncs[c.id]
+      // target = target ? target(gen(c.args)) : `${gen(c.id)}(${gen(c.args)})`
+//       output.push(`try {
+// ${target}
+// } catch {}`)
+      return target ? target(gen(c.args)) : `${gen(c.id)}(${gen(c.args)})`
       // if c.id instanceof core.BinaryExp {
         // switch c.id.right
         // case 'loop'
@@ -140,7 +150,7 @@ export default function generate(program) {
       // TODO
     },
     Args(a) {
-      // TODO
+      return a.args.map(gen)
     },
     KeywordArg(k) {
       // TODO
@@ -201,6 +211,6 @@ export default function generate(program) {
 
   output.push('function main()')
   gen(program)
-  output.push('main()')
+  output.push('main();')
   return output.join('\n')
 }
