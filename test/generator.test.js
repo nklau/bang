@@ -133,6 +133,21 @@ const fixtures = [
       if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
     output: '20'
+  },
+  {
+    name: 'print_str',
+    source: `print('Hello World!')`,
+    expected: dedent`
+      function main()
+      {
+        try {
+          return console.log(coerce(new Str('Hello World!'), Str.typeDescription).val);
+        } catch {}
+      }
+      const output = main();
+      if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: 'Hello World!'
   }
 ]
 
@@ -146,10 +161,11 @@ describe("The code generator", () => {
   for (const fixture of fixtures) {
     it(`produces expected js output for the ${fixture.name} program`, async () => {
       const actual = generate(optimize(analyze(fixture.source)))
-      // console.log(path.resolve())
-      // console.log(actual) // for debug
-      assert(actual.endsWith(fixture.expected))
-      fs.writeFile(`output/${fixture.name}.js`, actual, (err) => { // for debug
+      if (!actual.endsWith(fixture.expected)) {
+        console.log(actual) // for debug
+        assert(false)
+      }
+      fs.writeFile(`output/${fixture.name}.js`, actual, (err) => {
         if (err) throw err
       })
       let output = await execute(`node ${fixture.name}.js`, { encoding: 'utf8', cwd: outputDir })

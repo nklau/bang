@@ -165,7 +165,7 @@ export default function generate(program) {
       return `new List(${l.val})`
     },
     Str(s) {
-      return `new Str(${s.val})`
+      return `new Str('${s.val}')`
     },
     FormattedStr(f) {
       return `new Str(${f.toString()})`
