@@ -145,10 +145,6 @@ export class Str {
   equals(other) {
     return other instanceof Str && this.val === other.val
   }
-
-  toString() {
-    return this.val
-  }
 }
 
 export class FormattedStr extends Str {
@@ -162,20 +158,6 @@ export class FormattedStr extends Str {
 
   get default() {
     return new FormattedStr()
-  }
-
-  toString() {
-    if (this.val.length === 0) {
-      return ''
-    }
-
-    return this.val.reduce((str, element) => {
-      if (typeof element === 'string') {
-        str += element
-      } else {
-        str += `\${${element.toString()}}`
-      }
-    }, '')
   }
 }
 

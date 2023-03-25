@@ -148,6 +148,21 @@ const fixtures = [
       if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
     output: 'Hello World!'
+  },
+  {
+    name: 'print_f_str',
+    source: `print($'num {1}')`,
+    expected: dedent`
+      function main()
+      {
+        try {
+          return console.log(coerce(new Str(\`num \${coerce(new Num(1), Str.typeDescription).val}\`), Str.typeDescription).val);
+        } catch {}
+      }
+      const output = main();
+      if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: 'num 1'
   }
 ]
 

@@ -168,7 +168,20 @@ export default function generate(program) {
       return `new Str('${s.val}')`
     },
     FormattedStr(f) {
-      return `new Str(${f.toString()})`
+      let outStr
+      if (f.val.length === 0) {
+        outStr = ''
+      } else {
+        outStr = f.val.reduce((str, element) => {
+          if (typeof element === 'string') {
+            str += element
+          } else {
+            str += `\${coerce(${gen(element)}, Str.typeDescription).val}`
+          }
+          return str
+        }, '')
+      }
+      return `new Str(\`${outStr}\`)`
     },
     Num(n) {
       return `new Num(${n.val})`
