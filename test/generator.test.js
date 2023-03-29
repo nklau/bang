@@ -22,7 +22,7 @@ const fixtures = [
     expected: dedent`
       function main()
       {
-        return (add(new Num(1),'+',new Num(2)));
+        return (add(new Num(1), '+', new Num(2)));
       }
       const output = main();
       if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -55,7 +55,7 @@ const fixtures = [
       function main()
       {
         try {
-          return console.log((add(new Num(1),'+',new Num(2))) === nil ? nil.type.val : coerce((add(new Num(1),'+',new Num(2))), Str.typeDescription).val);
+          return console.log((add(new Num(1), '+', new Num(2))) === nil ? nil.type.val : coerce((add(new Num(1), '+', new Num(2))), Str.typeDescription).val);
         } catch {}
       }
       const output = main();
@@ -71,7 +71,7 @@ const fixtures = [
     expected: dedent`
       function main()
       {
-        return (add(new Num(10),'+',new Num(153),'+',new Num(0)));
+        return (add(new Num(10), '+', new Num(153), '+', new Num(0)));
       }
       const output = main();
       if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -84,7 +84,7 @@ const fixtures = [
     expected: dedent`
     function main()
       {
-        return (add(new Num(5),'-',new Num(3)));
+        return (add(new Num(5), '-', new Num(3)));
       }
       const output = main();
       if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -97,7 +97,7 @@ const fixtures = [
     expected: dedent`
     function main()
       {
-        return (add(new Num(3),'-',new Num(5)));
+        return (add(new Num(3), '-', new Num(5)));
       }
       const output = main();
       if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -112,7 +112,7 @@ const fixtures = [
     expected: dedent`
       function main()
       {
-        return (add(new Num(10),'-',new Num(153),'-',new Num(0)));
+        return (add(new Num(10), '-', new Num(153), '-', new Num(0)));
       }
       const output = main();
       if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -127,7 +127,7 @@ const fixtures = [
     expected: dedent`
       function main()
       {
-        return (add(new Num(10),'-',new Num(153),'+',new Num(163)));
+        return (add(new Num(10), '-', new Num(153), '+', new Num(163)));
       }
       const output = main();
       if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -171,7 +171,7 @@ const fixtures = [
       function main()
       {
         try {
-          return console.log(new Str(\`addition \${coerce((add(new Num(1),'+',new Num(2))), Str.typeDescription).val}\`) === nil ? nil.type.val : coerce(new Str(\`addition \${coerce((add(new Num(1),'+',new Num(2))), Str.typeDescription).val}\`), Str.typeDescription).val);
+          return console.log(new Str(\`addition \${coerce((add(new Num(1), '+', new Num(2))), Str.typeDescription).val}\`) === nil ? nil.type.val : coerce(new Str(\`addition \${coerce((add(new Num(1), '+', new Num(2))), Str.typeDescription).val}\`), Str.typeDescription).val);
         } catch {}
       }
       const output = main();
@@ -185,7 +185,7 @@ const fixtures = [
     expected: dedent`
       function main()
       {
-        return (add(new Str('hi'),'+',new Str(' aidan !')));
+        return (add(new Str('hi'), '+', new Str(' aidan !')));
       }
       const output = main();
       if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -198,7 +198,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(new Str('hello'),'-',new Str('o')));
+          return (add(new Str('hello'), '-', new Str('o')));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -214,7 +214,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(new Str('hello'),'-',new Str('hell')));
+          return (add(new Str('hello'), '-', new Str('hell')));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -227,7 +227,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(new Str('hi'),'-',new Str('hello')));
+          return (add(new Str('hi'), '-', new Str('hello')));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -255,7 +255,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(nil,'+',nil));
+          return (add(nil, '+', nil));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -268,7 +268,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(nil,'-',nil));
+          return (add(nil, '-', nil));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -281,7 +281,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(nil,'+',new Num(5.1)));
+          return (add(nil, '+', new Num(5.1)));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -294,7 +294,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(new Num(200),'+',nil));
+          return (add(new Num(200), '+', nil));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -308,7 +308,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(new Num(2),'+',new Str('str')));
+          return (add(new Num(2), '+', new Str('str')));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -321,7 +321,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(new Str('str'),'+',new Num(2)));
+          return (add(new Str('str'), '+', new Num(2)));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -335,7 +335,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(new Bool(true),'+',new Bool(true)));
+          return (add(new Bool(true), '+', new Bool(true)));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -348,7 +348,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(new Bool(true),'+',new Bool(false)));
+          return (add(new Bool(true), '+', new Bool(false)));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -361,7 +361,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(new Bool(false),'+',new Bool(true)));
+          return (add(new Bool(false), '+', new Bool(true)));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -374,7 +374,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(new Bool(false),'+',new Bool(false)));
+          return (add(new Bool(false), '+', new Bool(false)));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -387,7 +387,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(new List([]),'+',new List([])));
+          return (add(new List([]), '+', new List([])));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -400,7 +400,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(new List([new Num(1)]),'+',new List([new Str('str')])));
+          return (add(new List([new Num(1)]), '+', new List([new Str('str')])));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -413,7 +413,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(new List([new Num(1),new Str('str'),new Num(3)]),'+',new Num(5)));
+          return (add(new List([new Num(1), new Str('str'), new Num(3)]), '+', new Num(5)));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -426,7 +426,7 @@ const fixtures = [
     expected: dedent`
       function main()
         {
-          return (add(new Num(5),'+',new List([new Num(1),new Str('str'),new Num(3)])));
+          return (add(new Num(5), '+', new List([new Num(1), new Str('str'), new Num(3)])));
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
@@ -438,11 +438,11 @@ const fixtures = [
     source: `1 + 'str' + []`,
     expected: dedent`
     function main()
-      {
-        return (add(new Num(1),'+',new Str('str'),'+',new List([])));
-      }
-      const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+    {
+      return (add(new Num(1), '+', new Str('str'), '+', new List([])));
+    }
+    const output = main();
+    if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
     output: `[1, 'str']`
   },
@@ -451,11 +451,11 @@ const fixtures = [
     source: `{ 'a': 1 }`,
     expected: dedent`
     function main()
-      {
-        return new Obj(new Map([[new Str('a'), new Num(1)]]));
-      }
-      const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+    {
+      return new Obj(new Map([[new Str('a'), new Num(1)]]));
+    }
+    const output = main();
+    if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
     output: `{ 'a': 1 }`
   },
@@ -464,11 +464,11 @@ const fixtures = [
     source: `{}`,
     expected: dedent`
     function main()
-      {
-        return new Obj(new Map([]));
-      }
-      const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+    {
+      return new Obj(new Map([]));
+    }
+    const output = main();
+    if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
     output: `{ }`
   },
@@ -477,13 +477,26 @@ const fixtures = [
     source: `{ 'a': 1, 'b': '2' }`,
     expected: dedent`
     function main()
-      {
-        return new Obj(new Map([[new Str('a'), new Num(1)], [new Str('b'), new Str('2')]]));
-      }
-      const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+    {
+      return new Obj(new Map([[new Str('a'), new Num(1)], [new Str('b'), new Str('2')]]));
+    }
+    const output = main();
+    if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
     output: `{ 'a': 1, 'b': '2' }`
+  },
+  {
+    name: 'nested lists',
+    source: `[1, [2]]`,
+    expected: dedent`
+    function main()
+    {
+      return new List([new Num(1), new List([new Num(2)])]);
+    }
+    const output = main();
+    if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: `[1, [2]]`
   }
   // { // TODO need to do equality first
   //   name: 'subtract from list',

@@ -104,7 +104,7 @@ export default function generate(program) {
         const addOps = ['+', '-']
         const multOps = ['/', '*', '%']
 
-        const elements = n.exp.map(e => typeof e === 'string' ? `'${e}'` : gen(e))
+        const elements = n.exp.map(e => typeof e === 'string' ? `'${e}'` : gen(e)).join(', ')
         const opType = addOps.includes(n.exp[1]) ? 'add' : multOps.includes(n.exp[1]) ? 'multiply' : 'exponentiate'
         return `(${opType}(${elements}))`
       }
@@ -163,7 +163,7 @@ export default function generate(program) {
       return `[${gen(o.key)}, ${gen(o.val)}]`
     },
     List(l) {
-      return `new List([${l.val.map(gen)}])`
+      return `new List([${l.val.map(gen).join(', ')}])`
     },
     Str(s) {
       return `new Str('${s.val}')`
