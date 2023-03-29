@@ -382,7 +382,7 @@ const fixtures = [
     output: 'false'
   },
   {
-    name: 'add_list',
+    name: 'add_empty_lists',
     source: `[] + []`,
     expected: dedent`
       function main()
@@ -393,6 +393,19 @@ const fixtures = [
         if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
     output: '[]'
+  },
+  {
+    name: 'add_one_element_lists',
+    source: `[1] + ['str']`,
+    expected: dedent`
+      function main()
+        {
+          return (add(new List([new Num(1)]),'+',new List([new Str('str')])));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: `[1, 'str']`
   }
 
   // TODO function calls w/ multiple args

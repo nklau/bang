@@ -315,24 +315,26 @@ const coerce = `const coerce = (exp, targetType) => {
         },
         [List.typeDescription.val]: x => {
           if (x.len.val === 0) {
-            return \`[]\`
+            return \`[]\`;
           }
 
           const str = x.val.reduce((s, element) => {
-            s += \`\${coerce(element, Str.typeDescription)}, \`
+            let e = coerce(element, Str.typeDescription).val;
+            if (element.type.equals(Str.typeDescription)) {
+              e = \`'\${e}'\`
+            }
+            s += \`\${e}, \`;
+            return s;
           }, '')
 
           return \`[\${str.slice(0, -2)}]\`
         },
         [Func.typeDescription.val]: x => {
-          let str = '() -> '
+          let str = '() -> ';
 
           if (x.params.len.val !== 0) {
-            str = x.params.val.reduce((s, param) => {
-              s += \`\${param.id}, \`
-            }, '(')
-
-            str = \`\${str.slice(0, -2)}) -> \`
+            str = x.params.val.reduce((s, param) => \`\${s}\${param.id}, \`, '(');
+            str = \`\${str.slice(0, -2)}) -> \`;
           }
 
           str += x.block.val
