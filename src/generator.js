@@ -156,10 +156,11 @@ export default function generate(program) {
       // TODO
     },
     Obj(o) {
+      return `new Obj(new Map([${o.val.map(gen).join(', ')}]))`
       // TODO construct object
     },
     ObjField(o) {
-      // TODO
+      return `[${gen(o.key)}, ${gen(o.val)}]`
     },
     List(l) {
       return `new List([${l.val.map(gen)}])`

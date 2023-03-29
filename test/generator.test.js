@@ -445,6 +445,19 @@ const fixtures = [
       if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
     output: `[1, 'str']`
+  },
+  {
+    name: 'object',
+    source: `{ 'a': 1 }`,
+    expected: dedent`
+    function main()
+      {
+        return new Obj(new Map([[new Str('a'), new Num(1)]]));
+      }
+      const output = main();
+      if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: `{ 'a': 1 }`
   }
   // { // TODO need to do equality first
   //   name: 'subtract from list',
