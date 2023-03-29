@@ -458,6 +458,32 @@ const fixtures = [
       if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
     output: `{ 'a': 1 }`
+  },
+  {
+    name: 'empty object',
+    source: `{}`,
+    expected: dedent`
+    function main()
+      {
+        return new Obj(new Map([]));
+      }
+      const output = main();
+      if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: `{ }`
+  },
+  {
+    name: 'object with 2 entries',
+    source: `{ 'a': 1, 'b': '2' }`,
+    expected: dedent`
+    function main()
+      {
+        return new Obj(new Map([[new Str('a'), new Num(1)], [new Str('b'), new Str('2')]]));
+      }
+      const output = main();
+      if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: `{ 'a': 1, 'b': '2' }`
   }
   // { // TODO need to do equality first
   //   name: 'subtract from list',

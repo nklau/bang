@@ -308,7 +308,8 @@ const coerce = `const coerce = (exp, targetType) => {
           }
 
           const str = [...(x.val)].reduce((s, [key, value]) => {
-            s += \`'\${key.val}\': \${coerce(value, Str.typeDescription).val}, \`;
+            const val = value.type.equals(Str.typeDescription) ? \`'\${value.val}'\` : coerce(value, Str.typeDescription).val
+            s += \`'\${key.val}\': \${val}, \`;
             return s;
           }, '') 
 
