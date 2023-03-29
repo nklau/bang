@@ -15,7 +15,7 @@ function dedent(s) {
 
 const fixtures = [
   {
-    name: 'num_add',
+    name: 'num add',
     source: `
       1 + 2
     `,
@@ -38,7 +38,7 @@ const fixtures = [
       function main()
       {
         try {
-          return console.log(coerce(new Num(1), Str.typeDescription).val);
+          return console.log(new Num(1) === nil ? nil.type.val : coerce(new Num(1), Str.typeDescription).val);
         } catch {}
       }
       const output = main();
@@ -47,7 +47,7 @@ const fixtures = [
     output: '1'
   },
   {
-    name: 'print_num_add',
+    name: 'print num add',
     source: `
     print(1 + 2)
     `,
@@ -55,7 +55,7 @@ const fixtures = [
       function main()
       {
         try {
-          return console.log(coerce((add(new Num(1),'+',new Num(2))), Str.typeDescription).val);
+          return console.log((add(new Num(1),'+',new Num(2))) === nil ? nil.type.val : coerce((add(new Num(1),'+',new Num(2))), Str.typeDescription).val);
         } catch {}
       }
       const output = main();
@@ -64,7 +64,7 @@ const fixtures = [
     output: '3'
   },
   {
-    name: 'chained_num_add',
+    name: 'chained num add',
     source: `
     10 + 153 + 0
     `,
@@ -79,7 +79,7 @@ const fixtures = [
     output: '163'
   },
   {
-    name: 'num_subtraction',
+    name: 'num subtraction',
     source: `5 - 3`,
     expected: dedent`
     function main()
@@ -92,7 +92,7 @@ const fixtures = [
     output: '2'
   },
   {
-    name: 'num_over-subtraction',
+    name: 'num over-subtraction',
     source: `3 - 5`,
     expected: dedent`
     function main()
@@ -105,7 +105,7 @@ const fixtures = [
     output: '-2'
   },
   {
-    name: 'chained_num_subtraction',
+    name: 'chained num subtraction',
     source: `
     10 - 153 - 0
     `,
@@ -120,7 +120,7 @@ const fixtures = [
     output: '-143'
   },
   {
-    name: 'num_add_and_subtraction',
+    name: 'num add and subtraction',
     source: `
     10 - 153 + 163
     `,
@@ -135,13 +135,13 @@ const fixtures = [
     output: '20'
   },
   {
-    name: 'print_str',
+    name: 'print str',
     source: `print('Hello World!')`,
     expected: dedent`
       function main()
       {
         try {
-          return console.log(coerce(new Str('Hello World!'), Str.typeDescription).val);
+          return console.log(new Str('Hello World!') === nil ? nil.type.val : coerce(new Str('Hello World!'), Str.typeDescription).val);
         } catch {}
       }
       const output = main();
@@ -150,13 +150,13 @@ const fixtures = [
     output: 'Hello World!'
   },
   {
-    name: 'print_f_str',
+    name: 'print f str',
     source: `print($'num {1}')`,
     expected: dedent`
       function main()
       {
         try {
-          return console.log(coerce(new Str(\`num \${coerce(new Num(1), Str.typeDescription).val}\`), Str.typeDescription).val);
+          return console.log(new Str(\`num \${coerce(new Num(1), Str.typeDescription).val}\`) === nil ? nil.type.val : coerce(new Str(\`num \${coerce(new Num(1), Str.typeDescription).val}\`), Str.typeDescription).val);
         } catch {}
       }
       const output = main();
@@ -165,13 +165,13 @@ const fixtures = [
     output: 'num 1'
   },
   {
-    name: 'print_exp',
+    name: 'print exp',
     source: `print($'addition {1 + 2}')`,
     expected: dedent`
       function main()
       {
         try {
-          return console.log(coerce(new Str(\`addition \${coerce((add(new Num(1),'+',new Num(2))), Str.typeDescription).val}\`), Str.typeDescription).val);
+          return console.log(new Str(\`addition \${coerce((add(new Num(1),'+',new Num(2))), Str.typeDescription).val}\`) === nil ? nil.type.val : coerce(new Str(\`addition \${coerce((add(new Num(1),'+',new Num(2))), Str.typeDescription).val}\`), Str.typeDescription).val);
         } catch {}
       }
       const output = main();
@@ -180,7 +180,7 @@ const fixtures = [
     output: 'addition 3'
   },
   {
-    name: 'add_str',
+    name: 'add str',
     source: `'hi' + " aidan !"`,
     expected: dedent`
       function main()
@@ -193,7 +193,7 @@ const fixtures = [
     output: 'hi aidan !'
   },
   {
-    name: 'subtract_str',
+    name: 'subtract str',
     source: `'hello' - 'o'`,
     expected: dedent`
       function main()
@@ -209,7 +209,7 @@ const fixtures = [
   // x = 'hi'
   // $'{x} aidan' - 'hi'
   {
-    name: 'subtract_longer_str',
+    name: 'subtract longer str',
     source: `'hello' - 'hell'`,
     expected: dedent`
       function main()
@@ -222,7 +222,7 @@ const fixtures = [
     output: 'o'
   },
   {
-    name: 'subtract_str_not_found',
+    name: 'subtract str not found',
     source: `'hi' - 'hello'`,
     expected: dedent`
       function main()
@@ -235,22 +235,22 @@ const fixtures = [
     output: 'hi'
   },
   {
-    name: 'print_nil',
+    name: 'print nil',
     source: `print(nil)`,
     expected: dedent`
       function main()
         {
           try {
-            return console.log(coerce(nil, Str.typeDescription).val);
+            return console.log(nil === nil ? nil.type.val : coerce(nil, Str.typeDescription).val);
           } catch {}
         }
         const output = main();
         if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
-    output: ''
+    output: 'nil'
   },
   {
-    name: 'add_nil',
+    name: 'add nil',
     source: `nil + nil`,
     expected: dedent`
       function main()
@@ -263,7 +263,7 @@ const fixtures = [
     output: ''
   },
   {
-    name: 'subtract_nil',
+    name: 'subtract nil',
     source: `nil - nil`,
     expected: dedent`
       function main()
@@ -276,7 +276,7 @@ const fixtures = [
     output: ''
   },
   {
-    name: 'add_nil_to_num',
+    name: 'add nil to num',
     source: `nil + 5.1`,
     expected: dedent`
       function main()
@@ -289,7 +289,7 @@ const fixtures = [
     output: '5.1'
   },
   {
-    name: 'add_nil_to_num_on_right',
+    name: 'add nil to num on right',
     source: `2e2 + nil`,
     expected: dedent`
       function main()
@@ -303,7 +303,7 @@ const fixtures = [
   },
   // TODO negative nums, print negative num, add negative num to str
   {
-    name: 'add_num_to_str',
+    name: 'add num to str',
     source: `2 + 'str'`,
     expected: dedent`
       function main()
@@ -316,7 +316,7 @@ const fixtures = [
     output: '2str'
   },
   {
-    name: 'add_str_to_num',
+    name: 'add str to num',
     source: `'str' + 2`,
     expected: dedent`
       function main()
@@ -330,7 +330,7 @@ const fixtures = [
   },
   // TODO all casting
   {
-    name: 'add_true_true',
+    name: 'add true true',
     source: `true + true`,
     expected: dedent`
       function main()
@@ -343,7 +343,7 @@ const fixtures = [
     output: 'true'
   },
   {
-    name: 'add_true_false',
+    name: 'add true false',
     source: `true + false`,
     expected: dedent`
       function main()
@@ -356,7 +356,7 @@ const fixtures = [
     output: 'true'
   },
   {
-    name: 'add_false_true',
+    name: 'add false true',
     source: `false + true`,
     expected: dedent`
       function main()
@@ -369,7 +369,7 @@ const fixtures = [
     output: 'true'
   },
   {
-    name: 'add_false_false',
+    name: 'add false false',
     source: `false + false`,
     expected: dedent`
       function main()
@@ -382,7 +382,7 @@ const fixtures = [
     output: 'false'
   },
   {
-    name: 'add_empty_lists',
+    name: 'add empty lists',
     source: `[] + []`,
     expected: dedent`
       function main()
@@ -395,7 +395,7 @@ const fixtures = [
     output: '[]'
   },
   {
-    name: 'add_one_element_lists',
+    name: 'add one element lists',
     source: `[1] + ['str']`,
     expected: dedent`
       function main()
@@ -406,7 +406,59 @@ const fixtures = [
         if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
     output: `[1, 'str']`
+  },
+  {
+    name: 'add to end of list',
+    source: `[1, 'str', 3] + 5`,
+    expected: dedent`
+      function main()
+        {
+          return (add(new List([new Num(1),new Str('str'),new Num(3)]),'+',new Num(5)));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
+      `,
+    output: `[1, 'str', 3, 5]`
+  },
+  {
+    name: 'add to start of list',
+    source: `5 + [1, 'str', 3]`,
+    expected: dedent`
+      function main()
+        {
+          return (add(new Num(5),'+',new List([new Num(1),new Str('str'),new Num(3)])));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
+      `,
+    output: `[5, 1, 'str', 3]`
+  },
+  {
+    name: 'add two things to list',
+    source: `1 + 'str' + []`,
+    expected: dedent`
+    function main()
+      {
+        return (add(new Num(1),'+',new Str('str'),'+',new List([])));
+      }
+      const output = main();
+      if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: `[1, 'str']`
   }
+  // { // TODO need to do equality first
+  //   name: 'subtract from list',
+  //   source: `[1, 'str', 4] - 4`,
+  //   expected: dedent`
+  //     function main()
+  //       {
+  //         return (add(new List([new Num(1),new Str('str'),new Num(4)]),'-',new Num(4)));
+  //       }
+  //       const output = main();
+  //       if (output) console.log(coerce(main(), Str.typeDescription).val);
+  //   `,
+  //   output: `[1, 'str']`
+  // }
 
   // TODO function calls w/ multiple args
   // { // TODO fix
@@ -440,10 +492,10 @@ describe("The code generator", () => {
         console.log(actual) // for debug
         assert(false)
       }
-      fs.writeFile(`output/${fixture.name}.js`, actual, (err) => {
+      fs.writeFile(`output/${fixture.name.replaceAll(' ', '_')}.js`, actual, (err) => {
         if (err) throw err
       })
-      let output = await execute(`node ${fixture.name}.js`, { encoding: 'utf8', cwd: outputDir })
+      let output = await execute(`node ${fixture.name.replaceAll(' ', '_')}.js`, { encoding: 'utf8', cwd: outputDir })
       assert.deepEqual(output.stdout.trim(), fixture.output)
     })
   }

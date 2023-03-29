@@ -381,7 +381,7 @@ const coerce = `const coerce = (exp, targetType) => {
 // TODO function to convert between types, will get pushed to top of file along with type classes
 
 export const stdLibFuncs = {
-  [contents.print]: x => `console.log(coerce(${x}, Str.typeDescription).val)`, // TODO don't think i can call this here, think it has to be called in the file
+  [contents.print]: x => `console.log(${x} === nil ? nil.type.val : coerce(${x}, Str.typeDescription).val)`, // TODO don't think i can call this here, think it has to be called in the file
   [contents.range]: (start, end) => { // TODO are these actually strings? or are they the class objs from below?
     // TODO need to convert (coerce) start and end to nums
     return `[...Array(${end}.val - ${start}.val).keys().map(i => i + ${start}.val)]`
