@@ -333,12 +333,12 @@ const fixtures = [
     name: 'add_true_true',
     source: `true + true`,
     expected: dedent`
-    function main()
-      {
-        return (add(new Bool(true),'+',new Bool(true)));
-      }
-      const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+      function main()
+        {
+          return (add(new Bool(true),'+',new Bool(true)));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
     output: 'true'
   },
@@ -346,12 +346,12 @@ const fixtures = [
     name: 'add_true_false',
     source: `true + false`,
     expected: dedent`
-    function main()
-      {
-        return (add(new Bool(true),'+',new Bool(false)));
-      }
-      const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+      function main()
+        {
+          return (add(new Bool(true),'+',new Bool(false)));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
     output: 'true'
   },
@@ -359,12 +359,12 @@ const fixtures = [
     name: 'add_false_true',
     source: `false + true`,
     expected: dedent`
-    function main()
-      {
-        return (add(new Bool(false),'+',new Bool(true)));
-      }
-      const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+      function main()
+        {
+          return (add(new Bool(false),'+',new Bool(true)));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
     output: 'true'
   },
@@ -372,14 +372,27 @@ const fixtures = [
     name: 'add_false_false',
     source: `false + false`,
     expected: dedent`
-    function main()
-      {
-        return (add(new Bool(false),'+',new Bool(false)));
-      }
-      const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+      function main()
+        {
+          return (add(new Bool(false),'+',new Bool(false)));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
     output: 'false'
+  },
+  {
+    name: 'add_list',
+    source: `[] + []`,
+    expected: dedent`
+      function main()
+        {
+          return (add(new List([]),'+',new List([])));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: '[]'
   }
 
   // TODO function calls w/ multiple args

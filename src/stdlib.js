@@ -87,6 +87,7 @@ const add = `const add = (...exps) => {
         } else {
           arr.push(element);
         }
+        return arr;
       }, []);
 
       return new List(added);

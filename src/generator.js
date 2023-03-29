@@ -162,7 +162,7 @@ export default function generate(program) {
       // TODO
     },
     List(l) {
-      return `new List(${l.val})`
+      return `new List([${l.val}])`
     },
     Str(s) {
       return `new Str('${s.val}')`
