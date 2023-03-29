@@ -186,7 +186,7 @@ const add = `const add = (...exps) => {
       for (let i = 0; i < coerced.length; i++) {
         if (typeof coerced[i] === 'string') {
           if (coerced[i] === '+') {
-            retVal = coerced[i + 1];
+            retVal = retVal || coerced[i + 1];
           } else {
             retVal = (retVal || coerced[i + 1]) && !(coerced[i] && retVal);
           }

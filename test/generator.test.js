@@ -163,7 +163,241 @@ const fixtures = [
       if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
     output: 'num 1'
+  },
+  {
+    name: 'print_exp',
+    source: `print($'addition {1 + 2}')`,
+    expected: dedent`
+      function main()
+      {
+        try {
+          return console.log(coerce(new Str(\`addition \${coerce((add(new Num(1),'+',new Num(2))), Str.typeDescription).val}\`), Str.typeDescription).val);
+        } catch {}
+      }
+      const output = main();
+      if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: 'addition 3'
+  },
+  {
+    name: 'add_str',
+    source: `'hi' + " aidan !"`,
+    expected: dedent`
+      function main()
+      {
+        return (add(new Str('hi'),'+',new Str(' aidan !')));
+      }
+      const output = main();
+      if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: 'hi aidan !'
+  },
+  {
+    name: 'subtract_str',
+    source: `'hello' - 'o'`,
+    expected: dedent`
+      function main()
+        {
+          return (add(new Str('hello'),'-',new Str('o')));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: 'hell'
+  },
+  // TODO
+  // x = 'hi'
+  // $'{x} aidan' - 'hi'
+  {
+    name: 'subtract_longer_str',
+    source: `'hello' - 'hell'`,
+    expected: dedent`
+      function main()
+        {
+          return (add(new Str('hello'),'-',new Str('hell')));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: 'o'
+  },
+  {
+    name: 'subtract_str_not_found',
+    source: `'hi' - 'hello'`,
+    expected: dedent`
+      function main()
+        {
+          return (add(new Str('hi'),'-',new Str('hello')));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: 'hi'
+  },
+  {
+    name: 'print_nil',
+    source: `print(nil)`,
+    expected: dedent`
+      function main()
+        {
+          try {
+            return console.log(coerce(nil, Str.typeDescription).val);
+          } catch {}
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: ''
+  },
+  {
+    name: 'add_nil',
+    source: `nil + nil`,
+    expected: dedent`
+      function main()
+        {
+          return (add(nil,'+',nil));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: ''
+  },
+  {
+    name: 'subtract_nil',
+    source: `nil - nil`,
+    expected: dedent`
+      function main()
+        {
+          return (add(nil,'-',nil));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: ''
+  },
+  {
+    name: 'add_nil_to_num',
+    source: `nil + 5.1`,
+    expected: dedent`
+      function main()
+        {
+          return (add(nil,'+',new Num(5.1)));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: '5.1'
+  },
+  {
+    name: 'add_nil_to_num_on_right',
+    source: `2e2 + nil`,
+    expected: dedent`
+      function main()
+        {
+          return (add(new Num(200),'+',nil));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: '200'
+  },
+  // TODO negative nums, print negative num, add negative num to str
+  {
+    name: 'add_num_to_str',
+    source: `2 + 'str'`,
+    expected: dedent`
+      function main()
+        {
+          return (add(new Num(2),'+',new Str('str')));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: '2str'
+  },
+  {
+    name: 'add_str_to_num',
+    source: `'str' + 2`,
+    expected: dedent`
+      function main()
+        {
+          return (add(new Str('str'),'+',new Num(2)));
+        }
+        const output = main();
+        if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: 'str2'
+  },
+  // TODO all casting
+  {
+    name: 'add_true_true',
+    source: `true + true`,
+    expected: dedent`
+    function main()
+      {
+        return (add(new Bool(true),'+',new Bool(true)));
+      }
+      const output = main();
+      if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: 'true'
+  },
+  {
+    name: 'add_true_false',
+    source: `true + false`,
+    expected: dedent`
+    function main()
+      {
+        return (add(new Bool(true),'+',new Bool(false)));
+      }
+      const output = main();
+      if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: 'true'
+  },
+  {
+    name: 'add_false_true',
+    source: `false + true`,
+    expected: dedent`
+    function main()
+      {
+        return (add(new Bool(false),'+',new Bool(true)));
+      }
+      const output = main();
+      if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: 'true'
+  },
+  {
+    name: 'add_false_false',
+    source: `false + false`,
+    expected: dedent`
+    function main()
+      {
+        return (add(new Bool(false),'+',new Bool(false)));
+      }
+      const output = main();
+      if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: 'false'
   }
+
+  // TODO function calls w/ multiple args
+  // { // TODO fix
+  //   name: 'print multiple things',
+  //   source: `print(1, 2)`,
+  //   expected: dedent`
+  //     function main()
+  //       {
+  //         try {
+  //           return console.log(coerce(new Num(1), Str.typeDescription).val,coerce(new Num(2), Str.typeDescription).val);
+  //         } catch {}
+  //       }
+  //       const output = main();
+  //       if (output) console.log(coerce(main(), Str.typeDescription).val);
+  //   `,
+  //   output: '1 2'
+  // }
 ]
 
 describe("The code generator", () => {
