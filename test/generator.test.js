@@ -958,12 +958,155 @@ const fixtures = [
     output: 'false'
   },
   {
-    name: '1 element list equality',
+    name: '1 element list equality false',
     source: `[1] == [1]`,
     expected: dedent`
     function main()
     {
       return (new Bool(new List([new Num(1)]).equals(new List([new Num(1)]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'true'
+  },
+  {
+    name: '1 element list inequality',
+    source: `[1] != [1]`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(!(new List([new Num(1)]).equals(new List([new Num(1)])))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'false'
+  },
+  {
+    name: '1 element list equality false',
+    source: `[1] == ['1']`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(new List([new Num(1)]).equals(new List([new Str('1')]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'false'
+  },
+  {
+    name: '1 element list inequality',
+    source: `[1] != ['1']`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(!(new List([new Num(1)]).equals(new List([new Str('1')])))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'true'
+  },
+  {
+    name: 'list equality different lens',
+    source: `[1] == [1, 1]`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(new List([new Num(1)]).equals(new List([new Num(1), new Num(1)]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'false'
+  },
+  {
+    name: 'list equality different lens longer first',
+    source: `[1, 1] == [1]`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(new List([new Num(1), new Num(1)]).equals(new List([new Num(1)]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'false'
+  },
+  {
+    name: 'list equality two elements',
+    source: `[1, 'str'] == [1, 'str']`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(new List([new Num(1), new Str('str')]).equals(new List([new Num(1), new Str('str')]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'true'
+  },
+  {
+    name: 'list equality different order',
+    source: `['str', 1] == [1, 'str']`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(new List([new Str('str'), new Num(1)]).equals(new List([new Num(1), new Str('str')]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'false'
+  },
+  {
+    name: 'list inequality two elements false',
+    source: `[1, 'str'] != [1, 'str']`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(!(new List([new Num(1), new Str('str')]).equals(new List([new Num(1), new Str('str')])))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'false'
+  },
+  {
+    name: 'list inequality two elements different order',
+    source: `['str', 1] != [1, 'str']`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(!(new List([new Str('str'), new Num(1)]).equals(new List([new Num(1), new Str('str')])))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'true'
+  },
+  {
+    name: 'empty object equality',
+    source: `{} == {}`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(new Obj(new Map([])).equals(new Obj(new Map([])))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'true'
+  },
+  {
+    name: 'object equality',
+    source: `{ 'a': 1 } == { 'a': 1 }`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(new Obj(new Map([[new Str('a'), new Num(1)]])).equals(new Obj(new Map([[new Str('a'), new Num(1)]])))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);

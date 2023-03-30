@@ -496,17 +496,17 @@ const obj =
   }
 
   getVal(key) {
-    return this.val(coerce(key, 'string').val);
+    return this.val[coerce(key, Str.typeDescription).val] ?? nil;
   }
 
   equals(other) {
-    if (!this.type.equals(other.type) || !this.keys().equals(other.keys()) ) { return new Bool(false); }
+    if (!this.type.equals(other.type) || !this.keys().equals(other.keys()) ) { return false; }
 
     this.val.forEach((value, key) => {
-      if (!value.equals(other.getVal(key))) { return new Bool(false); }
+      if (!value.equals(other.getVal(key))) { return false; }
     })
 
-    return new Bool(true);
+    return true;
   }
 
   get len() {
