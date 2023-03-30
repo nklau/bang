@@ -676,8 +676,88 @@ const fixtures = [
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'nil'
+  },
+  {
+    name: 'print string var',
+    source: `x = 'str'
+    print(x)`,
+    expected: dedent`
+    function main()
+    {
+      let x_1 = new Str('str');
+      try {
+        console.log(x_1 === nil ? nil.type.val : coerce(x_1, Str.typeDescription).val)
+      } catch {}
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `str`
+  },
+  {
+    name: 'print bool var',
+    source: `x = false
+    print(x)`,
+    expected: dedent`
+    function main()
+    {
+      let x_1 = new Bool(false);
+      try {
+        console.log(x_1 === nil ? nil.type.val : coerce(x_1, Str.typeDescription).val)
+      } catch {}
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `false`
+  },
+  {
+    name: 'print list var',
+    source: `x = [false]
+    print(x)`,
+    expected: dedent`
+    function main()
+    {
+      let x_1 = new List([new Bool(false)]);
+      try {
+        console.log(x_1 === nil ? nil.type.val : coerce(x_1, Str.typeDescription).val)
+      } catch {}
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `[false]`
+  },
+  {
+    name: 'print obj var',
+    source: `x = false + {}
+    print(x)`,
+    expected: dedent`
+    function main()
+    {
+      let x_1 = (add(new Bool(false), '+', new Obj(new Map([]))));
+      try {
+        console.log(x_1 === nil ? nil.type.val : coerce(x_1, Str.typeDescription).val)
+      } catch {}
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ 'false': false }`
+  },
+  {
+    name: 'num equality',
+    source: `2 == 2`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(new Num(2).equals(new Num(2))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'true'
   }
-  // TODO print var
   // { // TODO need to do equality first
   //   name: 'subtract from list',
   //   source: `[1, 'str', 4] - 4`,

@@ -102,7 +102,7 @@ export default function generate(program) {
             '>=': `(coerce(${lhs}, 'number').val > coerce(${rhs}, 'number).val || ${lhs}.equals(${rhs}))`
           }
 
-          elements.push(translations[op])
+          elements.push(`new Bool(${translations[op]})`)
         })
 
         return `(${elements.join(' && ')})`
