@@ -757,6 +757,179 @@ const fixtures = [
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'true'
+  },
+  {
+    name: 'num inequality false',
+    source: `2 != 2`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(!(new Num(2).equals(new Num(2)))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'false'
+  },
+  {
+    name: 'num equality false',
+    source: `2 == 2.1`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(new Num(2).equals(new Num(2.1))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'false'
+  },
+  {
+    name: 'num inequality',
+    source: `2 != 2.1`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(!(new Num(2).equals(new Num(2.1)))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'true'
+  },
+  {
+    name: 'str equality',
+    source: `'str' == 'str'`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(new Str('str').equals(new Str('str'))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'true'
+  },
+  {
+    name: 'str equality with different quotes',
+    source: `'str' == "str"`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(new Str('str').equals(new Str('str'))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'true'
+  },
+  {
+    name: 'str equality false',
+    source: `'str' == 'strs'`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(new Str('str').equals(new Str('strs'))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'false'
+  },
+  {
+    name: 'str inequality',
+    source: `'str' != 'strs'`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(!(new Str('str').equals(new Str('strs')))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'true'
+  },
+  {
+    name: 'str inequality different quotes',
+    source: `'str' != "strs"`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(!(new Str('str').equals(new Str('strs')))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'true'
+  },
+  {
+    name: 'str inequality false',
+    source: `'str' != 'str'`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(!(new Str('str').equals(new Str('str')))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'false'
+  },
+  {
+    name: 'num equality using vars',
+    source: `x = 5
+    x == 5`,
+    expected: dedent`
+    function main()
+    {
+      let x_1 = new Num(5);
+      return (new Bool(x_1.equals(new Num(5))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'true'
+  },
+  {
+    name: 'str equality using vars',
+    source: `x = 'str'
+    'x' == x`,
+    expected: dedent`
+    function main()
+    {
+      let x_1 = new Str('str');
+      return (new Bool(new Str('x').equals(x_1)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'false'
+  },
+  {
+    name: 'string num vs num equality',
+    source: `5 == '5'`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(new Num(5).equals(new Str('5'))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'false'
+  },
+  {
+    name: 'list subtraction',
+    source: `[5] - 5`,
+    expected: dedent`
+    function main()
+    {
+      return (add(new List([new Num(5)]), '-', new Num(5)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `[]`
   }
   // { // TODO need to do equality first
   //   name: 'subtract from list',

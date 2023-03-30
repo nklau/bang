@@ -70,7 +70,11 @@ const add = `const add = (...exps) => {
           continue;
         }
 
-        toAdd.push(exps[i]);
+        if (exps[i].type.equals(List.typeDescription)) {
+          exps[i].val.forEach(e => toAdd.push(e));
+        } else {
+          toAdd.push(exps[i]);
+        }
       }
 
       toSubtract.forEach(exp => {
