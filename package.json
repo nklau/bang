@@ -5,7 +5,7 @@
   "main": "bang.js",
   "type": "module",
   "scripts": {
-    "test": "c8 node_modules/.bin/mocha --reporter spec"
+    "test": "c8 node_modules/.bin/mocha --reporter spec --last process.env.last"
   },
   "repository": {
     "type": "git",

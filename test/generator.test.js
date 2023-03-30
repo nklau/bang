@@ -497,6 +497,45 @@ const fixtures = [
     if (output) console.log(coerce(main(), Str.typeDescription).val);
     `,
     output: `[1, [2]]`
+  },
+  {
+    name: 'nested objects',
+    source: `{ 'a': { 'a': 1 }, 'b': {} }`,
+    expected: dedent`
+    function main()
+    {
+      return new Obj(new Map([[new Str('a'), new Obj(new Map([[new Str('a'), new Num(1)]]))], [new Str('b'), new Obj(new Map([]))]]));
+    }
+    const output = main();
+    if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: `{ 'a': { 'a': 1 }, 'b': { } }`
+  },
+  {
+    name: 'object with list values',
+    source: `{ 'a': [1, 'str'] }`,
+    expected: dedent`
+    function main()
+    {
+      return new Obj(new Map([[new Str('a'), new List([new Num(1), new Str('str')])]]));
+    }
+    const output = main();
+    if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: `{ 'a': [1, 'str'] }`
+  },
+  {
+    name: 'adding objects',
+    source: `{ 'a': 1 } + { 'b': 2 }`,
+    expected: dedent`
+    function main()
+    {
+      return (add(new Obj(new Map([[new Str('a'), new Num(1)]])), '+', new Obj(new Map([[new Str('b'), new Num(2)]]))));
+    }
+    const output = main();
+    if (output) console.log(coerce(main(), Str.typeDescription).val);
+    `,
+    output: `{ 'a': 1, 'b': 2 }`
   }
   // { // TODO need to do equality first
   //   name: 'subtract from list',
@@ -530,6 +569,21 @@ const fixtures = [
   // }
 ]
 
+const runTest = (fixture, outputDir) => {
+  it(`produces expected js output for the ${fixture.name} program`, async () => {
+    const actual = generate(optimize(analyze(fixture.source)))
+    if (!actual.endsWith(fixture.expected)) {
+      console.log(actual) // for debug
+      assert(false)
+    }
+    fs.writeFile(`output/${fixture.name.replaceAll(' ', '_')}.js`, actual, (err) => {
+      if (err) throw err
+    })
+    let output = await execute(`node ${fixture.name.replaceAll(' ', '_')}.js`, { encoding: 'utf8', cwd: outputDir })
+    assert.deepEqual(output.stdout.trim(), fixture.output)
+  })
+}
+
 describe("The code generator", () => {
   const outputDir = path.join(path.resolve(), 'output')
   if (!fs.existsSync(outputDir)) {
@@ -537,18 +591,11 @@ describe("The code generator", () => {
   }
   exec(`rm ${path.join(outputDir, '*')}`)
 
-  for (const fixture of fixtures) {
-    it(`produces expected js output for the ${fixture.name} program`, async () => {
-      const actual = generate(optimize(analyze(fixture.source)))
-      if (!actual.endsWith(fixture.expected)) {
-        console.log(actual) // for debug
-        assert(false)
-      }
-      fs.writeFile(`output/${fixture.name.replaceAll(' ', '_')}.js`, actual, (err) => {
-        if (err) throw err
-      })
-      let output = await execute(`node ${fixture.name.replaceAll(' ', '_')}.js`, { encoding: 'utf8', cwd: outputDir })
-      assert.deepEqual(output.stdout.trim(), fixture.output)
-    })
+  if (process.env.npm_config_last) {
+    runTest(fixtures[fixtures.length - 1], outputDir)
+  } else {
+    for (const fixture of fixtures) {
+      runTest(fixture, outputDir)
+    }
   }
 })
