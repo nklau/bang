@@ -27,7 +27,13 @@ export default function generate(program) {
   const generators = {
     Block(b) {
       output.push('{')
-      gen(b.statements)
+      b.statements.forEach(statement => {
+        if (statement instanceof core.Call) {
+          output.push('try {', gen(statement), '} catch {}')
+        } else {
+          gen(statement)
+        }
+      })
       output.push('}')
     },
     VarDec(v) {
@@ -226,6 +232,6 @@ export default function generate(program) {
   output.push('function main()')
   gen(program)
   output.push('const output = main();')
-  output.push('if (output) console.log(coerce(main(), Str.typeDescription).val);')
+  output.push(`if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);`)
   return output.join('\n')
 }

@@ -25,7 +25,7 @@ const fixtures = [
         return (add(new Num(1), '+', new Num(2)));
       }
       const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+      if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: '3'
   },
@@ -42,7 +42,7 @@ const fixtures = [
         } catch {}
       }
       const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+      if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: '1'
   },
@@ -59,7 +59,7 @@ const fixtures = [
         } catch {}
       }
       const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+      if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: '3'
   },
@@ -74,7 +74,7 @@ const fixtures = [
         return (add(new Num(10), '+', new Num(153), '+', new Num(0)));
       }
       const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+      if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: '163'
   },
@@ -87,7 +87,7 @@ const fixtures = [
         return (add(new Num(5), '-', new Num(3)));
       }
       const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+      if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: '2'
   },
@@ -100,7 +100,7 @@ const fixtures = [
         return (add(new Num(3), '-', new Num(5)));
       }
       const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+      if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: '-2'
   },
@@ -115,7 +115,7 @@ const fixtures = [
         return (add(new Num(10), '-', new Num(153), '-', new Num(0)));
       }
       const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+      if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: '-143'
   },
@@ -130,7 +130,7 @@ const fixtures = [
         return (add(new Num(10), '-', new Num(153), '+', new Num(163)));
       }
       const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+      if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: '20'
   },
@@ -145,7 +145,7 @@ const fixtures = [
         } catch {}
       }
       const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+      if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'Hello World!'
   },
@@ -160,7 +160,7 @@ const fixtures = [
         } catch {}
       }
       const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+      if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'num 1'
   },
@@ -175,7 +175,7 @@ const fixtures = [
         } catch {}
       }
       const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+      if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'addition 3'
   },
@@ -188,7 +188,7 @@ const fixtures = [
         return (add(new Str('hi'), '+', new Str(' aidan !')));
       }
       const output = main();
-      if (output) console.log(coerce(main(), Str.typeDescription).val);
+      if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'hi aidan !'
   },
@@ -201,7 +201,7 @@ const fixtures = [
           return (add(new Str('hello'), '-', new Str('o')));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'hell'
   },
@@ -217,7 +217,7 @@ const fixtures = [
           return (add(new Str('hello'), '-', new Str('hell')));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'o'
   },
@@ -230,7 +230,7 @@ const fixtures = [
           return (add(new Str('hi'), '-', new Str('hello')));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'hi'
   },
@@ -245,7 +245,7 @@ const fixtures = [
           } catch {}
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'nil'
   },
@@ -258,9 +258,9 @@ const fixtures = [
           return (add(nil, '+', nil));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: ''
+    output: 'nil'
   },
   {
     name: 'subtract nil',
@@ -271,9 +271,9 @@ const fixtures = [
           return (add(nil, '-', nil));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: ''
+    output: 'nil'
   },
   {
     name: 'add nil to num',
@@ -284,7 +284,7 @@ const fixtures = [
           return (add(nil, '+', new Num(5.1)));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: '5.1'
   },
@@ -297,7 +297,7 @@ const fixtures = [
           return (add(new Num(200), '+', nil));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: '200'
   },
@@ -311,7 +311,7 @@ const fixtures = [
           return (add(new Num(2), '+', new Str('str')));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: '2str'
   },
@@ -324,7 +324,7 @@ const fixtures = [
           return (add(new Str('str'), '+', new Num(2)));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'str2'
   },
@@ -338,7 +338,7 @@ const fixtures = [
           return (add(new Bool(true), '+', new Bool(true)));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'true'
   },
@@ -351,7 +351,7 @@ const fixtures = [
           return (add(new Bool(true), '+', new Bool(false)));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'true'
   },
@@ -364,7 +364,7 @@ const fixtures = [
           return (add(new Bool(false), '+', new Bool(true)));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'true'
   },
@@ -377,7 +377,7 @@ const fixtures = [
           return (add(new Bool(false), '+', new Bool(false)));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'false'
   },
@@ -390,7 +390,7 @@ const fixtures = [
           return (add(new List([]), '+', new List([])));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: '[]'
   },
@@ -403,7 +403,7 @@ const fixtures = [
           return (add(new List([new Num(1)]), '+', new List([new Str('str')])));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `[1, 'str']`
   },
@@ -416,7 +416,7 @@ const fixtures = [
           return (add(new List([new Num(1), new Str('str'), new Num(3)]), '+', new Num(5)));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
       `,
     output: `[1, 'str', 3, 5]`
   },
@@ -429,7 +429,7 @@ const fixtures = [
           return (add(new Num(5), '+', new List([new Num(1), new Str('str'), new Num(3)])));
         }
         const output = main();
-        if (output) console.log(coerce(main(), Str.typeDescription).val);
+        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
       `,
     output: `[5, 1, 'str', 3]`
   },
@@ -442,7 +442,7 @@ const fixtures = [
       return (add(new Num(1), '+', new Str('str'), '+', new List([])));
     }
     const output = main();
-    if (output) console.log(coerce(main(), Str.typeDescription).val);
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `[1, 'str']`
   },
@@ -455,7 +455,7 @@ const fixtures = [
       return new Obj(new Map([[new Str('a'), new Num(1)]]));
     }
     const output = main();
-    if (output) console.log(coerce(main(), Str.typeDescription).val);
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `{ 'a': 1 }`
   },
@@ -468,7 +468,7 @@ const fixtures = [
       return new Obj(new Map([]));
     }
     const output = main();
-    if (output) console.log(coerce(main(), Str.typeDescription).val);
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `{ }`
   },
@@ -481,7 +481,7 @@ const fixtures = [
       return new Obj(new Map([[new Str('a'), new Num(1)], [new Str('b'), new Str('2')]]));
     }
     const output = main();
-    if (output) console.log(coerce(main(), Str.typeDescription).val);
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `{ 'a': 1, 'b': '2' }`
   },
@@ -494,7 +494,7 @@ const fixtures = [
       return new List([new Num(1), new List([new Num(2)])]);
     }
     const output = main();
-    if (output) console.log(coerce(main(), Str.typeDescription).val);
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `[1, [2]]`
   },
@@ -507,7 +507,7 @@ const fixtures = [
       return new Obj(new Map([[new Str('a'), new Obj(new Map([[new Str('a'), new Num(1)]]))], [new Str('b'), new Obj(new Map([]))]]));
     }
     const output = main();
-    if (output) console.log(coerce(main(), Str.typeDescription).val);
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `{ 'a': { 'a': 1 }, 'b': { } }`
   },
@@ -520,7 +520,7 @@ const fixtures = [
       return new Obj(new Map([[new Str('a'), new List([new Num(1), new Str('str')])]]));
     }
     const output = main();
-    if (output) console.log(coerce(main(), Str.typeDescription).val);
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `{ 'a': [1, 'str'] }`
   },
@@ -533,10 +533,151 @@ const fixtures = [
       return (add(new Obj(new Map([[new Str('a'), new Num(1)]])), '+', new Obj(new Map([[new Str('b'), new Num(2)]]))));
     }
     const output = main();
-    if (output) console.log(coerce(main(), Str.typeDescription).val);
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `{ 'a': 1, 'b': 2 }`
+  },
+  {
+    name: 'adding empty objects',
+    source: `{} + {}`,
+    expected: dedent`
+    function main()
+    {
+      return (add(new Obj(new Map([])), '+', new Obj(new Map([]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ }`
+  },
+  {
+    name: 'adding str to object',
+    source: `'str' + {}`,
+    expected: dedent`
+    function main()
+    {
+      return (add(new Str('str'), '+', new Obj(new Map([]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ 'str': 'str' }`
+  },
+  {
+    name: 'adding object to str',
+    source: `{} + 'str'`,
+    expected: dedent`
+    function main()
+    {
+      return (add(new Obj(new Map([])), '+', new Str('str')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ 'str': 'str' }`
+  },
+  {
+    name: 'adding num to object',
+    source: `1 + {}`,
+    expected: dedent`
+    function main()
+    {
+      return (add(new Num(1), '+', new Obj(new Map([]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ '1': 1 }`
+  },
+  {
+    name: 'adding object to num',
+    source: `{} + 1`,
+    expected: dedent`
+    function main()
+    {
+      return (add(new Obj(new Map([])), '+', new Num(1)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ '1': 1 }`
+  },
+  {
+    name: 'adding multiple things to obj',
+    source: `1 + 'str' + {}`,
+    expected: dedent`
+    function main()
+    {
+      return (add(new Num(1), '+', new Str('str'), '+', new Obj(new Map([]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ '1': 1, 'str': 'str' }`
+  },
+  {
+    name: 'adding obj to list',
+    source: `{} + []`,
+    expected: dedent`
+    function main()
+    {
+      return (add(new Obj(new Map([])), '+', new List([])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `[{ }]`
+  },
+  {
+    name: 'var dec',
+    source: `
+    x = 5
+    x
+    `,
+    expected: dedent`
+    function main()
+    {
+      let x_1 = new Num(5);
+      return x_1;
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '5'
+  },
+  {
+    name: 'print var',
+    source: `
+    x = 5
+    print(x)
+    `,
+    expected: dedent`
+    function main()
+    {
+      let x_1 = new Num(5);
+      try {
+        console.log(x_1 === nil ? nil.type.val : coerce(x_1, Str.typeDescription).val)
+      } catch {}
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '5'
+  },
+  {
+    name: 'return nil',
+    source: 'nil',
+    expected: dedent`
+    function main()
+    {
+      return nil;
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'nil'
   }
+  // TODO print var
   // { // TODO need to do equality first
   //   name: 'subtract from list',
   //   source: `[1, 'str', 4] - 4`,
@@ -546,7 +687,7 @@ const fixtures = [
   //         return (add(new List([new Num(1),new Str('str'),new Num(4)]),'-',new Num(4)));
   //       }
   //       const output = main();
-  //       if (output) console.log(coerce(main(), Str.typeDescription).val);
+  //       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
   //   `,
   //   output: `[1, 'str']`
   // }
@@ -563,7 +704,7 @@ const fixtures = [
   //         } catch {}
   //       }
   //       const output = main();
-  //       if (output) console.log(coerce(main(), Str.typeDescription).val);
+  //       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
   //   `,
   //   output: '1 2'
   // }
