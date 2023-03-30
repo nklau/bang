@@ -930,6 +930,45 @@ const fixtures = [
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `[]`
+  },
+  {
+    name: 'empty list equality',
+    source: `[] == []`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(new List([]).equals(new List([]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'true'
+  },
+  {
+    name: 'empty list inequality',
+    source: `[] != []`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(!(new List([]).equals(new List([])))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'false'
+  },
+  {
+    name: '1 element list equality',
+    source: `[1] == [1]`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(new List([new Num(1)]).equals(new List([new Num(1)]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'true'
   }
   // { // TODO need to do equality first
   //   name: 'subtract from list',

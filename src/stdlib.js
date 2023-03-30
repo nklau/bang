@@ -561,7 +561,7 @@ const list =
   }
 
   equals(other) {
-    return this.type.equals(other.type) && this.len.equals(other.len) && this.val.every((value, index) => value === other.val[index]);
+    return this.type.equals(other.type) && this.len.equals(other.len) && this.val.every((value, index) => value.equals(other.val[index]));
   }
 
   get len() {
