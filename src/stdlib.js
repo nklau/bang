@@ -313,7 +313,7 @@ const coerce = `const coerce = (exp, targetType) => {
 
           const str = [...(x.val)].reduce((s, [key, value]) => {
             const val = value.type.equals(Str.typeDescription) ? \`'\${value.val}'\` : coerce(value, Str.typeDescription).val
-            s += \`'\${key.val}\': \${val}, \`;
+            s += \`'\${key.val ?? key}\': \${val}, \`;
             return s;
           }, '') 
 
@@ -382,6 +382,40 @@ const coerce = `const coerce = (exp, targetType) => {
   }
 
   return targets[targetType.val ?? targetType](exp)
+}`
+
+const subscript = `const subscript = (target, selector) => {
+  // TODO selector might have : syntax instead of a single element
+  const subscriptFunc = {
+    [Func.typeDescription.val]: () => {
+      // TODO
+    },
+    [List.typeDescription.val]: () => {
+      // TODO check if selector is instanceof core.Subscription
+      return target.val[coerce(selector, Num.typeDescription).val] ?? nil;
+    },
+    [Obj.typeDescription.val]: () => {
+      // TODO check if selector is instanceof core.Subscription
+      return target.getVal(selector);
+    },
+    [Str.typeDescription.val]: () => {
+      // TODO check if selector is instanceof core.Subscription
+      // TODO acts like a list
+    },
+    [Num.typeDescription.val]: () => {
+      // TODO check if selector is instanceof core.Subscription
+      // TODO metadata access (ie even, odd, positive, negative, hasDecimal, etc)
+    },
+    [Bool.typeDescription.val]: () => {
+      // TODO check if selector is instanceof core.Subscription
+      // TODO same as num
+    },
+    [nil.type.val]: () => {
+      return nil;
+    }
+  }[target.type.val];
+
+  return subscriptFunc();
 }`
 
 // TODO function to convert between types, will get pushed to top of file along with type classes
@@ -496,7 +530,7 @@ const obj =
   }
 
   getVal(key) {
-    return this.val[coerce(key, Str.typeDescription).val] ?? nil;
+    return this.val.get(typeof key === 'string' ? key : coerce(key, Str.typeDescription).val) ?? nil;
   }
 
   equals(other) {
@@ -535,7 +569,7 @@ const obj =
   }
 
   keys() {
-    return new List([...this.val.keys()]);
+    return new List([...this.val.keys()].map(key => new Str(key)));
   }
 
   vals() {
@@ -623,4 +657,4 @@ const func =
 }`
 
 export const types = [str, nil, bool, num, obj, list, func]
-export const stdFuncs = [strongestType, coerce, add]
+export const stdFuncs = [strongestType, coerce, add, subscript]

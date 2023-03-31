@@ -140,7 +140,7 @@ export default function generate(program) {
       return varName(v)
     },
     VarSubscript(v) {
-      // TODO
+      return `subscript(${gen(v.id)}, ${gen(v.selector)})`
     },
     Subscription(s) {
       // TODO handle all types
@@ -166,7 +166,8 @@ export default function generate(program) {
       // TODO construct object
     },
     ObjField(o) {
-      return `[${gen(o.key)}, ${gen(o.val)}]`
+      const key = gen(o.key)
+      return `[${key.substring(8, key.length - 1)}, ${gen(o.val)}]`
     },
     List(l) {
       return `new List([${l.val.map(gen).join(', ')}])`

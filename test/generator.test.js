@@ -452,7 +452,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return new Obj(new Map([[new Str('a'), new Num(1)]]));
+      return new Obj(new Map([['a', new Num(1)]]));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -478,7 +478,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return new Obj(new Map([[new Str('a'), new Num(1)], [new Str('b'), new Str('2')]]));
+      return new Obj(new Map([['a', new Num(1)], ['b', new Str('2')]]));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -504,7 +504,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return new Obj(new Map([[new Str('a'), new Obj(new Map([[new Str('a'), new Num(1)]]))], [new Str('b'), new Obj(new Map([]))]]));
+      return new Obj(new Map([['a', new Obj(new Map([['a', new Num(1)]]))], ['b', new Obj(new Map([]))]]));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -517,7 +517,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return new Obj(new Map([[new Str('a'), new List([new Num(1), new Str('str')])]]));
+      return new Obj(new Map([['a', new List([new Num(1), new Str('str')])]]));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -530,7 +530,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (add(new Obj(new Map([[new Str('a'), new Num(1)]])), '+', new Obj(new Map([[new Str('b'), new Num(2)]]))));
+      return (add(new Obj(new Map([['a', new Num(1)]])), '+', new Obj(new Map([['b', new Num(2)]]))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -1106,13 +1106,42 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new Obj(new Map([[new Str('a'), new Num(1)]])).equals(new Obj(new Map([[new Str('a'), new Num(1)]])))));
+      return (new Bool(new Obj(new Map([['a', new Num(1)]])).equals(new Obj(new Map([['a', new Num(1)]])))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'true'
+  },
+  {
+    name: 'get obj val by key subscription',
+    source: `x = { 'a': 1 }
+    x['a']`,
+    expected: dedent`
+    function main()
+    {
+      let x_1 = new Obj(new Map([['a', new Num(1)]]));
+      return subscript(x_1, new Str('a'));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `1`
   }
+  // TODO check that object keys still come out as bang strs when calling .keys() on obj
+  // { // TODO think this isn't working because getting obj val by key isn't working
+  //   name: 'object equality with different vals',
+  //   source: `{ 'a': 1 } == { 'a': '1' }`,
+  //   expected: dedent`
+  //   function main()
+  //   {
+  //     return (new Bool(new Obj(new Map([[new Str('a'), new Num(1)]])).equals(new Obj(new Map([[new Str('a'), new Str('1')]])))));
+  //   }
+  //   const output = main();
+  //   if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+  //   `,
+  //   output: 'false'
+  // }
   // { // TODO need to do equality first
   //   name: 'subtract from list',
   //   source: `[1, 'str', 4] - 4`,
