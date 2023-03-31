@@ -536,11 +536,13 @@ const obj =
   equals(other) {
     if (!this.type.equals(other.type) || !this.keys().equals(other.keys()) ) { return false; }
 
+    let equal = true;
+
     this.val.forEach((value, key) => {
-      if (!value.equals(other.getVal(key))) { return false; }
+      if (!value.equals(other.getVal(key))) { equal = false; }
     })
 
-    return true;
+    return equal;
   }
 
   get len() {

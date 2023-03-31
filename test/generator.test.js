@@ -1127,21 +1127,21 @@ const fixtures = [
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `1`
-  }
+  },
   // TODO check that object keys still come out as bang strs when calling .keys() on obj
-  // { // TODO think this isn't working because getting obj val by key isn't working
-  //   name: 'object equality with different vals',
-  //   source: `{ 'a': 1 } == { 'a': '1' }`,
-  //   expected: dedent`
-  //   function main()
-  //   {
-  //     return (new Bool(new Obj(new Map([[new Str('a'), new Num(1)]])).equals(new Obj(new Map([[new Str('a'), new Str('1')]])))));
-  //   }
-  //   const output = main();
-  //   if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
-  //   `,
-  //   output: 'false'
-  // }
+  { // TODO think this isn't working because getting obj val by key isn't working
+    name: 'object equality with different vals',
+    source: `{ 'a': 1 } == { 'a': '1' }`,
+    expected: dedent`
+    function main()
+    {
+      return (new Bool(new Obj(new Map([['a', new Num(1)]])).equals(new Obj(new Map([['a', new Str('1')]])))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'false'
+  }
   // { // TODO need to do equality first
   //   name: 'subtract from list',
   //   source: `[1, 'str', 4] - 4`,
