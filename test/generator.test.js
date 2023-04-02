@@ -1147,7 +1147,7 @@ const fixtures = [
     `,
     output: 'false'
   },
-  { // TODO
+  {
     name: 'object keys',
     source: `x = { 'a': 1, 'b': 2 }
     print(x.keys())`,
@@ -1163,21 +1163,21 @@ const fixtures = [
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `['a', 'b']`
-  }
+  },
   // TODO check that object keys still come out as bang strs when calling .keys() on obj
-  // { // TODO need to do equality first
-  //   name: 'subtract from list',
-  //   source: `[1, 'str', 4] - 4`,
-  //   expected: dedent`
-  //     function main()
-  //       {
-  //         return (add(new List([new Num(1),new Str('str'),new Num(4)]),'-',new Num(4)));
-  //       }
-  //       const output = main();
-  //       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
-  //   `,
-  //   output: `[1, 'str']`
-  // }
+  {
+    name: 'subtract from list',
+    source: `[1, 'str', 4] - 4`,
+    expected: dedent`
+    function main()
+    {
+      return (add(new List([new Num(1), new Str('str'), new Num(4)]), '-', new Num(4)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `[1, 'str']`
+  }
 
   // TODO function calls w/ multiple args
   // { // TODO fix

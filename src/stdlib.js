@@ -1,36 +1,36 @@
 import * as core from "./core.js"
 
 // object todo list
-  // function to get by index (loop that just counts upwards)
-  // function to check if has element
-  /*
-  function has(map, string) {
-  let found = false;
-  
-  map.forEach((val, key) => {
-    if (key.equals(string)) {
-      found = true;
-    }
-  })
+// function to get by index (loop that just counts upwards)
+// function to check if has element
+/*
+function has(map, string) {
+let found = false;
+ 
+map.forEach((val, key) => {
+  if (key.equals(string)) {
+    found = true;
+  }
+})
 
-  return found;
+return found;
 }
-  */
- // function to remove element
- /*
- function delete(map, string) {
-  let found = false;
-  
-  map.forEach((val, key) => {
-    if (key.equals(string)) {
-      found = map.delete(key);
-    }
-  })
+*/
+// function to remove element
+/*
+function delete(map, string) {
+ let found = false;
+ 
+ map.forEach((val, key) => {
+   if (key.equals(string)) {
+     found = map.delete(key);
+   }
+ })
 
-  return found;
+ return found;
 }
- */
- // function to remove element at index
+*/
+// function to remove element at index
 
 export const contents = Object.freeze({
   print: new core.Var('print', false, true, ['function']),
@@ -252,6 +252,77 @@ const add = `const add = (...exps) => {
   return addFunc()
 }`
 
+// multiply, divide, modulus
+const multiply = (...exps) => {
+  const type = strongestType(exps.filter(e => typeof e !== 'string'));
+  const multiplyFunc = {
+    [List.typeDescription.val]: () => {
+      let toSubtract = [];
+      let toAdd = [];
+
+      for (let i = 0; i < exps.length; i++) {
+        if (typeof exps[i] === 'string') {
+          const operation = {
+            '*': () => {
+              // TODO "raise" op (same as add, but doesn’t flatten lists)
+            },
+            '/': () => {
+              // TODO blacklist (filter out everything in divisor)
+              // if divisor is 1 thing, coerce to list
+              // then iterate over divisor (should be a list) and filter out everything from numerator list
+              // if divisor is an object, use its keys as a list
+            },
+            '%': () => {
+              // TODO whitelist (keep only things that are in the divisor)
+            }
+          }[exps[i]]();
+          i++;
+          continue;
+        }
+
+        toAdd.push(exps[i]);
+      }
+
+      toSubtract.forEach(exp => {
+        const index = toAdd.findIndex(e => e.equals(exp));
+        if (index > -1) {
+          toAdd.splice(index, 1);
+        }
+      });
+
+      let added = toAdd.reduce((arr, element) => {
+        // adding two lists flattens once
+        if (element.type.equals(List.typeDescription)) {
+          arr = [...arr, ...element.val];
+        } else {
+          arr.push(element);
+        }
+        return arr;
+      }, []);
+
+      return new List(added);
+    },
+    [Obj.typeDescription.val]: () => {
+      // TODO same as lists, but main object keys are indices
+    },
+    [Str.typeDescription.val]: () => {
+      // TODO treat as list of chars (only under the hood)
+    },
+    [Num.typeDescription.val]: () => {
+      // TODO actual numerical mutliplication/division
+    },
+    [Bool.typeDescription.val]: () => {
+      // TODO bool AND
+    },
+    [nil.type.val]: () => nil,
+    [Func.typeDescription.val]: () => {
+      // TODO func wrapper
+    }
+  }[type.val]
+
+  return multiplyFunc()
+}
+
 const strongestType = `const strongestType = (exps) => {
   const types = [Func.typeDescription, List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription];
   for (let type of types) {
@@ -433,14 +504,14 @@ export const stdLibFuncs = {
   },
 }
 
-const nil = 
-`const nil = Object.freeze({
+const nil =
+  `const nil = Object.freeze({
   type: new Str('nil'),
   equals: other => this.type.equals(other.type)
 });`
 
 const bool =
-`class Bool {
+  `class Bool {
   static typeDescription = new Str('boolean');
 
   constructor(val = false) {
@@ -464,8 +535,8 @@ const bool =
   }
 }`
 
-const num = 
-`class Num {
+const num =
+  `class Num {
   static typeDescription = new Str('number');
 
   constructor(val = 0) {
@@ -489,8 +560,8 @@ const num =
   }
 }`
 
-const str = 
-`export class Str {
+const str =
+  `export class Str {
   static typeDescription = new Str('string');
 
   constructor(val = '') {
@@ -522,8 +593,8 @@ const str =
   }
 }`
 
-const obj = 
-`class Obj {
+const obj =
+  `class Obj {
   static typeDescription = new Str('object');
 
   constructor(val = new Map()) {
@@ -590,7 +661,7 @@ const obj =
 }`
 // TODO all type coercions to all other types using getters
 const list =
-`class List {
+  `class List {
   static typeDescription = new Str('list');
 
   constructor(val = []) {
@@ -630,7 +701,7 @@ const list =
 }`
 
 const func =
-`class Func {
+  `class Func {
   static typeDescription = new Str('function');
 
   constructor(val, params = new List()) {
