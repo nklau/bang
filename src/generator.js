@@ -9,18 +9,25 @@ export default function generate(program) {
   output = [...output, ...stdFuncs]
 
   // TODO change this to be randomly generated?
-  /* var names will be suffixed with _1, _2, _3, etc in JS. This is because
+  /* var names will be suffixed with _0, _1, _2, etc in JS. This is because
   JS has reserved keywords that Bang! does not have. */
 
   const varName = (mapping => {
     return entity => {
       if (!mapping.has(entity)) {
-        mapping.set(entity, mapping.size + 1)
+        mapping.set(entity, mapping.size)
       }
 
       return `${entity.id}_${mapping.get(entity)}`
     }
   })(new Map())
+
+  /* internal var names will look like _internal0, _internal1, _internal2, etc in JS.
+  These are to ensure that the variables needed for internal usage do not interfere with user vars. */
+
+  const internalVarName = (count => {
+    return num => `_internal${num === undefined || count <= num ? count++ : num}`
+  })(1)
 
   const gen = node => generators[node.constructor.name](node)
 
@@ -43,11 +50,12 @@ export default function generate(program) {
       output.push(`${varName(a.var)} = ${gen(a.exp)};`)
     },
     ReturnStatement(r) {
-      const exp = `return ${gen(r.exp)};`
+      const exp = gen(r.exp)
       if (r.exp instanceof core.Call) {
-        output.push('try {', exp, '} catch {}')
+        const id = internalVarName()
+        output.push('try {', `let ${id} = ${exp};`, `return ${id};`, '} catch {}')
       } else {
-        output.push(exp)
+        output.push(`return ${exp};`)
       }
     },
     BreakStatement(_b) {
@@ -82,7 +90,7 @@ export default function generate(program) {
       }
 
       const equalityOps = ['==', '!=', '<', '>', '<=', '>=']
-      
+
       if (equalityOps.includes(n.exp[1])) {
         let elements = []
 
@@ -118,22 +126,26 @@ export default function generate(program) {
     UnaryExp(u) {
       // TODO
       // if u.op == !
-        // coerce u.exp to bool
+      // coerce u.exp to bool
       // if u.op == -
-        // handle all types
+      // handle all types
       // if u.op == ...
-        // handle all types
+      // handle all types
     },
     Call(c) {
       const target = stdLibFuncs[c.id]
+      // const id = internalVarName()
+      // const call = target ? target(gen(c.args)) : `${gen(c.id)}(${gen(c.args)})`
+      // output.push(`let ${id} = ${call};`)
+      // return id
       // target = target ? target(gen(c.args)) : `${gen(c.id)}(${gen(c.args)})`
-//       output.push(`try {
-// ${target}
-// } catch {}`)
+      //       output.push(`try {
+      // ${target}
+      // } catch {}`)
       return target ? target(gen(c.args)) : `${gen(c.id)}(${gen(c.args)})`
       // if c.id instanceof core.BinaryExp {
-        // switch c.id.right
-        // case 'loop'
+      // switch c.id.right
+      // case 'loop'
       // }
     },
     Var(v) {

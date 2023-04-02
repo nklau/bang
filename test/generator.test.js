@@ -38,7 +38,8 @@ const fixtures = [
       function main()
       {
         try {
-          return console.log(new Num(1) === nil ? nil.type.val : coerce(new Num(1), Str.typeDescription).val);
+          let _internal1 = print(new Num(1));
+          return _internal1;
         } catch {}
       }
       const output = main();
@@ -55,7 +56,8 @@ const fixtures = [
       function main()
       {
         try {
-          return console.log((add(new Num(1), '+', new Num(2))) === nil ? nil.type.val : coerce((add(new Num(1), '+', new Num(2))), Str.typeDescription).val);
+          let _internal1 = print((add(new Num(1), '+', new Num(2))));
+          return _internal1;
         } catch {}
       }
       const output = main();
@@ -141,7 +143,8 @@ const fixtures = [
       function main()
       {
         try {
-          return console.log(new Str('Hello World!') === nil ? nil.type.val : coerce(new Str('Hello World!'), Str.typeDescription).val);
+          let _internal1 = print(new Str('Hello World!'));
+          return _internal1;
         } catch {}
       }
       const output = main();
@@ -156,7 +159,8 @@ const fixtures = [
       function main()
       {
         try {
-          return console.log(new Str(\`num \${coerce(new Num(1), Str.typeDescription).val}\`) === nil ? nil.type.val : coerce(new Str(\`num \${coerce(new Num(1), Str.typeDescription).val}\`), Str.typeDescription).val);
+          let _internal1 = print(new Str(\`num \${coerce(new Num(1), Str.typeDescription).val}\`));
+          return _internal1;
         } catch {}
       }
       const output = main();
@@ -171,7 +175,8 @@ const fixtures = [
       function main()
       {
         try {
-          return console.log(new Str(\`addition \${coerce((add(new Num(1), '+', new Num(2))), Str.typeDescription).val}\`) === nil ? nil.type.val : coerce(new Str(\`addition \${coerce((add(new Num(1), '+', new Num(2))), Str.typeDescription).val}\`), Str.typeDescription).val);
+          let _internal1 = print(new Str(\`addition \${coerce((add(new Num(1), '+', new Num(2))), Str.typeDescription).val}\`));
+          return _internal1;
         } catch {}
       }
       const output = main();
@@ -238,14 +243,15 @@ const fixtures = [
     name: 'print nil',
     source: `print(nil)`,
     expected: dedent`
-      function main()
-        {
-          try {
-            return console.log(nil === nil ? nil.type.val : coerce(nil, Str.typeDescription).val);
-          } catch {}
-        }
-        const output = main();
-        if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    function main()
+    {
+      try {
+        let _internal1 = print(nil);
+        return _internal1;
+      } catch {}
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'nil'
   },
@@ -637,8 +643,8 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      let x_1 = new Num(5);
-      return x_1;
+      let x_0 = new Num(5);
+      return x_0;
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -654,9 +660,9 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      let x_1 = new Num(5);
+      let x_0 = new Num(5);
       try {
-        console.log(x_1 === nil ? nil.type.val : coerce(x_1, Str.typeDescription).val)
+        print(x_0)
       } catch {}
     }
     const output = main();
@@ -684,9 +690,9 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      let x_1 = new Str('str');
+      let x_0 = new Str('str');
       try {
-        console.log(x_1 === nil ? nil.type.val : coerce(x_1, Str.typeDescription).val)
+        print(x_0)
       } catch {}
     }
     const output = main();
@@ -701,9 +707,9 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      let x_1 = new Bool(false);
+      let x_0 = new Bool(false);
       try {
-        console.log(x_1 === nil ? nil.type.val : coerce(x_1, Str.typeDescription).val)
+        print(x_0)
       } catch {}
     }
     const output = main();
@@ -718,9 +724,9 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      let x_1 = new List([new Bool(false)]);
+      let x_0 = new List([new Bool(false)]);
       try {
-        console.log(x_1 === nil ? nil.type.val : coerce(x_1, Str.typeDescription).val)
+        print(x_0)
       } catch {}
     }
     const output = main();
@@ -735,9 +741,9 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      let x_1 = (add(new Bool(false), '+', new Obj(new Map([]))));
+      let x_0 = (add(new Bool(false), '+', new Obj(new Map([]))));
       try {
-        console.log(x_1 === nil ? nil.type.val : coerce(x_1, Str.typeDescription).val)
+        print(x_0)
       } catch {}
     }
     const output = main();
@@ -882,8 +888,8 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      let x_1 = new Num(5);
-      return (new Bool(x_1.equals(new Num(5))));
+      let x_0 = new Num(5);
+      return (new Bool(x_0.equals(new Num(5))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -897,8 +903,8 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      let x_1 = new Str('str');
-      return (new Bool(new Str('x').equals(x_1)));
+      let x_0 = new Str('str');
+      return (new Bool(new Str('x').equals(x_0)));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -1120,16 +1126,15 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      let x_1 = new Obj(new Map([['a', new Num(1)]]));
-      return subscript(x_1, new Str('a'));
+      let x_0 = new Obj(new Map([['a', new Num(1)]]));
+      return subscript(x_0, new Str('a'));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `1`
   },
-  // TODO check that object keys still come out as bang strs when calling .keys() on obj
-  { // TODO think this isn't working because getting obj val by key isn't working
+  {
     name: 'object equality with different vals',
     source: `{ 'a': 1 } == { 'a': '1' }`,
     expected: dedent`
@@ -1141,7 +1146,25 @@ const fixtures = [
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: 'false'
-  }
+  },
+  // { // TODO
+  //   name: 'object keys',
+  //   source: `x = { 'a': 1, 'b': 2 }
+  //   print(x.keys())`,
+  //   expected: dedent`
+  //   function main()
+  //   {
+  //     let x_0 = new Obj(new Map([['a', new Num(1)], ['b', new Num(2)]]));
+  //     try {
+  //       console.log(x_0.keys());
+  //     } catch {}
+  //   }
+  //   const output = main();
+  //   if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+  //   `,
+  //   output: `['a', 'b']`
+  // }
+  // TODO check that object keys still come out as bang strs when calling .keys() on obj
   // { // TODO need to do equality first
   //   name: 'subtract from list',
   //   source: `[1, 'str', 4] - 4`,

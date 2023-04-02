@@ -418,10 +418,15 @@ const subscript = `const subscript = (target, selector) => {
   return subscriptFunc();
 }`
 
+const print = `const print = exp => {
+  let _internal0 = exp;
+  console.log(_internal0 === nil ? nil.type.val : coerce(_internal0, Str.typeDescription).val);
+}`
+
 // TODO function to convert between types, will get pushed to top of file along with type classes
 
 export const stdLibFuncs = {
-  [contents.print]: x => `console.log(${x} === nil ? nil.type.val : coerce(${x}, Str.typeDescription).val)`, // TODO don't think i can call this here, think it has to be called in the file
+  [contents.print]: x => `print(${x})`,
   [contents.range]: (start, end) => { // TODO are these actually strings? or are they the class objs from below?
     // TODO need to convert (coerce) start and end to nums
     return `[...Array(${end}.val - ${start}.val).keys().map(i => i + ${start}.val)]`
@@ -659,4 +664,4 @@ const func =
 }`
 
 export const types = [str, nil, bool, num, obj, list, func]
-export const stdFuncs = [strongestType, coerce, add, subscript]
+export const stdFuncs = [strongestType, coerce, add, subscript, print]
