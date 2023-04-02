@@ -662,7 +662,7 @@ const fixtures = [
     {
       let x_0 = new Num(5);
       try {
-        print(x_0)
+        print(x_0);
       } catch {}
     }
     const output = main();
@@ -692,7 +692,7 @@ const fixtures = [
     {
       let x_0 = new Str('str');
       try {
-        print(x_0)
+        print(x_0);
       } catch {}
     }
     const output = main();
@@ -709,7 +709,7 @@ const fixtures = [
     {
       let x_0 = new Bool(false);
       try {
-        print(x_0)
+        print(x_0);
       } catch {}
     }
     const output = main();
@@ -726,7 +726,7 @@ const fixtures = [
     {
       let x_0 = new List([new Bool(false)]);
       try {
-        print(x_0)
+        print(x_0);
       } catch {}
     }
     const output = main();
@@ -743,7 +743,7 @@ const fixtures = [
     {
       let x_0 = (add(new Bool(false), '+', new Obj(new Map([]))));
       try {
-        print(x_0)
+        print(x_0);
       } catch {}
     }
     const output = main();
