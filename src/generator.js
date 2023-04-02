@@ -36,7 +36,7 @@ export default function generate(program) {
       output.push('{')
       b.statements.forEach(statement => {
         if (statement instanceof core.Call) {
-          output.push('try {', gen(statement), '} catch {}')
+          output.push('try {', `${gen(statement)};`, '} catch {}')
         } else {
           gen(statement)
         }
@@ -81,7 +81,7 @@ export default function generate(program) {
         }
       }
 
-      return `(${b.left}${b.op}${b.right})`
+      return `(${gen(b.left)}${b.op}${b.right})`
     },
     NaryExp(n) {
       if (n.exp.length === 1) {

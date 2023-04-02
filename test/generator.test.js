@@ -1147,23 +1147,23 @@ const fixtures = [
     `,
     output: 'false'
   },
-  // { // TODO
-  //   name: 'object keys',
-  //   source: `x = { 'a': 1, 'b': 2 }
-  //   print(x.keys())`,
-  //   expected: dedent`
-  //   function main()
-  //   {
-  //     let x_0 = new Obj(new Map([['a', new Num(1)], ['b', new Num(2)]]));
-  //     try {
-  //       console.log(x_0.keys());
-  //     } catch {}
-  //   }
-  //   const output = main();
-  //   if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
-  //   `,
-  //   output: `['a', 'b']`
-  // }
+  { // TODO
+    name: 'object keys',
+    source: `x = { 'a': 1, 'b': 2 }
+    print(x.keys())`,
+    expected: dedent`
+    function main()
+    {
+      let x_0 = new Obj(new Map([['a', new Num(1)], ['b', new Num(2)]]));
+      try {
+        print((x_0.keys)());
+      } catch {}
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `['a', 'b']`
+  }
   // TODO check that object keys still come out as bang strs when calling .keys() on obj
   // { // TODO need to do equality first
   //   name: 'subtract from list',
