@@ -255,7 +255,6 @@ const add = `const add = (...exps) => {
 // multiply, divide, modulus
 const multiply = (...exps) => {
   const type = strongestType(exps.filter((e) => typeof e !== "string"));
-  const firstIndex = exps.findIndex((e) => e.type.equals(type));
   const multiplyFunc = {
     [List.typeDescription.val]: () => {
       let left = exps[0].type.equals(Obj.typeDescription)
@@ -273,7 +272,7 @@ const multiply = (...exps) => {
                 {
                   // right should never be an object
                   [List.typeDescription.val]: () => {
-                    return new List([...left.val, ...right.val]);
+                    return new List([...left.val, right]);
                   },
                   [Num.typeDescription.val]: () => {
                     const result = [];
@@ -290,7 +289,7 @@ const multiply = (...exps) => {
                   },
                 }[right.type.val] ??
                 (() => {
-                  return new List([...left.val, right]);
+                  return new List([left, right]);
                 })
               )();
             }
@@ -315,7 +314,7 @@ const multiply = (...exps) => {
                   },
                 }[left.type.val] ??
                 (() => {
-                  return new List([left, ...right.val]);
+                  return new List([left, right]);
                 })
               )();
             }
@@ -330,7 +329,9 @@ const multiply = (...exps) => {
               right = coerce(right, List.typeDescription);
             }
 
-            left.val = left.val.filter(lhs => !right.val.some(rhs => lhs.equals(rhs)));
+            left.val = left.val.filter(
+              (lhs) => !right.val.some((rhs) => lhs.equals(rhs))
+            );
             return left;
           },
           "%": () => {
@@ -341,7 +342,9 @@ const multiply = (...exps) => {
               right = coerce(right, List.typeDescription);
             }
 
-            left.val = left.val.filter(lhs => right.val.some(rhs => lhs.equals(rhs)));
+            left.val = left.val.filter((lhs) =>
+              right.val.some((rhs) => lhs.equals(rhs))
+            );
             return left;
           },
         }[exps[i + 1]]();
@@ -350,6 +353,61 @@ const multiply = (...exps) => {
       return left;
     },
     [Obj.typeDescription.val]: () => {
+      let product = new Map();
+      for (let i = 0; i < exps.length - 1; i += 2) {
+        let [left, right] = [exps[i], exps[i + 2]];
+        ({
+          "*": () => {
+            ({
+              [Obj.typeDescription.val]: () => {
+                ((
+                  {
+                    // if right is an object, it'll get caught as being an object on the left in the next iteration
+                    [Num.typeDescription.val]: () => {
+                      if (right.val === 0) {
+                        product = new Map();
+                      } else if (product.size === 0) {
+                        product = left.val;
+                      } else {
+                        product.set(product.size.toString(), left);
+                      }
+                    },
+                    [Bool.typeDescription.val]: () => {
+                      if (!right.val) {
+                        product = new Map();
+                      }
+                    },
+                    [Nil.type.val]: () => {
+                      product = new Map();
+                    }
+                  }[right.type.val] ??
+                  (() => {
+                    product.set(product.size.toString(), left);
+                  })
+                )());
+              },
+              [Str.typeDescription.val]: () => {
+                product.set(product.size.toString(), left);
+              },
+              [Num.typeDescription.val]: () => {
+                if (left.val === 0) {
+                  product = new Map();
+                }
+              },
+              [Bool.typeDescription.val]: () => {
+                if (!left.val) {
+                  product = new Map();
+                }
+              },
+              [Nil.typeDescription.val]: () => {
+                product = new Map();
+              }
+            }[left.type.val]());
+          },
+          "/": () => {},
+          "%": () => {},
+        }[exps[i]]());
+      }
       // TODO same as lists, but main object keys are indices
     },
     [Str.typeDescription.val]: () => {
