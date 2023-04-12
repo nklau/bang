@@ -472,10 +472,83 @@ const multiply = (...exps) => {
           },
         }[exps[i]]());
       }
-      // TODO same as lists, but main object keys are indices
+
+      return product;
     },
     [Str.typeDescription.val]: () => {
-      // TODO treat as list of chars (only under the hood)
+      let product = exps[0];
+
+      for (let i = 0; i < exps.length - 1; i += 2) {
+        let [left, right] = [product, exps[i + 2]];
+        product = {
+          "*": () => {
+            return ({
+              [Str.typeDescription.val]: () => {
+                return ({
+                  [Str.typeDescription.val]: () => {
+                    return new Str(left.val + right.val);
+                  },
+                  [Num.typeDescription.val]: () => {
+                    let result = '';
+                    for (let j = 0; j < right.val; j++) {
+                      result += left.val;
+                    }
+                    return new Str(result);
+                  },
+                  [Bool.typeDescription.val]: () => {
+                    return right.val ? left : new Str();
+                  },
+                  [Nil.typeDescription.val]: () => {
+                    return new Str();
+                  }
+                }[right.type.val]());
+              },
+              [Num.typeDescription.val]: () => {
+                return ({
+                  [Str.typeDescription.val]: () => {
+                    let result = '';
+                    for (let j = 0; j < left.val; j++) {
+                      result += right.val;
+                    }
+                    return new Str(result);
+                  },
+                  [Num.typeDescription.val]: () => {
+                    return new Num(left.val * right.val);
+                  },
+                  [Bool.typeDescription.val]: () => {
+                    return right.val ? left : new Num();
+                  },
+                  [Nil.typeDescription.val]: () => {
+                    return new Num();
+                  }
+                }[right.type.val]());
+              },
+              [Bool.typeDescription.val]: () => {
+                return ({
+                  [Str.typeDescription.val]: () => {
+                    return left.val ? right : new Str();
+                  },
+                  [Num.typeDescription.val]: () => {
+                    return left.val ? right : new Num();
+                  },
+                  [Bool.typeDescription.val]: () => {
+                    return new Bool(left.val && right.val);
+                  },
+                  [Nil.typeDescription.val]: () => {
+                    return new Bool();
+                  }
+                }[right.type.val]());
+              },
+              [Nil.typeDescription.val]: () => {
+                return new right.constructor();
+              }
+            }[left.type.val]());
+          },
+          "/": () => {},
+          "%": () => {},
+        }[exps[i + 1]]();
+      }
+      return product;
     },
     [Num.typeDescription.val]: () => {
       // TODO actual numerical mutliplication/division
