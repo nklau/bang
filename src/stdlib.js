@@ -1,4 +1,4 @@
-import * as core from "./core.js"
+import * as core from "./core.js";
 
 // object todo list
 // function to get by index (loop that just counts upwards)
@@ -33,8 +33,8 @@ function delete(map, string) {
 // function to remove element at index
 
 export const contents = Object.freeze({
-  print: new core.Var('print', false, true, ['function']),
-  range: new core.Var('range', false, true, ['function']),
+  print: new core.Var("print", false, true, ["function"]),
+  range: new core.Var("range", false, true, ["function"]),
   // _numLoop: new core.Var('loop', false, true, ['function']),
   // _boolLoop: new core.Var('loop', false, true, ['function']),
   // _strLoop: new core.Var('loop', false, true, ['function']),
@@ -45,7 +45,7 @@ export const contents = Object.freeze({
   // _strConcat: new core.Var('add', false, true, ['function']),
   // _listConcat: new core.Var('add', false, true, ['function']),
   // _objMerge: new core.Var('add', false, true, ['function']),
-})
+});
 
 // also does subtraction
 const add = `const add = (...exps) => {
@@ -250,138 +250,104 @@ const add = `const add = (...exps) => {
   }[type.val]
 
   return addFunc()
-}`
+}`;
 
 // multiply, divide, modulus
 const multiply = (...exps) => {
-  const type = strongestType(exps.filter(e => typeof e !== 'string'));
-  const firstIndex = exps.findIndex(e => e.type.equals(type));
+  const type = strongestType(exps.filter((e) => typeof e !== "string"));
+  const firstIndex = exps.findIndex((e) => e.type.equals(type));
   const multiplyFunc = {
     [List.typeDescription.val]: () => {
-      let left = exps[0].type.equals(Obj.typeDescription) ? exps[1].keys() : exps[1];
+      let left = exps[0].type.equals(Obj.typeDescription)
+        ? exps[1].keys()
+        : exps[1];
 
       for (let i = 0; i < exps.length - 1; i += 2) {
+        let right = exps[i + 2].type.equals(Obj.typeDescription)
+          ? exps[i + 2].keys()
+          : exps[i + 2];
         left = {
-          '*': () => {
-            const right = exps[i + 2].type.equals(Obj.typeDescription) ? exps[i + 2].keys() : exps[i + 2];
+          "*": () => {
             if (left.type.equals(List.typeDescription)) {
-              return (({
-                // right should never be an object
-                [List.typeDescription.val]: () => {
-                  return new List([...left.val, ...right.val]);
-                },
-                [Num.typeDescription.val]: () => {
-                  const result = [];
-                  for (let j = 0; j < right.val; j++) {
-                    result.push(...left.val);
-                    return new List(result);
-                  }
-                },
-                [Bool.typeDescription.val]: () => {
-                  return right.val ? left : new List();
-                },
-                [Nil.type.val]: () => {
-                  return new List();
-                }
-              })[right.type.val] ?? (() => { return new List([...left.val, right]) }))();
+              return (
+                {
+                  // right should never be an object
+                  [List.typeDescription.val]: () => {
+                    return new List([...left.val, ...right.val]);
+                  },
+                  [Num.typeDescription.val]: () => {
+                    const result = [];
+                    for (let j = 0; j < right.val; j++) {
+                      result.push(...left.val);
+                      return new List(result);
+                    }
+                  },
+                  [Bool.typeDescription.val]: () => {
+                    return right.val ? left : new List();
+                  },
+                  [Nil.type.val]: () => {
+                    return new List();
+                  },
+                }[right.type.val] ??
+                (() => {
+                  return new List([...left.val, right]);
+                })
+              )();
             }
 
             if (right.type.equals(List.typeDescription)) {
-              return (({
-                // designed to get here only if left is not a list
-                // left should also never be an object
-                [Num.typeDescription.val]: () => {
-                  const result = [];
-                  for (let j = 0; j < left.val; j++) {
-                    result.push(...right.val);
-                    return new List(result);
-                  }
-                },
-                [Bool.typeDescription.val]: () => {
-                  return left.val ? right : new List();
-                },
-                [Nil.type.val]: () => {
-                  return new List();
-                }
-              })[left.type.val] ?? (() => { return new List([left, ...right.val]) }))();
+              return (
+                {
+                  // designed to get here only if left is not a list
+                  // left should also never be an object
+                  [Num.typeDescription.val]: () => {
+                    const result = [];
+                    for (let j = 0; j < left.val; j++) {
+                      result.push(...right.val);
+                      return new List(result);
+                    }
+                  },
+                  [Bool.typeDescription.val]: () => {
+                    return left.val ? right : new List();
+                  },
+                  [Nil.type.val]: () => {
+                    return new List();
+                  },
+                }[left.type.val] ??
+                (() => {
+                  return new List([left, ...right.val]);
+                })
+              )();
             }
 
-            return multiply([left, '*', right]);
+            return multiply([left, "*", right]);
           },
-          '/': () => {
+          "/": () => {
+            if (!left.type.equals(List.typeDescription)) {
+              left = coerce(left, List.typeDescription);
+            }
+            if (!right.type.equals(List.typeDescription)) {
+              right = coerce(right, List.typeDescription);
+            }
 
+            left.val = left.val.filter(lhs => !right.val.some(rhs => lhs.equals(rhs)));
+            return left;
           },
-          '%': () => {
+          "%": () => {
+            if (!left.type.equals(List.typeDescription)) {
+              left = coerce(left, List.typeDescription);
+            }
+            if (!right.type.equals(List.typeDescription)) {
+              right = coerce(right, List.typeDescription);
+            }
 
-          }
+            left.val = left.val.filter(lhs => right.val.some(rhs => lhs.equals(rhs)));
+            return left;
+          },
         }[exps[i + 1]]();
       }
 
       return left;
-
-
-
-
-      // let toSubtract = [];
-      // let toAdd = [];
-
-      // if (exps[1] === '*') {
-      //   // numbers should "extend" the list
-      //   // objects should take only the keys
-      //   toAdd.push(exps[0]);
-      // } else {
-      //   toAdd.push(...exps[0]);
-      // }
-
-      // for (let i = 1; i < exps.length; i += 2) {
-      //   if (typeof exps[i] === 'string') {
-      //     const operation = {
-      //       '*': () => {
-      //         // TODO "raise" op (same as add, but doesn’t flatten lists)
-      //         // numbers should "extend" the list
-      //         // objects should take only the keys
-
-      //         toAdd.push(exps[i + 1]);
-      //       },
-      //       '/': () => {
-      //         if (exps[i + 1].type.equals(List.typeDescription)) {
-
-      //         } else {
-
-      //         }
-      //         // TODO blacklist (filter out everything in divisor)
-      //         // if divisor is 1 thing, coerce to list
-      //         // then iterate over divisor (should be a list) and filter out everything from numerator list
-      //         // if divisor is an object, use its keys as a list
-      //       },
-      //       '%': () => {
-      //         // TODO whitelist (keep only things that are in the divisor)
-      //       }
-      //     }[exps[i]]();
-      //     continue;
-      //   }
-
-      //   toAdd.push(exps[i]);
-      // }
-
-      // toSubtract.forEach(exp => {
-      //   const index = toAdd.findIndex(e => e.equals(exp));
-      //   if (index > -1) {
-      //     toAdd.splice(index, 1);
-      //   }
-      // });
-
-      // let added = toAdd.reduce((arr, element) => {
-      //   // adding two lists flattens once
-      //   if (element.type.equals(List.typeDescription)) {
-      //     arr = [...arr, ...element.val];
-      //   } else {
-      //     arr.push(element);
-      //   }
-      //   return arr;
-      // }, []);
-
-      // return new List(added);
     },
     [Obj.typeDescription.val]: () => {
       // TODO same as lists, but main object keys are indices
@@ -398,11 +364,11 @@ const multiply = (...exps) => {
     [nil.type.val]: () => nil,
     [Func.typeDescription.val]: () => {
       // TODO func wrapper
-    }
-  }[type.val]
+    },
+  }[type.val];
 
-  return multiplyFunc()
-}
+  return multiplyFunc();
+};
 
 const strongestType = `const strongestType = (exps) => {
   const types = [Func.typeDescription, List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription];
@@ -415,7 +381,7 @@ const strongestType = `const strongestType = (exps) => {
   }
 
   return nil.type;
-}`
+}`;
 
 /*
 let x = new Num(0)
@@ -534,7 +500,7 @@ const coerce = `const coerce = (exp, targetType) => {
   }
 
   return targets[targetType.val ?? targetType](exp)
-}`
+}`;
 
 const subscript = `const subscript = (target, selector) => {
   // TODO selector might have : syntax instead of a single element
@@ -568,31 +534,30 @@ const subscript = `const subscript = (target, selector) => {
   }[target.type.val];
 
   return subscriptFunc();
-}`
+}`;
 
 const print = `const print = exp => {
   let _internal0 = exp;
   console.log(_internal0 === nil ? nil.type.val : coerce(_internal0, Str.typeDescription).val);
-}`
+}`;
 
 // TODO function to convert between types, will get pushed to top of file along with type classes
 
 export const stdLibFuncs = {
-  [contents.print]: x => `print(${x})`,
-  [contents.range]: (start, end) => { // TODO are these actually strings? or are they the class objs from below?
+  [contents.print]: (x) => `print(${x})`,
+  [contents.range]: (start, end) => {
+    // TODO are these actually strings? or are they the class objs from below?
     // TODO need to convert (coerce) start and end to nums
-    return `[...Array(${end}.val - ${start}.val).keys().map(i => i + ${start}.val)]`
+    return `[...Array(${end}.val - ${start}.val).keys().map(i => i + ${start}.val)]`;
   },
-}
+};
 
-const nil =
-  `const nil = Object.freeze({
+const nil = `const nil = Object.freeze({
   type: new Str('nil'),
   equals: other => this.type.equals(other.type)
-});`
+});`;
 
-const bool =
-  `class Bool {
+const bool = `class Bool {
   static typeDescription = new Str('boolean');
 
   constructor(val = false) {
@@ -614,10 +579,9 @@ const bool =
   get str() {
     return new Str(this.val.toString());
   }
-}`
+}`;
 
-const num =
-  `class Num {
+const num = `class Num {
   static typeDescription = new Str('number');
 
   constructor(val = 0) {
@@ -639,10 +603,9 @@ const num =
   get str() {
     return new Str(this.val.toString());
   }
-}`
+}`;
 
-const str =
-  `export class Str {
+const str = `export class Str {
   static typeDescription = new Str('string');
 
   constructor(val = '') {
@@ -672,10 +635,9 @@ const str =
   get str() {
     return this;
   }
-}`
+}`;
 
-const obj =
-  `class Obj {
+const obj = `class Obj {
   static typeDescription = new Str('object');
 
   constructor(val = new Map()) {
@@ -739,10 +701,9 @@ const obj =
     let reversed = new Map();
     this.val = Array.from(this.val).reverse().reduce((map, [key, val]) => map.set(key, val), new Map());
   }
-}`
+}`;
 // TODO all type coercions to all other types using getters
-const list =
-  `class List {
+const list = `class List {
   static typeDescription = new Str('list');
 
   constructor(val = []) {
@@ -779,10 +740,9 @@ const list =
     }, '');
     return new Str(\`[\${str.slice(0, -2)}]\`);
   }
-}`
+}`;
 
-const func =
-  `class Func {
+const func = `class Func {
   static typeDescription = new Str('function');
 
   constructor(val, params = new List()) {
@@ -813,7 +773,7 @@ const func =
   get str() {
     return new Str(\`\${this.val.toString().replaceAll('=', '-')}\`);
   }
-}`
+}`;
 
-export const types = [str, nil, bool, num, obj, list, func]
-export const stdFuncs = [strongestType, coerce, add, subscript, print]
+export const types = [str, nil, bool, num, obj, list, func];
+export const stdFuncs = [strongestType, coerce, add, subscript, print];
