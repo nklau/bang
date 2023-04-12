@@ -362,7 +362,11 @@ const multiply = (...exps) => {
               [Obj.typeDescription.val]: () => {
                 ((
                   {
-                    // if right is an object, it'll get caught as being an object on the left in the next iteration
+                    [Obj.typeDescription.val]: () => {
+                      // TODO this might duplicate the middle object in a chained multiplication with all objs
+                      product.set(product.size.toString(), left);
+                      product.set(product.size.toString(), right);
+                    },
                     [Num.typeDescription.val]: () => {
                       if (right.val === 0) {
                         product = new Map();
@@ -379,7 +383,7 @@ const multiply = (...exps) => {
                     },
                     [Nil.type.val]: () => {
                       product = new Map();
-                    }
+                    },
                   }[right.type.val] ??
                   (() => {
                     product.set(product.size.toString(), left);
@@ -401,10 +405,35 @@ const multiply = (...exps) => {
               },
               [Nil.typeDescription.val]: () => {
                 product = new Map();
-              }
+              },
             }[left.type.val]());
           },
-          "/": () => {},
+          "/": () => {
+            const rightOp =
+              {
+                [Obj.typeDescription.val]: (lhs, rhs) => {
+                  rhs.forEach((_val, key) => {
+                    lhs.val.delete(key);
+                  });
+                },
+                [Str.typeDescription.val]: (lhs, rhs) => {
+                  lhs.val.delete(rhs.val);
+                },
+                [Nil.type.val]: (_lhs, _rhs) => {},
+              }[right.type.val] ??
+              ((lhs, rhs) => {
+                lhs.val.delete(rhs.val.toString());
+              });
+            ({
+              [Obj.typeDescription.val]: () => {
+                rightOp(left, right);
+              },
+              [Nil.type.val]: () => {},
+            }[left.type.val] ??
+              (() => {
+                rightOp(coerce(left, Obj.typeDescription), right);
+              })());
+          },
           "%": () => {},
         }[exps[i]]());
       }
