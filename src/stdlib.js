@@ -412,7 +412,7 @@ const multiply = (...exps) => {
             const rightOp =
               {
                 [Obj.typeDescription.val]: (lhs, rhs) => {
-                  rhs.forEach((_val, key) => {
+                  rhs.val.forEach((_val, key) => {
                     lhs.val.delete(key);
                   });
                 },
@@ -434,7 +434,42 @@ const multiply = (...exps) => {
                 rightOp(coerce(left, Obj.typeDescription), right);
               })());
           },
-          "%": () => {},
+          "%": () => {
+            const rightOp =
+              {
+                [Obj.typeDescription.val]: (lhs, rhs) => {
+                  lhs.val.forEach((_val, key) => {
+                    if (!rhs.val.has(key)) {
+                      lhs.val.delete(key);
+                    }
+                  });
+                },
+                [Str.typeDescription.val]: (lhs, rhs) => {
+                  let val = lhs.val.get(rhs.val);
+                  lhs.val.clear();
+                  if (val) {
+                    lhs.val.set(rhs.val, val);
+                  }
+                },
+                [Nil.type.val]: (_lhs, _rhs) => {},
+              }[right.type.val] ??
+              ((lhs, rhs) => {
+                let val = lhs.val.get(rhs.val.toString());
+                lhs.val.clear();
+                if (val) {
+                  lhs.val.set(rhs.val.toString(), val);
+                }
+              });
+            ({
+              [Obj.typeDescription.val]: () => {
+                rightOp(left, right);
+              },
+              [Nil.type.val]: () => {},
+            }[left.type.val] ??
+              (() => {
+                rightOp(coerce(left, Obj.typeDescription), right);
+              })());
+          },
         }[exps[i]]());
       }
       // TODO same as lists, but main object keys are indices
