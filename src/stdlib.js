@@ -1,4 +1,4 @@
-import * as core from "./core.js";
+import * as core from './core.js';
 
 // object todo list
 // function to get by index (loop that just counts upwards)
@@ -33,8 +33,8 @@ function delete(map, string) {
 // function to remove element at index
 
 export const contents = Object.freeze({
-  print: new core.Var("print", false, true, ["function"]),
-  range: new core.Var("range", false, true, ["function"]),
+  print: new core.Var('print', false, true, ['function']),
+  range: new core.Var('range', false, true, ['function']),
   // _numLoop: new core.Var('loop', false, true, ['function']),
   // _boolLoop: new core.Var('loop', false, true, ['function']),
   // _strLoop: new core.Var('loop', false, true, ['function']),
@@ -254,7 +254,7 @@ const add = `const add = (...exps) => {
 
 // multiply, divide, modulus
 const multiply = (...exps) => {
-  const type = strongestType(exps.filter((e) => typeof e !== "string"));
+  const type = strongestType(exps.filter((e) => typeof e !== 'string'));
   const multiplyFunc = {
     [List.typeDescription.val]: () => {
       let left = exps[0].type.equals(Obj.typeDescription)
@@ -266,7 +266,7 @@ const multiply = (...exps) => {
           ? exps[i + 2].keys()
           : exps[i + 2];
         left = {
-          "*": () => {
+          '*': () => {
             if (left.type.equals(List.typeDescription)) {
               return (
                 {
@@ -319,9 +319,9 @@ const multiply = (...exps) => {
               )();
             }
 
-            return multiply([left, "*", right]);
+            return multiply([left, '*', right]);
           },
-          "/": () => {
+          '/': () => {
             if (!left.type.equals(List.typeDescription)) {
               left = coerce(left, List.typeDescription);
             }
@@ -334,7 +334,7 @@ const multiply = (...exps) => {
             );
             return left;
           },
-          "%": () => {
+          '%': () => {
             if (!left.type.equals(List.typeDescription)) {
               left = coerce(left, List.typeDescription);
             }
@@ -357,7 +357,7 @@ const multiply = (...exps) => {
       for (let i = 0; i < exps.length - 1; i += 2) {
         let [left, right] = [exps[i], exps[i + 2]];
         ({
-          "*": () => {
+          '*': () => {
             ({
               [Obj.typeDescription.val]: () => {
                 ((
@@ -408,7 +408,7 @@ const multiply = (...exps) => {
               },
             }[left.type.val]());
           },
-          "/": () => {
+          '/': () => {
             const rightOp =
               {
                 [Obj.typeDescription.val]: (lhs, rhs) => {
@@ -434,7 +434,7 @@ const multiply = (...exps) => {
                 rightOp(coerce(left, Obj.typeDescription), right);
               })());
           },
-          "%": () => {
+          '%': () => {
             const rightOp =
               {
                 [Obj.typeDescription.val]: (lhs, rhs) => {
@@ -481,10 +481,10 @@ const multiply = (...exps) => {
       for (let i = 0; i < exps.length - 1; i += 2) {
         let [left, right] = [product, exps[i + 2]];
         product = {
-          "*": () => {
-            return ({
+          '*': () => {
+            return {
               [Str.typeDescription.val]: () => {
-                return ({
+                return {
                   [Str.typeDescription.val]: () => {
                     return new Str(left.val + right.val);
                   },
@@ -498,13 +498,13 @@ const multiply = (...exps) => {
                   [Bool.typeDescription.val]: () => {
                     return right.val ? left : new Str();
                   },
-                  [Nil.typeDescription.val]: () => {
+                  [Nil.type.val]: () => {
                     return new Str();
-                  }
-                }[right.type.val]());
+                  },
+                }[right.type.val]();
               },
               [Num.typeDescription.val]: () => {
-                return ({
+                return {
                   [Str.typeDescription.val]: () => {
                     let result = '';
                     for (let j = 0; j < left.val; j++) {
@@ -518,13 +518,13 @@ const multiply = (...exps) => {
                   [Bool.typeDescription.val]: () => {
                     return right.val ? left : new Num();
                   },
-                  [Nil.typeDescription.val]: () => {
+                  [Nil.type.val]: () => {
                     return new Num();
-                  }
-                }[right.type.val]());
+                  },
+                }[right.type.val]();
               },
               [Bool.typeDescription.val]: () => {
-                return ({
+                return {
                   [Str.typeDescription.val]: () => {
                     return left.val ? right : new Str();
                   },
@@ -536,16 +536,64 @@ const multiply = (...exps) => {
                   },
                   [Nil.typeDescription.val]: () => {
                     return new Bool();
-                  }
-                }[right.type.val]());
+                  },
+                }[right.type.val]();
               },
-              [Nil.typeDescription.val]: () => {
+              [Nil.type.val]: () => {
+                return new right.constructor();
+              },
+            }[left.type.val]();
+          },
+          '/': () => {
+            const recurse = () => {
+              return multiply([left, '/', right]);
+            };
+            return {
+              [Str.typeDescription.val]: () => {
+                return (
+                  {
+                    [Str.typeDescription.val]: () => {
+                      return new Str(left.val.replaceAll(right.val, ''));
+                    },
+                    [Nil.type.val]: () => {
+                      return left;
+                    },
+                  }[right.type.val] ??
+                  (() => {
+                    return new Str(
+                      left.val.replaceAll(right.val.toString(), '')
+                    );
+                  })
+                )();
+              },
+              [Num.typeDescription.val]: () => {
+                return (
+                  {
+                    [Str.typeDescription.val]: () => {
+                      return new Str(
+                        left.val.toString().replaceAll(right.val, '')
+                      );
+                    },
+                  }[right.type.val] ?? recurse
+                )();
+              },
+              [Bool.typeDescription.val]: () => {
+                return (
+                  {
+                    [Str.typeDescription.val]: () => {
+                      return new Str(
+                        left.val.toString().replaceAll(right.val, '')
+                      );
+                    },
+                  }[right.type.val] ?? recurse
+                )();
+              },
+              [Nil.type.val]: () => {
                 return new right.constructor();
               }
-            }[left.type.val]());
+            }[left.type.val]();
           },
-          "/": () => {},
-          "%": () => {},
+          '%': () => {},
         }[exps[i + 1]]();
       }
       return product;
@@ -778,6 +826,7 @@ const bool = `class Bool {
 
 const num = `class Num {
   static typeDescription = new Str('number');
+  static inf = new Num(Infinity);
 
   constructor(val = 0) {
     this.val = val;
