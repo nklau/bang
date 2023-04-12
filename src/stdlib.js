@@ -306,7 +306,7 @@ const multiply = (...exps) => {
               })[left.type.val] ?? (() => { return new List([left, ...right.val]) }))();
             }
 
-            return multiply(left, right);
+            return multiply([left, '*', right]);
           },
           '/': () => {
 
