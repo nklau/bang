@@ -693,7 +693,36 @@ const multiply = (...exps) => {
               },
             }[left.type.val]();
           },
-          '/': () => {},
+          '/': () => {
+            const recurse = () => {
+              multiply([left, '/', right]);
+            };
+            return {
+              [Num.typeDescription.val]: () => {
+                return {
+                  [Num.typeDescription.val]: () => {
+                    return new Num(left.val / right.val);
+                  },
+                  [Bool.typeDescription.val]: () => {
+                    return right.val ? left : Num.inf;
+                  },
+                  [nil.type.val]: () => {
+                    return Num.inf;
+                  },
+                }[right.type.val]();
+              },
+              [Bool.typeDescription.val]: () => {
+                return ({
+                  [Num.typeDescription.val]: () => {
+                    return new Num((left.val ? 1 : 0) / right.val);
+                  }
+                }[right.type.val] ?? recurse)();
+              },
+              [nil.type.val]: () => {
+                return new right.constructor();
+              }
+            }[left.type.val]();
+          },
           '%': () => {},
         }[exps[i]]();
       }
