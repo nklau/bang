@@ -595,7 +595,7 @@ const multiply = (...exps) => {
           },
           '%': () => {
             const recurse = () => {
-              multiply([left, '%', right]);
+              return multiply([left, '%', right]);
             };
 
             return (
@@ -663,7 +663,7 @@ const multiply = (...exps) => {
         product = {
           '*': () => {
             const recurse = () => {
-              multiply([left, '*', right]);
+              return multiply([left, '*', right]);
             };
             return {
               [Num.typeDescription.val]: () => {
@@ -695,7 +695,7 @@ const multiply = (...exps) => {
           },
           '/': () => {
             const recurse = () => {
-              multiply([left, '/', right]);
+              return multiply([left, '/', right]);
             };
             return {
               [Num.typeDescription.val]: () => {
@@ -712,18 +712,49 @@ const multiply = (...exps) => {
                 }[right.type.val]();
               },
               [Bool.typeDescription.val]: () => {
+                return (
+                  {
+                    [Num.typeDescription.val]: () => {
+                      return new Num((left.val ? 1 : 0) / right.val);
+                    },
+                  }[right.type.val] ?? recurse
+                )();
+              },
+              [nil.type.val]: () => {
+                return new right.constructor();
+              },
+            }[left.type.val]();
+          },
+          '%': () => {
+            const recurse = () => {
+              return multiply([left, '%', right]);
+            };
+            return {
+              [Num.typeDescription.val]: () => {
+                return {
+                  [Num.typeDescription.val]: () => {
+                    return new Num(left.val % right.val);
+                  },
+                  [Bool.typeDescription.val]: () => {
+                    return new Num(left.val % (right.val ? 1 : 0));
+                  },
+                  [nil.type.val]: () => {
+                    return left;
+                  },
+                }[right.type.val]();
+              },
+              [Bool.typeDescription.val]: () => {
                 return ({
                   [Num.typeDescription.val]: () => {
-                    return new Num((left.val ? 1 : 0) / right.val);
+                    return new Num(left.val ? 1 : 0);
                   }
                 }[right.type.val] ?? recurse)();
               },
               [nil.type.val]: () => {
-                return new right.constructor();
+                return nil;
               }
             }[left.type.val]();
           },
-          '%': () => {},
         }[exps[i]]();
       }
 
