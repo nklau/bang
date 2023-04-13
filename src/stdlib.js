@@ -793,7 +793,7 @@ const multiply = (...exps) => {
                   },
                   [nil.type.val]: () => {
                     return new Bool(!left.val);
-                  }
+                  },
                 }[right.type.val]();
               },
               [nil.type.val]: () => {
@@ -803,17 +803,39 @@ const multiply = (...exps) => {
                   },
                   [nil.type.val]: () => {
                     return nil;
-                  }
+                  },
                 }[right.type.val]();
-              }
+              },
             }[left.type.val]();
           },
-          '%': () => {},
+          '%': () => {
+            return {
+              [Bool.typeDescription.val]: () => {
+                return {
+                  [Bool.typeDescription.val]: () => {
+                    return new Bool(left.val === right.val);
+                  },
+                  [nil.type.val]: () => {
+                    return new Bool(!left.val);
+                  },
+                }[right.type.val]();
+              },
+              [nil.type.val]: () => {
+                return {
+                  [Bool.typeDescription.val]: () => {
+                    return new Bool(!right.val);
+                  },
+                  [nil.type.val]: () => {
+                    return nil;
+                  },
+                }[right.type.val]();
+              },
+            }[left.type.val]();
+          },
         }[exps[i]]();
       }
 
       return product;
-      // TODO bool AND
     },
     [nil.type.val]: () => nil,
     [Func.typeDescription.val]: () => {
