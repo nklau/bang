@@ -284,7 +284,7 @@ const multiply = (...exps) => {
                   [Bool.typeDescription.val]: () => {
                     return right.val ? left : new List();
                   },
-                  [Nil.type.val]: () => {
+                  [nil.type.val]: () => {
                     return new List();
                   },
                 }[right.type.val] ??
@@ -309,7 +309,7 @@ const multiply = (...exps) => {
                   [Bool.typeDescription.val]: () => {
                     return left.val ? right : new List();
                   },
-                  [Nil.type.val]: () => {
+                  [nil.type.val]: () => {
                     return new List();
                   },
                 }[left.type.val] ??
@@ -381,7 +381,7 @@ const multiply = (...exps) => {
                         product = new Map();
                       }
                     },
-                    [Nil.type.val]: () => {
+                    [nil.type.val]: () => {
                       product = new Map();
                     },
                   }[right.type.val] ??
@@ -403,7 +403,7 @@ const multiply = (...exps) => {
                   product = new Map();
                 }
               },
-              [Nil.typeDescription.val]: () => {
+              [nil.typeDescription.val]: () => {
                 product = new Map();
               },
             }[left.type.val]());
@@ -419,7 +419,7 @@ const multiply = (...exps) => {
                 [Str.typeDescription.val]: (lhs, rhs) => {
                   lhs.val.delete(rhs.val);
                 },
-                [Nil.type.val]: (_lhs, _rhs) => {},
+                [nil.type.val]: (_lhs, _rhs) => {},
               }[right.type.val] ??
               ((lhs, rhs) => {
                 lhs.val.delete(rhs.val.toString());
@@ -428,7 +428,7 @@ const multiply = (...exps) => {
               [Obj.typeDescription.val]: () => {
                 rightOp(left, right);
               },
-              [Nil.type.val]: () => {},
+              [nil.type.val]: () => {},
             }[left.type.val] ??
               (() => {
                 rightOp(coerce(left, Obj.typeDescription), right);
@@ -451,7 +451,7 @@ const multiply = (...exps) => {
                     lhs.val.set(rhs.val, val);
                   }
                 },
-                [Nil.type.val]: (_lhs, _rhs) => {},
+                [nil.type.val]: (_lhs, _rhs) => {},
               }[right.type.val] ??
               ((lhs, rhs) => {
                 let val = lhs.val.get(rhs.val.toString());
@@ -464,7 +464,7 @@ const multiply = (...exps) => {
               [Obj.typeDescription.val]: () => {
                 rightOp(left, right);
               },
-              [Nil.type.val]: () => {},
+              [nil.type.val]: () => {},
             }[left.type.val] ??
               (() => {
                 rightOp(coerce(left, Obj.typeDescription), right);
@@ -498,7 +498,7 @@ const multiply = (...exps) => {
                   [Bool.typeDescription.val]: () => {
                     return right.val ? left : new Str();
                   },
-                  [Nil.type.val]: () => {
+                  [nil.type.val]: () => {
                     return new Str();
                   },
                 }[right.type.val]();
@@ -518,7 +518,7 @@ const multiply = (...exps) => {
                   [Bool.typeDescription.val]: () => {
                     return right.val ? left : new Num();
                   },
-                  [Nil.type.val]: () => {
+                  [nil.type.val]: () => {
                     return new Num();
                   },
                 }[right.type.val]();
@@ -534,12 +534,12 @@ const multiply = (...exps) => {
                   [Bool.typeDescription.val]: () => {
                     return new Bool(left.val && right.val);
                   },
-                  [Nil.typeDescription.val]: () => {
+                  [nil.typeDescription.val]: () => {
                     return new Bool();
                   },
                 }[right.type.val]();
               },
-              [Nil.type.val]: () => {
+              [nil.type.val]: () => {
                 return new right.constructor();
               },
             }[left.type.val]();
@@ -555,7 +555,7 @@ const multiply = (...exps) => {
                     [Str.typeDescription.val]: () => {
                       return new Str(left.val.replaceAll(right.val, ''));
                     },
-                    [Nil.type.val]: () => {
+                    [nil.type.val]: () => {
                       return left;
                     },
                   }[right.type.val] ??
@@ -588,12 +588,70 @@ const multiply = (...exps) => {
                   }[right.type.val] ?? recurse
                 )();
               },
-              [Nil.type.val]: () => {
+              [nil.type.val]: () => {
                 return new right.constructor();
-              }
+              },
             }[left.type.val]();
           },
-          '%': () => {},
+          '%': () => {
+            const recurse = () => {
+              multiply([left, '%', right]);
+            };
+
+            return (
+              {
+                [Str.typeDescription.val]: () => {
+                  return (
+                    {
+                      [Str.typeDescription.val]: () => {
+                        return new Str(
+                          left.val.match(new RegExp(right.val, 'g')) || []
+                        ).join('');
+                      },
+                      [nil.type.val]: () => {
+                        return new Str();
+                      },
+                    }[right.type.val] ??
+                    (() => {
+                      return new Str(
+                        left.val.match(new RegExp(right.val.toString(), 'g')) ||
+                          []
+                      ).join('');
+                    })
+                  )();
+                },
+                [Num.typeDescription.val]: () => {
+                  return (
+                    {
+                      [Str.typeDescription.val]: () => {
+                        return new Str(
+                          right.val
+                            .toString()
+                            .match(new RegExp(right.val, 'g')) || []
+                        ).join('');
+                      },
+                    }[right.type.val] ?? recurse
+                  )();
+                },
+                [Bool.typeDescription.val]: () => {
+                  return (
+                    {
+                      [Str.typeDescription.val]: () => {
+                        return new Str(
+                          right.val
+                            .toString()
+                            .match(new RegExp(right.val, 'g')) || []
+                        ).join('');
+                      },
+                    }[right.type.val] ?? recurse
+                  )();
+                },
+                [nil.type.val]: () => {
+                  return new right.constructor();
+                },
+              }[left.type.val] ?? recurse
+            )();
+          },
         }[exps[i + 1]]();
       }
       return product;
