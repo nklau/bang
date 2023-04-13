@@ -657,7 +657,48 @@ const multiply = (...exps) => {
       return product;
     },
     [Num.typeDescription.val]: () => {
-      // TODO actual numerical mutliplication/division
+      let product = exps[0];
+      for (let i = 0; i < exps.length - 1; i += 2) {
+        const [left, right] = [product, exps[i + 2]];
+        product = {
+          '*': () => {
+            const recurse = () => {
+              multiply([left, '*', right]);
+            };
+            return {
+              [Num.typeDescription.val]: () => {
+                return {
+                  [Num.typeDescription.val]: () => {
+                    return new Num(left.val * right.val);
+                  },
+                  [Bool.typeDescription.val]: () => {
+                    return right.val ? left : new Num();
+                  },
+                  [nil.type.val]: () => {
+                    return new Num();
+                  },
+                }[right.type.val]();
+              },
+              [Bool.typeDescription.val]: () => {
+                return (
+                  {
+                    [Num.typeDescription.val]: () => {
+                      return left.val ? right : new Num();
+                    },
+                  }[right.type.val] ?? recurse
+                )();
+              },
+              [nil.type.val]: () => {
+                return new right.constructor();
+              },
+            }[left.type.val]();
+          },
+          '/': () => {},
+          '%': () => {},
+        }[exps[i]]();
+      }
+
+      return product;
     },
     [Bool.typeDescription.val]: () => {
       // TODO bool AND
