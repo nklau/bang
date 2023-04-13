@@ -744,15 +744,17 @@ const multiply = (...exps) => {
                 }[right.type.val]();
               },
               [Bool.typeDescription.val]: () => {
-                return ({
-                  [Num.typeDescription.val]: () => {
-                    return new Num(left.val ? 1 : 0);
-                  }
-                }[right.type.val] ?? recurse)();
+                return (
+                  {
+                    [Num.typeDescription.val]: () => {
+                      return new Num(left.val ? 1 : 0);
+                    },
+                  }[right.type.val] ?? recurse
+                )();
               },
               [nil.type.val]: () => {
                 return nil;
-              }
+              },
             }[left.type.val]();
           },
         }[exps[i]]();
@@ -766,24 +768,47 @@ const multiply = (...exps) => {
         const [left, right] = [product, exps[i + 2]];
         product = {
           '*': () => {
-            return ({
+            return {
               [Bool.typeDescription.val]: () => {
-                return ({
+                return {
                   [Bool.typeDescription.val]: () => {
                     return new Bool(left.val && right.val);
                   },
                   [nil.type.val]: () => {
                     return new Bool();
-                  }
-                }[right.type.val])();
+                  },
+                }[right.type.val]();
               },
               [nil.type.val]: () => {
                 return new Bool();
-              }
-            }[left.type.val])();
+              },
+            }[left.type.val]();
           },
-          '/': () => {},
-          '%': () => {}
+          '/': () => {
+            return {
+              [Bool.typeDescription.val]: () => {
+                return {
+                  [Bool.typeDescription.val]: () => {
+                    return new Bool(!(left.val || right.val));
+                  },
+                  [nil.type.val]: () => {
+                    return new Bool(!left.val);
+                  }
+                }[right.type.val]();
+              },
+              [nil.type.val]: () => {
+                return {
+                  [Bool.typeDescription.val]: () => {
+                    return new Bool(!right.val);
+                  },
+                  [nil.type.val]: () => {
+                    return nil;
+                  }
+                }[right.type.val]();
+              }
+            }[left.type.val]();
+          },
+          '%': () => {},
         }[exps[i]]();
       }
 
