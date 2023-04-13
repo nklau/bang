@@ -253,7 +253,7 @@ const add = `const add = (...exps) => {
 }`;
 
 // multiply, divide, modulus
-const multiply = (...exps) => {
+const multiply = `const multiply = (...exps) => {
   const type = strongestType(exps.filter((e) => typeof e !== 'string'));
   const multiplyFunc = {
     [List.typeDescription.val]: () => {
@@ -845,7 +845,7 @@ const multiply = (...exps) => {
   }[type.val];
 
   return multiplyFunc();
-};
+};`
 
 const strongestType = `const strongestType = (exps) => {
   const types = [Func.typeDescription, List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription];
@@ -1254,4 +1254,4 @@ const func = `class Func {
 }`;
 
 export const types = [str, nil, bool, num, obj, list, func];
-export const stdFuncs = [strongestType, coerce, add, subscript, print];
+export const stdFuncs = [strongestType, coerce, add, multiply, subscript, print];
