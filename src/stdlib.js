@@ -840,6 +840,7 @@ const multiply = (...exps) => {
     [nil.type.val]: () => nil,
     [Func.typeDescription.val]: () => {
       // TODO func wrapper
+      throw new Error('unimplemented multiplicative operation on a function literal');
     },
   }[type.val];
 
