@@ -761,6 +761,33 @@ const multiply = (...exps) => {
       return product;
     },
     [Bool.typeDescription.val]: () => {
+      let product = exps[0];
+      for (let i = 0; i < exps.length - 1; i += 2) {
+        const [left, right] = [product, exps[i + 2]];
+        product = {
+          '*': () => {
+            return ({
+              [Bool.typeDescription.val]: () => {
+                return ({
+                  [Bool.typeDescription.val]: () => {
+                    return new Bool(left.val && right.val);
+                  },
+                  [nil.type.val]: () => {
+                    return new Bool();
+                  }
+                }[right.type.val])();
+              },
+              [nil.type.val]: () => {
+                return new Bool();
+              }
+            }[left.type.val])();
+          },
+          '/': () => {},
+          '%': () => {}
+        }[exps[i]]();
+      }
+
+      return product;
       // TODO bool AND
     },
     [nil.type.val]: () => nil,
