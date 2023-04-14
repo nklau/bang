@@ -401,6 +401,10 @@ const multiply = `const multiply = (...exps) => {
               [Bool.typeDescription.val]: () => {
                 if (!left.val) {
                   product = new Map();
+                } else {
+                  right.val.forEach((val, key) => {
+                    product.set(key, val);
+                  });
                 }
               },
               [nil.type.val]: () => {
