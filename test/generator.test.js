@@ -1308,6 +1308,45 @@ const fixtures = [
     `,
     output: '{ }',
   },
+  {
+    name: 'multiply nil, obj len 1',
+    source: `nil * { 'a': 1 }`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '*', new Obj(new Map([['a', new Num(1)]]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '{ }',
+  },
+  {
+    name: 'multiply nil, obj len 2',
+    source: `nil * { 'a': 1, 'b': "2" }`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '*', new Obj(new Map([['a', new Num(1)], ['b', new Str('2')]]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '{ }',
+  },
+  {
+    name: 'multiply nil, empty list',
+    source: `nil * []`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '*', new List([])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '[]',
+  },
 
   // TODO function calls w/ multiple args
   // { // TODO fix

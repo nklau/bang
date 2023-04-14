@@ -258,8 +258,8 @@ const multiply = `const multiply = (...exps) => {
   const multiplyFunc = {
     [List.typeDescription.val]: () => {
       let left = exps[0].type.equals(Obj.typeDescription)
-        ? exps[1].keys()
-        : exps[1];
+        ? exps[0].keys()
+        : exps[0];
 
       for (let i = 0; i < exps.length - 1; i += 2) {
         let right = exps[i + 2].type.equals(Obj.typeDescription)
