@@ -1,4 +1,4 @@
-import * as core from './core.js';
+import * as core from './core.js'
 
 // object todo list
 // function to get by index (loop that just counts upwards)
@@ -45,7 +45,7 @@ export const contents = Object.freeze({
   // _strConcat: new core.Var('add', false, true, ['function']),
   // _listConcat: new core.Var('add', false, true, ['function']),
   // _objMerge: new core.Var('add', false, true, ['function']),
-});
+})
 
 // also does subtraction
 const add = `const add = (...exps) => {
@@ -250,7 +250,7 @@ const add = `const add = (...exps) => {
   }[type.val]
 
   return addFunc()
-}`;
+}`
 
 // multiply, divide, modulus
 const multiply = `const multiply = (...exps) => {
@@ -757,7 +757,7 @@ const multiply = `const multiply = (...exps) => {
               },
             }[left.type.val]();
           },
-        }[exps[i]]();
+        }[exps[i + 1]]();
       }
 
       return product;
@@ -858,7 +858,7 @@ const strongestType = `const strongestType = (exps) => {
   }
 
   return nil.type;
-}`;
+}`
 
 /*
 let x = new Num(0)
@@ -977,7 +977,7 @@ const coerce = `const coerce = (exp, targetType) => {
   }
 
   return targets[targetType.val ?? targetType](exp)
-}`;
+}`
 
 const subscript = `const subscript = (target, selector) => {
   // TODO selector might have : syntax instead of a single element
@@ -1011,12 +1011,12 @@ const subscript = `const subscript = (target, selector) => {
   }[target.type.val];
 
   return subscriptFunc();
-}`;
+}`
 
 const print = `const print = exp => {
   let _internal0 = exp;
   console.log(_internal0 === nil ? nil.type.val : coerce(_internal0, Str.typeDescription).val);
-}`;
+}`
 
 // TODO function to convert between types, will get pushed to top of file along with type classes
 
@@ -1025,14 +1025,14 @@ export const stdLibFuncs = {
   [contents.range]: (start, end) => {
     // TODO are these actually strings? or are they the class objs from below?
     // TODO need to convert (coerce) start and end to nums
-    return `[...Array(${end}.val - ${start}.val).keys().map(i => i + ${start}.val)]`;
+    return `[...Array(${end}.val - ${start}.val).keys().map(i => i + ${start}.val)]`
   },
-};
+}
 
 const nil = `const nil = Object.freeze({
   type: new Str('nil'),
   equals: other => this.type.equals(other.type)
-});`;
+});`
 
 const bool = `class Bool {
   static typeDescription = new Str('boolean');
@@ -1056,7 +1056,7 @@ const bool = `class Bool {
   get str() {
     return new Str(this.val.toString());
   }
-}`;
+}`
 
 const num = `class Num {
   static typeDescription = new Str('number');
@@ -1081,7 +1081,7 @@ const num = `class Num {
   get str() {
     return new Str(this.val.toString());
   }
-}`;
+}`
 
 const str = `export class Str {
   static typeDescription = new Str('string');
@@ -1113,7 +1113,7 @@ const str = `export class Str {
   get str() {
     return this;
   }
-}`;
+}`
 
 const obj = `class Obj {
   static typeDescription = new Str('object');
@@ -1179,7 +1179,7 @@ const obj = `class Obj {
     let reversed = new Map();
     this.val = Array.from(this.val).reverse().reduce((map, [key, val]) => map.set(key, val), new Map());
   }
-}`;
+}`
 // TODO all type coercions to all other types using getters
 const list = `class List {
   static typeDescription = new Str('list');
@@ -1218,7 +1218,7 @@ const list = `class List {
     }, '');
     return new Str(\`[\${str.slice(0, -2)}]\`);
   }
-}`;
+}`
 
 const func = `class Func {
   static typeDescription = new Str('function');
@@ -1251,7 +1251,7 @@ const func = `class Func {
   get str() {
     return new Str(\`\${this.val.toString().replaceAll('=', '-')}\`);
   }
-}`;
+}`
 
-export const types = [str, nil, bool, num, obj, list, func];
-export const stdFuncs = [strongestType, coerce, add, multiply, subscript, print];
+export const types = [str, nil, bool, num, obj, list, func]
+export const stdFuncs = [strongestType, coerce, add, multiply, subscript, print]

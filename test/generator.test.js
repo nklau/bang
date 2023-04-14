@@ -1,7 +1,7 @@
-import assert from "assert/strict"
-import analyze from "../src/analyzer.js"
-import optimize from "../src/optimizer.js"
-import generate from "../src/generator.js"
+import assert from 'assert/strict'
+import analyze from '../src/analyzer.js'
+import optimize from '../src/optimizer.js'
+import generate from '../src/generator.js'
 import * as fs from 'fs'
 import { exec } from 'child_process'
 import path from 'path'
@@ -10,7 +10,7 @@ import { promisify } from 'util'
 const execute = promisify(exec)
 
 function dedent(s) {
-  return `${s}`.replace(/(?<=\n)\s+/g, "").trim()
+  return `${s}`.replace(/(?<=\n)\s+/g, '').trim()
 }
 
 const fixtures = [
@@ -27,7 +27,7 @@ const fixtures = [
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: '3'
+    output: '3',
   },
   {
     name: 'print',
@@ -45,7 +45,7 @@ const fixtures = [
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: '1'
+    output: '1',
   },
   {
     name: 'print num add',
@@ -63,7 +63,7 @@ const fixtures = [
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: '3'
+    output: '3',
   },
   {
     name: 'chained num add',
@@ -78,7 +78,7 @@ const fixtures = [
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: '163'
+    output: '163',
   },
   {
     name: 'num subtraction',
@@ -91,7 +91,7 @@ const fixtures = [
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: '2'
+    output: '2',
   },
   {
     name: 'num over-subtraction',
@@ -104,7 +104,7 @@ const fixtures = [
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: '-2'
+    output: '-2',
   },
   {
     name: 'chained num subtraction',
@@ -119,7 +119,7 @@ const fixtures = [
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: '-143'
+    output: '-143',
   },
   {
     name: 'num add and subtraction',
@@ -134,7 +134,7 @@ const fixtures = [
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: '20'
+    output: '20',
   },
   {
     name: 'print str',
@@ -150,7 +150,7 @@ const fixtures = [
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'Hello World!'
+    output: 'Hello World!',
   },
   {
     name: 'print f str',
@@ -166,7 +166,7 @@ const fixtures = [
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'num 1'
+    output: 'num 1',
   },
   {
     name: 'print exp',
@@ -182,7 +182,7 @@ const fixtures = [
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'addition 3'
+    output: 'addition 3',
   },
   {
     name: 'add str',
@@ -195,7 +195,7 @@ const fixtures = [
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'hi aidan !'
+    output: 'hi aidan !',
   },
   {
     name: 'subtract str',
@@ -208,7 +208,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'hell'
+    output: 'hell',
   },
   // TODO
   // x = 'hi'
@@ -224,7 +224,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'o'
+    output: 'o',
   },
   {
     name: 'subtract str not found',
@@ -237,7 +237,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'hi'
+    output: 'hi',
   },
   {
     name: 'print nil',
@@ -253,7 +253,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'nil'
+    output: 'nil',
   },
   {
     name: 'add nil',
@@ -266,7 +266,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'nil'
+    output: 'nil',
   },
   {
     name: 'subtract nil',
@@ -279,7 +279,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'nil'
+    output: 'nil',
   },
   {
     name: 'add nil to num',
@@ -292,7 +292,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: '5.1'
+    output: '5.1',
   },
   {
     name: 'add nil to num on right',
@@ -305,7 +305,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: '200'
+    output: '200',
   },
   // TODO negative nums, print negative num, add negative num to str
   {
@@ -319,7 +319,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: '2str'
+    output: '2str',
   },
   {
     name: 'add str to num',
@@ -332,7 +332,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'str2'
+    output: 'str2',
   },
   // TODO all casting
   {
@@ -346,7 +346,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: 'add true false',
@@ -359,7 +359,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: 'add false true',
@@ -372,7 +372,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: 'add false false',
@@ -385,7 +385,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'false'
+    output: 'false',
   },
   {
     name: 'add empty lists',
@@ -398,7 +398,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: '[]'
+    output: '[]',
   },
   {
     name: 'add one element lists',
@@ -411,7 +411,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `[1, 'str']`
+    output: `[1, 'str']`,
   },
   {
     name: 'add to end of list',
@@ -424,7 +424,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
       `,
-    output: `[1, 'str', 3, 5]`
+    output: `[1, 'str', 3, 5]`,
   },
   {
     name: 'add to start of list',
@@ -437,7 +437,7 @@ const fixtures = [
         const output = main();
         if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
       `,
-    output: `[5, 1, 'str', 3]`
+    output: `[5, 1, 'str', 3]`,
   },
   {
     name: 'add two things to list',
@@ -450,7 +450,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `[1, 'str']`
+    output: `[1, 'str']`,
   },
   {
     name: 'object',
@@ -463,7 +463,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `{ 'a': 1 }`
+    output: `{ 'a': 1 }`,
   },
   {
     name: 'empty object',
@@ -476,7 +476,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `{ }`
+    output: `{ }`,
   },
   {
     name: 'object with 2 entries',
@@ -489,7 +489,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `{ 'a': 1, 'b': '2' }`
+    output: `{ 'a': 1, 'b': '2' }`,
   },
   {
     name: 'nested lists',
@@ -502,7 +502,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `[1, [2]]`
+    output: `[1, [2]]`,
   },
   {
     name: 'nested objects',
@@ -515,7 +515,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `{ 'a': { 'a': 1 }, 'b': { } }`
+    output: `{ 'a': { 'a': 1 }, 'b': { } }`,
   },
   {
     name: 'object with list values',
@@ -528,7 +528,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `{ 'a': [1, 'str'] }`
+    output: `{ 'a': [1, 'str'] }`,
   },
   {
     name: 'adding objects',
@@ -541,7 +541,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `{ 'a': 1, 'b': 2 }`
+    output: `{ 'a': 1, 'b': 2 }`,
   },
   {
     name: 'adding empty objects',
@@ -554,7 +554,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `{ }`
+    output: `{ }`,
   },
   {
     name: 'adding str to object',
@@ -567,7 +567,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `{ 'str': 'str' }`
+    output: `{ 'str': 'str' }`,
   },
   {
     name: 'adding object to str',
@@ -580,7 +580,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `{ 'str': 'str' }`
+    output: `{ 'str': 'str' }`,
   },
   {
     name: 'adding num to object',
@@ -593,7 +593,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `{ '1': 1 }`
+    output: `{ '1': 1 }`,
   },
   {
     name: 'adding object to num',
@@ -606,7 +606,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `{ '1': 1 }`
+    output: `{ '1': 1 }`,
   },
   {
     name: 'adding multiple things to obj',
@@ -619,7 +619,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `{ '1': 1, 'str': 'str' }`
+    output: `{ '1': 1, 'str': 'str' }`,
   },
   {
     name: 'adding obj to list',
@@ -632,7 +632,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `[{ }]`
+    output: `[{ }]`,
   },
   {
     name: 'var dec',
@@ -649,7 +649,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: '5'
+    output: '5',
   },
   {
     name: 'print var',
@@ -668,7 +668,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: '5'
+    output: '5',
   },
   {
     name: 'return nil',
@@ -681,7 +681,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'nil'
+    output: 'nil',
   },
   {
     name: 'print string var',
@@ -698,7 +698,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `str`
+    output: `str`,
   },
   {
     name: 'print bool var',
@@ -715,7 +715,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `false`
+    output: `false`,
   },
   {
     name: 'print list var',
@@ -732,7 +732,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `[false]`
+    output: `[false]`,
   },
   {
     name: 'print obj var',
@@ -749,7 +749,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `{ 'false': false }`
+    output: `{ 'false': false }`,
   },
   {
     name: 'num equality',
@@ -762,7 +762,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: 'num inequality false',
@@ -775,7 +775,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'false'
+    output: 'false',
   },
   {
     name: 'num equality false',
@@ -788,7 +788,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'false'
+    output: 'false',
   },
   {
     name: 'num inequality',
@@ -801,7 +801,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: 'str equality',
@@ -814,7 +814,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: 'str equality with different quotes',
@@ -827,7 +827,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: 'str equality false',
@@ -840,7 +840,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'false'
+    output: 'false',
   },
   {
     name: 'str inequality',
@@ -853,7 +853,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: 'str inequality different quotes',
@@ -866,7 +866,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: 'str inequality false',
@@ -879,7 +879,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'false'
+    output: 'false',
   },
   {
     name: 'num equality using vars',
@@ -894,7 +894,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: 'str equality using vars',
@@ -909,7 +909,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'false'
+    output: 'false',
   },
   {
     name: 'string num vs num equality',
@@ -922,7 +922,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'false'
+    output: 'false',
   },
   {
     name: 'list subtraction',
@@ -935,7 +935,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `[]`
+    output: `[]`,
   },
   {
     name: 'empty list equality',
@@ -948,7 +948,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: 'empty list inequality',
@@ -961,7 +961,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'false'
+    output: 'false',
   },
   {
     name: '1 element list equality false',
@@ -974,7 +974,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: '1 element list inequality',
@@ -987,7 +987,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'false'
+    output: 'false',
   },
   {
     name: '1 element list equality false',
@@ -1000,7 +1000,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'false'
+    output: 'false',
   },
   {
     name: '1 element list inequality',
@@ -1013,7 +1013,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: 'list equality different lens',
@@ -1026,7 +1026,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'false'
+    output: 'false',
   },
   {
     name: 'list equality different lens longer first',
@@ -1039,7 +1039,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'false'
+    output: 'false',
   },
   {
     name: 'list equality two elements',
@@ -1052,7 +1052,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: 'list equality different order',
@@ -1065,7 +1065,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'false'
+    output: 'false',
   },
   {
     name: 'list inequality two elements false',
@@ -1078,7 +1078,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'false'
+    output: 'false',
   },
   {
     name: 'list inequality two elements different order',
@@ -1091,7 +1091,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: 'empty object equality',
@@ -1104,7 +1104,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: 'object equality',
@@ -1117,7 +1117,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'true'
+    output: 'true',
   },
   {
     name: 'get obj val by key subscription',
@@ -1132,7 +1132,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `1`
+    output: `1`,
   },
   {
     name: 'object equality with different vals',
@@ -1145,7 +1145,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: 'false'
+    output: 'false',
   },
   {
     name: 'object keys',
@@ -1162,7 +1162,7 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `['a', 'b']`
+    output: `['a', 'b']`,
   },
   // TODO check that object keys still come out as bang strs when calling .keys() on obj
   {
@@ -1176,8 +1176,34 @@ const fixtures = [
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
-    output: `[1, 'str']`
-  }
+    output: `[1, 'str']`,
+  },
+  {
+    name: 'num multiplication',
+    source: '2 * 3',
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Num(2), '*', new Num(3)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '6',
+  },
+  {
+    name: 'multiply nil, nil',
+    source: `nil * nil`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '*', nil));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `nil`,
+  },
 
   // TODO function calls w/ multiple args
   // { // TODO fix
@@ -1204,15 +1230,22 @@ const runTest = (fixture, outputDir) => {
       console.log(actual) // for debug
       assert(false)
     }
-    fs.writeFile(`output/${fixture.name.replaceAll(' ', '_')}.js`, actual, (err) => {
-      if (err) throw err
+    fs.writeFile(
+      `output/${fixture.name.replaceAll(' ', '_')}.js`,
+      actual,
+      (err) => {
+        if (err) throw err
+      }
+    )
+    let output = await execute(`node ${fixture.name.replaceAll(' ', '_')}.js`, {
+      encoding: 'utf8',
+      cwd: outputDir,
     })
-    let output = await execute(`node ${fixture.name.replaceAll(' ', '_')}.js`, { encoding: 'utf8', cwd: outputDir })
     assert.deepEqual(output.stdout.trim(), fixture.output)
   })
 }
 
-describe("The code generator", () => {
+describe('The code generator', () => {
   const outputDir = path.join(path.resolve(), 'output')
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir)
