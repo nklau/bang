@@ -1217,6 +1217,97 @@ const fixtures = [
     `,
     output: `false`,
   },
+  {
+    name: 'multiply nil, bool false',
+    source: `nil * false`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '*', new Bool(false)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `false`,
+  },
+  {
+    name: 'multiply nil, num',
+    source: `nil * 5`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '*', new Num(5)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '0',
+  },
+  {
+    name: 'multiply nil, str',
+    source: `nil * 'str'`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '*', new Str('str')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '',
+  },
+  {
+    name: 'multiply nil, str double quotes',
+    source: `nil * "str"`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '*', new Str('str')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '',
+  },
+  {
+    name: 'multiply nil, f str',
+    source: `nil * $'{5}str'`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '*', new Str(\`\${coerce(new Num(5), Str.typeDescription).val}str\`)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '',
+  },
+  {
+    name: 'multiply nil, f str double quotes',
+    source: `nil * $"{5}str"`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '*', new Str(\`\${coerce(new Num(5), Str.typeDescription).val}str\`)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '',
+  },
+  {
+    name: 'multiply nil, empty obj',
+    source: `nil * { }`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '*', new Obj(new Map([]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '{ }',
+  },
 
   // TODO function calls w/ multiple args
   // { // TODO fix

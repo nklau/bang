@@ -403,7 +403,7 @@ const multiply = `const multiply = (...exps) => {
                   product = new Map();
                 }
               },
-              [nil.typeDescription.val]: () => {
+              [nil.type.val]: () => {
                 product = new Map();
               },
             }[left.type.val]());
@@ -470,10 +470,10 @@ const multiply = `const multiply = (...exps) => {
                 rightOp(coerce(left, Obj.typeDescription), right);
               })());
           },
-        }[exps[i]]());
+        }[exps[i + 1]]());
       }
 
-      return product;
+      return new Obj(product);
     },
     [Str.typeDescription.val]: () => {
       let product = exps[0];
@@ -534,7 +534,7 @@ const multiply = `const multiply = (...exps) => {
                   [Bool.typeDescription.val]: () => {
                     return new Bool(left.val && right.val);
                   },
-                  [nil.typeDescription.val]: () => {
+                  [nil.type.val]: () => {
                     return new Bool();
                   },
                 }[right.type.val]();
