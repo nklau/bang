@@ -832,7 +832,7 @@ const multiply = `const multiply = (...exps) => {
               },
             }[left.type.val]();
           },
-        }[exps[i]]();
+        }[exps[i + 1]]();
       }
 
       return product;

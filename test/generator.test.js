@@ -1204,6 +1204,19 @@ const fixtures = [
     `,
     output: `nil`,
   },
+  {
+    name: 'multiply nil, bool true',
+    source: `nil * true`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '*', new Bool(true)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `false`,
+  },
 
   // TODO function calls w/ multiple args
   // { // TODO fix
