@@ -494,7 +494,7 @@ const multiply = `const multiply = (...exps) => {
                   },
                   [Num.typeDescription.val]: () => {
                     let result = '';
-                    for (let j = 0; j < right.val; j++) {
+                    for (let j = 0; j < Math.round(right.val); j++) {
                       result += left.val;
                     }
                     return new Str(result);
@@ -511,7 +511,7 @@ const multiply = `const multiply = (...exps) => {
                 return {
                   [Str.typeDescription.val]: () => {
                     let result = '';
-                    for (let j = 0; j < left.val; j++) {
+                    for (let j = 0; j < Math.round(left.val); j++) {
                       result += right.val;
                     }
                     return new Str(result);

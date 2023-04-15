@@ -1607,6 +1607,240 @@ const fixtures = [
     `,
     output: `{ 'a': 1 }`,
   },
+  {
+    name: 'multiply bool true, obj len 2',
+    source: `true * { 'a': 1, 'b': "str" }`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(true), '*', new Obj(new Map([['a', new Num(1)], ['b', new Str('str')]]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ 'a': 1, 'b': 'str' }`,
+  },
+  {
+    name: 'multiply bool false, empty obj',
+    source: `false * {}`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(false), '*', new Obj(new Map([]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '{ }',
+  },
+  {
+    name: 'multiply bool false, obj len 1',
+    source: `false * { 'a': 1 }`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(false), '*', new Obj(new Map([['a', new Num(1)]]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ }`,
+  },
+  {
+    name: 'multiply bool false, obj len 2',
+    source: `false * { 'a': 1, 'b': "str" }`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(false), '*', new Obj(new Map([['a', new Num(1)], ['b', new Str('str')]]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ }`,
+  },
+  {
+    name: 'multiply bool true, empty list',
+    source: `true * []`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(true), '*', new List([])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '[]',
+  },
+  {
+    name: 'multiply bool true, list len 1',
+    source: `true * [1]`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(true), '*', new List([new Num(1)])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '[1]',
+  },
+  {
+    name: 'multiply bool true, list len 2',
+    source: `true * [1, 'str']`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(true), '*', new List([new Num(1), new Str('str')])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `[1, 'str']`,
+  },
+  {
+    name: 'multiply bool false, empty list',
+    source: `false * []`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(false), '*', new List([])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '[]',
+  },
+  {
+    name: 'multiply bool false, list len 1',
+    source: `false * [1]`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(false), '*', new List([new Num(1)])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '[]',
+  },
+  {
+    name: 'multiply bool false, list len 2',
+    source: `false * [1, 'str']`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(false), '*', new List([new Num(1), new Str('str')])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `[]`,
+  },
+  {
+    name: 'multiply num, nil',
+    source: `5 * nil`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Num(5), '*', nil));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '0',
+  },
+  {
+    name: 'multiply num, bool true',
+    source: `5 * true`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Num(5), '*', new Bool(true)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '5',
+  },
+  {
+    name: 'multiply num, bool false',
+    source: `5 * false`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Num(5), '*', new Bool(false)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '0',
+  },
+  {
+    name: 'multiply 0 num, str',
+    source: `0 * 'str'`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Num(0), '*', new Str('str')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '',
+  },
+  {
+    name: 'multiply num 1, str',
+    source: `1 * 'str'`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Num(1), '*', new Str('str')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'str',
+  },
+  {
+    name: 'multiply num, str',
+    source: `5 * 'str'`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Num(5), '*', new Str('str')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'strstrstrstrstr',
+  },
+  {
+    name: 'multiply decimal round up, str',
+    source: `5.5 * 'str'`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Num(5.5), '*', new Str('str')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'strstrstrstrstrstr',
+  },
+  {
+    name: 'multiply decimal round down, str',
+    source: `5.1 * 'str'`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Num(5.1), '*', new Str('str')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: 'strstrstrstrstr',
+  },
 
   // TODO function calls w/ multiple args
   // { // TODO fix
