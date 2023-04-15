@@ -319,7 +319,7 @@ const multiply = `const multiply = (...exps) => {
               )();
             }
 
-            return multiply([left, '*', right]);
+            return multiply(left, '*', right);
           },
           '/': () => {
             if (!left.type.equals(List.typeDescription)) {
@@ -370,10 +370,14 @@ const multiply = `const multiply = (...exps) => {
                     [Num.typeDescription.val]: () => {
                       if (right.val === 0) {
                         product = new Map();
-                      } else if (product.size === 0) {
-                        product = left.val;
                       } else {
-                        product.set(product.size.toString(), left);
+                        left.val.forEach((val, key) => {
+                          product.set(key, val);
+                        });
+
+                        product.forEach((val, key) => {
+                          product.set(key, multiply(right, '*', val));
+                        });
                       }
                     },
                     [Bool.typeDescription.val]: () => {
@@ -386,16 +390,30 @@ const multiply = `const multiply = (...exps) => {
                     },
                   }[right.type.val] ??
                   (() => {
-                    product.set(product.size.toString(), left);
+                    product.forEach((val, key) => {
+                      product.set(key, multiply(val, '*', right));
+                    });
                   })
                 )());
               },
               [Str.typeDescription.val]: () => {
-                product.set(product.size.toString(), left);
+                product.forEach((val, key) => {
+                  product.set(key, multiply(left, '*', val));
+                });
               },
               [Num.typeDescription.val]: () => {
-                if (left.val === 0) {
-                  product = new Map();
+                if (right.type.equals(Obj.typeDescription)) {
+                  if (left.val === 0) {
+                    product = new Map();
+                  } else {
+                    right.val.forEach((val, key) => {
+                      product.set(key, val);
+                    });
+  
+                    product.forEach((val, key) => {
+                      product.set(key, multiply(left, '*', val));
+                    });
+                  }
                 }
               },
               [Bool.typeDescription.val]: () => {
@@ -550,7 +568,7 @@ const multiply = `const multiply = (...exps) => {
           },
           '/': () => {
             const recurse = () => {
-              return multiply([left, '/', right]);
+              return multiply(left, '/', right);
             };
             return {
               [Str.typeDescription.val]: () => {
@@ -599,7 +617,7 @@ const multiply = `const multiply = (...exps) => {
           },
           '%': () => {
             const recurse = () => {
-              return multiply([left, '%', right]);
+              return multiply(left, '%', right);
             };
 
             return (
@@ -667,7 +685,7 @@ const multiply = `const multiply = (...exps) => {
         product = {
           '*': () => {
             const recurse = () => {
-              return multiply([left, '*', right]);
+              return multiply(left, '*', right);
             };
             return {
               [Num.typeDescription.val]: () => {
@@ -699,7 +717,7 @@ const multiply = `const multiply = (...exps) => {
           },
           '/': () => {
             const recurse = () => {
-              return multiply([left, '/', right]);
+              return multiply(left, '/', right);
             };
             return {
               [Num.typeDescription.val]: () => {
@@ -731,7 +749,7 @@ const multiply = `const multiply = (...exps) => {
           },
           '%': () => {
             const recurse = () => {
-              return multiply([left, '%', right]);
+              return multiply(left, '%', right);
             };
             return {
               [Num.typeDescription.val]: () => {
