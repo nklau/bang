@@ -380,6 +380,9 @@ const multiply = `const multiply = (...exps) => {
                     },
                   }[right.type.val] ??
                   (() => {
+                    left.val.forEach((val, key) => {
+                      product.set(key, val);
+                    });
                     product.forEach((val, key) => {
                       product.set(key, multiply(val, '*', right));
                     });
