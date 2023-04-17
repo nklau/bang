@@ -369,6 +369,10 @@ const multiply = `const multiply = (...exps) => {
                     [Bool.typeDescription.val]: () => {
                       if (!right.val) {
                         product = new Map();
+                      } else {
+                        left.val.forEach((val, key) => {
+                          product.set(key, val);
+                        });
                       }
                     },
                     [nil.type.val]: () => {
