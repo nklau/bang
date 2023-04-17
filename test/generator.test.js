@@ -2685,6 +2685,19 @@ const fixtures = [
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `[]`,
+  },
+  {
+    name: 'multiply empty obj, list len 1',
+    source: `{ } * [1]`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Obj(new Map([])), '*', new List([new Num(1)])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `[1]`,
   }
 
   // TODO function calls w/ multiple args

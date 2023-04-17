@@ -257,22 +257,20 @@ const multiply = `const multiply = (...exps) => {
   const type = strongestType(exps.filter((e) => typeof e !== 'string'));
   const multiplyFunc = {
     [List.typeDescription.val]: () => {
-      let product = exps[0].type.equals(Obj.typeDescription)
-        ? exps[0].keys()
-        : exps[0];
+      let product = exps[0];
 
       for (let i = 0; i < exps.length - 1; i += 2) {
-        const [left, right] = [product, exps[i + 2].type.equals(Obj.typeDescription)
-          ? exps[i + 2].keys()
-          : exps[i + 2]];
+        const [left, right] = [product, exps[i + 2]];
         product = {
           '*': () => {
             if (left.type.equals(List.typeDescription)) {
               return (
                 {
-                  // right should never be an object
                   [List.typeDescription.val]: () => {
                     return new List([...left.val, ...right.val]);
+                  },
+                  [Obj.typeDescription.val]: () => {
+                    return new List([...left.val, ...right.keys().val]);
                   },
                   [Bool.typeDescription.val]: () => {
                     return right.val ? left : new List();
@@ -291,7 +289,9 @@ const multiply = `const multiply = (...exps) => {
               return (
                 {
                   // designed to get here only if left is not a list
-                  // left should also never be an object
+                  [Obj.typeDescription.val]: () => {
+                    return new List([...left.keys().val, ...right.val]);
+                  },
                   [Bool.typeDescription.val]: () => {
                     return left.val ? right : new List();
                   },
