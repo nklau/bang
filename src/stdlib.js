@@ -272,7 +272,7 @@ const multiply = `const multiply = (...exps) => {
                 {
                   // right should never be an object
                   [List.typeDescription.val]: () => {
-                    return new List([...left.val, right]);
+                    return new List([...left.val, ...right.val]);
                   },
                   [Bool.typeDescription.val]: () => {
                     return right.val ? left : new List();
