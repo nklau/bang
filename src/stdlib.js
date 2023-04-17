@@ -354,11 +354,11 @@ const multiply = `const multiply = (...exps) => {
               [Obj.typeDescription.val]: () => {
                 ((
                   {
-                    [Obj.typeDescription.val]: () => {
-                      // TODO this might duplicate the middle object in a chained multiplication with all objs
-                      product.set(product.size.toString(), left);
-                      product.set(product.size.toString(), right);
-                    },
+                    // [Obj.typeDescription.val]: () => {
+                    //   // TODO this might duplicate the middle object in a chained multiplication with all objs
+                    //   product.set(product.size.toString(), left);
+                    //   product.set(product.size.toString(), right);
+                    // },
                     [Num.typeDescription.val]: () => {
                       if (right.val === 0) {
                         product = new Map();
@@ -389,9 +389,16 @@ const multiply = `const multiply = (...exps) => {
                 )());
               },
               [Str.typeDescription.val]: () => {
-                product.forEach((val, key) => {
-                  product.set(key, multiply(left, '*', val));
-                });
+                ({
+                  [Obj.typeDescription.val]: () => {
+                    right.val.forEach((val, key) => {
+                      product.set(key, val);
+                    });
+                    product.forEach((val, key) => {
+                      product.set(key, multiply(left, '*', val));
+                    });
+                  }
+                }[right.type.val])();
               },
               [Num.typeDescription.val]: () => {
                 if (right.type.equals(Obj.typeDescription)) {
