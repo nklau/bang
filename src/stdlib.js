@@ -773,6 +773,9 @@ const multiply = `const multiply = (...exps) => {
                 )();
               },
               [nil.type.val]: () => {
+                if (right.type.equals(Num.typeDescription) && right.val === 0) {
+                  return Num.inf;
+                }
                 return new right.constructor();
               },
             }[left.type.val]();

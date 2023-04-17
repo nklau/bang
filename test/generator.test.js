@@ -3076,23 +3076,86 @@ const fixtures = [
     `,
     output: `[1, 'str', 1, 'str', 1, 'str']`,
   },
-
-  // TODO function calls w/ multiple args
-  // { // TODO fix
-  //   name: 'print multiple things',
-  //   source: `print(1, 2)`,
-  //   expected: dedent`
-  //     function main()
-  //       {
-  //         try {
-  //           return console.log(coerce(new Num(1), Str.typeDescription).val,coerce(new Num(2), Str.typeDescription).val);
-  //         } catch {}
-  //       }
-  //       const output = main();
-  //       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
-  //   `,
-  //   output: '1 2'
-  // }
+  {
+    name: 'add generates new var',
+    source: `x + nil`,
+    expected: dedent`
+    function main()
+    {
+      let x_0 = new Num(0);
+      return (add(x_0, '+', nil));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `0`,
+  },
+  {
+    name: 'add list generates new var',
+    source: `x + []`,
+    expected: dedent`
+    function main()
+    {
+      let x_0 = new List([]);
+      return (add(x_0, '+', new List([])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `[]`,
+  },
+  {
+    name: 'divide nil, nil',
+    source: `nil / nil`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '/', nil));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `nil`,
+  },
+  {
+    name: 'divide nil, bool false',
+    source: `nil / false`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '/', new Bool(false)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `true`,
+  },
+  {
+    name: 'divide nil, bool true',
+    source: `nil / true`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '/', new Bool(true)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `false`,
+  },
+  {
+    name: 'divide nil, num 0',
+    source: `nil / 0`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '/', new Num(0)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `Infinity`,
+  },
 ]
 
 const runTest = (fixture, outputDir) => {
