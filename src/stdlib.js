@@ -47,6 +47,33 @@ export const contents = Object.freeze({
   // _objMerge: new core.Var('add', false, true, ['function']),
 })
 
+const negate = `const negate = (exp) => {
+  return {
+    [List.typeDescription.val]: () => {
+      return new List(exp.val.reverse());
+    },
+    [Obj.typeDescription.val]: () => {
+      return new Obj(
+        [...exp.val]
+          .reverse()
+          .reduce((map, [key, val]) => map.set(key, val), new Map())
+      );
+    },
+    [Str.typeDescription.val]: () => {
+      return new Str(exp.val.split('').reverse().join(''));
+    },
+    [Num.typeDescription.val]: () => {
+      return new Num(-exp.val);
+    },
+    [Bool.typeDescription.val]: () => {
+      return new Bool(!exp.val);
+    },
+    [nil.type.val]: () => {
+      return nil;
+    },
+  }[exp.type.val]();
+};`
+
 // also does subtraction
 const add = `const add = (...exps) => {
   const type = strongestType(exps.filter(e => typeof e !== 'string'));
@@ -1279,4 +1306,12 @@ const func = `class Func {
 }`
 
 export const types = [str, nil, bool, num, obj, list, func]
-export const stdFuncs = [strongestType, coerce, add, multiply, subscript, print]
+export const stdFuncs = [
+  strongestType,
+  coerce,
+  add,
+  multiply,
+  subscript,
+  print,
+  negate,
+]

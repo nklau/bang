@@ -4,7 +4,7 @@ import * as core from './core.js'
 export default function generate(program) {
   let output = []
 
-  types.forEach(t => output.push(t))
+  types.forEach((t) => output.push(t))
 
   output = [...output, ...stdFuncs]
 
@@ -12,8 +12,8 @@ export default function generate(program) {
   /* var names will be suffixed with _0, _1, _2, etc in JS. This is because
   JS has reserved keywords that Bang! does not have. */
 
-  const varName = (mapping => {
-    return entity => {
+  const varName = ((mapping) => {
+    return (entity) => {
       if (!mapping.has(entity)) {
         mapping.set(entity, mapping.size)
       }
@@ -25,16 +25,17 @@ export default function generate(program) {
   /* internal var names will look like _internal0, _internal1, _internal2, etc in JS.
   These are to ensure that the variables needed for internal usage do not interfere with user vars. */
 
-  const internalVarName = (count => {
-    return num => `_internal${num === undefined || count <= num ? count++ : num}`
+  const internalVarName = ((count) => {
+    return (num) =>
+      `_internal${num === undefined || count <= num ? count++ : num}`
   })(1)
 
-  const gen = node => generators[node.constructor.name](node)
+  const gen = (node) => generators[node.constructor.name](node)
 
   const generators = {
     Block(b) {
       output.push('{')
-      b.statements.forEach(statement => {
+      b.statements.forEach((statement) => {
         if (statement instanceof core.Call) {
           output.push('try {', `${gen(statement)};`, '} catch {}')
         } else {
@@ -53,7 +54,12 @@ export default function generate(program) {
       const exp = gen(r.exp)
       if (r.exp instanceof core.Call) {
         const id = internalVarName()
-        output.push('try {', `let ${id} = ${exp};`, `return ${id};`, '} catch {}')
+        output.push(
+          'try {',
+          `let ${id} = ${exp};`,
+          `return ${id};`,
+          '} catch {}'
+        )
       } else {
         output.push(`return ${exp};`)
       }
@@ -62,7 +68,9 @@ export default function generate(program) {
       output.push(`throw new Error('break');`)
     },
     Ternary(t) {
-      return `${gen(t.cond)} ? ${gen(t.block)} : ${t.alt ? gen(t.alt) : 'undefined'};`
+      return `${gen(t.cond)} ? ${gen(t.block)} : ${
+        t.alt ? gen(t.alt) : 'undefined'
+      };`
     },
     BinaryExp(b) {
       if (b.op === '.') {
@@ -73,7 +81,7 @@ export default function generate(program) {
           str: 'string',
           obj: 'object',
           list: 'list',
-          func: 'function'
+          func: 'function',
         }[b.right]
 
         if (coercion) {
@@ -95,7 +103,10 @@ export default function generate(program) {
         let elements = []
 
         const subExps = n.exp.reduce(
-          (arr, val, i) => (typeof val === 'string' ? [...arr, [val, [n.exp[i - 1], n.exp[i + 1]]]] : arr),
+          (arr, val, i) =>
+            typeof val === 'string'
+              ? [...arr, [val, [n.exp[i - 1], n.exp[i + 1]]]]
+              : arr,
           []
         )
 
@@ -107,7 +118,7 @@ export default function generate(program) {
             '<': `coerce(${lhs}, 'number').val < coerce(${rhs}, 'number).val`,
             '>': `coerce(${lhs}, 'number').val > coerce(${rhs}, 'number).val`,
             '<=': `(coerce(${lhs}, 'number').val < coerce(${rhs}, 'number).val || ${lhs}.equals(${rhs}))`,
-            '>=': `(coerce(${lhs}, 'number').val > coerce(${rhs}, 'number).val || ${lhs}.equals(${rhs}))`
+            '>=': `(coerce(${lhs}, 'number').val > coerce(${rhs}, 'number).val || ${lhs}.equals(${rhs}))`,
           }
 
           elements.push(`new Bool(${translations[op]})`)
@@ -118,35 +129,34 @@ export default function generate(program) {
         const addOps = ['+', '-']
         const multOps = ['/', '*', '%']
 
-        const elements = n.exp.map(e => typeof e === 'string' ? `'${e}'` : gen(e)).join(', ')
-        const opType = addOps.includes(n.exp[1]) ? 'add' : multOps.includes(n.exp[1]) ? 'multiply' : 'exponentiate'
+        const elements = n.exp
+          .map((e) => (typeof e === 'string' ? `'${e}'` : gen(e)))
+          .join(', ')
+        const opType = addOps.includes(n.exp[1])
+          ? 'add'
+          : multOps.includes(n.exp[1])
+          ? 'multiply'
+          : 'exponentiate'
         return `(${opType}(${elements}))`
       }
     },
     UnaryExp(u) {
-      // TODO
-      // if u.op == !
-      // coerce u.exp to bool
-      // if u.op == -
-      // handle all types
-      // if u.op == ...
-      // handle all types
+      return {
+        '!': () => {
+          return `(!(coerce(${gen(u.exp)}, Bool.typeDescription).val))`
+        },
+        '-': () => {
+          return `negate(${gen(u.exp)})`
+        },
+        '...': () => {
+          // return `spread(${gen(u.exp)})`
+          throw new Error('Spread operator not implemented')
+        },
+      }[u.op]()
     },
     Call(c) {
       const target = stdLibFuncs[c.id]
-      // const id = internalVarName()
-      // const call = target ? target(gen(c.args)) : `${gen(c.id)}(${gen(c.args)})`
-      // output.push(`let ${id} = ${call};`)
-      // return id
-      // target = target ? target(gen(c.args)) : `${gen(c.id)}(${gen(c.args)})`
-      //       output.push(`try {
-      // ${target}
-      // } catch {}`)
       return target ? target(gen(c.args)) : `${gen(c.id)}(${gen(c.args)})`
-      // if c.id instanceof core.BinaryExp {
-      // switch c.id.right
-      // case 'loop'
-      // }
     },
     Var(v) {
       return varName(v)
@@ -225,26 +235,27 @@ export default function generate(program) {
       return 'nil'
     },
     PostIncrement(p) {
-      // TODO replace with += or smth
-      // nvm JS allows (x++) + (x++)
+      return `((${gen(p.exp)})++)`
     },
     PostDecrement(p) {
-      // TODO replace with -= or smth
+      return `((${gen(p.exp)})--)`
     },
     PreIncrement(p) {
-      // TODO replace with += or smth
+      return `(++(${gen(p.exp)}))`
     },
     PreDecrement(p) {
-      // TODO replace with -= or smth
+      return `(--(${gen(p.exp)}))`
     },
     Array(a) {
       return a.map(gen)
-    }
+    },
   }
 
   output.push('function main()')
   gen(program)
   output.push('const output = main();')
-  output.push(`if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);`)
+  output.push(
+    `if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);`
+  )
   return output.join('\n')
 }

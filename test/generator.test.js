@@ -3075,7 +3075,7 @@ const fixtures = [
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `[1, 'str', 1, 'str', 1, 'str']`,
-  }
+  },
 
   // TODO function calls w/ multiple args
   // { // TODO fix
