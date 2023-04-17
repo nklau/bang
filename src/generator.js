@@ -169,23 +169,23 @@ export default function generate(program) {
       // slice()?
     },
     Func(f) {
-      // TODO construct function
+      const params = gen(f.params)
+      return `new Func(${params} => ${gen(f.block)}, ${params})`
     },
     Params(p) {
-      // TODO
+      return `(${p.params.map(gen).join(', ')})`
     },
     KeywordParam(k) {
-      // TODO
+      throw new Error('Keyword parameters not implemented')
     },
     Args(a) {
       return a.args.map(gen)
     },
     KeywordArg(k) {
-      // TODO
+      throw new Error('Keyword arguments not implemented')
     },
     Obj(o) {
       return `new Obj(new Map([${o.val.map(gen).join(', ')}]))`
-      // TODO construct object
     },
     ObjField(o) {
       const key = gen(o.key)
@@ -220,7 +220,14 @@ export default function generate(program) {
       return `new Bool(${b.val})`
     },
     MatchExp(m) {
-      // TODO use JS switch
+      throw new Error('Match expressions not implemented')
+      // const condition = gen(m.cond)
+      // const firstConds = m.clauses.cases[0].conds.map(gen)
+      // let exp = `if (${firstConds.map(cond => `${condition}.equals(${cond})`).join(' || ')}) ${gen(m.clauses.cases[0].block)}`
+      // for (let i = 1; i < m.clauses.cases.length; i++) {
+      //   exp += gen(m.clauses.cases[i])
+      // }
+      // return exp
     },
     MatchBlock(m) {
       // TODO
