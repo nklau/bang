@@ -2984,6 +2984,97 @@ const fixtures = [
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `[1, 'str', [1, 'str']]`,
+  },
+  {
+    name: 'chained multiply nils',
+    source: `nil * nil * nil`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '*', nil, '*', nil));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `nil`,
+  },
+  {
+    name: 'chained multiply bools output false',
+    source: `false * true * true`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(false), '*', new Bool(true), '*', new Bool(true)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `false`,
+  },
+  {
+    name: 'chained multiply bools output true',
+    source: `true * true * true`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(true), '*', new Bool(true), '*', new Bool(true)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `true`,
+  },
+  {
+    name: 'chained multiply nums',
+    source: `1 * 2 * 3`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Num(1), '*', new Num(2), '*', new Num(3)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `6`,
+  },
+  {
+    name: 'chained multiply strs',
+    source: `'str' * 'str' * 'str'`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Str('str'), '*', new Str('str'), '*', new Str('str')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `strstrstr`,
+  },
+  {
+    name: 'chained multiply objs',
+    source: `{ 'a': 1, 'b': false } * { 'a': 1, 'b': false } * { 'a': 1, 'b': false }`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Obj(new Map([['a', new Num(1)], ['b', new Bool(false)]])), '*', new Obj(new Map([['a', new Num(1)], ['b', new Bool(false)]])), '*', new Obj(new Map([['a', new Num(1)], ['b', new Bool(false)]]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ 'a': { 'a': 1, 'b': 0 }, 'b': { } }`,
+  },
+  {
+    name: 'chained multiply lists',
+    source: `[1, 'str'] * [1, 'str'] * [1, 'str']`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new List([new Num(1), new Str('str')]), '*', new List([new Num(1), new Str('str')]), '*', new List([new Num(1), new Str('str')])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `[1, 'str', 1, 'str', 1, 'str']`,
   }
 
   // TODO function calls w/ multiple args
