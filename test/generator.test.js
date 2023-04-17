@@ -2452,6 +2452,84 @@ const fixtures = [
     `,
     output: `{ 'a': 'str' }`,
   },
+  {
+    name: 'multiply obj len 2, str',
+    source: `{ 'a': 1, 'b': 'alt' } * 'str'`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Obj(new Map([['a', new Num(1)], ['b', new Str('alt')]])), '*', new Str('str')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ 'a': 'str', 'b': 'altstr' }`,
+  },
+  {
+    name: 'multiply obj len 2, str',
+    source: `{ 'a': 1, 'b': { 'c': 'alt', 'd': false } } * 'str'`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Obj(new Map([['a', new Num(1)], ['b', new Obj(new Map([['c', new Str('alt')], ['d', new Bool(false)]]))]])), '*', new Str('str')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ 'a': 'str', 'b': { 'c': 'altstr', 'd': '' } }`,
+  },
+  {
+    name: 'multiply empty obj, empty obj',
+    source: `{ } * { }`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Obj(new Map([])), '*', new Obj(new Map([]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '{ }',
+  },
+  {
+    name: 'multiply empty obj, obj len 1',
+    source: `{ } * { 'a': 1 }`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Obj(new Map([])), '*', new Obj(new Map([['a', new Num(1)]]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ 'a': { } }`,
+  },
+  {
+    name: 'multiply empty obj, obj len 2',
+    source: `{ } * { 'a': 1, 'b': 'str' }`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Obj(new Map([])), '*', new Obj(new Map([['a', new Num(1)], ['b', new Str('str')]]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ 'a': { }, 'b': { } }`,
+  },
+  {
+    name: 'multiply empty obj, nested obj',
+    source: `{ } * { 'a': { 'b': 1 }, 'b': false }`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Obj(new Map([])), '*', new Obj(new Map([['a', new Obj(new Map([['b', new Num(1)]]))], ['b', new Bool(false)]]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ 'a': { 'b': { } }, 'b': { } }`,
+  },
 
   // TODO function calls w/ multiple args
   // { // TODO fix
