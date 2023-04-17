@@ -2127,6 +2127,45 @@ const fixtures = [
     `,
     output: `{ 'a': 'str' }`,
   },
+  {
+    name: 'multiply str, obj len 2',
+    source: `'str' * { 'a': 1, 'b': 'alt' }`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Str('str'), '*', new Obj(new Map([['a', new Num(1)], ['b', new Str('alt')]]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ 'a': 'str', 'b': 'stralt' }`,
+  },
+  {
+    name: 'multiply str, nested obj',
+    source: `'str' * { 'a': 1, 'b': { 'c': 'alt', 'd': false } }`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Str('str'), '*', new Obj(new Map([['a', new Num(1)], ['b', new Obj(new Map([['c', new Str('alt')], ['d', new Bool(false)]]))]]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ 'a': 'str', 'b': { 'c': 'stralt', 'd': '' } }`,
+  },
+  {
+    name: 'multiply str, empty list',
+    source: `'str' * []`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Str('str'), '*', new List([])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: '[]',
+  },
 
   // TODO function calls w/ multiple args
   // { // TODO fix

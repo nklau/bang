@@ -274,9 +274,6 @@ const multiply = `const multiply = (...exps) => {
                   [List.typeDescription.val]: () => {
                     return new List([...left.val, right]);
                   },
-                  [Num.typeDescription.val]: () => {
-                    return new List(product.val.map(e => multiply(e, '*', right)));
-                  },
                   [Bool.typeDescription.val]: () => {
                     return right.val ? left : new List();
                   },
@@ -285,7 +282,7 @@ const multiply = `const multiply = (...exps) => {
                   },
                 }[right.type.val] ??
                 (() => {
-                  return new List([left, right]);
+                  return new List(product.val.map(e => multiply(e, '*', right)));
                 })
               )();
             }
@@ -295,9 +292,6 @@ const multiply = `const multiply = (...exps) => {
                 {
                   // designed to get here only if left is not a list
                   // left should also never be an object
-                  [Num.typeDescription.val]: () => {
-                    return new List(right.val.map(e => multiply(product, '*', e)));
-                  },
                   [Bool.typeDescription.val]: () => {
                     return left.val ? right : new List();
                   },
@@ -306,7 +300,7 @@ const multiply = `const multiply = (...exps) => {
                   },
                 }[left.type.val] ??
                 (() => {
-                  return new List([left, right]);
+                  return new List(right.val.map(e => multiply(product, '*', e)));
                 })
               )();
             }
