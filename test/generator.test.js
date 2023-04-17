@@ -1893,6 +1893,58 @@ const fixtures = [
     `,
     output: `{ 'a': 5 }`,
   },
+  {
+    name: 'multiply num, obj len 2',
+    source: `5 * { 'a': 1, 'b': 'str' }`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Num(5), '*', new Obj(new Map([['a', new Num(1)], ['b', new Str('str')]]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ 'a': 5, 'b': 'strstrstrstrstr' }`,
+  },
+  {
+    name: 'multiply num, nested obj',
+    source: `5 * { 'a': { 'b': 1, 'c': 2 }, 'b': 1 }`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Num(5), '*', new Obj(new Map([['a', new Obj(new Map([['b', new Num(1)], ['c', new Num(2)]]))], ['b', new Num(1)]]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ 'a': { 'b': 5, 'c': 10 }, 'b': 5 }`,
+  },
+  {
+    name: 'multiply num, empty list',
+    source: `5 * []`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Num(5), '*', new List([])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `[]`,
+  },
+  {
+    name: 'multiply num, list len 1',
+    source: `5 * [1]`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Num(5), '*', new List([new Num(1)])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `[5]`,
+  },
 
   // TODO function calls w/ multiple args
   // { // TODO fix

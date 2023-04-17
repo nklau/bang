@@ -257,15 +257,21 @@ const multiply = `const multiply = (...exps) => {
   const type = strongestType(exps.filter((e) => typeof e !== 'string'));
   const multiplyFunc = {
     [List.typeDescription.val]: () => {
-      let left = exps[0].type.equals(Obj.typeDescription)
+      let product = exps[0].type.equals(Obj.typeDescription)
         ? exps[0].keys()
         : exps[0];
+      // let left = exps[0].type.equals(Obj.typeDescription)
+      //   ? exps[0].keys()
+      //   : exps[0];
 
       for (let i = 0; i < exps.length - 1; i += 2) {
-        let right = exps[i + 2].type.equals(Obj.typeDescription)
+        const [left, right] = [product, exps[i + 2].type.equals(Obj.typeDescription)
           ? exps[i + 2].keys()
-          : exps[i + 2];
-        left = {
+          : exps[i + 2]];
+        // let right = exps[i + 2].type.equals(Obj.typeDescription)
+        //   ? exps[i + 2].keys()
+        //   : exps[i + 2];
+        product = {
           '*': () => {
             if (left.type.equals(List.typeDescription)) {
               return (
@@ -275,11 +281,7 @@ const multiply = `const multiply = (...exps) => {
                     return new List([...left.val, right]);
                   },
                   [Num.typeDescription.val]: () => {
-                    const result = [];
-                    for (let j = 0; j < right.val; j++) {
-                      result.push(...left.val);
-                      return new List(result);
-                    }
+                    return new List(product.val.map(e => multiply(e, '*', right)));
                   },
                   [Bool.typeDescription.val]: () => {
                     return right.val ? left : new List();
@@ -300,11 +302,7 @@ const multiply = `const multiply = (...exps) => {
                   // designed to get here only if left is not a list
                   // left should also never be an object
                   [Num.typeDescription.val]: () => {
-                    const result = [];
-                    for (let j = 0; j < left.val; j++) {
-                      result.push(...right.val);
-                      return new List(result);
-                    }
+                    return new List(right.val.map(e => multiply(product, '*', e)));
                   },
                   [Bool.typeDescription.val]: () => {
                     return left.val ? right : new List();
@@ -350,7 +348,7 @@ const multiply = `const multiply = (...exps) => {
         }[exps[i + 1]]();
       }
 
-      return left;
+      return product;
     },
     [Obj.typeDescription.val]: () => {
       let product = new Map();
