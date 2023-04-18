@@ -1122,7 +1122,9 @@ const num = `class Num {
   }
 
   loop(block) {
-    // TODO
+    for (let i = 0; i < this.val; i++) {
+      block(new Num(i));
+    }
   }
 
   equals(other) {

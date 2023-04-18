@@ -39,33 +39,35 @@ export default function generate(program) {
         if (statement instanceof core.Call) {
           output.push('try {', `${gen(statement)};`, '} catch {}')
         } else {
-          gen(statement)
+          output.push(gen(statement))
         }
       })
       output.push('}')
     },
     VarDec(v) {
-      output.push(`let ${varName(v.var)} = ${gen(v.exp)};`)
+      return `let ${varName(v.var)} = ${gen(v.exp)};`
     },
     Assign(a) {
-      output.push(`${varName(a.var)} = ${gen(a.exp)};`)
+      return `${varName(a.var)} = ${gen(a.exp)};`
     },
     ReturnStatement(r) {
       const exp = gen(r.exp)
+      const returnExp = []
       if (r.exp instanceof core.Call) {
         const id = internalVarName()
-        output.push(
+        returnExp.push(
           'try {',
           `let ${id} = ${exp};`,
           `return ${id};`,
           '} catch {}'
         )
       } else {
-        output.push(`return ${exp};`)
+        returnExp.push(`return ${exp};`)
       }
+      return returnExp.join('\n')
     },
     BreakStatement(_b) {
-      output.push(`throw new Error('break');`)
+      return `throw new Error('break');`
     },
     Ternary(t) {
       return `${gen(t.cond)} ? ${gen(t.block)} : ${
@@ -170,7 +172,15 @@ export default function generate(program) {
     },
     Func(f) {
       const params = gen(f.params)
-      return `new Func(${params} => ${gen(f.block)}, ${params})`
+      let body = []
+      f.block.statements.forEach((statement) => {
+        if (statement instanceof core.Call) {
+          body.push('try {', `${gen(statement)};`, '} catch {}')
+        } else {
+          body.push(gen(statement))
+        }
+      })
+      return `${params} => {${body.join('\n')}}`
     },
     Params(p) {
       return `(${p.params.map(gen).join(', ')})`

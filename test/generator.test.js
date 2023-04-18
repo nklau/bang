@@ -3298,7 +3298,161 @@ const fixtures = [
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `Infinity`,
-  }
+  },
+  {
+    name: 'divide bool false, num',
+    source: `false / 5`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(false), '/', new Num(5)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `0`,
+  },
+  {
+    name: 'divide bool true, num 0',
+    source: `true / 0`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(true), '/', new Num(0)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `Infinity`,
+  },
+  {
+    name: 'divide bool true, num',
+    source: `true / 5`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(true), '/', new Num(5)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `0.2`,
+  },
+  {
+    name: 'divide bool false, str',
+    source: `false / 'str'`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(false), '/', new Str('str')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `false`,
+  },
+  {
+    name: 'divide bool false, str false',
+    source: `false / 'false'`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(false), '/', new Str('false')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: ``,
+  },
+  {
+    name: 'divide bool true, str',
+    source: `true / 'str'`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(true), '/', new Str('str')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `true`,
+  },
+  {
+    name: 'divide bool true, str true',
+    source: `true / 'true'`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(true), '/', new Str('true')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: ``,
+  },
+  {
+    name: 'divide bool false, empty obj',
+    source: `false / {}`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(false), '/', new Obj(new Map([]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ }`,
+  },
+  {
+    name: 'divide list, list',
+    source: `[1, 2, 3] / [2, 1]`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new List([new Num(1), new Num(2), new Num(3)]), '/', new List([new Num(2), new Num(1)])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `[3]`,
+  },
+  {
+    name: 'function',
+    source: `x = i -> i + 1
+    print(x(0))`,
+    expected: dedent`
+    function main()
+    {
+      let x_0 = (i_1) => {return (add(i_1, '+', new Num(1)));};
+      try {
+        print(x_0(new Num(0)));
+      } catch {}
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `1`,
+  },
+//   {
+//     name: 'for loop',
+//     source: `5.loop(i -> print(i))`,
+//     expected: dedent`
+//     function main()
+//     {
+//       try {
+//         let _internal1 = (new Num(5).loop)((i) => print(i));
+//         return _internal1;
+//       } catch {}
+//     }
+//     const output = main();
+//     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+//     `,
+//     output: `0
+// 1
+// 2
+// 3
+// 4`,
+//   }
 ]
 
 const runTest = (fixture, outputDir) => {
