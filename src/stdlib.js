@@ -287,7 +287,7 @@ const multiply = `const multiply = (...exps) => {
       let product = exps[0];
 
       for (let i = 0; i < exps.length - 1; i += 2) {
-        const [left, right] = [product, exps[i + 2]];
+        let [left, right] = [product, exps[i + 2]];
         product = {
           '*': () => {
             if (left.type.equals(List.typeDescription)) {

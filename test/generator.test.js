@@ -3156,6 +3156,58 @@ const fixtures = [
     `,
     output: `Infinity`,
   },
+  {
+    name: 'divide nil, num',
+    source: `nil / 5`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '/', new Num(5)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `0`,
+  },
+  {
+    name: 'divide nil, str',
+    source: `nil / 'str'`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '/', new Str('str')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: ``,
+  },
+  {
+    name: 'divide nil, obj',
+    source: `nil / { 'a': 1, 'b': false }`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '/', new Obj(new Map([['a', new Num(1)], ['b', new Bool(false)]]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ }`,
+  },
+  {
+    name: 'divide nil, list',
+    source: `nil / [1, 'str']`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(nil, '/', new List([new Num(1), new Str('str')])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `[]`,
+  },
 ]
 
 const runTest = (fixture, outputDir) => {
