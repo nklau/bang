@@ -3208,6 +3208,97 @@ const fixtures = [
     `,
     output: `[]`,
   },
+  {
+    name: 'divide bool false, nil',
+    source: `false / nil`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(false), '/', nil));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `true`,
+  },
+  {
+    name: 'divide bool true, nil',
+    source: `true / nil`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(true), '/', nil));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `false`,
+  },
+  {
+    name: 'divide bool false, bool false',
+    source: `false / false`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(false), '/', new Bool(false)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `true`,
+  },
+  {
+    name: 'divide bool false, bool true',
+    source: `false / true`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(false), '/', new Bool(true)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `false`,
+  },
+  {
+    name: 'divide bool true, bool false',
+    source: `true / false`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(true), '/', new Bool(false)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `false`,
+  },
+  {
+    name: 'divide bool true, bool true',
+    source: `true / true`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(true), '/', new Bool(true)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `false`,
+  },
+  {
+    name: 'divide bool false, num 0',
+    source: `false / 0`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new Bool(false), '/', new Num(0)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `Infinity`,
+  }
 ]
 
 const runTest = (fixture, outputDir) => {

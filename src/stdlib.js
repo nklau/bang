@@ -753,7 +753,7 @@ const multiply = `const multiply = (...exps) => {
               [Num.typeDescription.val]: () => {
                 return {
                   [Num.typeDescription.val]: () => {
-                    return new Num(left.val / right.val);
+                    return right.val === 0 ? Num.inf : new Num(left.val / right.val);
                   },
                   [Bool.typeDescription.val]: () => {
                     return right.val ? left : Num.inf;
@@ -767,7 +767,7 @@ const multiply = `const multiply = (...exps) => {
                 return (
                   {
                     [Num.typeDescription.val]: () => {
-                      return new Num((left.val ? 1 : 0) / right.val);
+                      return right.val === 0 ? Num.inf : new Num((left.val ? 1 : 0) / right.val);
                     },
                   }[right.type.val] ?? recurse
                 )();
