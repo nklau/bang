@@ -1,5 +1,4 @@
 i = 0
-true.loop(() -> {
-  print(i)
-  i++ > 5 ? break
+(i < 5).loop(() -> {
+  print(i++)
 })

@@ -1,5 +1,0 @@
-x = true
-
-x ? print("x is true")
-true ? print("this is always true")
-!false ? print("this should also be true")
