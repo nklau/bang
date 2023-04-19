@@ -3623,6 +3623,62 @@ const fixtures = [
 3
 4`,
   },
+  {
+    name: 'add num generates new var',
+    source: `x + 1`,
+    expected: dedent`
+    function main()
+    {
+      let x_0 = new Num(0);
+      return (add(x_0, '+', new Num(1)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `1`,
+  },
+  {
+    name: 'add bool generates new var',
+    source: `x + true`,
+    expected: dedent`
+    function main()
+    {
+      let x_0 = new Bool(false);
+      return (add(x_0, '+', new Bool(true)));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `true`,
+  },
+  {
+    name: 'add str generates new var',
+    source: `x + 'hello'`,
+    expected: dedent`
+    function main()
+    {
+      let x_0 = new Str('');
+      return (add(x_0, '+', new Str('hello')));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `hello`,
+  },
+  {
+    name: 'add obj generates new var',
+    source: `x + { 'a': 1 }`,
+    expected: dedent`
+    function main()
+    {
+      let x_0 = new Obj(new Map([]));
+      return (add(x_0, '+', new Obj(new Map([['a', new Num(1)]]))));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `{ 'a': 1 }`,
+  },
 ]
 
 const runTest = async (fixture, outputDir) => {
