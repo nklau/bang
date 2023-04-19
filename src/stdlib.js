@@ -1219,7 +1219,9 @@ const str = `export class Str {
   }
 
   loop(block) {
-    // TODO
+    for (let i = 0; i < this.val.length; i++) {
+      block(new Str(this.val[i]), new Num(i));
+    }
   }
 
   equals(other) {

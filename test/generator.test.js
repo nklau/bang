@@ -3680,6 +3680,29 @@ const fixtures = [
     `,
     output: `{ 'a': 1 }`,
   },
+  {
+    name: 'loop over str',
+    source: `'hello'.loop((char, index) -> print($'{index}: {char}'))`,
+    expected: dedent`
+    function main()
+    {
+      try {
+        let _internal2 = (new Str('hello').loop)((char_0, index_1) => {try {
+          let _internal1 = print(new Str(\`\${coerce(index_1, Str.typeDescription).val}: \${coerce(char_0, Str.typeDescription).val}\`));
+          return _internal1;
+        } catch {}});
+        return _internal2;
+      } catch {}
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `0: h
+1: e
+2: l
+3: l
+4: o`,
+  },
 ]
 
 const runTest = async (fixture, outputDir) => {
