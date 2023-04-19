@@ -3599,7 +3599,30 @@ const fixtures = [
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
     `,
     output: `[0, 1, 2, 3, 4]`,
-  }
+  },
+  {
+    name: 'range func loop',
+    source: `range(0, 5).loop(i -> print(i))`,
+    expected: dedent`
+    function main()
+    {
+      try {
+        let _internal2 = (new List(Array.from({ length: new Num(5).val - new Num(0).val }, (_, i) => new Num(i))).loop)((i_0) => {try {
+          let _internal1 = print(i_0);
+          return _internal1;
+        } catch {}});
+        return _internal2;
+      } catch {}
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `0
+1
+2
+3
+4`,
+  },
 ]
 
 const runTest = (fixture, outputDir) => {
