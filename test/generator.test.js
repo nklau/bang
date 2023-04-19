@@ -3703,6 +3703,26 @@ const fixtures = [
 3: l
 4: o`,
   },
+  {
+    name: 'loop over obj',
+    source: `{'a': 1, 'b': 2}.loop((key, value, index) -> print($'{key} at index {index}: {value}'))`,
+    expected: dedent`
+    function main()
+    {
+      try {
+        let _internal2 = (new Obj(new Map([['a', new Num(1)], ['b', new Num(2)]])).loop)((key_0, value_1, index_2) => {try {
+          let _internal1 = print(new Str(\`\${coerce(key_0, Str.typeDescription).val} at index \${coerce(index_2, Str.typeDescription).val}: \${coerce(value_1, Str.typeDescription).val}\`));
+          return _internal1;
+        } catch {}});
+        return _internal2;
+      } catch {}
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `a at index 0: 1
+b at index 1: 2`,
+  },
 ]
 
 const runTest = async (fixture, outputDir) => {

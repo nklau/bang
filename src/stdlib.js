@@ -1253,7 +1253,10 @@ const obj = `class Obj {
   }
 
   loop(block) {
-    // TODO
+    let i = 0;
+    this.val.forEach((val, key) => {
+      block(new Str(key), val, new Num(i++));
+    });
   }
 
   getVal(key) {
