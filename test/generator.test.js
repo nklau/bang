@@ -2,6 +2,7 @@ import assert from 'assert/strict'
 import analyze from '../src/analyzer.js'
 import optimize from '../src/optimizer.js'
 import generate from '../src/generator.js'
+import * as fsPromises from 'fs/promises'
 import * as fs from 'fs'
 import { exec } from 'child_process'
 import path from 'path'
@@ -3688,8 +3689,8 @@ const runTest = async (fixture, outputDir) => {
       console.log(actual) // for debug
       assert(false)
     }
-    fs.writeFile(
-      `output/${fixture.name.replaceAll(' ', '_')}.js`,
+    await fsPromises.writeFile(
+      path.join(outputDir, `${fixture.name.replaceAll(' ', '_')}.js`),
       actual,
       (err) => {
         if (err) throw err
@@ -3708,7 +3709,11 @@ describe('The code generator', async () => {
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir)
   }
+  // try {
+  //   await execute(`rm ${path.join(outputDir, '*')}`)
+  // } catch {}
   exec(`rm ${path.join(outputDir, '*')}`)
+  // await execute(`rm ${path.join(outputDir, '*')}`)
 
   if (process.env.npm_config_last) {
     await runTest(fixtures[fixtures.length - 1], outputDir)

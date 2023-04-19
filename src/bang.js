@@ -18,7 +18,8 @@ Prints to stdout according to <outputType>, which must be one of:
 async function compileFromFile(filename, outputType) {
   try {
     const buffer = await fs.readFile(filename)
-    console.log(compile(buffer.toString(), outputType))
+    const folders = filename.split('/')
+    console.log(await compile(buffer.toString(), outputType, folders[folders.length - 1].replace('.bang', '.js')))
   } catch (e) {
     console.error(`\u001b[31m${e}\u001b[39m`)
     process.exitCode = 1
