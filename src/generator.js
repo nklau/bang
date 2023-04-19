@@ -191,7 +191,7 @@ export default function generate(program) {
       throw new Error('Keyword parameters not implemented')
     },
     Args(a) {
-      return a.args.map(gen)
+      return `${a.args.map(gen).join(', ')}`
     },
     KeywordArg(k) {
       throw new Error('Keyword arguments not implemented')

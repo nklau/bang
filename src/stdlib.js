@@ -1191,10 +1191,13 @@ const print = `const print = exp => {
 
 export const stdLibFuncs = {
   [contents.print]: (x) => `print(${x})`,
-  [contents.range]: (start, end) => {
+  [contents.range]: (exps) => {
+    const [start, end] = exps.split(', ')
     // TODO are these actually strings? or are they the class objs from below?
     // TODO need to convert (coerce) start and end to nums
-    return `[...Array(${end}.val - ${start}.val).keys().map(i => i + ${start}.val)]`
+    // return Array.from({ length: end - start + 1 }, (_, i) => i)
+    return `new List(Array.from({ length: ${end}.val - ${start}.val }, (_, i) => new Num(i)))`
+    // return `new List([...Array(${end}.val - ${start}.val).keys().map(i => new Num(i + ${start}.val))])`
   },
 }
 
@@ -1366,7 +1369,7 @@ const obj = `class Obj {
     this.val = Array.from(this.val).reverse().reduce((map, [key, val]) => map.set(key, val), new Map());
   }
 }`
-// TODO all type coercions to all other types using getters
+
 const list = `class List {
   static typeDescription = new Str('list');
 
@@ -1375,7 +1378,9 @@ const list = `class List {
   }
 
   loop(block) {
-    // TODO
+    this.val.forEach((val, index) => {
+      block(val, new Num(index));
+    });
   }
 
   equals(other) {
