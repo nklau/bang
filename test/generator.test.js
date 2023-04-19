@@ -757,7 +757,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new Num(2).equals(new Num(2))));
+      return (new Bool(() => new Num(2).equals(new Num(2))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -770,7 +770,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(!(new Num(2).equals(new Num(2)))));
+      return (new Bool(() => !(new Num(2).equals(new Num(2)))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -783,7 +783,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new Num(2).equals(new Num(2.1))));
+      return (new Bool(() => new Num(2).equals(new Num(2.1))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -796,7 +796,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(!(new Num(2).equals(new Num(2.1)))));
+      return (new Bool(() => !(new Num(2).equals(new Num(2.1)))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -809,7 +809,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new Str('str').equals(new Str('str'))));
+      return (new Bool(() => new Str('str').equals(new Str('str'))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -822,7 +822,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new Str('str').equals(new Str('str'))));
+      return (new Bool(() => new Str('str').equals(new Str('str'))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -835,7 +835,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new Str('str').equals(new Str('strs'))));
+      return (new Bool(() => new Str('str').equals(new Str('strs'))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -848,7 +848,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(!(new Str('str').equals(new Str('strs')))));
+      return (new Bool(() => !(new Str('str').equals(new Str('strs')))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -861,7 +861,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(!(new Str('str').equals(new Str('strs')))));
+      return (new Bool(() => !(new Str('str').equals(new Str('strs')))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -874,7 +874,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(!(new Str('str').equals(new Str('str')))));
+      return (new Bool(() => !(new Str('str').equals(new Str('str')))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -889,7 +889,7 @@ const fixtures = [
     function main()
     {
       let x_0 = new Num(5);
-      return (new Bool(x_0.equals(new Num(5))));
+      return (new Bool(() => x_0.equals(new Num(5))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -904,7 +904,7 @@ const fixtures = [
     function main()
     {
       let x_0 = new Str('str');
-      return (new Bool(new Str('x').equals(x_0)));
+      return (new Bool(() => new Str('x').equals(x_0)));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -917,7 +917,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new Num(5).equals(new Str('5'))));
+      return (new Bool(() => new Num(5).equals(new Str('5'))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -943,7 +943,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new List([]).equals(new List([]))));
+      return (new Bool(() => new List([]).equals(new List([]))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -956,7 +956,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(!(new List([]).equals(new List([])))));
+      return (new Bool(() => !(new List([]).equals(new List([])))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -969,7 +969,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new List([new Num(1)]).equals(new List([new Num(1)]))));
+      return (new Bool(() => new List([new Num(1)]).equals(new List([new Num(1)]))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -982,7 +982,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(!(new List([new Num(1)]).equals(new List([new Num(1)])))));
+      return (new Bool(() => !(new List([new Num(1)]).equals(new List([new Num(1)])))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -995,7 +995,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new List([new Num(1)]).equals(new List([new Str('1')]))));
+      return (new Bool(() => new List([new Num(1)]).equals(new List([new Str('1')]))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -1008,7 +1008,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(!(new List([new Num(1)]).equals(new List([new Str('1')])))));
+      return (new Bool(() => !(new List([new Num(1)]).equals(new List([new Str('1')])))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -1021,7 +1021,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new List([new Num(1)]).equals(new List([new Num(1), new Num(1)]))));
+      return (new Bool(() => new List([new Num(1)]).equals(new List([new Num(1), new Num(1)]))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -1034,7 +1034,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new List([new Num(1), new Num(1)]).equals(new List([new Num(1)]))));
+      return (new Bool(() => new List([new Num(1), new Num(1)]).equals(new List([new Num(1)]))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -1047,7 +1047,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new List([new Num(1), new Str('str')]).equals(new List([new Num(1), new Str('str')]))));
+      return (new Bool(() => new List([new Num(1), new Str('str')]).equals(new List([new Num(1), new Str('str')]))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -1060,7 +1060,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new List([new Str('str'), new Num(1)]).equals(new List([new Num(1), new Str('str')]))));
+      return (new Bool(() => new List([new Str('str'), new Num(1)]).equals(new List([new Num(1), new Str('str')]))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -1073,7 +1073,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(!(new List([new Num(1), new Str('str')]).equals(new List([new Num(1), new Str('str')])))));
+      return (new Bool(() => !(new List([new Num(1), new Str('str')]).equals(new List([new Num(1), new Str('str')])))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -1086,7 +1086,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(!(new List([new Str('str'), new Num(1)]).equals(new List([new Num(1), new Str('str')])))));
+      return (new Bool(() => !(new List([new Str('str'), new Num(1)]).equals(new List([new Num(1), new Str('str')])))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -1099,7 +1099,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new Obj(new Map([])).equals(new Obj(new Map([])))));
+      return (new Bool(() => new Obj(new Map([])).equals(new Obj(new Map([])))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -1112,7 +1112,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new Obj(new Map([['a', new Num(1)]])).equals(new Obj(new Map([['a', new Num(1)]])))));
+      return (new Bool(() => new Obj(new Map([['a', new Num(1)]])).equals(new Obj(new Map([['a', new Num(1)]])))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -1140,7 +1140,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (new Bool(new Obj(new Map([['a', new Num(1)]])).equals(new Obj(new Map([['a', new Str('1')]])))));
+      return (new Bool(() => new Obj(new Map([['a', new Num(1)]])).equals(new Obj(new Map([['a', new Str('1')]])))));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -3433,26 +3433,157 @@ const fixtures = [
     `,
     output: `1`,
   },
-//   {
-//     name: 'for loop',
-//     source: `5.loop(i -> print(i))`,
-//     expected: dedent`
-//     function main()
-//     {
-//       try {
-//         let _internal1 = (new Num(5).loop)((i) => print(i));
-//         return _internal1;
-//       } catch {}
-//     }
-//     const output = main();
-//     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
-//     `,
-//     output: `0
-// 1
-// 2
-// 3
-// 4`,
-//   }
+  {
+    name: 'for loop',
+    source: `5.loop(i -> print(i))`,
+    expected: dedent`
+    function main()
+    {
+      try {
+        let _internal2 = (new Num(5).loop)((i_0) => {try {
+          let _internal1 = print(i_0);
+          return _internal1;
+        } catch {}});
+        return _internal2;
+      } catch {}
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `0
+1
+2
+3
+4`,
+  },
+  {
+    name: 'list func',
+    source: `x = i -> i + 1
+    print(x([]))`,
+    expected: dedent`
+    function main()
+    {
+      let x_0 = (i_1) => {return (add(i_1, '+', new Num(1)));};
+      try {
+        print(x_0(new List([])));
+      } catch {}
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `[1]`,
+  },
+  {
+    name: 'blacklist op',
+    source: `[1, [2], { 'a': 1 }, { 'a': 2 }] / [[2], { 'a': 2 }]`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new List([new Num(1), new List([new Num(2)]), new Obj(new Map([['a', new Num(1)]])), new Obj(new Map([['a', new Num(2)]]))]), '/', new List([new List([new Num(2)]), new Obj(new Map([['a', new Num(2)]]))])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `[1, { 'a': 1 }]`,
+  },
+  {
+    name: 'whitelist op',
+    source: `[1, [2], { 'a': 1 }, { 'a': 2 }, [2]] % [[2], { 'a': 2 }]`,
+    expected: dedent`
+    function main()
+    {
+      return (multiply(new List([new Num(1), new List([new Num(2)]), new Obj(new Map([['a', new Num(1)]])), new Obj(new Map([['a', new Num(2)]])), new List([new Num(2)])]), '%', new List([new List([new Num(2)]), new Obj(new Map([['a', new Num(2)]]))])));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `[[2], { 'a': 2 }, [2]]`,
+  },
+  {
+    name: 'default vars',
+    source: `x + y`,
+    expected: dedent`
+    function main()
+    {
+      let x_0 = new Num(0);
+      let y_1 = new Num(0);
+      return (add(x_0, '+', y_1));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `0`,
+  },
+  {
+    name: 'while loop',
+    source: `i = 0
+    true.loop(() -> {
+      print(i)
+      i++ > 5 ? break
+    })`,
+    expected: dedent`
+    function main()
+    {
+      let i_0 = new Num(0);
+      try {
+        (new Bool(true).loop)(() => {try {
+          print(i_0);
+        } catch {}
+        (new Bool(() => coerce(postInc(i_0), Num.typeDescription).val > coerce(new Num(5), Num.typeDescription).val)).val ? (() => {throw new Error('break');})() : (() => {return undefined;})();});
+      } catch {}
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `0
+1
+2
+3
+4
+5
+6`,
+  },
+  {
+    name: 'bool using condition',
+    source: `i = 0
+    i < 5`,
+    expected: dedent`
+    function main()
+    {
+      let i_0 = new Num(0);
+      return (new Bool(() => coerce(i_0, Num.typeDescription).val < coerce(new Num(5), Num.typeDescription).val));
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `true`,
+  },
+  {
+    name: 'while loop with condition',
+    source: `i = 0
+    (i < 5).loop(() -> {
+      print(i++)
+    })`,
+    expected: dedent`
+    function main()
+    {
+      let i_0 = new Num(0);
+      try {
+        (((new Bool(() => coerce(i_0, Num.typeDescription).val < coerce(new Num(5), Num.typeDescription).val))).loop)(() => {try {
+          let _internal1 = print(postInc(i_0));
+          return _internal1;
+        } catch {}});
+      } catch {}
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `0
+1
+2
+3
+4`,
+  },
 ]
 
 const runTest = (fixture, outputDir) => {

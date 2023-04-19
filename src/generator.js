@@ -61,6 +61,8 @@ export default function generate(program) {
           `return ${id};`,
           '} catch {}'
         )
+      } else if (r.exp instanceof core.BreakStatement) {
+        returnExp.push(exp)
       } else {
         returnExp.push(`return ${exp};`)
       }
@@ -70,9 +72,9 @@ export default function generate(program) {
       return `throw new Error('break');`
     },
     Ternary(t) {
-      return `${gen(t.cond)} ? ${gen(t.block)} : ${
-        t.alt ? gen(t.alt) : 'undefined'
-      };`
+      return `${gen(t.cond)}.val ? (() => {${t.block.statements.map(gen).join('\n')}})() : (() => {${
+        t.alt ? gen(t.alt) : 'return undefined;'
+      }})();`
     },
     BinaryExp(b) {
       if (b.op === '.') {
@@ -115,12 +117,12 @@ export default function generate(program) {
         subExps.forEach(([op, [left, right]]) => {
           const [lhs, rhs] = [gen(left), gen(right)]
           const translations = {
-            '==': `${lhs}.equals(${rhs})`,
-            '!=': `!(${lhs}.equals(${rhs}))`,
-            '<': `coerce(${lhs}, 'number').val < coerce(${rhs}, 'number).val`,
-            '>': `coerce(${lhs}, 'number').val > coerce(${rhs}, 'number).val`,
-            '<=': `(coerce(${lhs}, 'number').val < coerce(${rhs}, 'number).val || ${lhs}.equals(${rhs}))`,
-            '>=': `(coerce(${lhs}, 'number').val > coerce(${rhs}, 'number).val || ${lhs}.equals(${rhs}))`,
+            '==': `() => ${lhs}.equals(${rhs})`,
+            '!=': `() => !(${lhs}.equals(${rhs}))`,
+            '<': `() => coerce(${lhs}, Num.typeDescription).val < coerce(${rhs}, Num.typeDescription).val`,
+            '>': `() => coerce(${lhs}, Num.typeDescription).val > coerce(${rhs}, Num.typeDescription).val`,
+            '<=': `() => (coerce(${lhs}, Num.typeDescription).val < coerce(${rhs}, Num.typeDescription).val || ${lhs}.equals(${rhs}))`,
+            '>=': `() => (coerce(${lhs}, Num.typeDescription).val > coerce(${rhs}, Num.typeDescription).val || ${lhs}.equals(${rhs}))`,
           }
 
           elements.push(`new Bool(${translations[op]})`)
@@ -252,16 +254,16 @@ export default function generate(program) {
       return 'nil'
     },
     PostIncrement(p) {
-      return `((${gen(p.exp)})++)`
+      return `postInc(${gen(p.exp)})`
     },
     PostDecrement(p) {
-      return `((${gen(p.exp)})--)`
+      return `postDec(${gen(p.exp)})`
     },
     PreIncrement(p) {
-      return `(++(${gen(p.exp)}))`
+      return `preInc(${gen(p.exp)})`
     },
     PreDecrement(p) {
-      return `(--(${gen(p.exp)}))`
+      return `preDec(${gen(p.exp)})`
     },
     Array(a) {
       return a.map(gen)

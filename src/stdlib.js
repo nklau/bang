@@ -74,6 +74,120 @@ const negate = `const negate = (exp) => {
   }[exp.type.val]();
 };`
 
+const preInc = `const preInc = (exp) => {
+  return {
+    [List.typeDescription.val]: () => {
+      exp.val.push(new Num);
+      return exp;
+    },
+    [Obj.typeDescription.val]: () => {
+      exp.val.set('1', new Num(1));
+      return exp;
+    },
+    [Str.typeDescription.val]: () => {
+      exp.val += '1';
+      return exp;
+    },
+    [Num.typeDescription.val]: () => {
+      exp.val++;
+      return exp;
+    },
+    [Bool.typeDescription.val]: () => {
+      exp.val = true;
+      return exp;
+    },
+    [nil.type.val]: () => {
+      return nil;
+    },
+  }[exp.type.val]();
+};`
+
+const postInc = `const postInc = (exp) => {
+  return {
+    [List.typeDescription.val]: () => {
+      const e = exp.deepCopy();
+      exp.val.push(new Num(1));
+      return e;
+    },
+    [Obj.typeDescription.val]: () => {
+      const e = exp.deepCopy();
+      exp.val.set('1', new Num(1));
+      return e;
+    },
+    [Str.typeDescription.val]: () => {
+      const e = exp.val;
+      exp.val += '1';
+      return new Str(e);
+    },
+    [Num.typeDescription.val]: () => {
+      return new Num(exp.val++);
+    },
+    [Bool.typeDescription.val]: () => {
+      const e = exp.val;
+      exp.val = true;
+      return new Bool(e);
+    },
+    [nil.type.val]: () => {
+      return nil;
+    },
+  }[exp.type.val]();
+}`
+
+const preDec = `const preDec = (exp) => {
+  return {
+    [List.typeDescription.val]: () => {
+      exp.val.splice(exp.val.findIndex(e => e.equals(new Num(1))), 1);
+      return exp;
+    },
+    [Obj.typeDescription.val]: () => {
+      exp.val.delete('1');
+      return exp;
+    },
+    [Str.typeDescription.val]: () => {
+      exp.val = exp.val.replace('1', '');
+      return exp;
+    },
+    [Num.typeDescription.val]: () => {
+      return new Num(--exp.val);
+    },
+    [Bool.typeDescription.val]: () => {
+      return exp;
+    },
+    [nil.type.val]: () => {
+      return nil;
+    },
+  }[exp.type.val]();
+}`
+
+const postDec = `const postDec = (exp) => {
+  return {
+    [List.typeDescription.val]: () => {
+      const e = exp.deepCopy();
+      exp.val.splice(exp.val.findIndex(e => e.equals(new Num(1))), 1);
+      return e;
+    },
+    [Obj.typeDescription.val]: () => {
+      const e = exp.deepCopy();
+      exp.val.delete('1');
+      return e;
+    },
+    [Str.typeDescription.val]: () => {
+      const e = exp.val;
+      exp.val = exp.val.replace('1', '');
+      return new Str(e);
+    },
+    [Num.typeDescription.val]: () => {
+      return new Num(exp.val--);
+    },
+    [Bool.typeDescription.val]: () => {
+      return exp;
+    },
+    [nil.type.val]: () => {
+      return nil;
+    },
+  }[exp.type.val]();
+}`
+
 // also does subtraction
 const add = `const add = (...exps) => {
   const type = strongestType(exps.filter(e => typeof e !== 'string'));
@@ -1093,11 +1207,19 @@ const bool = `class Bool {
   static typeDescription = new Str('boolean');
 
   constructor(val = false) {
-    this.val = val === 'true' || val === true || (val instanceof Bool && val.val);
+    if (typeof val === 'function') {
+      this.val = val();
+      this.conditional = val;
+    } else {
+      this.val = val === 'true' || val === true || (val instanceof Bool && val.val);
+      this.conditional = () => this.val;
+    }
   }
 
   loop(block) {
-    // TODO
+    while (this.conditional()) {
+      block();
+    }
   }
 
   equals(other) {
@@ -1199,6 +1321,13 @@ const obj = `class Obj {
     return equal;
   }
 
+  deepCopy() {
+    return new Obj([...this.val].reduce((map, [key, val]) => {
+      map.set(key, val instanceof List || val instanceof Obj ? val.deepCopy() : val);
+      return map;
+    }, new Map()));
+  }
+
   get len() {
     return new Num(this.val.size);
   }
@@ -1251,6 +1380,10 @@ const list = `class List {
 
   equals(other) {
     return this.type.equals(other.type) && this.len.equals(other.len) && this.val.every((value, index) => value.equals(other.val[index]));
+  }
+
+  deepCopy() {
+    return new List(this.val.map(val => val instanceof List || val instanceof Obj ? val.deepCopy() : val));
   }
 
   get len() {
@@ -1319,4 +1452,8 @@ export const stdFuncs = [
   subscript,
   print,
   negate,
+  preInc,
+  postInc,
+  preDec,
+  postDec,
 ]

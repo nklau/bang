@@ -1,0 +1,5 @@
+i = 0
+true.loop(() -> {
+  print(i)
+  i++ > 5 ? break
+})

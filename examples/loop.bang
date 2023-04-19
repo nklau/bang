@@ -1,0 +1,1 @@
+5.loop(i -> print(i))
