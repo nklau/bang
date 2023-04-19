@@ -1211,7 +1211,7 @@ const num = `class Num {
   }
 }`
 
-const str = `export class Str {
+const str = `class Str {
   static typeDescription = new Str('string');
 
   constructor(val = '') {

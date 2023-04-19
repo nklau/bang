@@ -3725,44 +3725,33 @@ b at index 1: 2`,
   },
 ]
 
-const runTest = async (fixture, outputDir) => {
-  it(`produces expected js output for the ${fixture.name} program`, async () => {
+const runTest = async (fixture) => {
+  it(`produces expected js output for the ${fixture.name} program`, () => {
     const actual = generate(optimize(analyze(fixture.source)))
     if (!actual.endsWith(fixture.expected)) {
       console.log(actual) // for debug
       assert(false)
     }
-    await fsPromises.writeFile(
-      path.join(outputDir, `${fixture.name.replaceAll(' ', '_')}.js`),
-      actual,
-      (err) => {
-        if (err) throw err
-      }
-    )
-    let output = await execute(`node ${fixture.name.replaceAll(' ', '_')}.js`, {
-      encoding: 'utf8',
-      cwd: outputDir,
-    })
-    assert.deepEqual(output.stdout.trim(), fixture.output)
+    let result = []
+    const cons = {
+      log: (...args) => result.push(args),
+    }
+    eval(`((console) => { ${actual} })`)(cons)
+    result = result.join('\n')
+    if (result !== fixture.output) {
+      console.log(result) // for debug
+      assert(false)
+    }
+    assert.deepEqual(result, fixture.output)
   })
 }
 
 describe('The code generator', async () => {
-  const outputDir = path.join(path.resolve(), 'output')
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir)
-  }
-  // try {
-  //   await execute(`rm ${path.join(outputDir, '*')}`)
-  // } catch {}
-  exec(`rm ${path.join(outputDir, '*')}`)
-  // await execute(`rm ${path.join(outputDir, '*')}`)
-
   if (process.env.npm_config_last) {
-    await runTest(fixtures[fixtures.length - 1], outputDir)
+    await runTest(fixtures[fixtures.length - 1])
   } else {
     for (const fixture of fixtures) {
-      runTest(fixture, outputDir)
+      runTest(fixture)
     }
   }
 })
