@@ -1,50 +1,8 @@
 import * as core from './core.js'
 
-// object todo list
-// function to get by index (loop that just counts upwards)
-// function to check if has element
-/*
-function has(map, string) {
-let found = false;
- 
-map.forEach((val, key) => {
-  if (key.equals(string)) {
-    found = true;
-  }
-})
-
-return found;
-}
-*/
-// function to remove element
-/*
-function delete(map, string) {
- let found = false;
- 
- map.forEach((val, key) => {
-   if (key.equals(string)) {
-     found = map.delete(key);
-   }
- })
-
- return found;
-}
-*/
-// function to remove element at index
-
 export const contents = Object.freeze({
   print: new core.Var('print', false, true, ['function']),
   range: new core.Var('range', false, true, ['function']),
-  // _numLoop: new core.Var('loop', false, true, ['function']),
-  // _boolLoop: new core.Var('loop', false, true, ['function']),
-  // _strLoop: new core.Var('loop', false, true, ['function']),
-  // _listLoop: new core.Var('loop', false, true, ['function']),
-  // _objLoop: new core.Var('loop', false, true, ['function']),
-  // _numAdd: new core.Var('add', false, true, ['function']),
-  // _boolAdd: new core.Var('add', false, true, ['function']),
-  // _strConcat: new core.Var('add', false, true, ['function']),
-  // _listConcat: new core.Var('add', false, true, ['function']),
-  // _objMerge: new core.Var('add', false, true, ['function']),
 })
 
 const negate = `const negate = (exp) => {
@@ -1028,12 +986,6 @@ const strongestType = `const strongestType = (exps) => {
 
   return nil.type;
 }`
-
-/*
-let x = new Num(0)
-let y = new Num(5)
-[...Array(coerce(y, 'number').val - (coerce(x, 'number')).val).keys().map(i => i + coerce(x, 'number').val)]
-*/
 
 const coerce = `const coerce = (exp, targetType) => {
   const targets = {

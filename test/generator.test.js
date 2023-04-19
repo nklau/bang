@@ -3625,7 +3625,7 @@ const fixtures = [
   },
 ]
 
-const runTest = (fixture, outputDir) => {
+const runTest = async (fixture, outputDir) => {
   it(`produces expected js output for the ${fixture.name} program`, async () => {
     const actual = generate(optimize(analyze(fixture.source)))
     if (!actual.endsWith(fixture.expected)) {
@@ -3647,7 +3647,7 @@ const runTest = (fixture, outputDir) => {
   })
 }
 
-describe('The code generator', () => {
+describe('The code generator', async () => {
   const outputDir = path.join(path.resolve(), 'output')
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir)
@@ -3655,7 +3655,7 @@ describe('The code generator', () => {
   exec(`rm ${path.join(outputDir, '*')}`)
 
   if (process.env.npm_config_last) {
-    runTest(fixtures[fixtures.length - 1], outputDir)
+    await runTest(fixtures[fixtures.length - 1], outputDir)
   } else {
     for (const fixture of fixtures) {
       runTest(fixture, outputDir)

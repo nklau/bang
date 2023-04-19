@@ -8,7 +8,6 @@ export default function generate(program) {
 
   output = [...output, ...stdFuncs]
 
-  // TODO change this to be randomly generated?
   /* var names will be suffixed with _0, _1, _2, etc in JS. This is because
   JS has reserved keywords that Bang! does not have. */
 
@@ -169,8 +168,7 @@ export default function generate(program) {
       return `subscript(${gen(v.id)}, ${gen(v.selector)})`
     },
     Subscription(s) {
-      // TODO handle all types
-      // slice()?
+      return `${gen(s.left)}, ${gen(s.right)}`
     },
     Func(f) {
       const params = gen(f.params)

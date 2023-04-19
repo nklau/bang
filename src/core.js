@@ -7,44 +7,12 @@ export class List {
     this.val = val
   }
 
-  loop(block) {
-    // TODO
-  }
-
-  equals(other) {
-    // TODO
-  }
-
-  // getVal(key) {
-  //   return this.val[key] ?? new Nil()
-  //   // TODO
-  // }
-
-  get len() {
-    return this.val.length
-  }
-
   get default() {
     return new List()
   }
 
   get type() {
     return List.typeDescription
-  }
-
-  equals(other) {
-    return this.type === other.type && arrayEquals(this.val, other.val)
-  }
-
-  toString() {
-    if (this.val.length === 0) {
-      return `[]`
-    }
-
-    const str = this.val.reduce((str, element) => {
-      str += `${element.toString()}, `
-    }, '')
-    return `[${str.slice(0, -2)}]`
   }
 }
 
@@ -55,27 +23,6 @@ export class Obj {
     this.val = val
   }
 
-  loop(block) {
-    // TODO
-  }
-
-  equals(other) {
-    // TODO
-  }
-
-  fixRef() {
-    // TODO
-  }
-
-  // getVal(key) {
-  //   // TODO replace after implementing .equals for strings
-  //   return this.val.find(field => field.key.val === key)?.val ?? new Nil()
-  // }
-
-  get len() {
-    return this.val.length
-  }
-
   get default() {
     return new Obj()
   }
@@ -83,35 +30,12 @@ export class Obj {
   get type() {
     return Obj.typeDescription
   }
-
-  equals(other) {
-    return this.type === other.type && arrayEquals(this.val, other.val)
-  }
-
-  toString() {
-    if (this.val.length === 0) {
-      return `{}`
-    }
-
-    const str = this.val.reduce((str, field) => {
-      str += `${field.toString()}, `
-    }, '')
-    return `{${str.slice(0, -2)}}`
-  }
 }
 
 export class ObjField {
   constructor(key, val) {
     this.key = key
     this.val = val
-  }
-
-  equals(other) {
-    return other instanceof ObjField && this.key === other.key && this.val === other.val
-  }
-
-  toString() {
-    return `${this.key.toString()}: ${this.val.toString()}`
   }
 }
 
@@ -122,18 +46,6 @@ export class Str {
     this.val = val
   }
 
-  loop(block) {
-    // TODO
-  }
-
-  equals(other) {
-    // TODO
-  }
-
-  get len() {
-    return this.val.length
-  }
-
   get default() {
     return new Str()
   }
@@ -141,19 +53,11 @@ export class Str {
   get type() {
     return Str.typeDescription
   }
-
-  equals(other) {
-    return other instanceof Str && this.val === other.val
-  }
 }
 
 export class FormattedStr extends Str {
   constructor(val = []) {
     super(val)
-  }
-
-  equals(other) {
-    return other instanceof FormattedStr && arrayEquals(this.val, other.val)
   }
 
   get default() {
@@ -168,24 +72,12 @@ export class Num {
     this.val = Number(val)
   }
 
-  loop(block) {
-    // TODO
-  }
-
-  equals(other) {
-    return this.type === other.type && this.val === other.val
-  }
-
   get default() {
     return new Num()
   }
 
   get type() {
     return Num.typeDescription
-  }
-
-  toString() {
-    return String(this.val)
   }
 }
 
@@ -196,24 +88,12 @@ export class Bool {
     this.val = val === 'true' || val === true
   }
 
-  loop(block) {
-    // TODO
-  }
-
-  equals(other) {
-    return this.type === other.type && this.val === other.val
-  }
-
   get default() {
     return new Bool()
   }
 
   get type() {
     return Bool.typeDescription
-  }
-
-  toString() {
-    return String(this.val)
   }
 }
 
@@ -233,12 +113,6 @@ export class Func {
     this.block = block
   }
 
-  equals(other) {
-    return this.type === other.type
-      && this.params.equals(other.params)
-      && this.block.equals(other.block)
-  }
-
   get default() {
     return new Func(
       new Params(),
@@ -249,30 +123,11 @@ export class Func {
   get type() {
     return Func.typeDescription
   }
-
-  toString() {
-    return `${this.params.toString()} -> ${this.block.toString()}`
-  }
 }
 
 export class Params {
   constructor(params = []) {
     this.params = params
-  }
-
-  equals(other) {
-    return other instanceof Params && arrayEquals(this.params, other.params)
-  }
-
-  toString() {
-    if (this.params.length === 0) {
-      return '()'
-    }
-
-    const str = this.params.reduce((str, param) => {
-      str += `${param.toString()}, `
-    }, '')
-    return `(${str.slice(0, -2)})`
   }
 }
 
@@ -369,13 +224,6 @@ export class Subscription {
     // indices may be out of bounds
   }
 }
-
-// export class VarSelect {
-//   constructor(id, selector) {
-//     this.id = id
-//     this.selector = selector
-//   }
-// }
 
 export class ReturnStatement {
   constructor(exp) {
