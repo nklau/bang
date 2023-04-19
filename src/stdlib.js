@@ -1187,17 +1187,11 @@ const print = `const print = exp => {
   console.log(_internal0 === nil ? nil.type.val : coerce(_internal0, Str.typeDescription).val);
 }`
 
-// TODO function to convert between types, will get pushed to top of file along with type classes
-
 export const stdLibFuncs = {
   [contents.print]: (x) => `print(${x})`,
   [contents.range]: (exps) => {
     const [start, end] = exps.split(', ')
-    // TODO are these actually strings? or are they the class objs from below?
-    // TODO need to convert (coerce) start and end to nums
-    // return Array.from({ length: end - start + 1 }, (_, i) => i)
     return `new List(Array.from({ length: ${end}.val - ${start}.val }, (_, i) => new Num(i)))`
-    // return `new List([...Array(${end}.val - ${start}.val).keys().map(i => new Num(i + ${start}.val))])`
   },
 }
 
