@@ -70,7 +70,8 @@ const optimizers = {
     return b
   },
   NaryExp(n) {
-    // TODO
+    // TODO equality comparisons with constants (remember that it's nary!)
+    // TODO constant folding for +, -, *, /, %, **
     return n
   },
   UnaryExp(u) {
@@ -78,7 +79,13 @@ const optimizers = {
     return u
   },
   Call(c) {
-    // TODO calling a constant returns itself anyways
+    c.id = optimize(c.id)
+
+    if ([core.List, core.Obj, core.Str, core.Num, core.Bool, core.Nil].includes(c.id.constructor)) { 
+      return c.id
+    }
+
+    c.args = optimize(c.args)
     return c
   },
   Var(v) {
