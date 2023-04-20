@@ -75,13 +75,47 @@ const optimizers = {
     return n
   },
   UnaryExp(u) {
+    return (
+      {
+        '!': () => {
+          return (
+            {
+              [core.List]: () => new Bool(u.exp.val.length > 0),
+              [core.Obj]: () => new Bool(u.exp.val.size > 0),
+              [core.Str]: () => new Bool(u.exp.val.length > 0),
+              [core.Num]: () => new Bool(u.exp.val !== 0),
+              [core.Bool]: () => new Bool(!u.exp.val),
+              [core.Nil]: () => new Bool(false),
+            }[u.exp.constructor] ?? (() => u)
+          )()
+        },
+        '-': () => {
+          return (
+            {
+              [core.List]: () => new core.List(u.exp.val.reverse()),
+              [core.Obj]: () => new core.Obj(u.exp.val.reverse()),
+              [core.Str]: () => new core.Str([...u.exp].reverse().join('')),
+              [core.Num]: () => new core.Num(-u.exp.val),
+              [core.Bool]: () => new core.Bool(!u.exp.val),
+            }[u.exp.constructor] ?? (() => u)
+          )()
+        },
+        '...': () => {
+          throw new Error('Spread operator not implemented')
+        },
+      }[u.op] ?? u
+    )
     // TODO negating a constant
     return u
   },
   Call(c) {
     c.id = optimize(c.id)
 
-    if ([core.List, core.Obj, core.Str, core.Num, core.Bool, core.Nil].includes(c.id.constructor)) { 
+    if (
+      [core.List, core.Obj, core.Str, core.Num, core.Bool, core.Nil].includes(
+        c.id.constructor
+      )
+    ) {
       return c.id
     }
 
