@@ -1,3 +1,4 @@
+import * as core from './core.js'
 // TODO:
 //
 //   - assignments to self (x = x) turn into no-ops
@@ -8,6 +9,7 @@
 //  - Dead code elimination (if a variable is never read, it can be removed)
 //  - Dead code elimination (if a loop is never entered, it can be removed)
 //  - Dead code elimination (if a conditional is never entered, it can be removed)
+//  - Dead code elimination (if a conditional has no statements, it can be removed)
 
 export default function optimize(node) {
   // return node;
@@ -16,7 +18,11 @@ export default function optimize(node) {
 
 const optimizers = {
   Block(b) {
-    b.statements = b.statements.map(optimize)
+    if (b.statements.length === 0) {
+      return []
+    } // TODO this might cause bugs - to test, optimize then run an empty block
+
+    b.statements = b.statements.flatMap(statement => optimize(statement))
     return b
   },
   VarDec(v) {
@@ -32,11 +38,17 @@ const optimizers = {
     return r
   },
   Ternary(t) {
-    // TODO
-    // t.condition = optimize(t.condition)
-    // t.then = optimize(t.then)
-    // t.else = optimize(t.else)
-    return t
+    const trueBlock = t.block.statements > 0 ? optimize(t.block) : []
+    const falseBlock = t.alt ? optimize(t.alt) : []
+    const trueCond = {
+      [core.List]: (cond) => cond.length > 0,
+      [core.Obj]: (cond) => cond.size > 0,
+      [core.Str]: (cond) => cond.length > 0,
+      [core.Num]: (cond) => cond !== 0,
+      [core.Bool]: (cond) => cond,
+      [core.Nil]: (_cond) => false,
+    }[t.cond.constructor](t.cond.val)
+    return trueCond ? trueBlock : trueCond === undefined ? t : falseBlock
   },
   BinaryExp(b) {
     // TODO
