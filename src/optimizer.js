@@ -22,7 +22,7 @@ const optimizers = {
       return []
     } // TODO this might cause bugs - to test, optimize then run an empty block
 
-    b.statements = b.statements.flatMap(statement => optimize(statement))
+    b.statements = b.statements.flatMap((statement) => optimize(statement))
     return b
   },
   VarDec(v) {
@@ -51,7 +51,22 @@ const optimizers = {
     return trueCond ? trueBlock : trueCond === undefined ? t : falseBlock
   },
   BinaryExp(b) {
-    // TODO
+    if (b.op === '.') {
+      const left = b.left.constructor
+      if (
+        {
+          nil: left === core.Nil,
+          bool: left === core.Bool,
+          num: left === core.Num,
+          str: left === core.Str,
+          obj: left === core.Obj,
+          list: left === core.List,
+        }[b.right]
+      ) {
+        return optimize(b.left)
+      }
+    }
+    // TODO constant folding for ||, &&
     return b
   },
   NaryExp(n) {
