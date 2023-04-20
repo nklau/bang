@@ -78,13 +78,12 @@ export default function generate(program) {
     BinaryExp(b) {
       if (b.op === '.') {
         const coercion = {
-          nil: 'nil',
-          bool: 'boolean',
-          num: 'number',
-          str: 'string',
-          obj: 'object',
-          list: 'list',
-          func: 'function',
+          nil: 'nil.typeDescription',
+          bool: 'Bool.typeDescription',
+          num: 'Num.typeDescription',
+          str: 'Str.typeDescription',
+          obj: 'Obj.typeDescription',
+          list: 'List.typeDescription',
         }[b.right]
 
         if (coercion) {
