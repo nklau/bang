@@ -1,14 +1,12 @@
 import * as core from './core.js'
 // TODO:
 //
-//   - assignments to self (x = x) turn into no-ops
-//   - constant folding
-//   - some strength reductions (+0, -0, *0, *1, etc.)
-//   - Conditionals with constant tests collapse into a single arm
-//   - Unrolling loops
+//  - assignments to self (x = x) turn into no-ops
+//  - constant folding
+//  - Conditionals with constant tests collapse into a single arm
+//  - Unrolling loops
 //  - Dead code elimination (if a variable is never read, it can be removed)
 //  - Dead code elimination (if a loop is never entered, it can be removed)
-//  - Dead code elimination (if a conditional is never entered, it can be removed)
 //  - Dead code elimination (if a conditional has no statements, it can be removed)
 
 export default function optimize(node) {
@@ -30,6 +28,10 @@ const optimizers = {
     return v
   },
   Assign(a) {
+    if (a.exp instanceof core.Var && a.var.id === a.exp.id) {
+      return []
+    }
+
     a.exp = optimize(a.exp)
     return a
   },
@@ -65,6 +67,7 @@ const optimizers = {
       ) {
         return optimize(b.left)
       }
+      // TODO loop unrolling (b.right === 'loop') (if b.left is falsy, return [])
     }
     // TODO constant folding for ||, &&
     return b
@@ -105,8 +108,6 @@ const optimizers = {
         },
       }[u.op] ?? u
     )
-    // TODO negating a constant
-    return u
   },
   Call(c) {
     c.id = optimize(c.id)
