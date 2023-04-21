@@ -10,9 +10,17 @@ import * as core from './core.js'
 //  - Dead code elimination (if a conditional has no statements, it can be removed)
 
 export default function optimize(node) {
-  // return node;
   return optimizers[node.constructor.name](node) ?? node
 }
+
+const truthy = (e) => ({
+  [core.List]: (cond) => cond.length > 0,
+  [core.Obj]: (cond) => cond.length > 0,
+  [core.Str]: (cond) => cond.length > 0,
+  [core.Num]: (cond) => cond !== 0,
+  [core.Bool]: (cond) => cond,
+  [core.Nil]: (_cond) => false,
+}[e.constructor] ?? (() => undefined))(e.val)
 
 const optimizers = {
   Block(b) {
@@ -42,14 +50,7 @@ const optimizers = {
   Ternary(t) {
     const trueBlock = t.block.statements > 0 ? optimize(t.block) : []
     const falseBlock = t.alt ? optimize(t.alt) : []
-    const trueCond = {
-      [core.List]: (cond) => cond.length > 0,
-      [core.Obj]: (cond) => cond.size > 0,
-      [core.Str]: (cond) => cond.length > 0,
-      [core.Num]: (cond) => cond !== 0,
-      [core.Bool]: (cond) => cond,
-      [core.Nil]: (_cond) => false,
-    }[t.cond.constructor](t.cond.val)
+    const trueCond = truthy(t.cond)
     return trueCond ? trueBlock : trueCond === undefined ? t : falseBlock
   },
   BinaryExp(b) {
@@ -67,9 +68,18 @@ const optimizers = {
       ) {
         return optimize(b.left)
       }
-      // TODO loop unrolling (b.right === 'loop') (if b.left is falsy, return [])
+
+      if (b.right === 'loop' && truthy(b.left) === false) {
+        return []
+        // TODO loop unrolling
+        // if the conditional returns true, DO NOT replace it with true (that will create an infinite loop)
+      }
     }
     // TODO constant folding for ||, &&
+    b.left = optimize(b.left)
+    if (typeof b.right !== 'string') { 
+      b.right = optimize(b.right)
+    }
     return b
   },
   NaryExp(n) {
@@ -133,6 +143,7 @@ const optimizers = {
     return s
   },
   Func(f) {
+    f.block = optimize(f.block)
     return f
   },
   Params(p) {
@@ -142,6 +153,7 @@ const optimizers = {
     return k
   },
   Args(a) {
+    a.args = a.args.flatMap(optimize)
     return a
   },
   KeywordArg(k) {
@@ -184,18 +196,22 @@ const optimizers = {
     return n
   },
   PostIncrement(p) {
+    // TODO
     return p
   },
   PostDecrement(p) {
+    // TODO
     return p
   },
   PreIncrement(p) {
+    // TODO
     return p
   },
   PreDecrement(p) {
+    // TODO
     return p
   },
   Array(a) {
-    return a
+    return a.map(optimize)
   },
 }
