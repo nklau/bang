@@ -1,11 +1,27 @@
-import fs from "fs"
-import ohm from "ohm-js"
-import * as core from "./core.js"
-import * as stdlib from "./stdlib.js"
+import fs from 'fs'
+import ohm from 'ohm-js'
+import * as core from './core.js'
+import * as stdlib from './stdlib.js'
 
-const bangGrammar = ohm.grammar(fs.readFileSync("src/bang.ohm"))
-const d = { LIST: 'list', OBJ: 'object', STR: 'string', NUM: 'number', BOOL: 'boolean', NIL: 'nil', FUNC: 'function', ANY: 'any' }
-const noReturnExps = [core.Ternary, core.PreIncrement, core.PreDecrement, core.PostIncrement, core.PostDecrement, core.Call]
+const bangGrammar = ohm.grammar(fs.readFileSync('src/bang.ohm'))
+const d = {
+  LIST: 'list',
+  OBJ: 'object',
+  STR: 'string',
+  NUM: 'number',
+  BOOL: 'boolean',
+  NIL: 'nil',
+  FUNC: 'function',
+  ANY: 'any',
+}
+const noReturnExps = [
+  core.Ternary,
+  core.PreIncrement,
+  core.PreDecrement,
+  core.PostIncrement,
+  core.PostDecrement,
+  core.Call,
+]
 
 function check(condition, message, node) {
   if (!condition) core.error(message, node)
@@ -28,7 +44,7 @@ function checkNotType(e, types) {
 //     x ? 'hi'
 //     */
 //   }
-  
+
 // }
 
 // function coerceToNil(e) {
@@ -79,7 +95,14 @@ function checkNotType(e, types) {
 //   return new core.List(e.type === d.NIL ? [] : e.type === d.LIST ? e.val : [e.val])
 // }
 
-function defineVar(id, context, types = [d.NIL], exp, local = false, readOnly = false) {
+function defineVar(
+  id,
+  context,
+  types = [d.NIL],
+  exp,
+  local = false,
+  readOnly = false
+) {
   if (typeof id !== 'string') return
 
   const variable = new core.Var(id, local, readOnly, types)
@@ -91,7 +114,7 @@ function defineVar(id, context, types = [d.NIL], exp, local = false, readOnly = 
 
 function checkNotLiteral(e) {
   const lits = [core.Str, core.Num, core.Bool, core.Nil]
-  check(!lits.some(l => e instanceof l), 'Cannot mutate a literal')
+  check(!lits.some((l) => e instanceof l), 'Cannot mutate a literal')
 }
 
 function checkInBlock(context) {
@@ -106,14 +129,27 @@ function checkInLoop(context) {
 function mapOps(elements) {
   const ops = ['==', '!=', '<', '>', '<=', '>=', '+', '-', '/', '*', '%', '**']
   return elements.reduce(
-    (arr, val, i) => (ops.includes(val) ? [...arr, [val, [elements[i - 1], elements[i + 1]]]] : arr),
+    (arr, val, i) =>
+      ops.includes(val)
+        ? [...arr, [val, [elements[i - 1], elements[i + 1]]]]
+        : arr,
     []
   )
 }
 
 class Context {
-  constructor({ parent = null, locals = new Map(), block: b = null, extraVarDecs = [] }) {
-    Object.assign(this, { parent, locals, block: b, extraVarDecs: extraVarDecs })
+  constructor({
+    parent = null,
+    locals = new Map(),
+    block: b = null,
+    extraVarDecs = [],
+  }) {
+    Object.assign(this, {
+      parent,
+      locals,
+      block: b,
+      extraVarDecs: extraVarDecs,
+    })
   }
 
   // sees(name) {
@@ -131,14 +167,20 @@ class Context {
   }
 
   newChildContext(props) {
-    return new Context({ ...this, ...props, parent: this, locals: new Map(), extraVarDecs: [] })
+    return new Context({
+      ...this,
+      ...props,
+      parent: this,
+      locals: new Map(),
+      extraVarDecs: [],
+    })
   }
 }
 
 export default function analyze(sourceCode) {
   let context = new Context({})
 
-  const analyzer = bangGrammar.createSemantics().addOperation("rep", {
+  const analyzer = bangGrammar.createSemantics().addOperation('rep', {
     Program(body) {
       return body.rep()
     },
@@ -146,16 +188,20 @@ export default function analyze(sourceCode) {
       const block = new core.Block()
       context = context.newChildContext({ block: block })
 
-      statements.children.forEach(s => {
+      statements.children.forEach((s) => {
         block.statements.push(s.rep())
       })
       block.statements.push(...statement.rep())
 
-      if (block.statements.length === 1 && (noReturnExps.includes(block.statements[0].constructor) || block.statements[0] instanceof core.Var)) {
+      if (
+        block.statements.length === 1 &&
+        (noReturnExps.includes(block.statements[0].constructor) ||
+          block.statements[0] instanceof core.Var)
+      ) {
         block.statements[0] = new core.ReturnStatement(block.statements[0])
       }
 
-      context.extraVarDecs.forEach(s => block.statements.unshift(s))
+      context.extraVarDecs.forEach((s) => block.statements.unshift(s))
       context.extraVarDecs = []
 
       context = context.parent
@@ -165,7 +211,13 @@ export default function analyze(sourceCode) {
       return statement.rep()
     },
     Statement_varDec(local, readOnly, id, op, exp) {
-      let [val, o, isLocal, isReadOnly, name] = [exp.rep(), op.sourceString, local.sourceString === 'local', readOnly.sourceString === 'const', id.sourceString]
+      let [val, o, isLocal, isReadOnly, name] = [
+        exp.rep(),
+        op.sourceString,
+        local.sourceString === 'local',
+        readOnly.sourceString === 'const',
+        id.sourceString,
+      ]
       let variable = context.lookup(name)
 
       if (!isLocal && variable?.readOnly) {
@@ -179,7 +231,7 @@ export default function analyze(sourceCode) {
 
       // TODO at code generation will need to use shared semantics, although js might handle that already
 
-      // TODO this is a problem because can't guarantee the most recent assignment actually happened, or that it's not skipping 
+      // TODO this is a problem because can't guarantee the most recent assignment actually happened, or that it's not skipping
       // over some nested assignment in a ternary or something
       // if (val instanceof core.Var) {
       //   // setting a variable equal to another variable makes a shallow copy
@@ -206,7 +258,7 @@ export default function analyze(sourceCode) {
           context.add(name, variable)
           return new core.VarDec(variable, val)
         } else {
-          type.forEach(t => variable.type.add(t))
+          type.forEach((t) => variable.type.add(t))
         }
       } else {
         // Designed to only get here if variable dec is using an eval assignment
@@ -248,7 +300,7 @@ export default function analyze(sourceCode) {
 
       if (variable.readOnly) {
         const constTypes = [d.NIL, d.BOOL, d.NUM, d.STR]
-        if ([...variable.type].some(t => constTypes.includes(t))) {
+        if ([...variable.type].some((t) => constTypes.includes(t))) {
           core.error(`Cannot assign to constant variable ${variable.id}`)
         }
       }
@@ -296,7 +348,7 @@ export default function analyze(sourceCode) {
       if (notDefined) {
         e = notDefined.var
       } else {
-        const noReturn = noReturnExps.some(r => e instanceof r)
+        const noReturn = noReturnExps.some((r) => e instanceof r)
         if (!noReturn) {
           return new core.ReturnStatement(e)
         }
@@ -327,7 +379,7 @@ export default function analyze(sourceCode) {
           b.statements[0] = new core.ReturnStatement(b.statements[0])
         }
 
-        context.extraVarDecs.forEach(s => b.statements.unshift(s))
+        context.extraVarDecs.forEach((s) => b.statements.unshift(s))
         context.extraVarDecs = []
 
         context = context.parent
@@ -351,20 +403,20 @@ export default function analyze(sourceCode) {
           b.statements[0] = new core.ReturnStatement(b.statements[0])
         }
 
-        context.extraVarDecs.forEach(s => b.statements.unshift(s))
+        context.extraVarDecs.forEach((s) => b.statements.unshift(s))
         context.extraVarDecs = []
 
         context = context.parent
         falseBlock = b
       } else {
-        [falseBlock] = [...alt.rep()]
+        ;[falseBlock] = [...alt.rep()]
       }
 
       return new core.Ternary(bool, trueBlock, falseBlock)
     },
     Exp1_equality(left, right) {
       let elements = [...left.rep(), right.rep()].flat()
-      const type = core.getType(elements.filter(e => typeof e !== 'string'))
+      const type = core.getType(elements.filter((e) => typeof e !== 'string'))
       const pieces = mapOps(elements)
       let statements = []
 
@@ -374,23 +426,27 @@ export default function analyze(sourceCode) {
           checkNotType(rhs, [d.FUNC])
         }
         if (typeof lhs === 'string') {
-          const variable = new core.Var(lhs, false, false, [type === d.ANY ? d.NIL : type])
+          const variable = new core.Var(lhs, false, false, [
+            type === d.ANY ? d.NIL : type,
+          ])
           context.add(lhs, variable)
           statements.push(new core.VarDec(variable, variable.default))
           elements[elements.indexOf(lhs)] = variable
         }
 
         if (typeof rhs === 'string') {
-          const variable = new core.Var(rhs, false, false, [type === d.ANY ? d.NIL : type])
+          const variable = new core.Var(rhs, false, false, [
+            type === d.ANY ? d.NIL : type,
+          ])
           context.add(rhs, variable)
           statements.push(new core.VarDec(variable, variable.default))
           elements[elements.indexOf(rhs)] = variable
         }
       }
       const exp = new core.NaryExp(elements)
-      statements = statements.filter(s => s)
+      statements = statements.filter((s) => s)
       if (statements.length > 0) {
-        statements.forEach(s => context.extraVarDecs.unshift(s))
+        statements.forEach((s) => context.extraVarDecs.unshift(s))
       }
 
       return exp
@@ -435,15 +491,23 @@ export default function analyze(sourceCode) {
       for (let [op, [lhs, rhs]] of pieces) {
         if (op === '-') {
           if (rhs instanceof core.PreDecrement) {
-            core.error('Expected parentheses around pre-decrement operation on the right side of a subtraction')
+            core.error(
+              'Expected parentheses around pre-decrement operation on the right side of a subtraction'
+            )
           } else if (lhs instanceof core.PostDecrement) {
-            core.error('Expected parentheses around post-decrement operation on the left side of a subtraction')
+            core.error(
+              'Expected parentheses around post-decrement operation on the left side of a subtraction'
+            )
           }
         } else if (op === '+') {
           if (rhs instanceof core.PreIncrement) {
-            core.error('Expected parentheses around pre-increment operation on the right side of an addition')
+            core.error(
+              'Expected parentheses around pre-increment operation on the right side of an addition'
+            )
           } else if (lhs instanceof core.PostIncrement) {
-            core.error('Expected parentheses around post-increment operation on the left side of an addition')
+            core.error(
+              'Expected parentheses around post-increment operation on the left side of an addition'
+            )
           }
         }
 
@@ -508,7 +572,9 @@ export default function analyze(sourceCode) {
       let operands = []
 
       if (elements[0] instanceof core.UnaryExp && elements[0].op === '-') {
-        core.error('Expected parentheses around negative operation on the left side of an exponential expression')
+        core.error(
+          'Expected parentheses around negative operation on the left side of an exponential expression'
+        )
       }
 
       for (let [op, [lhs, _rhs]] of pieces) {
@@ -533,7 +599,9 @@ export default function analyze(sourceCode) {
     Exp7_negative(negative, right) {
       let [op, rhs] = [negative.sourceString, right.rep()]
       if (rhs instanceof core.PreDecrement) {
-        core.error('Expected parentheses around pre-decrement operation with a negation')
+        core.error(
+          'Expected parentheses around pre-decrement operation with a negation'
+        )
       }
 
       const notDefined = defineVar(rhs, context, [d.NUM])
@@ -556,7 +624,9 @@ export default function analyze(sourceCode) {
       let [exp, op] = [target.rep(), postfixOp.sourceString]
       checkNotLiteral(exp)
 
-      const increment = op.includes('+') ? core.PostIncrement : core.PostDecrement
+      const increment = op.includes('+')
+        ? core.PostIncrement
+        : core.PostDecrement
 
       const notDefined = defineVar(exp, context, [d.NUM])
       if (notDefined) {
@@ -619,10 +689,17 @@ export default function analyze(sourceCode) {
       let [target, selector] = [left.rep(), right.sourceString]
       let dot
       if (target instanceof Array) {
-        [target, dot] = target
+        ;[target, dot] = target
       }
 
-      const notDefined = defineVar(target, context, [d.OBJ], new core.Obj([new core.ObjField(new core.Str(selector), new core.Str(selector))]))
+      const notDefined = defineVar(
+        target,
+        context,
+        [d.OBJ],
+        new core.Obj([
+          new core.ObjField(new core.Str(selector), new core.Str(selector)),
+        ])
+      )
       if (notDefined) {
         target = notDefined.var
       }
@@ -709,7 +786,12 @@ export default function analyze(sourceCode) {
     VarAssignment_select(target, dot, selector) {
       let [id, exp] = [target.rep(), selector.rep()]
 
-      const notDefined = defineVar(id, context, [d.OBJ], new core.Obj([new core.ObjField(new core.Str(exp), new core.Str(exp))]))
+      const notDefined = defineVar(
+        id,
+        context,
+        [d.OBJ],
+        new core.Obj([new core.ObjField(new core.Str(exp), new core.Str(exp))])
+      )
       if (notDefined) {
         id = notDefined.var
       }
@@ -733,7 +815,7 @@ export default function analyze(sourceCode) {
           block.statements[0] = new core.ReturnStatement(block.statements[0])
         }
 
-        context.extraVarDecs.forEach(s => block.statements.unshift(s))
+        context.extraVarDecs.forEach((s) => block.statements.unshift(s))
         context.extraVarDecs = []
       } else {
         block = funcBody.rep()
@@ -879,7 +961,7 @@ export default function analyze(sourceCode) {
           b.statements[0] = new core.ReturnStatement(b.statements[0])
         }
 
-        context.extraVarDecs.forEach(s => b.statements.unshift(s))
+        context.extraVarDecs.forEach((s) => b.statements.unshift(s))
         context.extraVarDecs = []
 
         context = context.parent
@@ -889,7 +971,7 @@ export default function analyze(sourceCode) {
       }
 
       let conds = matches.asIteration().rep()
-      conds = conds.map(c => {
+      conds = conds.map((c) => {
         const notDefined = defineVar(c, context)
         return notDefined ? notDefined.var : c
       })
@@ -908,7 +990,7 @@ export default function analyze(sourceCode) {
           block.statements[0] = new core.ReturnStatement(block.statements[0])
         }
 
-        context.extraVarDecs.forEach(s => block.statements.unshift(s))
+        context.extraVarDecs.forEach((s) => block.statements.unshift(s))
         context.extraVarDecs = []
 
         context = context.parent
@@ -925,7 +1007,7 @@ export default function analyze(sourceCode) {
       return this.sourceString
     },
     _iter(...children) {
-      return children.map(child => child.rep())
+      return children.map((child) => child.rep())
     },
   })
 

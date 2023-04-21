@@ -71,7 +71,9 @@ export default function generate(program) {
       return `throw new Error('break');`
     },
     Ternary(t) {
-      return `${gen(t.cond)}.val ? (() => {${t.block.statements.map(gen).join('\n')}})() : (() => {${
+      return `${gen(t.cond)}.val ? (() => {${t.block.statements
+        .map(gen)
+        .join('\n')}})() : (() => {${
         t.alt ? gen(t.alt) : 'return undefined;'
       }})();`
     },

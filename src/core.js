@@ -114,10 +114,7 @@ export class Func {
   }
 
   get default() {
-    return new Func(
-      new Params(),
-      new Block()
-    )
+    return new Func(new Params(), new Block())
   }
 
   get type() {
@@ -138,7 +135,11 @@ export class KeywordParam {
   }
 
   equals(other) {
-    return other instanceof KeywordParam && this.id === other.id && this.val === other.val
+    return (
+      other instanceof KeywordParam &&
+      this.id === other.id &&
+      this.val === other.val
+    )
   }
 
   toString() {
@@ -153,11 +154,13 @@ export class Block {
 
   get type() {
     let returns = []
-    this.statements.filter(s => s instanceof ReturnStatement).forEach(r => {
-      let types = r.type
-      types = types instanceof Set ? [...types] : [types]
-      returns.push(types)
-    })
+    this.statements
+      .filter((s) => s instanceof ReturnStatement)
+      .forEach((r) => {
+        let types = r.type
+        types = types instanceof Set ? [...types] : [types]
+        returns.push(types)
+      })
 
     if (returns.length === 0) {
       return Nil.typeDescription
@@ -173,7 +176,10 @@ export class Block {
   }
 
   equals(other) {
-    return other instanceof Block && JSON.stringify(this.statements) === JSON.stringify(other.statements)
+    return (
+      other instanceof Block &&
+      JSON.stringify(this.statements) === JSON.stringify(other.statements)
+    )
   }
 
   toString() {
@@ -195,7 +201,11 @@ export class Var {
   }
 
   get default() {
-    return getDefault(this.type.size === 1 ? this.type.values().next().value : getType(this.type, true))
+    return getDefault(
+      this.type.size === 1
+        ? this.type.values().next().value
+        : getType(this.type, true)
+    )
   }
 
   toString() {
@@ -241,7 +251,7 @@ export class ReturnStatement {
 }
 
 export class BreakStatement {
-  constructor() { }
+  constructor() {}
 }
 
 export class Ternary {
@@ -269,7 +279,7 @@ export class NaryExp {
 
   get type() {
     const equalityOps = ['>=', '<=', '>', '<', '==', '!=']
-    if (this.exp.some(e => equalityOps.includes(e))) {
+    if (this.exp.some((e) => equalityOps.includes(e))) {
       return Bool.typeDescription
     }
 
@@ -398,10 +408,12 @@ Block.prototype[util.inspect.custom] = function () {
 
   // Attach a unique integer tag to every node
   function tag(node) {
-    if (tags.has(node) || typeof node !== "object" || node === null) return
+    if (tags.has(node) || typeof node !== 'object' || node === null) return
     tags.set(node, tags.size + 1)
     for (const child of Object.values(node)) {
-      Array.isArray(child) || child instanceof Set ? child.forEach(tag) : tag(child)
+      Array.isArray(child) || child instanceof Set
+        ? child.forEach(tag)
+        : tag(child)
     }
   }
 
@@ -415,16 +427,23 @@ Block.prototype[util.inspect.custom] = function () {
     for (let [node, id] of [...tags.entries()].sort((a, b) => a[1] - b[1])) {
       let type = node.constructor.name
       let props = Object.entries(node).map(([k, v]) => `${k}=${view(v)}`)
-      yield `${String(id).padStart(4, " ")} | ${type} ${props.join(" ")}`
+      yield `${String(id).padStart(4, ' ')} | ${type} ${props.join(' ')}`
     }
   }
 
   tag(this)
-  return [...lines()].join("\n")
+  return [...lines()].join('\n')
 }
 
 const getDefault = (t) => {
-  const types = { [List.typeDescription]: List, [Obj.typeDescription]: Obj, [Str.typeDescription]: Str, [Num.typeDescription]: Num, [Bool.typeDescription]: Bool, [Func.typeDescription]: Func }
+  const types = {
+    [List.typeDescription]: List,
+    [Obj.typeDescription]: Obj,
+    [Str.typeDescription]: Str,
+    [Num.typeDescription]: Num,
+    [Bool.typeDescription]: Bool,
+    [Func.typeDescription]: Func,
+  }
 
   for (const [typeDescription, type] of Object.entries(types)) {
     if (t === typeDescription) {
@@ -436,20 +455,35 @@ const getDefault = (t) => {
 }
 
 const arrayEquals = (a, b) => {
-  return a.length === b.length && a.every((val, index) => val === b[index] || (typeof val.equals === 'function' && val.equals(b[index])))
+  return (
+    a.length === b.length &&
+    a.every(
+      (val, index) =>
+        val === b[index] ||
+        (typeof val.equals === 'function' && val.equals(b[index]))
+    )
+  )
 }
 
 export const getType = (exps, defaultType = 'any', weakest = false) => {
-  const types = [List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription]
+  const types = [
+    List.typeDescription,
+    Obj.typeDescription,
+    Str.typeDescription,
+    Num.typeDescription,
+    Bool.typeDescription,
+  ]
 
   for (const type of weakest ? types.slice().reverse() : types) {
-    if ([...exps].some(e => {
-      let t = e.type
-      if (e instanceof Var) {
-        t = getType(e.type, 'any', true)
-      }
-      return t === type || e === type
-    })) {
+    if (
+      [...exps].some((e) => {
+        let t = e.type
+        if (e instanceof Var) {
+          t = getType(e.type, 'any', true)
+        }
+        return t === type || e === type
+      })
+    ) {
       return type
     }
   }
