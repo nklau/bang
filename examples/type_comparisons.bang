@@ -1,0 +1,12 @@
+dynamicTypedVar = true
+
+print($"first, let's set dynamicTypedVar to {dynamicTypedVar}, then we'll compare it to different types")
+print($"    - is dynamicTypedVar less than 15? {dynamicTypedVar < 15}")
+print($"    - is dynamicTypedVar greater than than [0, 1, 2]? {dynamicTypedVar > [0, 1, 2]}")
+print($"    - is dynamicTypedVar less than the string hello? {dynamicTypedVar < "hello"}")
+print($"let's add dynamicTypedVar to itself")
+print($"    dynamicTypedVar + dynamicTypedVar = {dynamicTypedVar + dynamicTypedVar}")
+print($"    dynamicTypedVar - dynamicTypedVar = {dynamicTypedVar - dynamicTypedVar}")
+print($"what is dynamicTypedVar now? it's {dynamicTypedVar}")
+
+
