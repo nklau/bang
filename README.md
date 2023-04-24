@@ -6,7 +6,7 @@ A compiler for the programming language bang!
 
 See the official documentation [here](https://nklau.github.io/bang/).
 
-Aidan Srouji, Natalie Lau, and Abe Moore Odell have competed as a team in the LMU Git Gud programming competition for the past two years. After losing to the professors by 0.3 points in the last competition, the team decided to create a programming language specifically designed for the type of coding done in limited time competitions and interviews. Their creation, known as "Bang!", is a dynamically typed language that makes use of concise and clear syntax to create a pleasant and swift programming experience. By treating everything as an object, Bang! gives programmers many time-saving options, such as the ability to create loops from numbers and its signature "bang functions". The mission? Minimize typing, and maximize winning.
+Aidan Srouji, Natalie Lau, and Abe Moore Odell have competed as a team in the LMU Git Gud programming competition for the past two years. After losing to the professors by 0.3 points in the last competition, the team decided to create a programming language specifically designed for the type of coding done in limited time competitions and interviews. Their creation, known as "Bang!", is a dynamically typed language that makes use of concise and clear syntax to create a pleasant and swift programming experience. By treating everything as an object, Bang! gives programmers many time-saving options, such as the ability to create loops from numbers and its signature "bang functions." The mission? Minimize typing, and maximize winning.
 
 ## Language Overview
 
@@ -44,7 +44,7 @@ Aidan Srouji, Natalie Lau, and Abe Moore Odell have competed as a team in the LM
 
 ### Type Hierarchy
 
-Types in Bang! are always implicitly coerced upwards, from the weakest type to the strongest. Following the mission statement of a dynamic and flexible language, coerced types evaluate to the most logical value (at least we think so!). The Type Hierarchy table shows a variable `e` and its coerced values, `e.<type>`. The weakest type, `nil`, is in the first row, and the strongest type, `list`, is in the final row. Within each row, single values are given if the coercion always results in the same value, otherwise, a general case rule and select examples and/or exceptions to the general rule are given.
+Types in Bang! are always implicitly coerced upwards, from the weakest type to the strongest. Following the mission statement of a dynamically typed and flexible language, coerced types evaluate to the most logical value (at least we think so!). The Type Hierarchy table shows a variable `e` and its coerced values, `e.<type>`. The weakest type, `nil`, is in the first row, and the strongest type, `list`, is in the final row. Within each row, single values are given if the coercion always results in the same value, otherwise, a general case rule and select examples and/or exceptions to the general rule are given.
 
 <table border="1px">
 <tr> <th> Target type &#x2011;> </th> <th> nil </th> <th> boolean </th> <th> number </th> <th> string </th> <th> object </th> <th> list </th></tr>
@@ -1263,9 +1263,9 @@ _main()
 </tr>
 </table>
 
-Natalie "nat" Lau is a third-year CS student at Loyola Marymount University interested in language scemantics and design, mobile app development, and video game development. Some of her past projects include implementing Linux kernel modules using sockets, and a mobile app companion for the game Breath of the Wild.
+Natalie "Nat" Lau is a third-year CS student at Loyola Marymount University interested in language scemantics and design, mobile app development, and video game development. Some of her past projects include implementing Linux kernel modules using sockets, and a mobile app companion for the game Breath of the Wild.
 
-Abraham "Abe" Moore Odell is a computer science student at Loyola Marymount University with interests in AI, language design, and game design. Some of his past projects include AI game playing agents, and a video generator.
+Abraham "Abe" Moore Odell is a computer science student at Loyola Marymount University with interests in AI, language design, and game design. Some of his past projects include AI game playing agents, and an automatic video generator.
 
 Aidan "Aidan" Srouji is a third-year CS student at LMU, interested in applying artificial intelligence agents to the field of video game development. Some of his past projects include implementing an automatic speech recognition deep learning model, and creating a text-based multiplayer game run through the Discord platform.
 
