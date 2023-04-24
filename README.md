@@ -1265,7 +1265,7 @@ _main()
 
 Natalie "Nat" Lau is a third-year CS student at Loyola Marymount University interested in language scemantics and design, mobile app development, and video game development. Some of her past projects include implementing Linux kernel modules using sockets, and a mobile app companion for the game Breath of the Wild.
 
-Abraham "Abe" Moore Odell is a computer science student at Loyola Marymount University with interests in AI, language design, and game design. Some of his past projects include AI game playing agents, and an automatic video generator.
+Abraham "Abe" Moore Odell is a second-year CS student at Loyola Marymount University with interests in AI, language design, and game design. Some of his past projects include AI game playing agents, and an automatic video generator.
 
 Aidan "Aidan" Srouji is a third-year CS student at LMU, interested in applying artificial intelligence agents to the field of video game development. Some of his past projects include implementing an automatic speech recognition deep learning model, and creating a text-based multiplayer game run through the Discord platform.
 
