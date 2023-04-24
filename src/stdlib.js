@@ -974,6 +974,10 @@ const multiply = `const multiply = (...exps) => {
   return multiplyFunc();
 };`
 
+const exponentiate = `const exponentiate = (exps) => {
+  throw new Error('unimplemented exponentiation operation');
+};`
+
 const strongestType = `const strongestType = (exps) => {
   const types = [Func.typeDescription, List.typeDescription, Obj.typeDescription, Str.typeDescription, Num.typeDescription, Bool.typeDescription];
   for (let type of types) {
@@ -1412,4 +1416,5 @@ export const stdFuncs = [
   postInc,
   preDec,
   postDec,
+  exponentiate,
 ]

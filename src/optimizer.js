@@ -22,6 +22,10 @@ const truthy = (e) => ({
   [core.Nil]: (_cond) => false,
 }[e.constructor] ?? (() => undefined))(e.val)
 
+const isLiteral = (e) => {
+  return [core.List, core.Obj, core.Str, core.Num, core.Bool, core.Nil].includes(e.constructor)
+}
+
 const optimizers = {
   Block(b) {
     if (b.statements.length === 0) {
@@ -69,7 +73,7 @@ const optimizers = {
         return optimize(b.left)
       }
 
-      if (b.right === 'loop' && truthy(b.left) === false) {
+      if (b.right === 'loop' && truthy(optimize(b.left)) === false) {
         return []
         // TODO loop unrolling
         // if the conditional returns true, DO NOT replace it with true (that will create an infinite loop)
@@ -83,6 +87,26 @@ const optimizers = {
     return b
   },
   NaryExp(n) {
+    function mapOps(elements) {
+      const ops = ['==', '!=', '<', '>', '<=', '>=', '+', '-', '/', '*', '%', '**']
+      return elements.reduce(
+        (arr, val, i) =>
+          ops.includes(val)
+            ? [...arr, [val, [elements[i - 1], elements[i + 1]]]]
+            : arr,
+        []
+      )
+    }
+
+    if (n.exp.every(e => typeof e === 'string' || isLiteral(e))) {
+      const elements = mapOps(n.exp)
+      const bools = []
+      elements.forEach(([op, [left, right]]) => {
+        bools.push(new core.Bool({
+          // TODO
+        }))
+      });
+    }
     // TODO equality comparisons with constants (remember that it's nary!)
     // TODO constant folding for +, -, *, /, %, **
     return n
