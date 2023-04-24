@@ -1,0 +1,3 @@
+age = 15
+
+age < 18 ? print("under 18") : age > 60 ? "over 60" : "between 18 and 60"
