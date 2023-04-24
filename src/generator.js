@@ -119,10 +119,10 @@ export default function generate(program) {
           const translations = {
             '==': `() => ${lhs}.equals(${rhs})`,
             '!=': `() => !(${lhs}.equals(${rhs}))`,
-            '<': `() => coerce(${lhs}, Num.typeDescription).val < coerce(${rhs}, Num.typeDescription).val`,
-            '>': `() => coerce(${lhs}, Num.typeDescription).val > coerce(${rhs}, Num.typeDescription).val`,
-            '<=': `() => (coerce(${lhs}, Num.typeDescription).val < coerce(${rhs}, Num.typeDescription).val || ${lhs}.equals(${rhs}))`,
-            '>=': `() => (coerce(${lhs}, Num.typeDescription).val > coerce(${rhs}, Num.typeDescription).val || ${lhs}.equals(${rhs}))`,
+            '<': `() => ${left instanceof core.Num ? `${lhs}.val` : `coerce(${lhs}, Num.typeDescription).val`} < ${right instanceof core.Num ? `${rhs}.val` : `coerce(${rhs}, Num.typeDescription).val`}`,
+            '>': `() => ${left instanceof core.Num ? `${lhs}.val` : `coerce(${lhs}, Num.typeDescription).val`} > ${right instanceof core.Num ? `${rhs}.val` : `coerce(${rhs}, Num.typeDescription).val`}`,
+            '<=': `() => (${left instanceof core.Num ? `${lhs}.val` : `coerce(${lhs}, Num.typeDescription).val`} < ${right instanceof core.Num ? `${rhs}.val` : `coerce(${rhs}, Num.typeDescription).val`} || ${lhs}.equals(${rhs}))`,
+            '>=': `() => (${left instanceof core.Num ? `${lhs}.val` : `coerce(${lhs}, Num.typeDescription).val`} > ${right instanceof core.Num ? `${rhs}.val` : `coerce(${rhs}, Num.typeDescription).val`} || ${lhs}.equals(${rhs}))`,
           }
 
           elements.push(`new Bool(${translations[op]})`)

@@ -3530,7 +3530,7 @@ const fixtures = [
         (new Bool(true).loop)(() => {try {
           print(i_0);
         } catch {}
-        (new Bool(() => coerce(postInc(i_0), Num.typeDescription).val > coerce(new Num(5), Num.typeDescription).val)).val ? (() => {throw new Error('break');})() : (() => {return undefined;})();});
+        (new Bool(() => coerce(postInc(i_0), Num.typeDescription).val > new Num(5).val)).val ? (() => {throw new Error('break');})() : (() => {return undefined;})();});
       } catch {}
     }
     const output = main();
@@ -3552,7 +3552,7 @@ const fixtures = [
     function main()
     {
       let i_0 = new Num(0);
-      return (new Bool(() => coerce(i_0, Num.typeDescription).val < coerce(new Num(5), Num.typeDescription).val));
+      return (new Bool(() => coerce(i_0, Num.typeDescription).val < new Num(5).val));
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -3570,7 +3570,7 @@ const fixtures = [
     {
       let i_0 = new Num(0);
       try {
-        (((new Bool(() => coerce(i_0, Num.typeDescription).val < coerce(new Num(5), Num.typeDescription).val))).loop)(() => {try {
+        (((new Bool(() => coerce(i_0, Num.typeDescription).val < new Num(5).val))).loop)(() => {try {
           let _internal1 = print(postInc(i_0));
           return _internal1;
         } catch {}});
