@@ -1410,11 +1410,11 @@ export const stdFuncs = [
   add,
   multiply,
   subscript,
+  exponentiate,
   print,
   negate,
   preInc,
   postInc,
   preDec,
   postDec,
-  exponentiate,
 ]
