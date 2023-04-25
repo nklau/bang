@@ -2,10 +2,7 @@ import assert from 'assert/strict'
 import analyze from '../src/analyzer.js'
 import optimize from '../src/optimizer.js'
 import generate from '../src/generator.js'
-import * as fsPromises from 'fs/promises'
-import * as fs from 'fs'
 import { exec } from 'child_process'
-import path from 'path'
 import { promisify } from 'util'
 
 const execute = promisify(exec)
