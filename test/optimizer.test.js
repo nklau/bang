@@ -21,6 +21,97 @@ const fixtures = [
     `,
     output: `1`,
   },
+  {
+    name: 'constant folding for adding two numbers',
+    source: `1 + 2`,
+    expected: dedent`
+    function main()
+    {
+      return new Num(3);
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `3`,
+  },
+  {
+    name: 'constant folding for subtracting two numbers',
+    source: `1 - 2`,
+    expected: dedent`
+    function main()
+    {
+      return new Num(-1);
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `-1`,
+  },
+  {
+    name: 'constant folding for dividing two numbers',
+    source: `1 / 2`,
+    expected: dedent`
+    function main()
+    {
+      return new Num(0.5);
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `0.5`,
+  },
+  {
+    name: 'constant folding for multiplying two numbers',
+    source: `1 * 2`,
+    expected: dedent`
+    function main()
+    {
+      return new Num(2);
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `2`,
+  },
+  {
+    name: 'constant folding for modulo two numbers',
+    source: `1 % 2`,
+    expected: dedent`
+    function main()
+    {
+      return new Num(1);
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `1`,
+  },
+  {
+    name: 'constant folding for exponentiating two numbers',
+    source: `2 ** 4`,
+    expected: dedent`
+    function main()
+    {
+      return new Num(16);
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `16`,
+  },
+  {
+    name: 'constant folding for adding three numbers',
+    source: `1 + 2 + 3`,
+    expected: dedent`
+    function main()
+    {
+      return new Num(6);
+    }
+    const output = main();
+    if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
+    `,
+    output: `6`,
+  },
 ]
 
 const runTest = async (fixture) => {

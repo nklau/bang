@@ -87,28 +87,51 @@ const optimizers = {
     return b
   },
   NaryExp(n) {
-    function mapOps(elements) {
-      const ops = ['==', '!=', '<', '>', '<=', '>=', '+', '-', '/', '*', '%', '**']
-      return elements.reduce(
-        (arr, val, i) =>
-          ops.includes(val)
-            ? [...arr, [val, [elements[i - 1], elements[i + 1]]]]
-            : arr,
-        []
-      )
+    if (n.exp.length === 1) {
+      return optimize(n.exp[0])
+    } else if (n.exp.every(e => typeof e === 'string' || e instanceof core.Num)) {
+      let result = n.exp[0].val
+      if (['==', '!=', '<', '>', '<=', '>='].includes(n.exp[1])) {
+        // not doing constant folding for equality operators
+        return n
+      }
+      for (let i = 0; i < n.exp.length - 1; i += 2) {
+        const [left, op, right] = [result, n.exp[i + 1], n.exp[i + 2].val]
+        result = {
+          '+': (lhs, rhs) => lhs + rhs,
+          '-': (lhs, rhs) => lhs - rhs,
+          '/': (lhs, rhs) => lhs / rhs,
+          '*': (lhs, rhs) => lhs * rhs,
+          '%': (lhs, rhs) => lhs % rhs,
+          '**': (lhs, rhs) => lhs ** rhs,
+        }[op](left, right)
+      }
+      return new core.Num(result)
     }
 
-    if (n.exp.every(e => typeof e === 'string' || isLiteral(e))) {
-      const elements = mapOps(n.exp)
-      const bools = []
-      elements.forEach(([op, [left, right]]) => {
-        bools.push(new core.Bool({
-          // TODO
-        }))
-      });
-    }
-    // TODO equality comparisons with constants (remember that it's nary!)
-    // TODO constant folding for +, -, *, /, %, **
+
+    // code for constant folding for expressions that have more than 2 operands
+    // ---------------------------------------------------------
+    // function mapOps(elements) {
+    //   const ops = ['==', '!=', '<', '>', '<=', '>=', '+', '-', '/', '*', '%', '**']
+    //   return elements.reduce(
+    //     (arr, val, i) =>
+    //       ops.includes(val)
+    //         ? [...arr, [val, [elements[i - 1], elements[i + 1]]]]
+    //         : arr,
+    //     []
+    //   )
+    // }
+    // if (n.exp.every(e => typeof e === 'string' || isLiteral(e))) {
+    //   const elements = mapOps(n.exp)
+    //   const bools = []
+    //   elements.forEach(([op, [left, right]]) => {
+    //     bools.push(new core.Bool({
+    //       // TODO
+    //     }))
+    //   });
+    // }
+    // ---------------------------------------------------------
     return n
   },
   UnaryExp(u) {
@@ -220,19 +243,15 @@ const optimizers = {
     return n
   },
   PostIncrement(p) {
-    // TODO
     return p
   },
   PostDecrement(p) {
-    // TODO
     return p
   },
   PreIncrement(p) {
-    // TODO
     return p
   },
   PreDecrement(p) {
-    // TODO
     return p
   },
   Array(a) {

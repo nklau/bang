@@ -16,7 +16,7 @@ const fixtures = [
     expected: dedent`
       function main()
       {
-        return (add(new Num(1), '+', new Num(2)));
+        return new Num(3);
       }
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -50,7 +50,7 @@ const fixtures = [
       function main()
       {
         try {
-          let _internal1 = print((add(new Num(1), '+', new Num(2))));
+          let _internal1 = print(new Num(3));
           return _internal1;
         } catch {}
       }
@@ -67,7 +67,7 @@ const fixtures = [
     expected: dedent`
       function main()
       {
-        return (add(new Num(10), '+', new Num(153), '+', new Num(0)));
+        return new Num(163);
       }
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -80,7 +80,7 @@ const fixtures = [
     expected: dedent`
     function main()
       {
-        return (add(new Num(5), '-', new Num(3)));
+        return new Num(2);
       }
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -93,7 +93,7 @@ const fixtures = [
     expected: dedent`
     function main()
       {
-        return (add(new Num(3), '-', new Num(5)));
+        return new Num(-2);
       }
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -108,7 +108,7 @@ const fixtures = [
     expected: dedent`
       function main()
       {
-        return (add(new Num(10), '-', new Num(153), '-', new Num(0)));
+        return new Num(-143);
       }
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -123,7 +123,7 @@ const fixtures = [
     expected: dedent`
       function main()
       {
-        return (add(new Num(10), '-', new Num(153), '+', new Num(163)));
+        return new Num(20);
       }
       const output = main();
       if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -1178,7 +1178,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (multiply(new Num(2), '*', new Num(3)));
+      return new Num(6);
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -1867,7 +1867,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (multiply(new Num(1), '*', new Num(5)));
+      return new Num(5);
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -3024,7 +3024,7 @@ const fixtures = [
     expected: dedent`
     function main()
     {
-      return (multiply(new Num(1), '*', new Num(2), '*', new Num(3)));
+      return new Num(6);
     }
     const output = main();
     if (output) console.log(output === nil ? nil.type.val : coerce(output, Str.typeDescription).val);
@@ -3563,7 +3563,7 @@ const fixtures = [
     {
       let i_0 = new Num(0);
       try {
-        (((new Bool(() => coerce(i_0, Num.typeDescription).val < new Num(5).val))).loop)(() => {try {
+        ((new Bool(() => coerce(i_0, Num.typeDescription).val < new Num(5).val)).loop)(() => {try {
           let _internal1 = print(postInc(i_0));
           return _internal1;
         } catch {}});
