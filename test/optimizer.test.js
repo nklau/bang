@@ -2,10 +2,6 @@ import assert from 'assert/strict'
 import analyze from '../src/analyzer.js'
 import optimize from '../src/optimizer.js'
 import generate from '../src/generator.js'
-import { exec } from 'child_process'
-import { promisify } from 'util'
-
-const execute = promisify(exec)
 
 function dedent(s) {
   return `${s}`.replace(/(?<=\n)\s+/g, '').trim()
