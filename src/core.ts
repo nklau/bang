@@ -1,6 +1,7 @@
 export enum Category {
   id,
-  keyword
+  keyword,
+  number
 }
 
 export class Token {
