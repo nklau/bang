@@ -7,3 +7,7 @@ export class Token {
     Object.assign(this, { category, lexeme, line, column })
   }
 }
+
+export function error(message: string, line: number, column: number) {
+  throw new Error(`Line ${line ?? "-"}, Column ${column ?? "-"}: ${message}`)
+}
