@@ -3,6 +3,7 @@ export enum Category {
   keyword,
   number,
   string,
+  object,
 }
 
 export class Token {
