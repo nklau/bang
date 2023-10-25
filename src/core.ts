@@ -3,7 +3,7 @@ export enum Category {
 }
 
 export class Token {
-  constructor(category: string, lexeme: string, line: number, column: number) {
+  constructor(category: Category, lexeme: string, line: number, column: number) {
     Object.assign(this, { category, lexeme, line, column })
   }
 }
