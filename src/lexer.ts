@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { Category, Token, error } from './core'
 
 export default function tokenizeFile() {
   if (process.argv.length < 3) {
@@ -15,16 +16,14 @@ export default function tokenizeFile() {
   })
 }
 
-export enum Category {
-  id
-}
-
 const tokenize = (program: string) => {
   let lineNumber = 1
   return program.split(/\r?\n/).map(line => tokenizeLine([...line, "\n"], lineNumber++))
 }
 
-const tokenizeLine = (line: string[], lineNumber: number) => {
+const tokenizeLine = (line: string[], lineNumber: number): Token[] => {
+  const tokens: Token[] = []
+
   for (let i = 0; i < line.length;) {
     while (/[ \t]/.test(line[i])) i++
 
@@ -32,12 +31,19 @@ const tokenizeLine = (line: string[], lineNumber: number) => {
     // end of line or start of comment
     if (line[i] === '\n' || `${line[i]}${line[i + 1]}` === '//') break
 
-    let category
+    let category: Category
+    let start = i
     let match
 
-    if (match = /[a-zA-Z_]\w*/.exec(line.join())) {
+    if (match = /^[a-zA-Z_]\w*/.exec(line.join())) {
       category = Category.id
       i += match[0].length
+    } else {
+      error(`Unexpected character: '${line[start]}'`, lineNumber, start)
     }
+
+    tokens.push(new Token(category, match[0], lineNumber, start + 1))
   }
+
+  return tokens
 }
