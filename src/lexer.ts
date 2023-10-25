@@ -37,11 +37,13 @@ const tokenizeLine = (line: string[], lineNumber: number): Token[] => {
 
     if (match = /^[a-zA-Z_]\w*/.exec(line.join())) {
       category = Category.id
-      i += match[0].length
+    } else if (match = /cst|locl|T|F|inf|pi|mtch|cs|dft|nil|brk|rtn/A.exec(line.join())) {
+      category = Category.keyword
     } else {
       error(`Unexpected character: '${line[start]}'`, lineNumber, start)
     }
-
+    
+    i += match[0].length
     tokens.push(new Token(category, match[0], lineNumber, start + 1))
   }
 
