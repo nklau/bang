@@ -8,6 +8,6 @@ export class Token {
   }
 }
 
-export function error(message: string, line: number, column: number) {
+export function error(message: string, line: number, column: number): never {
   throw new Error(`Line ${line ?? "-"}, Column ${column ?? "-"}: ${message}`)
 }
