@@ -24,7 +24,7 @@ const tokenize = (program: string) => {
 const tokenizeLine = (line: string[], lineNumber: number): Token[] => {
   const tokens: Token[] = []
 
-  for (let i = 0; i < line.length;) {
+  for (let i = 0, str = line.join(); i < line.length;) {
     while (/[ \t]/.test(line[i])) i++
 
     // TODO how to account for multiline comment this way?
@@ -35,14 +35,16 @@ const tokenizeLine = (line: string[], lineNumber: number): Token[] => {
     let start = i
     let match
 
-    if (match = /^[a-zA-Z_]\w*/.exec(line.join())) {
+    if (match = /^[a-zA-Z_]\w*/.exec(str)) {
       category = Category.id
-    } else if (match = /cst|locl|T|F|inf|pi|mtch|cs|dft|nil|brk|rtn/A.exec(line.join())) {
+    } else if (match = /cst|locl|T|F|inf|pi|mtch|cs|dft|nil|brk|rtn/A.exec(str)) {
       category = Category.keyword
+    } else if (match = /^\d*\.?\d+/.exec(str)) {
+      category = Category.number
     } else {
       error(`Unexpected character: '${line[start]}'`, lineNumber, start)
     }
-    
+
     i += match[0].length
     tokens.push(new Token(category, match[0], lineNumber, start + 1))
   }
