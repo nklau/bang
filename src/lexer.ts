@@ -17,8 +17,7 @@ export default function tokenizeFile() {
 }
 
 export const tokenize = (program: string) => {
-  let lineNumber = 1
-  return program.split(/\r?\n/).map(line => tokenizeLine([...line, "\n"], lineNumber++))
+  return program.split(/\r?\n/).map((line, lineNumber) => tokenizeLine([...line, "\n"], lineNumber))
 }
 
 const tokenizeLine = (line: string[], lineNumber: number): Token[] => {
@@ -46,9 +45,10 @@ const tokenizeLine = (line: string[], lineNumber: number): Token[] => {
     } else if (match = /^(?:\+\+|--|&&|\|\||[=!<>]=|[.@!-^*/%+-<>=])/.exec(str)) {
       category = Category.operator
     } else {
-      error(`Unexpected character: '${line[start]}'`, lineNumber, start)
+      error(`Unexpected character: '${line[i]}'`, lineNumber + 1, i)
     }
 
+    tokens.push(new Token(category, match[0], lineNumber + 1, i + 1))
     i += match[0].length
     tokens.push(new Token(category, match[0], lineNumber, start + 1))
   }
