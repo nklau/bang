@@ -41,8 +41,8 @@ const tokenizeLine = (line: string[], lineNumber: number): Token[] => {
       category = Category.keyword
     } else if (match = /^\d*\.?\d+/.exec(str)) {
       category = Category.number
-    } else if (match = /^(["'])(?:\\\1|(?!\1).)*\1/.exec(str)) {
-      category = Category.string
+    } else if (match = /^["'{}[\](),?:$\\]|^->/.exec(str)) { // /^(["'])(?:\\\1|(?!\1).)*\1/
+      category = Category.structure
     } else {
       error(`Unexpected character: '${line[start]}'`, lineNumber, start)
     }
