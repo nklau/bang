@@ -4,5 +4,6 @@
   "main": "index.js",
   "repository": "https://github.com/nklau/bang.git",
   "author": "nklau2016@gmail.com <63122247+nklau@users.noreply.github.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "type": "module"
 }
