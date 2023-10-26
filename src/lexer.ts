@@ -16,7 +16,7 @@ export default function tokenizeFile() {
   })
 }
 
-const tokenize = (program: string) => {
+export const tokenize = (program: string) => {
   let lineNumber = 1
   return program.split(/\r?\n/).map(line => tokenizeLine([...line, "\n"], lineNumber++))
 }
