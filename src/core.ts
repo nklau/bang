@@ -4,6 +4,7 @@ export enum Category {
   number,
   structure,
   object,
+  operator,
 }
 
 export class Token {
