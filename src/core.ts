@@ -2,7 +2,7 @@ export enum Category {
   id,
   keyword,
   number,
-  string,
+  structure,
   object,
 }
 
