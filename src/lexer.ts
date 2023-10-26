@@ -37,12 +37,14 @@ const tokenizeLine = (line: string[], lineNumber: number): Token[] => {
 
     if (match = /^[a-zA-Z_]\w*/.exec(str)) {
       category = Category.id
-    } else if (match = /cst|locl|T|F|inf|pi|mtch|cs|dft|nil|brk|rtn/A.exec(str)) { // TODO should nil/bools be their own tokens?
+    } else if (match = /^(?:cst|locl|T|F|inf|pi|mtch|cs|dft|nil|brk|rtn)/.exec(str)) { // TODO should nil/bools be their own tokens?
       category = Category.keyword
     } else if (match = /^\d*\.?\d+/.exec(str)) {
       category = Category.number
     } else if (match = /^["'{}[\](),?:$\\]|^->/.exec(str)) { // /^(["'])(?:\\\1|(?!\1).)*\1/
       category = Category.structure
+    } else if (match = /^(?:\+\+|--|&&|\|\||[=!<>]=|[.@!-^*/%+-<>=])/.exec(str)) {
+      category = Category.operator
     } else {
       error(`Unexpected character: '${line[start]}'`, lineNumber, start)
     }
