@@ -1,10 +1,10 @@
 export enum Category {
-  id,
-  keyword,
-  number,
-  structure,
-  object,
-  operator,
+  id = 'id',
+  keyword = 'keyword',
+  number = 'number',
+  structure = 'structure',
+  object = 'object',
+  operator = 'operator',
 }
 
 export class Token {
