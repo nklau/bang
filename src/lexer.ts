@@ -34,10 +34,10 @@ const tokenizeLine = (line: string[], lineNumber: number): Token[] => {
     let start = i
     let match
 
-    if (match = /^[a-zA-Z_]\w*/.exec(str)) {
-      category = Category.id
-    } else if (match = /^(?:cst|locl|T|F|inf|pi|mtch|cs|dft|nil|brk|rtn)/.exec(str)) { // TODO should nil/bools be their own tokens?
+    if (match = /^(?:cst|locl|T|F|inf|pi|mtch|cs|dft|nil|brk|rtn)/.exec(str)) { // TODO should nil/bools be their own tokens?
       category = Category.keyword
+    } else if (match = /^[a-zA-Z_]\w*/.exec(str)) {
+      category = Category.id
     } else if (match = /^\d*\.?\d+/.exec(str)) {
       category = Category.number
     } else if (match = /^["'{}[\](),?:$\\]|^->/.exec(str)) { // /^(["'])(?:\\\1|(?!\1).)*\1/
