@@ -22,17 +22,18 @@ export const tokenize = (program: string) => {
 
 const tokenizeLine = (line: string[], lineNumber: number): Token[] => {
   const tokens: Token[] = []
+  let fullStr = line.join('')
 
-  for (let i = 0, str = line.join(); i < line.length;) {
-    while (/[ \t]/.test(line[i])) i++
+  for (let i = 0; i < line.length;) {
+    while (/^[ \t]/.test(line[i])) i++
 
     // TODO how to account for multiline comment this way?
     // end of line or start of comment
     if (line[i] === '\n' || `${line[i]}${line[i + 1]}` === '//') break
 
     let category: Category
-    let start = i
     let match
+    let str = fullStr.slice(i)
 
     if (match = /^(?:cst|locl|T|F|inf|pi|mtch|cs|dft|nil|brk|rtn)/.exec(str)) { // TODO should nil/bools be their own tokens?
       category = Category.keyword
@@ -50,7 +51,6 @@ const tokenizeLine = (line: string[], lineNumber: number): Token[] => {
 
     tokens.push(new Token(category, match[0], lineNumber + 1, i + 1))
     i += match[0].length
-    tokens.push(new Token(category, match[0], lineNumber, start + 1))
   }
 
   return tokens
