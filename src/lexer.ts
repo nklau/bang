@@ -17,22 +17,31 @@ export default function tokenizeFile() {
 }
 
 export const tokenize = (program: string) => {
-  return program.split(/\r?\n/).map((line, lineNumber) => tokenizeLine([...line, "\n"], lineNumber))
+  let flags = { inComment: false }
+  return program.split(/\r?\n/).map((line, lineNumber) => tokenizeLine([...line, "\n"], lineNumber, flags)).filter(line => line.length)
 }
 
-const tokenizeLine = (line: string[], lineNumber: number): Token[] => {
+const tokenizeLine = (line: string[], lineNumber: number, flags: { inComment: boolean }): Token[] => {
   const tokens: Token[] = []
   let fullStr = line.join('')
 
   for (let i = 0; i < line.length;) {
     while (/^[ \t]/.test(line[i])) i++
+    let match
 
-    // TODO how to account for multiline comment this way?
-    // end of line or start of comment
-    if (line[i] === '\n' || `${line[i]}${line[i + 1]}` === '//') break
+    if (`${line[i]}${line[i + 1]}` === '/*') {
+      i += 2
+      flags.inComment = true
+    }
+
+    if (flags.inComment && (match = /^.*\*\//.exec(fullStr.slice(i)))) {
+      i += match[0].length
+      flags.inComment = false
+    }
+
+    if (line[i] === '\n' || `${line[i]}${line[i + 1]}` === '//' || flags.inComment) break
 
     let category: Category
-    let match
     let str = fullStr.slice(i)
 
     if (match = /^(?:cst|locl|T|F|inf|pi|mtch|cs|dft|nil|brk|rtn)/.exec(str)) { // TODO should nil/bools be their own tokens?
