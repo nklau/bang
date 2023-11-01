@@ -8,16 +8,13 @@ export enum Category {
 }
 
 export class Token {
-  category: Category
-  lexeme: string
-  line: number
-  column: number
+  category!: Category
+  lexeme!: string
+  line!: number
+  column!: number
 
   constructor(category: Category, lexeme: string, line: number, column: number) {
-    this.category = category
-    this.lexeme = lexeme
-    this.line = line
-    this.column = column
+    Object.assign(this, {category, lexeme, line, column})
   }
 }
 
