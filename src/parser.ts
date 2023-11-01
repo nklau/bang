@@ -18,5 +18,9 @@ export default function parseFile() {
 }
 
 export const parse = (tokens: Token[]) => {
-  
+  let token: Token = tokens[0]
+
+  const at = (character: string) => {
+    return token.lexeme === character
+  }
 }
