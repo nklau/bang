@@ -18,7 +18,7 @@ export default function tokenizeFile() {
 
 export const tokenize = (program: string) => {
   let flags = { inComment: false }
-  return program.split(/\r?\n/).map((line, lineNumber) => tokenizeLine([...line, "\n"], lineNumber, flags)).filter(line => line.length)
+  return program.split(/\r?\n/).flatMap((line, lineNumber) => tokenizeLine([...line, "\n"], lineNumber, flags))
 }
 
 const tokenizeLine = (line: string[], lineNumber: number, flags: { inComment: boolean }): Token[] => {
