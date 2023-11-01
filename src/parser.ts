@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Token } from './core'
+import { Token, error } from './core'
 import { tokenize } from './lexer'
 
 export default function parseFile() {
@@ -18,9 +18,15 @@ export default function parseFile() {
 }
 
 export const parse = (tokens: Token[]) => {
-  let token: Token = tokens[0]
-
   const at = (character: string) => {
-    return token.lexeme === character
+    return tokens[0]?.lexeme === character
+  }
+
+  const match = (character: string | undefined) => {
+    if (character && !at(character)) {
+      error(`Expected '${character}' but got '${tokens[0]?.lexeme}'`, tokens[0]?.line, tokens[0]?.column)
+    }
+
+    return tokens.shift()
   }
 }
