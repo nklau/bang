@@ -29,6 +29,6 @@ export const parse = (tokens: Token[]) => {
       error(`Expected '${character}' but got '${token?.lexeme}'`, token?.line ?? 0, token?.column ?? 0)
     }
 
-    token = tokens.shift()
+    return token = tokens.shift()
   }
 }
