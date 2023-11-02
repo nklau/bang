@@ -18,15 +18,17 @@ export default function parseFile() {
 }
 
 export const parse = (tokens: Token[]) => {
+  let token: Token | undefined = tokens[0]
+
   const at = (character: string) => {
-    return tokens[0]?.lexeme === character
+    return token?.lexeme === character
   }
 
   const match = (character: string | undefined) => {
     if (character && !at(character)) {
-      error(`Expected '${character}' but got '${tokens[0]?.lexeme}'`, tokens[0]?.line, tokens[0]?.column)
+      error(`Expected '${character}' but got '${token?.lexeme}'`, token?.line ?? 0, token?.column ?? 0)
     }
 
-    return tokens.shift()
+    token = tokens.shift()
   }
 }
