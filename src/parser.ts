@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Token, error } from './core'
+import { Block, Statement, Token, error } from './core'
 import { tokenize } from './lexer'
 
 export default function parseFile() {
@@ -42,6 +42,17 @@ export const parse = (tokens: Token[]) => {
 
   const parseBlock = () => {
     while (at('\n')) next()
+
+    const statements: Statement[] = []
+    while (tokens.length > 0) {
+      statements.push(parseStatement())
+    }
+
+    return new Block(statements)
+  }
+
+  const parseStatement = (): Statement => {
+    return new Statement()
   }
 
   return parseBlock()
