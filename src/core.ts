@@ -18,7 +18,7 @@ export class Token {
   column!: number
 
   constructor(category: Category, lexeme: string, line: number, column: number) {
-    Object.assign(this, {category, lexeme, line, column})
+    Object.assign(this, { category, lexeme, line, column })
   }
 }
 
@@ -43,7 +43,15 @@ export class VariableDeclaration extends Statement {
   }
 }
 
-export class Variable { }
+export class Variable {
+  id!: string
+  local!: boolean
+  readOnly!: boolean
+
+  constructor(id: string, local: boolean, readOnly: boolean) {
+    Object.assign(this, { id, local, readOnly })
+  }
+}
 
 export class Expression { }
 
