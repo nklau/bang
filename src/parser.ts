@@ -61,7 +61,8 @@ export const parse = (tokens: Token[]) => {
 
   const parseStatement = (): Statement => {
     const statementLexemes = lookUntil('\n')
-    return new Statement()
+    // return new Statement()
+    throw new Error('unimplemented')
   }
 
   return parseBlock()

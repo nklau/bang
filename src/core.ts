@@ -30,14 +30,13 @@ export class Block {
   }
 }
 
-export class Statement { }
+export interface Statement { }
 
-export class VariableDeclaration extends Statement {
+export class VariableDeclaration implements Statement {
   target: Variable
   expression: Expression
 
   constructor(target: Variable, expression: Expression | object = nil) {
-    super()
     this.target = target
     this.expression = expression
   }
