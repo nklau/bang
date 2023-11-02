@@ -21,3 +21,13 @@ export class Token {
     Object.assign(this, {category, lexeme, line, column})
   }
 }
+
+export class Block {
+  statements: Statement[]
+
+  constructor(statements: Statement[]) {
+    this.statements = statements
+  }
+}
+
+export class Statement { }
