@@ -39,7 +39,11 @@ const tokenizeLine = (line: string[], lineNumber: number, flags: { inComment: bo
       flags.inComment = false
     }
 
-    if (line[i] === '\n' || `${line[i]}${line[i + 1]}` === '//' || flags.inComment) break
+    if (`${line[i]}${line[i + 1]}` === '//' || flags.inComment) break
+    if (line[i] === '\n') {
+      tokens.push(new Token(Category.structure, line[i], lineNumber + 1, i + 1))
+      return tokens
+    }
 
     let category: Category
     let str = fullStr.slice(i)
