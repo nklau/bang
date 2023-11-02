@@ -20,7 +20,7 @@ export default function parseFile() {
 export const parse = (tokens: Token[]) => {
   let token: Token | undefined = tokens[0]
 
-  const at = (character: string) => {
+  const at = (character: string | undefined) => {
     return token?.lexeme === character
   }
 
@@ -28,9 +28,17 @@ export const parse = (tokens: Token[]) => {
     return tokens.slice(0, tokens.findIndex(t => t.lexeme === character))
   }
 
-  const match = (character: string | undefined) => {
-    if (character && !at(character)) {
-      error(`Expected '${character}' but got '${token?.lexeme}'`, token?.line ?? 0, token?.column ?? 0)
+  const match = (character: string | undefined, throws = false) => {
+    if (!at(character) && throws) {
+      if (throws) {
+        error(`Expected '${character}' but got '${token?.lexeme}'`, token?.line ?? 0, token?.column ?? 0)
+      }
+    }
+
+    if (!throws) {
+      const atChar = at(character)
+      if (atChar) next()
+      return atChar
     }
 
     return token = tokens.shift()
@@ -41,7 +49,7 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseBlock = () => {
-    while (at('\n')) next()
+    while (match('\n')) continue
 
     const statements: Statement[] = []
     while (tokens.length > 0) {
@@ -52,6 +60,7 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseStatement = (): Statement => {
+    const statementLexemes = lookUntil('\n')
     return new Statement()
   }
 
