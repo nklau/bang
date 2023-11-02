@@ -24,6 +24,10 @@ export const parse = (tokens: Token[]) => {
     return token?.lexeme === character
   }
 
+  const lookUntil = (character: string) => {
+    return tokens.slice(0, tokens.findIndex(t => t.lexeme === character))
+  }
+
   const match = (character: string | undefined) => {
     if (character && !at(character)) {
       error(`Expected '${character}' but got '${token?.lexeme}'`, token?.line ?? 0, token?.column ?? 0)
