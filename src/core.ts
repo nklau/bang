@@ -31,3 +31,20 @@ export class Block {
 }
 
 export class Statement { }
+
+export class VariableDeclaration extends Statement {
+  target: Variable
+  expression: Expression
+
+  constructor(target: Variable, expression: Expression | object = nil) {
+    super()
+    this.target = target
+    this.expression = expression
+  }
+}
+
+export class Variable { }
+
+export class Expression { }
+
+const nil = {}
