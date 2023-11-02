@@ -31,4 +31,14 @@ export const parse = (tokens: Token[]) => {
 
     return token = tokens.shift()
   }
+
+  const next = () => {
+    return token = tokens.shift()
+  }
+
+  const parseBlock = () => {
+    while (at('\n')) next()
+  }
+
+  return parseBlock()
 }
