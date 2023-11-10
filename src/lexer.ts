@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Category, Token, error } from './core'
+import { Category, Token, error } from './core/core'
 
 export default function tokenizeFile() {
   if (process.argv.length < 3) {
