@@ -31,18 +31,10 @@ export const parse = (tokens: Token[]) => {
 
   const match = (expected: string | undefined, throws = false) => {
     if (!at(expected) && throws) {
-      if (throws) {
-        error(`Expected '${expected}' but got '${token?.lexeme}'`, token?.line ?? 0, token?.column ?? 0)
-      }
+      error(`Expected '${expected}' but got '${token?.lexeme}'`, token?.line ?? 0, token?.column ?? 0)
     }
 
-    if (!throws) {
-      const atChar = at(expected)
-      if (atChar) next()
-      return atChar
-    }
-
-    return token = tokens.shift()
+    return throws ? token = tokens.shift() : at(expected) ? next() : undefined
   }
 
   const next = () => {
@@ -62,15 +54,9 @@ export const parse = (tokens: Token[]) => {
 
   const parseStatement = (): Statement => {
     const statementLexemes = lookUntil('\n')
-    let isLocal, isConst
 
-    if (at(localKeyword)) {
-      isLocal = match(localKeyword)
-    }
-
-    if (at(constKeyword)) {
-      isConst = match(constKeyword)
-    }
+    let isLocal = match(localKeyword)
+    let isConst = match(constKeyword)
 
     const id = match(Category.id, true)
     
