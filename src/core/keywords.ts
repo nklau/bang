@@ -1,1 +1,1 @@
-export const local = 'locl'
+export const localKeyword = 'locl'
