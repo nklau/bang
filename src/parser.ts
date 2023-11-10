@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { Block, Statement, Token, error } from './core/core'
-import { localKeyword } from './core/keywords'
+import { constKeyword, localKeyword } from './core/keywords'
 import { tokenize } from './lexer'
 
 export default function parseFile() {
@@ -63,10 +63,16 @@ export const parse = (tokens: Token[]) => {
   const parseStatement = (): Statement => {
     const statementLexemes = lookUntil('\n')
     let isLocal = false
+    let isConst = false
 
     if (at(localKeyword)) {
       isLocal = true
       match(localKeyword)
+    }
+
+    if (at(constKeyword)) {
+      isConst = true
+      match(constKeyword)
     }
     
     throw new Error('unimplemented')
