@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Block, Statement, Token, error } from './core/core'
+import { Block, Category, Statement, Token, error } from './core/core'
 import { constKeyword, localKeyword } from './core/keywords'
 import { tokenize } from './lexer'
 
@@ -21,23 +21,23 @@ export default function parseFile() {
 export const parse = (tokens: Token[]) => {
   let token: Token | undefined = tokens[0]
 
-  const at = (character: string | undefined) => {
-    return token?.lexeme === character
+  const at = (expected: string | undefined) => {
+    return token?.category === expected || token?.lexeme === expected
   }
 
   const lookUntil = (character: string) => {
     return tokens.slice(0, tokens.findIndex(t => t.lexeme === character))
   }
 
-  const match = (character: string | undefined, throws = false) => {
-    if (!at(character) && throws) {
+  const match = (expected: string | undefined, throws = false) => {
+    if (!at(expected) && throws) {
       if (throws) {
-        error(`Expected '${character}' but got '${token?.lexeme}'`, token?.line ?? 0, token?.column ?? 0)
+        error(`Expected '${expected}' but got '${token?.lexeme}'`, token?.line ?? 0, token?.column ?? 0)
       }
     }
 
     if (!throws) {
-      const atChar = at(character)
+      const atChar = at(expected)
       if (atChar) next()
       return atChar
     }
@@ -62,18 +62,17 @@ export const parse = (tokens: Token[]) => {
 
   const parseStatement = (): Statement => {
     const statementLexemes = lookUntil('\n')
-    let isLocal = false
-    let isConst = false
+    let isLocal, isConst
 
     if (at(localKeyword)) {
-      isLocal = true
-      match(localKeyword)
+      isLocal = match(localKeyword)
     }
 
     if (at(constKeyword)) {
-      isConst = true
-      match(constKeyword)
+      isConst = match(constKeyword)
     }
+
+    const id = match(Category.id, true)
     
     throw new Error('unimplemented')
   }
