@@ -53,14 +53,33 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseStatement = (): Statement => {
-    const statementLexemes = lookUntil('\n')
+    if (!token) {
+      error('Expected statement', 0, 0)
+    }
 
+    const statementTypes = {
+      [Category.id]: parseAssignment,
+      [Category.keyword]: parseAssignment,
+      [Category.number]: parseExpression,
+      [Category.object]: parseExpression,
+      [Category.operator]: parseExpression,
+      [Category.structure]: parseExpression
+    }
+
+    return statementTypes[token.category]()
+  }
+
+  const parseAssignment = (): Statement => {
     let isLocal = !!match(localKeyword, false)
     let isConst = !!match(constKeyword, false)
 
     const id = match(Category.id)
-    const operator = match(Category.operator)
-    
+    const operator = match(Category.operator) // TODO 'local id' is a valid statement
+
+    throw new Error('unimplemented')
+  }
+
+  const parseExpression = (): Statement => {
     throw new Error('unimplemented')
   }
 
