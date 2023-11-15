@@ -1,3 +1,5 @@
+import { assignmentOperator } from './operators'
+
 export enum Category {
   id = 'id',
   keyword = 'keyword',
@@ -32,12 +34,14 @@ export class Block {
 
 export interface Statement { }
 
-export class VariableDeclaration implements Statement {
+export class VariableAssignment implements Statement {
   target: Variable
+  operator: string
   expression: Expression
 
-  constructor(target: Variable, expression: Expression | object = nil) {
+  constructor(target: Variable, operator: string = assignmentOperator, expression: Expression | object = nil) {
     this.target = target
+    this.operator = operator
     this.expression = expression
   }
 }
