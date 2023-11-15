@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Block, Category, Statement, Token, error } from './core/core'
+import { Block, Category, Statement, Token, Variable, VariableAssignment, error } from './core/core'
 import { constKeyword, localKeyword } from './core/keywords'
 import { tokenize } from './lexer'
 
@@ -73,10 +73,14 @@ export const parse = (tokens: Token[]) => {
     let isLocal = !!match(localKeyword, false)
     let isConst = !!match(constKeyword, false)
 
-    const id = match(Category.id)
-    const operator = match(Category.operator) // TODO 'local id' is a valid statement
+    const variable = new Variable(match(Category.id)!.lexeme, isLocal, isConst)
 
-    throw new Error('unimplemented')
+    let operator, expression
+    if (operator = match(Category.operator, isConst)?.lexeme) {
+      expression = parseExpression()
+    }
+
+    return new VariableAssignment(variable, operator, expression)
   }
 
   const parseExpression = (): Statement => {
