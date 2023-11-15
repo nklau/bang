@@ -29,7 +29,7 @@ export const parse = (tokens: Token[]) => {
     return tokens.slice(0, tokens.findIndex(t => t.lexeme === character))
   }
 
-  const match = (expected: string | undefined, throws = false) => {
+  const match = (expected: string | undefined, throws = true) => {
     if (!at(expected) && throws) {
       error(`Expected '${expected}' but got '${token?.lexeme}'`, token?.line ?? 0, token?.column ?? 0)
     }
@@ -42,7 +42,7 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseBlock = () => {
-    while (match('\n')) continue
+    while (match('\n'), false) continue
 
     const statements: Statement[] = []
     while (tokens.length > 0) {
@@ -55,10 +55,11 @@ export const parse = (tokens: Token[]) => {
   const parseStatement = (): Statement => {
     const statementLexemes = lookUntil('\n')
 
-    let isLocal = !!match(localKeyword)
-    let isConst = !!match(constKeyword)
+    let isLocal = !!match(localKeyword, false)
+    let isConst = !!match(constKeyword, false)
 
-    const id = match(Category.id, true)
+    const id = match(Category.id)
+    const operator = match(Category.operator)
     
     throw new Error('unimplemented')
   }
