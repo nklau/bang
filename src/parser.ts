@@ -55,8 +55,8 @@ export const parse = (tokens: Token[]) => {
   const parseStatement = (): Statement => {
     const statementLexemes = lookUntil('\n')
 
-    let isLocal = match(localKeyword)
-    let isConst = match(constKeyword)
+    let isLocal = !!match(localKeyword)
+    let isConst = !!match(constKeyword)
 
     const id = match(Category.id, true)
     
