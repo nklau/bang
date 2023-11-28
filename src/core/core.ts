@@ -62,4 +62,8 @@ export class AccessExpression implements BinaryExpression {
   constructor(public left: Variable, public right: Variable) {}
 }
 
+export class IndexExpression implements Expression {
+  constructor(public target: Variable, public leftIndex: Expression, public rightIndex: Expression) {}
+}
+
 const nil = {}
