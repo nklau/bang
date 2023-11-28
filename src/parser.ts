@@ -54,7 +54,7 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseBlock = () => {
-    while ((match('\n'))) continue
+    while (match('\n')) continue
 
     const statements: Statement[] = []
     while (tokens.length > 0) {
@@ -71,7 +71,7 @@ export const parse = (tokens: Token[]) => {
 
     const statementTypes = {
       [Category.id]: parseAssignment,
-      [Category.keyword]: parseAssignment,
+      [Category.keyword]: parseKeywordStatement,
       [Category.number]: parseReturnStatement,
       [Category.object]: parseReturnStatement,
       [Category.operator]: parseReturnStatement,
@@ -81,10 +81,7 @@ export const parse = (tokens: Token[]) => {
     return statementTypes[token.category]()
   }
 
-  const parseAssignment = (): Statement => {
-    let isLocal = !!match(localKeyword)
-    let isConst = !!match(constKeyword)
-
+  const parseAssignment = (isLocal = false, isConst = false): Statement => {
     const variable = parseAssignmentTarget(isLocal, isConst)
 
     let operator, expression
@@ -95,7 +92,7 @@ export const parse = (tokens: Token[]) => {
     return new VariableAssignment(variable, operator, expression)
   }
 
-  const parseAssignmentTarget = (isLocal = false, isConst = false): AccessExpression | IndexExpression | Variable => {
+  const parseAssignmentTarget = (isLocal: boolean, isConst: boolean): AccessExpression | IndexExpression | Variable => {
     const variable = new Variable(match(Category.id, true)!.lexeme, isLocal, isConst)
 
     const structure = match(Category.structure)
@@ -120,6 +117,17 @@ export const parse = (tokens: Token[]) => {
     }
 
     return variable
+  }
+
+  const parseKeywordStatement = (): Statement => {
+    return {
+      [localKeyword]: () => {
+        return parseAssignment(!!next(), !!match(constKeyword))
+      },
+      [constKeyword]: () => {
+        return parseAssignment(false, !!next())
+      },
+    }[token!.lexeme]!()
   }
 
   const parseReturnStatement = (): Statement => {
