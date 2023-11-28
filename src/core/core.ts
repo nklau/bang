@@ -37,11 +37,11 @@ export class Block {
 }
 
 export class VariableAssignment implements Statement {
-  target: AccessExpression | Variable
+  target: AccessExpression | IndexExpression | Variable
   operator: string
   expression: Expression
 
-  constructor(target: AccessExpression | Variable, operator: string = assignmentOperator, expression: Expression | object = nil) {
+  constructor(target: AccessExpression | IndexExpression | Variable, operator: string = assignmentOperator, expression: Expression | object = nil) {
     this.target = target
     this.operator = operator
     this.expression = expression
