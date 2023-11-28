@@ -1,5 +1,7 @@
 import { assignmentOperator } from './operators'
 
+type AssignmentTarget = AccessExpression | IndexExpression | Variable
+
 export interface Statement { }
 export interface Expression { }
 export interface BinaryExpression extends Expression { }
@@ -37,11 +39,11 @@ export class Block {
 }
 
 export class VariableAssignment implements Statement {
-  target: AccessExpression | IndexExpression | Variable
+  target: AssignmentTarget
   operator: string
   expression: Expression
 
-  constructor(target: AccessExpression | IndexExpression | Variable, operator: string = assignmentOperator, expression: Expression | object = nil) {
+  constructor(target: AssignmentTarget, operator: string = assignmentOperator, expression: Expression | object = nil) {
     this.target = target
     this.operator = operator
     this.expression = expression
