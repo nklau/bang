@@ -1,6 +1,8 @@
 import { assignmentOperator } from './operators'
 
 export interface Statement { }
+export interface Expression { }
+export interface BinaryExpression extends Expression { }
 
 export enum Category {
   id = 'id',
@@ -55,7 +57,5 @@ export class Variable {
     Object.assign(this, { id, local, readOnly })
   }
 }
-
-export class Expression { }
 
 const nil = {}
