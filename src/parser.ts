@@ -111,9 +111,11 @@ export const parse = (tokens: Token[]) => {
       if (structure.lexeme === '.') {
         return new AccessExpression(variable, new Variable(match(Category.id)!.lexeme, false, false))
       } else if (structure.lexeme === '[') {
-        const left = parseExpression(lookUntil(':')) ?? 0
-        const right = parseExpression(lookUntil(']')) ?? Infinity
-        return new IndexExpression(variable, left, right)
+        return new IndexExpression(
+          variable,
+          parseExpression(lookUntil(':')) ?? 0,
+          parseExpression(lookUntil(']')) ?? Infinity
+        )
       }
     }
 
