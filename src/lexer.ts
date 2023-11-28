@@ -56,7 +56,7 @@ const tokenizeLine = (line: string[], lineNumber: number, flags: { inComment: bo
       category = Category.number
     } else if (match = /^["'{}[\](),?:$\\]|^->/.exec(str)) { // /^(["'])(?:\\\1|(?!\1).)*\1/
       category = Category.structure
-    } else if (match = /^(?:\+\+|--|&&|\|\||[=!<>]=|[.@!-^*/%+-<>=])/.exec(str)) {
+    } else if (match = /^(?:\+\+|--|&&|\|\||[=!<>]=|[.@!-^*/%+-<>=])=?/.exec(str)) {
       category = Category.operator
     } else {
       error(`Unexpected character: '${line[i]}'`, lineNumber + 1, i)
