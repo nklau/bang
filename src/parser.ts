@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { AccessExpression, Block, Category, IndexExpression, Statement, Token, Variable, VariableAssignment, error } from './core/core'
+import { AccessExpression, Block, Category, Expression, IndexExpression, Statement, Token, Variable, VariableAssignment, error } from './core/core'
 import { constKeyword, localKeyword } from './core/keywords'
 import { tokenize } from './lexer'
 
@@ -26,7 +26,8 @@ export const parse = (tokens: Token[]) => {
   }
 
   const lookUntil = (character: string) => {
-    return tokens.slice(0, tokens.findIndex(t => t.lexeme === character))
+    const index = tokens.findIndex(t => t.lexeme === character)
+    return index ? tokens.slice(0, index) : []
   }
 
   const match = (expected: string | undefined, throws = true) => {
@@ -60,10 +61,10 @@ export const parse = (tokens: Token[]) => {
     const statementTypes = {
       [Category.id]: parseAssignment,
       [Category.keyword]: parseAssignment,
-      [Category.number]: parseExpression,
-      [Category.object]: parseExpression,
-      [Category.operator]: parseExpression,
-      [Category.structure]: parseExpression
+      [Category.number]: parseReturnStatement,
+      [Category.object]: parseReturnStatement,
+      [Category.operator]: parseReturnStatement,
+      [Category.structure]: parseReturnStatement
     }
 
     return statementTypes[token.category]()
@@ -83,7 +84,7 @@ export const parse = (tokens: Token[]) => {
     return new VariableAssignment(variable, operator, expression)
   }
 
-  const parseAssignmentTarget = (isLocal = false, isConst = false): AccessExpression | Variable => {
+  const parseAssignmentTarget = (isLocal = false, isConst = false): AccessExpression | IndexExpression | Variable => {
     const variable = new Variable(match(Category.id)!.lexeme, isLocal, isConst)
 
     const structure = match(Category.structure, false)
@@ -94,15 +95,22 @@ export const parse = (tokens: Token[]) => {
 
       if (structure.lexeme === '.') {
         return new AccessExpression(variable, new Variable(match(Category.id)!.lexeme, false, false))
-      } else if (structure.lexeme === ']') {
-        // return new IndexExpression
+      } else if (structure.lexeme === '[') {
+        const left = parseExpression(lookUntil(':')) ?? 0
+        const right = parseExpression(lookUntil(']')) ?? Infinity
+        return new IndexExpression(variable, left, right)
       }
     }
 
     return variable
   }
 
-  const parseExpression = (expression?: Token[]): Statement => {
+  const parseReturnStatement = (): Statement => {
+    throw new Error('unimplemented')
+  }
+
+  const parseExpression = (expression?: Token[]): Expression | undefined => {
+    if (!expression) return
     // TODO make sure to call next() or match() to remove from tokens
     throw new Error('unimplemented')
   }
