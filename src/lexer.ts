@@ -6,26 +6,26 @@ export default function tokenizeFile() {
     console.log(`Usage: ts-node ${process.argv[1]} <filename.bang>`)
     process.exit(1)
   }
-  
+
   fs.readFile(process.argv[2], 'utf8', (err, data) => {
     if (err) {
       throw err
     }
-  
+
     tokenize(data)
   })
 }
 
 export const tokenize = (program: string) => {
   let flags = { inComment: false }
-  return program.split(/\r?\n/).flatMap((line, lineNumber) => tokenizeLine([...line, "\n"], lineNumber, flags))
+  return program.split(/\r?\n/).flatMap((line, lineNumber) => tokenizeLine([...line, '\n'], lineNumber, flags))
 }
 
 const tokenizeLine = (line: string[], lineNumber: number, flags: { inComment: boolean }): Token[] => {
   const tokens: Token[] = []
   let fullStr = line.join('')
 
-  for (let i = 0; i < line.length;) {
+  for (let i = 0; i < line.length; ) {
     while (/^[ \t]/.test(line[i])) i++
     let match
 
@@ -48,15 +48,15 @@ const tokenizeLine = (line: string[], lineNumber: number, flags: { inComment: bo
     let category: Category
     let str = fullStr.slice(i)
 
-    if (match = /^(?:cst|locl|T|F|inf|pi|mtch|cs|dft|nil|brk|rtn)/.exec(str)) { // TODO should nil/bools be their own tokens?
+    if ((match = /^(?:cst|locl|T|F|inf|pi|mtch|cs|dft|nil|brk|rtn)/.exec(str))) {
       category = Category.keyword
-    } else if (match = /^[a-zA-Z_]\w*/.exec(str)) {
+    } else if ((match = /^[a-zA-Z_]\w*/.exec(str))) {
       category = Category.id
-    } else if (match = /^\d*\.?\d+/.exec(str)) {
+    } else if ((match = /^\d*\.?\d+/.exec(str))) {
       category = Category.number
-    } else if (match = /^["'{}[\](),?:$\\]|^->/.exec(str)) { // /^(["'])(?:\\\1|(?!\1).)*\1/
+    } else if ((match = /^["'{}[\](),?:$\\]|^->/.exec(str))) {
       category = Category.structure
-    } else if (match = /^(?:\+\+|--|&&|\|\||[=!<>]=|[.@!-^*/%+-<>=])=?/.exec(str)) {
+    } else if ((match = /^(?:\+\+|--|&&|\|\||[=!<>]=|[.@!-^*/%+-<>=])=?/.exec(str))) {
       category = Category.operator
     } else {
       error(`Unexpected character: '${line[i]}'`, lineNumber + 1, i)
