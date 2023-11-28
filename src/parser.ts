@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Block, Category, Statement, Token, Variable, VariableAssignment, error } from './core/core'
+import { AccessExpression, Block, Category, IndexExpression, Statement, Token, Variable, VariableAssignment, error } from './core/core'
 import { constKeyword, localKeyword } from './core/keywords'
 import { tokenize } from './lexer'
 
@@ -73,7 +73,7 @@ export const parse = (tokens: Token[]) => {
     let isLocal = !!match(localKeyword, false)
     let isConst = !!match(constKeyword, false)
 
-    const variable = new Variable(match(Category.id)!.lexeme, isLocal, isConst)
+    const variable = parseAssignmentTarget(isLocal, isConst)
 
     let operator, expression
     if (operator = match(Category.operator, isConst)?.lexeme) {
@@ -83,7 +83,27 @@ export const parse = (tokens: Token[]) => {
     return new VariableAssignment(variable, operator, expression)
   }
 
-  const parseExpression = (): Statement => {
+  const parseAssignmentTarget = (isLocal = false, isConst = false): AccessExpression | Variable => {
+    const variable = new Variable(match(Category.id)!.lexeme, isLocal, isConst)
+
+    const structure = match(Category.structure, false)
+    if (structure) {
+      if (isConst) {
+        error(`Cannot make ${structure.lexeme === '[' ? 'list element' : 'object field'} constant`, structure.line, structure.column)
+      }
+
+      if (structure.lexeme === '.') {
+        return new AccessExpression(variable, new Variable(match(Category.id)!.lexeme, false, false))
+      } else if (structure.lexeme === ']') {
+        // return new IndexExpression
+      }
+    }
+
+    return variable
+  }
+
+  const parseExpression = (expression?: Token[]): Statement => {
+    // TODO make sure to call next() or match() to remove from tokens
     throw new Error('unimplemented')
   }
 
