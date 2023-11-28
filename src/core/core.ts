@@ -20,44 +20,19 @@ export function error(message: string, line: number, column: number): never {
 }
 
 export class Token {
-  category!: Category
-  lexeme!: string
-  line!: number
-  column!: number
-
-  constructor(category: Category, lexeme: string, line: number, column: number) {
-    Object.assign(this, { category, lexeme, line, column })
-  }
+  constructor(public category: Category, public lexeme: string, public line: number, public column: number) {}
 }
 
 export class Block {
-  statements: Statement[]
-
-  constructor(statements: Statement[]) {
-    this.statements = statements
-  }
+  constructor(public statements: Statement[]) {}
 }
 
 export class VariableAssignment implements Statement {
-  target: AssignmentTarget
-  operator: string
-  expression: Expression
-
-  constructor(target: AssignmentTarget, operator: string = assignmentOperator, expression: Expression | object = nil) {
-    this.target = target
-    this.operator = operator
-    this.expression = expression
-  }
+  constructor(public target: AssignmentTarget, public operator: string = assignmentOperator, public expression: Expression | object = nil) {}
 }
 
 export class Variable {
-  id!: string
-  local!: boolean
-  readOnly!: boolean
-
-  constructor(id: string, local: boolean, readOnly: boolean) {
-    Object.assign(this, { id, local, readOnly })
-  }
+  constructor(public id: string, public local: boolean, public readOnly: boolean) {}
 }
 
 export class AccessExpression implements BinaryExpression {
