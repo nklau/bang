@@ -41,7 +41,7 @@ export const parse = (tokens: Token[]) => {
     return index ? tokens.slice(0, index) : []
   }
 
-  const match = (expected: string | undefined, throws = true) => {
+  const match = (expected: string | undefined, throws = false) => {
     if (!at(expected) && throws) {
       error(`Expected '${expected}' but got '${token?.lexeme}'`, token?.line ?? 0, token?.column ?? 0)
     }
@@ -54,7 +54,7 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseBlock = () => {
-    while ((match('\n'), false)) continue
+    while ((match('\n'))) continue
 
     const statements: Statement[] = []
     while (tokens.length > 0) {
@@ -82,8 +82,8 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseAssignment = (): Statement => {
-    let isLocal = !!match(localKeyword, false)
-    let isConst = !!match(constKeyword, false)
+    let isLocal = !!match(localKeyword)
+    let isConst = !!match(constKeyword)
 
     const variable = parseAssignmentTarget(isLocal, isConst)
 
@@ -96,9 +96,9 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseAssignmentTarget = (isLocal = false, isConst = false): AccessExpression | IndexExpression | Variable => {
-    const variable = new Variable(match(Category.id)!.lexeme, isLocal, isConst)
+    const variable = new Variable(match(Category.id, true)!.lexeme, isLocal, isConst)
 
-    const structure = match(Category.structure, false)
+    const structure = match(Category.structure)
     if (structure) {
       if (isConst) {
         error(
@@ -109,7 +109,7 @@ export const parse = (tokens: Token[]) => {
       }
 
       if (structure.lexeme === '.') {
-        return new AccessExpression(variable, new Variable(match(Category.id)!.lexeme, false, false))
+        return new AccessExpression(variable, new Variable(match(Category.id, true)!.lexeme, false, false))
       } else if (structure.lexeme === '[') {
         return new IndexExpression(
           variable,
