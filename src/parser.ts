@@ -1,5 +1,16 @@
 import fs from 'fs'
-import { AccessExpression, Block, Category, Expression, IndexExpression, Statement, Token, Variable, VariableAssignment, error } from './core/core'
+import {
+  AccessExpression,
+  Block,
+  Category,
+  Expression,
+  IndexExpression,
+  Statement,
+  Token,
+  Variable,
+  VariableAssignment,
+  error,
+} from './core/core'
 import { constKeyword, localKeyword } from './core/keywords'
 import { tokenize } from './lexer'
 
@@ -8,12 +19,12 @@ export default function parseFile() {
     console.log(`Usage: ts-node ${process.argv[1]} <filename.bang>`)
     process.exit(1)
   }
-  
+
   fs.readFile(process.argv[2], 'utf8', (err, data) => {
     if (err) {
       throw err
     }
-  
+
     parse(tokenize(data))
   })
 }
@@ -35,15 +46,15 @@ export const parse = (tokens: Token[]) => {
       error(`Expected '${expected}' but got '${token?.lexeme}'`, token?.line ?? 0, token?.column ?? 0)
     }
 
-    return throws ? token = tokens.shift() : at(expected) ? next() : undefined
+    return throws ? (token = tokens.shift()) : at(expected) ? next() : undefined
   }
 
   const next = () => {
-    return token = tokens.shift()
+    return (token = tokens.shift())
   }
 
   const parseBlock = () => {
-    while (match('\n'), false) continue
+    while ((match('\n'), false)) continue
 
     const statements: Statement[] = []
     while (tokens.length > 0) {
@@ -64,7 +75,7 @@ export const parse = (tokens: Token[]) => {
       [Category.number]: parseReturnStatement,
       [Category.object]: parseReturnStatement,
       [Category.operator]: parseReturnStatement,
-      [Category.structure]: parseReturnStatement
+      [Category.structure]: parseReturnStatement,
     }
 
     return statementTypes[token.category]()
@@ -77,7 +88,7 @@ export const parse = (tokens: Token[]) => {
     const variable = parseAssignmentTarget(isLocal, isConst)
 
     let operator, expression
-    if (operator = match(Category.operator, isConst)?.lexeme) {
+    if ((operator = match(Category.operator, isConst)?.lexeme)) {
       expression = parseExpression()
     }
 
@@ -90,7 +101,11 @@ export const parse = (tokens: Token[]) => {
     const structure = match(Category.structure, false)
     if (structure) {
       if (isConst) {
-        error(`Cannot make ${structure.lexeme === '[' ? 'list element' : 'object field'} constant`, structure.line, structure.column)
+        error(
+          `Cannot make ${structure.lexeme === '[' ? 'list element' : 'object field'} constant`,
+          structure.line,
+          structure.column
+        )
       }
 
       if (structure.lexeme === '.') {
