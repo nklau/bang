@@ -1,5 +1,7 @@
 import { assignmentOperator } from './operators'
 
+export interface Statement { }
+
 export enum Category {
   id = 'id',
   keyword = 'keyword',
@@ -31,8 +33,6 @@ export class Block {
     this.statements = statements
   }
 }
-
-export interface Statement { }
 
 export class VariableAssignment implements Statement {
   target: Variable
