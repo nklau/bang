@@ -2,6 +2,7 @@ import fs from 'fs'
 import {
   AccessExpression,
   Block,
+  BreakStatement,
   Category,
   Expression,
   IndexExpression,
@@ -13,7 +14,7 @@ import {
   error,
   nil,
 } from './core/core'
-import { constKeyword, localKeyword, returnKeyword } from './core/keywords'
+import { constKeyword, breakKeyword, localKeyword, returnKeyword } from './core/keywords'
 import { tokenize } from './lexer'
 
 export default function parseFile() {
@@ -137,6 +138,9 @@ export const parse = (tokens: Token[]) => {
       [returnKeyword]: () => {
         next()
         return parseReturnStatement(matchUntil('\n'))
+      },
+      [breakKeyword]: () => {
+        return new BreakStatement()
       },
     }[token!.lexeme]!() // TODO replace the !
   }
