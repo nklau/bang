@@ -5,13 +5,15 @@ import {
   Category,
   Expression,
   IndexExpression,
+  ReturnStatement,
   Statement,
   Token,
   Variable,
   VariableAssignment,
   error,
+  nil,
 } from './core/core'
-import { constKeyword, localKeyword } from './core/keywords'
+import { constKeyword, localKeyword, returnKeyword } from './core/keywords'
 import { tokenize } from './lexer'
 
 export default function parseFile() {
@@ -39,6 +41,11 @@ export const parse = (tokens: Token[]) => {
   const lookUntil = (character: string) => {
     const index = tokens.findIndex(t => t.lexeme === character)
     return index ? tokens.slice(0, index) : []
+  }
+
+  const matchUntil = (character: string) => {
+    const index = tokens.findIndex(t => t.lexeme === character)
+    return index ? tokens.splice(0, index + 1) : []
   }
 
   const match = (expected: string | undefined, throws = false) => {
@@ -127,15 +134,19 @@ export const parse = (tokens: Token[]) => {
       [constKeyword]: () => {
         return parseAssignment(false, !!next())
       },
-    }[token!.lexeme]!()
+      [returnKeyword]: () => {
+        next()
+        return parseReturnStatement(matchUntil('\n'))
+      },
+    }[token!.lexeme]!() // TODO replace the !
   }
 
-  const parseReturnStatement = (): Statement => {
-    throw new Error('unimplemented')
+  const parseReturnStatement = (expression?: Token[]): Statement => {
+    return new ReturnStatement(parseExpression(expression))
   }
 
-  const parseExpression = (expression?: Token[]): Expression | undefined => {
-    if (!expression) return
+  const parseExpression = (expression?: Token[]): Expression | typeof nil => {
+    if (!expression) return nil
     // TODO make sure to call next() or match() to remove from tokens
     throw new Error('unimplemented')
   }
