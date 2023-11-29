@@ -48,6 +48,10 @@ export class Variable {
   ) {}
 }
 
+export class ReturnStatement implements Statement {
+  constructor(public expression: Expression) {}
+}
+
 export class AccessExpression implements BinaryExpression {
   constructor(
     public left: Variable,
@@ -63,4 +67,4 @@ export class IndexExpression implements Expression {
   ) {}
 }
 
-const nil = {}
+export const nil = {}
