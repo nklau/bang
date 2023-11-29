@@ -14,8 +14,16 @@ import {
   error,
   nil,
 } from './core/core'
-import { constKeyword, breakKeyword, falseKeyword, localKeyword, returnKeyword, trueKeyword } from './core/keywords'
-import { BooleanLiteral } from './core/types'
+import {
+  constKeyword,
+  breakKeyword,
+  falseKeyword,
+  infinityKeyword,
+  localKeyword,
+  returnKeyword,
+  trueKeyword,
+} from './core/keywords'
+import { BooleanLiteral, NumberLiteral } from './core/types'
 import { tokenize } from './lexer'
 
 export default function parseFile() {
@@ -148,6 +156,9 @@ export const parse = (tokens: Token[]) => {
       },
       [falseKeyword]: () => {
         return new BooleanLiteral(false)
+      },
+      [infinityKeyword]: () => {
+        return new NumberLiteral(Infinity)
       },
     }[token!.lexeme]!() // TODO replace the !
   }
