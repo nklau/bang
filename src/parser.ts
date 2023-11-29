@@ -138,28 +138,16 @@ export const parse = (tokens: Token[]) => {
 
   const parseKeywordStatement = (): Statement => {
     return {
-      [localKeyword]: () => {
-        return parseAssignment(!!next(), !!match(constKeyword))
-      },
-      [constKeyword]: () => {
-        return parseAssignment(false, !!next())
-      },
+      [localKeyword]: () => parseAssignment(!!next(), !!match(constKeyword)),
+      [constKeyword]: () => parseAssignment(false, !!next()),
       [returnKeyword]: () => {
         next()
         return parseReturnStatement(matchUntil('\n'))
       },
-      [breakKeyword]: () => {
-        return new BreakStatement()
-      },
-      [trueKeyword]: () => {
-        return new BooleanLiteral(true)
-      },
-      [falseKeyword]: () => {
-        return new BooleanLiteral(false)
-      },
-      [infinityKeyword]: () => {
-        return new NumberLiteral(Infinity)
-      },
+      [breakKeyword]: () => new BreakStatement(),
+      [trueKeyword]: () => new BooleanLiteral(true),
+      [falseKeyword]: () => new BooleanLiteral(false),
+      [infinityKeyword]: () => new NumberLiteral(Infinity),
     }[token!.lexeme]!() // TODO replace the !
   }
 
