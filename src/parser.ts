@@ -20,6 +20,7 @@ import {
   falseKeyword,
   infinityKeyword,
   localKeyword,
+  matchKeyword,
   piKeyword,
   returnKeyword,
   trueKeyword,
@@ -150,11 +151,16 @@ export const parse = (tokens: Token[]) => {
       [falseKeyword]: () => new BooleanLiteral(false),
       [infinityKeyword]: () => new NumberLiteral(Infinity),
       [piKeyword]: () => new NumberLiteral(Math.PI),
+      [matchKeyword]: () => parseMatchExpression(),
     }[token!.lexeme]!() // TODO replace the !
   }
 
   const parseReturnStatement = (expression?: Token[]): Statement => {
     return new ReturnStatement(parseExpression(expression))
+  }
+
+  const parseMatchExpression = (): Statement => {
+    throw new Error('unimplemented')
   }
 
   const parseExpression = (expression?: Token[]): Expression | typeof nil => {
