@@ -129,8 +129,8 @@ export const parse = (tokens: Token[]) => {
       } else if (structure.lexeme === '[') {
         return new IndexExpression(
           variable,
-          parseExpression(lookUntil(':')) ?? 0,
-          parseExpression(lookUntil(']')) ?? Infinity
+          parseExpression(matchUntil(':')) ?? 0,
+          parseExpression(matchUntil(']')) ?? Infinity
         )
       }
     }
@@ -152,6 +152,7 @@ export const parse = (tokens: Token[]) => {
       [infinityKeyword]: () => new NumberLiteral(Infinity),
       [piKeyword]: () => new NumberLiteral(Math.PI),
       [matchKeyword]: () => parseMatchExpression(),
+      // TODO case keyword should throw error since it has to follow a match keyword?
     }[token!.lexeme]!() // TODO replace the !
   }
 
