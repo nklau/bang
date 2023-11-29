@@ -20,6 +20,7 @@ import {
   falseKeyword,
   infinityKeyword,
   localKeyword,
+  piKeyword,
   returnKeyword,
   trueKeyword,
 } from './core/keywords'
@@ -148,6 +149,7 @@ export const parse = (tokens: Token[]) => {
       [trueKeyword]: () => new BooleanLiteral(true),
       [falseKeyword]: () => new BooleanLiteral(false),
       [infinityKeyword]: () => new NumberLiteral(Infinity),
+      [piKeyword]: () => new NumberLiteral(Math.PI),
     }[token!.lexeme]!() // TODO replace the !
   }
 
