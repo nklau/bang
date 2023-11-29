@@ -52,6 +52,8 @@ export class ReturnStatement implements Statement {
   constructor(public expression: Expression) {}
 }
 
+export class BreakStatement implements Statement {}
+
 export class AccessExpression implements BinaryExpression {
   constructor(
     public left: Variable,
