@@ -14,7 +14,8 @@ import {
   error,
   nil,
 } from './core/core'
-import { constKeyword, breakKeyword, localKeyword, returnKeyword } from './core/keywords'
+import { constKeyword, breakKeyword, falseKeyword, localKeyword, returnKeyword, trueKeyword } from './core/keywords'
+import { BooleanLiteral } from './core/types'
 import { tokenize } from './lexer'
 
 export default function parseFile() {
@@ -141,6 +142,12 @@ export const parse = (tokens: Token[]) => {
       },
       [breakKeyword]: () => {
         return new BreakStatement()
+      },
+      [trueKeyword]: () => {
+        return new BooleanLiteral(true)
+      },
+      [falseKeyword]: () => {
+        return new BooleanLiteral(false)
       },
     }[token!.lexeme]!() // TODO replace the !
   }
