@@ -1,4 +1,6 @@
 export const breakKeyword = 'brk'
 export const constKeyword = 'cst'
+export const falseKeyword = 'F'
 export const localKeyword = 'locl'
 export const returnKeyword = 'rtn'
+export const trueKeyword = 'T'
