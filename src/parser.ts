@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { nil } from './core/constants'
 import {
   AccessExpression,
   Block,
@@ -6,17 +7,20 @@ import {
   Category,
   Expression,
   IndexExpression,
+  MatchCase,
+  MatchExpression,
   ReturnStatement,
   Statement,
   Token,
   Variable,
   VariableAssignment,
   error,
-  nil,
 } from './core/core'
 import {
-  constKeyword,
   breakKeyword,
+  caseKeyword,
+  constKeyword,
+  defaultKeyword,
   falseKeyword,
   infinityKeyword,
   localKeyword,
@@ -25,7 +29,7 @@ import {
   returnKeyword,
   trueKeyword,
 } from './core/keywords'
-import { BooleanLiteral, NumberLiteral } from './core/types'
+import { BooleanLiteral, FunctionLiteral, NumberLiteral, ListLiteral } from './core/types'
 import { tokenize } from './lexer'
 
 export default function parseFile() {
@@ -55,9 +59,9 @@ export const parse = (tokens: Token[]) => {
     return index ? tokens.slice(0, index) : []
   }
 
-  const matchUntil = (character: string) => {
-    const index = tokens.findIndex(t => t.lexeme === character)
-    return index ? tokens.splice(0, index + 1) : []
+  const matchUntil = (character: string, subtokens?: Token[]) => {
+    const index = (subtokens ?? tokens).findIndex(t => t.lexeme === character)
+    return index ? (subtokens ?? tokens).splice(0, index) : []
   }
 
   const match = (expected: string | undefined, throws = false) => {
@@ -72,12 +76,17 @@ export const parse = (tokens: Token[]) => {
     return (token = tokens.shift())
   }
 
+  const contains = (tokens: Token[], character: string) => {
+    return tokens.some(token => token.lexeme === character)
+  }
+
   const parseBlock = () => {
     while (match('\n')) continue
 
     const statements: Statement[] = []
     while (tokens.length > 0) {
       statements.push(parseStatement())
+      while (match('\n')) continue
     }
 
     return new Block(statements)
@@ -127,11 +136,12 @@ export const parse = (tokens: Token[]) => {
       if (structure.lexeme === '.') {
         return new AccessExpression(variable, new Variable(match(Category.id, true)!.lexeme, false, false))
       } else if (structure.lexeme === '[') {
-        return new IndexExpression(
-          variable,
-          parseExpression(matchUntil(':')) ?? 0,
-          parseExpression(matchUntil(']')) ?? Infinity
-        )
+        const left = parseExpression(matchUntil(':')) ?? 0
+        next()
+        const right = parseExpression(matchUntil(']')) ?? Infinity
+        next()
+
+        return new IndexExpression(variable, left, right)
       }
     }
 
@@ -151,7 +161,10 @@ export const parse = (tokens: Token[]) => {
       [falseKeyword]: () => new BooleanLiteral(false),
       [infinityKeyword]: () => new NumberLiteral(Infinity),
       [piKeyword]: () => new NumberLiteral(Math.PI),
-      [matchKeyword]: () => parseMatchExpression(),
+      [matchKeyword]: () => {
+        next()
+        return parseMatchExpression(matchUntil('{'))
+      },
       // TODO case keyword should throw error since it has to follow a match keyword?
     }[token!.lexeme]!() // TODO replace the !
   }
@@ -160,13 +173,69 @@ export const parse = (tokens: Token[]) => {
     return new ReturnStatement(parseExpression(expression))
   }
 
-  const parseMatchExpression = (): Statement => {
-    throw new Error('unimplemented')
+  const parseMatchExpression = (expression?: Token[]): Statement => {
+    const openingBracket = match('{', true)
+    if (!expression) {
+      error(
+        `Match expression requires a test expression following 'mtch'`,
+        openingBracket!.column,
+        openingBracket!.line
+      )
+    }
+
+    const condition = parseExpression(expression)
+    const matchCases: MatchCase[] = []
+
+    let cs = match(caseKeyword, true)
+    while (cs) {
+      let caseTestCondition = matchUntil(':')
+      const caseTestConditions = new ListLiteral([])
+
+      while (contains(caseTestCondition, ',')) {
+        caseTestConditions.value.push(parseExpression(matchUntil(',', caseTestCondition)))
+      }
+
+      const lastCaseTest = parseExpression(caseTestCondition)
+      const colon = match(':', true)
+
+      if (lastCaseTest === nil) {
+        error(`Match expression requires a test expression following 'cs'`, colon!.column, colon!.line)
+      }
+
+      caseTestConditions.value.push(lastCaseTest)
+
+      const openingCsBracket = match('{')
+      const caseFunction = parseFunctionLiteral(matchUntil('}')) // TODO what if they don't use brackets
+      if (openingCsBracket) {
+        match('}', true)
+      }
+
+      matchCases.push(new MatchCase(caseTestConditions, caseFunction))
+
+      cs = match(caseKeyword)
+    }
+
+    if (match(defaultKeyword)) {
+      match(':', true)
+      const openingDefaultBracket = match('{')
+      const caseFunction = parseFunctionLiteral(matchUntil('}')) // TODO may not use brackets here
+      if (openingDefaultBracket) {
+        match('}', true)
+      }
+
+      return new MatchExpression(condition, matchCases, caseFunction)
+    }
+
+    return new MatchExpression(condition, matchCases)
   }
 
   const parseExpression = (expression?: Token[]): Expression | typeof nil => {
     if (!expression) return nil
     // TODO make sure to call next() or match() to remove from tokens
+    throw new Error('unimplemented')
+  }
+
+  const parseFunctionLiteral = (expression?: Token[]): FunctionLiteral => {
     throw new Error('unimplemented')
   }
 
