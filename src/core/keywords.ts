@@ -1,5 +1,7 @@
 export const breakKeyword = 'brk'
+export const caseKeyword = 'cs'
 export const constKeyword = 'cst'
+export const defaultKeyword = 'dft'
 export const falseKeyword = 'F'
 export const infinityKeyword = 'inf'
 export const localKeyword = 'locl'
