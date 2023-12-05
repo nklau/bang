@@ -51,7 +51,7 @@ export class Variable {
 }
 
 export class ReturnStatement implements Statement {
-  constructor(public expression: Expression) {}
+  constructor(public expression: Expression = nil) {}
 }
 
 export class BreakStatement implements Statement {}
