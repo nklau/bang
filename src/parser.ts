@@ -165,7 +165,9 @@ export const parse = (tokens: Token[]) => {
         next()
         return parseMatchExpression(matchUntil('{'))
       },
-      // TODO case keyword should throw error since it has to follow a match keyword?
+      [caseKeyword]: () => {
+        error(`'cs' keyword cannot be used outside of a 'mtch' expression`, token!.line, token!.column)
+      }
     }[token!.lexeme]!() // TODO replace the !
   }
 
@@ -178,8 +180,8 @@ export const parse = (tokens: Token[]) => {
     if (!expression) {
       error(
         `Match expression requires a test expression following 'mtch'`,
-        openingBracket!.column,
-        openingBracket!.line
+        openingBracket!.line,
+        openingBracket!.column
       )
     }
 
@@ -199,7 +201,7 @@ export const parse = (tokens: Token[]) => {
       const colon = match(':', true)
 
       if (lastCaseTest === nil) {
-        error(`Match expression requires a test expression following 'cs'`, colon!.column, colon!.line)
+        error(`Match expression requires a test expression following 'cs'`, colon!.line, colon!.column)
       }
 
       caseTestConditions.value.push(lastCaseTest)
