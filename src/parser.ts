@@ -167,7 +167,10 @@ export const parse = (tokens: Token[]) => {
       },
       [caseKeyword]: () => {
         error(`'cs' keyword cannot be used outside of a 'mtch' expression`, token!.line, token!.column)
-      }
+      },
+      [defaultKeyword]: () => {
+        error(`'dft' keyword cannot be used outside of a 'mtch' expression`, token!.line, token!.column)
+      },
     }[token!.lexeme]!() // TODO replace the !
   }
 
