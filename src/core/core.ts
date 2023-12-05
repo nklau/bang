@@ -1,4 +1,6 @@
+import { falseyFunction, nil } from './constants'
 import { assignmentOperator } from './operators'
+import { FunctionLiteral, ListLiteral } from './types'
 
 type AssignmentTarget = AccessExpression | IndexExpression | Variable
 
@@ -54,13 +56,6 @@ export class ReturnStatement implements Statement {
 
 export class BreakStatement implements Statement {}
 
-export class AccessExpression implements BinaryExpression {
-  constructor(
-    public left: Variable,
-    public right: Variable
-  ) {}
-}
-
 export class IndexExpression implements Expression {
   constructor(
     public target: Variable,
@@ -69,4 +64,24 @@ export class IndexExpression implements Expression {
   ) {}
 }
 
-export const nil = {}
+export class MatchExpression implements Expression {
+  constructor(
+    public condition: Expression,
+    public cases: MatchCase[],
+    public defaultCase: FunctionLiteral = falseyFunction
+  ) {}
+}
+
+export class MatchCase {
+  constructor(
+    public matchValue: ListLiteral,
+    public functionValue: FunctionLiteral
+  ) {}
+}
+
+export class AccessExpression implements BinaryExpression {
+  constructor(
+    public left: Variable,
+    public right: Variable
+  ) {}
+}
