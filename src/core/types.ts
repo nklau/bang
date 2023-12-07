@@ -17,3 +17,5 @@ export class ListLiteral implements Literal {
 export class FunctionLiteral implements Literal {
   constructor(public parameters: Variable[], public statements: Statement[], public sourceCode: string) {}
 }
+
+export const nil = {}

@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { nil } from './core/constants'
+import { falseyFunction } from './core/constants'
 import {
   AccessExpression,
   Block,
@@ -11,6 +11,7 @@ import {
   MatchExpression,
   ReturnStatement,
   Statement,
+  TernaryExpression,
   Token,
   Variable,
   VariableAssignment,
@@ -29,7 +30,7 @@ import {
   returnKeyword,
   trueKeyword,
 } from './core/keywords'
-import { BooleanLiteral, FunctionLiteral, NumberLiteral, ListLiteral } from './core/types'
+import { BooleanLiteral, FunctionLiteral, NumberLiteral, ListLiteral, nil } from './core/types'
 import { tokenize } from './lexer'
 
 export default function parseFile() {
@@ -61,7 +62,7 @@ export const parse = (tokens: Token[]) => {
 
   const matchUntil = (character: string, subtokens?: Token[]) => {
     const index = (subtokens ?? tokens).findIndex(t => t.lexeme === character)
-    return index ? (subtokens ?? tokens).splice(0, index) : []
+    return (subtokens ?? tokens).splice(0, index)
   }
 
   const match = (expected: string | undefined, throws = false) => {
@@ -92,10 +93,12 @@ export const parse = (tokens: Token[]) => {
     return new Block(statements)
   }
 
-  const parseStatement = (): Statement => {
+  const parseStatement = (sourceCodeWrapper?: { sourceCode: string }): Statement => {
     if (!token) {
       error('Expected statement', 0, 0)
     }
+
+    // TODO update source code
 
     const statementTypes = {
       [Category.id]: parseAssignment,
@@ -236,8 +239,33 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseExpression = (expression?: Token[]): Expression | typeof nil => {
-    if (!expression) return nil
-    // TODO make sure to call next() or match() to remove from tokens
+    if (expression) {
+      tokens.unshift(...expression)
+    }
+
+    const left = parseCompareExpression(matchUntil('?'))
+    const trueBlock = []
+    let trueBlockSourceCode = ''
+    const falseBlock = []
+    let falseBlockSourceCode = ''
+
+    while (match('?') && !at(':')) {
+      trueBlock.push(parseStatement())
+    }
+
+    while (match(':')) {
+      falseBlock.push(parseStatement())
+    }
+    
+    let falseFunction = falseyFunction
+    if (falseBlock.length > 0) {
+      falseFunction = new FunctionLiteral([], falseBlock, falseBlockSourceCode)
+    }
+
+    return new TernaryExpression(left, new FunctionLiteral([], trueBlock, trueBlockSourceCode), falseFunction)
+  }
+
+  const parseCompareExpression = (expression: Token[]): Expression => {
     throw new Error('unimplemented')
   }
 

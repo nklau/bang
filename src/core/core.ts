@@ -1,6 +1,5 @@
-import { falseyFunction, nil } from './constants'
 import { assignmentOperator } from './operators'
-import { FunctionLiteral, ListLiteral } from './types'
+import { FunctionLiteral, ListLiteral, nil } from './types'
 
 type AssignmentTarget = AccessExpression | IndexExpression | Variable
 
@@ -68,7 +67,7 @@ export class MatchExpression implements Expression {
   constructor(
     public condition: Expression,
     public cases: MatchCase[],
-    public defaultCase: FunctionLiteral = falseyFunction
+    public defaultCase: FunctionLiteral = new FunctionLiteral([], [new ReturnStatement()], '() -> nil')
   ) {}
 }
 
@@ -83,5 +82,13 @@ export class AccessExpression implements BinaryExpression {
   constructor(
     public left: Variable,
     public right: Variable
+  ) {}
+}
+
+export class TernaryExpression implements Expression {
+  constructor(
+    public condition: Expression,
+    public trueBlock: FunctionLiteral,
+    public falseBlock: FunctionLiteral
   ) {}
 }
