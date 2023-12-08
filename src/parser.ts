@@ -4,6 +4,7 @@ import {
   AccessExpression,
   AdditiveExpression,
   AndExpression,
+  BinaryExpression,
   Block,
   BreakStatement,
   Category,
@@ -296,6 +297,21 @@ export const parse = (tokens: Token[]) => {
       : left
   }
 
+  const parseBinaryExpression = (
+    parseInnerExpression: () => Expression,
+    operator: string,
+    expressionType: { new (left: Expression, right: Expression): BinaryExpression }
+  ): Expression => {
+    let left = parseInnerExpression()
+
+    while (match(operator)) {
+      const right = parseInnerExpression()
+      left = new expressionType(left, right)
+    }
+
+    return left
+  }
+
   const parseNaryExpression = (
     parseInnerExpression: () => Expression,
     operators: string[],
@@ -319,25 +335,11 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseOrExpression = (): Expression => {
-    let left = parseAndExpression()
-
-    while (match(orOperator)) {
-      const right = parseAndExpression()
-      left = new OrExpression(left, right)
-    }
-
-    return left
+    return parseBinaryExpression(parseAndExpression, orOperator, OrExpression)
   }
 
   const parseAndExpression = (): Expression => {
-    let left = parseAdditiveExpression()
-
-    while (match(andOperator)) {
-      const right = parseAdditiveExpression()
-      left = new AndExpression(left, right)
-    }
-
-    return left
+    return parseBinaryExpression(parseAdditiveExpression, andOperator, AndExpression)
   }
 
   const parseAdditiveExpression = (): Expression => {
