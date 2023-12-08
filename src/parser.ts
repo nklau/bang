@@ -80,7 +80,7 @@ export const parse = (tokens: Token[]) => {
       error(`Expected '${expected}' but got '${token?.lexeme}'`, token?.line ?? 0, token?.column ?? 0)
     }
 
-    return (throws || at(expected)) ? next() : undefined
+    return throws || at(expected) ? next() : undefined
   }
 
   const next = () => {
@@ -292,13 +292,13 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseCompareExpression = (): Expression => {
-    const expressionPieces: (Expression | string)[] = [parseOrExpression()]
+    const expression: (Expression | string)[] = [parseOrExpression()]
 
     while (atAny(equalityOperators)) {
-      expressionPieces.push(match(Category.operator, true)!.lexeme, parseOrExpression())
+      expression.push(match(Category.operator, true)!.lexeme, parseOrExpression())
     }
 
-    return new ComparisonExpression(expressionPieces)
+    return new ComparisonExpression(expression)
   }
 
   const parseOrExpression = (): Expression => {
@@ -308,7 +308,7 @@ export const parse = (tokens: Token[]) => {
       const right = parseAndExpression()
       left = new OrExpression(left, right)
     }
-    
+
     return left
   }
 
