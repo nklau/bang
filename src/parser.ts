@@ -9,6 +9,7 @@ import {
   BreakStatement,
   Category,
   ComparisonExpression,
+  ExponentialExpression,
   Expression,
   ImmediateFunction,
   IndexExpression,
@@ -31,6 +32,7 @@ import {
   orOperator,
   additiveOperators,
   multiplicativeOperators,
+  exponentialOperator,
 } from './core/operators'
 import {
   breakKeyword,
@@ -351,7 +353,7 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseExponentialExpression = (): Expression => {
-    throw new Error('unimplemented')
+    return parseNaryExpression(parseNegativeOrSpreadExpression, [exponentialOperator], ExponentialExpression)
   }
 
   const parseNegativeOrSpreadExpression = (): Expression => {
