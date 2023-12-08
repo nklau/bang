@@ -5,6 +5,7 @@ type AssignmentTarget = AccessExpression | IndexExpression | Variable
 
 export interface Statement {}
 export interface Expression extends Statement {}
+export interface UnaryExpression extends Expression {}
 export interface BinaryExpression extends Expression {
   left: Expression
   right: Expression
