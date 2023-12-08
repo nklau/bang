@@ -14,6 +14,7 @@ import {
   MatchCase,
   MatchExpression,
   MultiplicativeExpression,
+  NaryExpression,
   OrExpression,
   ReturnStatement,
   Statement,
@@ -23,7 +24,13 @@ import {
   VariableAssignment,
   error,
 } from './core/core'
-import { andOperator, equalityOperators, orOperator, additiveOperators, multiplicativeOperators } from './core/operators'
+import {
+  andOperator,
+  equalityOperators,
+  orOperator,
+  additiveOperators,
+  multiplicativeOperators,
+} from './core/operators'
 import {
   breakKeyword,
   caseKeyword,
@@ -289,18 +296,26 @@ export const parse = (tokens: Token[]) => {
       : left
   }
 
+  const parseNaryExpression = (
+    parseInnerExpression: () => Expression,
+    operators: string[],
+    expressionType: { new (operands: (Expression | string)[]): NaryExpression }
+  ): Expression => {
+    const operands: (Expression | string)[] = [parseInnerExpression()]
+
+    while (atAny(operators)) {
+      operands.push(match(Category.operator, true)!.lexeme, parseInnerExpression())
+    }
+
+    return operands.length > 1 ? new expressionType(operands) : operands[0]
+  }
+
   const parseImmediateFunction = (): ImmediateFunction => {
     throw new Error('unimplemented')
   }
 
   const parseCompareExpression = (): Expression => {
-    const operands: (Expression | string)[] = [parseOrExpression()]
-
-    while (atAny(equalityOperators)) {
-      operands.push(match(Category.operator, true)!.lexeme, parseOrExpression())
-    }
-
-    return operands.length > 1 ? new ComparisonExpression(operands) : operands[0]
+    return parseNaryExpression(parseOrExpression, equalityOperators, ComparisonExpression)
   }
 
   const parseOrExpression = (): Expression => {
@@ -326,23 +341,11 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseAdditiveExpression = (): Expression => {
-    const operands: (Expression | string)[] = [parseMultiplicativeExpression()]
-
-    while (atAny(additiveOperators)) {
-      operands.push(match(Category.operator, true)!.lexeme, parseMultiplicativeExpression())
-    }
-
-    return operands.length > 1 ? new AdditiveExpression(operands) : operands[0]
+    return parseNaryExpression(parseMultiplicativeExpression, additiveOperators, AdditiveExpression)
   }
 
   const parseMultiplicativeExpression = (): Expression => {
-    const operands: (Expression | string)[] = [parseExponentialExpression()]
-
-    while (atAny(multiplicativeOperators)) {
-      operands.push(match(Category.operator, true)!.lexeme, parseExponentialExpression())
-    }
-
-    return operands.length > 1 ? new MultiplicativeExpression(operands) : operands[0]
+    return parseNaryExpression(parseExponentialExpression, multiplicativeOperators, MultiplicativeExpression)
   }
 
   const parseExponentialExpression = (): Expression => {
