@@ -86,6 +86,13 @@ export class AccessExpression implements BinaryExpression {
   ) {}
 }
 
+export class OrExpression implements BinaryExpression {
+  constructor(
+    public left: Expression,
+    public right: Expression
+  ) {}
+}
+
 export class ComparisonExpression implements NaryExpression {
   constructor(
     public operands: (Expression | string)[]
