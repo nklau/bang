@@ -105,6 +105,12 @@ export class AndExpression implements BinaryExpression {
   ) {}
 }
 
+export class AdditiveExpression implements NaryExpression {
+  constructor(
+    public operands: (Expression | string)[]
+  ) {}
+}
+
 export class ComparisonExpression implements NaryExpression {
   constructor(
     public operands: (Expression | string)[]
