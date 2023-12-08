@@ -6,6 +6,7 @@ type AssignmentTarget = AccessExpression | IndexExpression | Variable
 export interface Statement {}
 export interface Expression extends Statement {}
 export interface BinaryExpression extends Expression {}
+export interface NaryExpression extends Expression {}
 
 export enum Category {
   id = 'id',
@@ -82,6 +83,12 @@ export class AccessExpression implements BinaryExpression {
   constructor(
     public left: Variable,
     public right: Variable
+  ) {}
+}
+
+export class ComparisonExpression implements NaryExpression {
+  constructor(
+    public operands: (Expression | string)[]
   ) {}
 }
 
