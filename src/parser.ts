@@ -105,12 +105,10 @@ export const parse = (tokens: Token[]) => {
     return new Block(statements)
   }
 
-  const parseStatement = (sourceCodeWrapper?: { sourceCode: string }): Statement => {
+  const parseStatement = (): Statement => {
     if (!token) {
       error('Expected statement', 0, 0)
     }
-
-    // TODO update source code
 
     const statementTypes = {
       [Category.id]: parseAssignment,
