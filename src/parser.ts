@@ -11,6 +11,7 @@ import {
   IndexExpression,
   MatchCase,
   MatchExpression,
+  OrExpression,
   ReturnStatement,
   Statement,
   TernaryExpression,
@@ -19,7 +20,7 @@ import {
   VariableAssignment,
   error,
 } from './core/core'
-import { equalityOperators } from './core/operators'
+import { equalityOperators, orOperator } from './core/operators'
 import {
   breakKeyword,
   caseKeyword,
@@ -299,11 +300,18 @@ export const parse = (tokens: Token[]) => {
     return new ComparisonExpression(expressionPieces)
   }
 
-  const parseOrExpression = () => {
-    throw new Error('unimplemented')
+  const parseOrExpression = (): Expression => {
+    let left = parseAndExpression()
+
+    while (match(orOperator)) {
+      const right = parseAndExpression()
+      left = new OrExpression(left, right)
+    }
+    
+    return left
   }
 
-  const parseAndExpression = () => {
+  const parseAndExpression = (): Expression => {
     throw new Error('unimplemented')
   }
 
