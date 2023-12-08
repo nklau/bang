@@ -16,3 +16,4 @@ export const equalityOperators = [
 ]
 
 export const orOperator = '||'
+export const andOperator = '&&'
