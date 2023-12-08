@@ -51,6 +51,7 @@ export default function parseFile() {
 
 export const parse = (tokens: Token[]) => {
   let token: Token | undefined = tokens[0]
+  let sourceCode: string[] = []
 
   const at = (expected: string | undefined) => {
     return token?.category === expected || token?.lexeme === expected
@@ -71,11 +72,13 @@ export const parse = (tokens: Token[]) => {
       error(`Expected '${expected}' but got '${token?.lexeme}'`, token?.line ?? 0, token?.column ?? 0)
     }
 
-    return throws ? (token = tokens.shift()) : at(expected) ? next() : undefined
+    return (throws || at(expected)) ? next() : undefined
   }
 
   const next = () => {
-    return (token = tokens.shift())
+    token = tokens.shift()
+    sourceCode.push(token?.lexeme ?? '')
+    return token
   }
 
   const contains = (tokens: Token[], character: string) => {
@@ -254,25 +257,27 @@ export const parse = (tokens: Token[]) => {
 
     const left = parseCompareExpression(matchUntil('?'))
     const trueBlock: Statement[] = []
-    let trueBlockSourceCode = ''
+    let trueBlockSourceCode: string[] = []
     const falseBlock = []
-    let falseBlockSourceCode = ''
+    let falseBlockSourceCode: string[] = []
 
+    sourceCode = trueBlockSourceCode
     while (match('?') && !at(':')) {
       trueBlock.push(callFailable(parseImmediateFunction, parseStatement))
     }
 
+    sourceCode = falseBlockSourceCode
     while (match(':')) {
       falseBlock.push(callFailable(parseImmediateFunction, parseStatement))
     }
 
     let falseFunction = falseyFunction
     if (falseBlock.length > 0) {
-      falseFunction = new FunctionLiteral([], falseBlock, falseBlockSourceCode)
+      falseFunction = new FunctionLiteral([], falseBlock, falseBlockSourceCode.join(''))
     }
-    
+
     return trueBlock.length > 0
-      ? new TernaryExpression(left, new FunctionLiteral([], trueBlock, trueBlockSourceCode), falseFunction)
+      ? new TernaryExpression(left, new FunctionLiteral([], trueBlock, trueBlockSourceCode.join('')), falseFunction)
       : left
   }
 
