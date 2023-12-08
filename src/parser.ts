@@ -13,6 +13,7 @@ import {
   IndexExpression,
   MatchCase,
   MatchExpression,
+  MultiplicativeExpression,
   OrExpression,
   ReturnStatement,
   Statement,
@@ -22,7 +23,7 @@ import {
   VariableAssignment,
   error,
 } from './core/core'
-import { andOperator, equalityOperators, orOperator, additiveOperators } from './core/operators'
+import { andOperator, equalityOperators, orOperator, additiveOperators, multiplicativeOperators } from './core/operators'
 import {
   breakKeyword,
   caseKeyword,
@@ -335,7 +336,13 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseMultiplicativeExpression = (): Expression => {
-    throw new Error('unimplemented')
+    const operands: (Expression | string)[] = [parseExponentialExpression()]
+
+    while (atAny(multiplicativeOperators)) {
+      operands.push(match(Category.operator, true)!.lexeme, parseExponentialExpression())
+    }
+
+    return operands.length > 1 ? new MultiplicativeExpression(operands) : operands[0]
   }
 
   const parseExponentialExpression = (): Expression => {
