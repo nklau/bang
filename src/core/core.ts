@@ -117,6 +117,12 @@ export class ComparisonExpression implements NaryExpression {
   ) {}
 }
 
+export class MultiplicativeExpression implements NaryExpression {
+  constructor(
+    public operands: (Expression | string)[]
+  ) {}
+}
+
 export class TernaryExpression implements Expression {
   constructor(
     public condition: Expression,
