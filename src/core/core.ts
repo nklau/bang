@@ -4,7 +4,7 @@ import { FunctionLiteral, ListLiteral, nil } from './types'
 type AssignmentTarget = AccessExpression | IndexExpression | Variable
 
 export interface Statement {}
-export interface Expression {}
+export interface Expression extends Statement {}
 export interface BinaryExpression extends Expression {}
 
 export enum Category {
@@ -90,5 +90,11 @@ export class TernaryExpression implements Expression {
     public condition: Expression,
     public trueBlock: FunctionLiteral,
     public falseBlock: FunctionLiteral
+  ) {}
+}
+
+export class ImmediateFunction implements Expression {
+  constructor(
+    public statements: Statement[]
   ) {}
 }
