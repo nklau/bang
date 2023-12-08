@@ -106,21 +106,15 @@ export class AndExpression implements BinaryExpression {
 }
 
 export class AdditiveExpression implements NaryExpression {
-  constructor(
-    public operands: (Expression | string)[]
-  ) {}
+  constructor(public operands: (Expression | string)[]) {}
 }
 
 export class ComparisonExpression implements NaryExpression {
-  constructor(
-    public operands: (Expression | string)[]
-  ) {}
+  constructor(public operands: (Expression | string)[]) {}
 }
 
 export class MultiplicativeExpression implements NaryExpression {
-  constructor(
-    public operands: (Expression | string)[]
-  ) {}
+  constructor(public operands: (Expression | string)[]) {}
 }
 
 export class TernaryExpression implements Expression {
@@ -132,7 +126,5 @@ export class TernaryExpression implements Expression {
 }
 
 export class ImmediateFunction implements Expression {
-  constructor(
-    public statements: Statement[]
-  ) {}
+  constructor(public statements: Statement[]) {}
 }
