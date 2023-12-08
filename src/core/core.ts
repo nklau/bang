@@ -5,8 +5,13 @@ type AssignmentTarget = AccessExpression | IndexExpression | Variable
 
 export interface Statement {}
 export interface Expression extends Statement {}
-export interface BinaryExpression extends Expression {}
-export interface NaryExpression extends Expression {}
+export interface BinaryExpression extends Expression {
+  left: Expression
+  right: Expression
+}
+export interface NaryExpression extends Expression {
+  operands: (Expression | string)[]
+}
 
 export enum Category {
   id = 'id',
