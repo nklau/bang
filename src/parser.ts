@@ -6,6 +6,7 @@ import {
   BreakStatement,
   Category,
   Expression,
+  ImmediateFunction,
   IndexExpression,
   MatchCase,
   MatchExpression,
@@ -79,6 +80,14 @@ export const parse = (tokens: Token[]) => {
 
   const contains = (tokens: Token[], character: string) => {
     return tokens.some(token => token.lexeme === character)
+  }
+
+  const callFailable = (failable: (...args: any[]) => Statement, backup: (...args: any[]) => Statement): Statement => {
+    try {
+      return failable()
+    } catch {
+      return backup()
+    }
   }
 
   const parseBlock = () => {
@@ -174,7 +183,7 @@ export const parse = (tokens: Token[]) => {
       [defaultKeyword]: () => {
         error(`'dft' keyword cannot be used outside of a 'mtch' expression`, token!.line, token!.column)
       },
-      'nil': () => new ReturnStatement(),
+      nil: () => new ReturnStatement(),
     }[token!.lexeme]!() // TODO replace the !
   }
 
@@ -244,28 +253,34 @@ export const parse = (tokens: Token[]) => {
     }
 
     const left = parseCompareExpression(matchUntil('?'))
-    const trueBlock = []
+    const trueBlock: Statement[] = []
     let trueBlockSourceCode = ''
     const falseBlock = []
     let falseBlockSourceCode = ''
 
     while (match('?') && !at(':')) {
-      trueBlock.push(parseStatement())
+      trueBlock.push(callFailable(parseImmediateFunction, parseStatement))
     }
 
     while (match(':')) {
-      falseBlock.push(parseStatement())
+      falseBlock.push(callFailable(parseImmediateFunction, parseStatement))
     }
-    
+
     let falseFunction = falseyFunction
     if (falseBlock.length > 0) {
       falseFunction = new FunctionLiteral([], falseBlock, falseBlockSourceCode)
     }
-
-    return new TernaryExpression(left, new FunctionLiteral([], trueBlock, trueBlockSourceCode), falseFunction)
+    
+    return trueBlock.length > 0
+      ? new TernaryExpression(left, new FunctionLiteral([], trueBlock, trueBlockSourceCode), falseFunction)
+      : left
   }
 
   const parseCompareExpression = (expression: Token[]): Expression => {
+    throw new Error('unimplemented')
+  }
+
+  const parseImmediateFunction = (): ImmediateFunction => {
     throw new Error('unimplemented')
   }
 
