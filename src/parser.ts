@@ -292,13 +292,13 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseCompareExpression = (): Expression => {
-    const expression: (Expression | string)[] = [parseOrExpression()]
+    const operands: (Expression | string)[] = [parseOrExpression()]
 
     while (atAny(equalityOperators)) {
-      expression.push(match(Category.operator, true)!.lexeme, parseOrExpression())
+      operands.push(match(Category.operator, true)!.lexeme, parseOrExpression())
     }
 
-    return expression.length > 1 ? new ComparisonExpression(expression) : expression[0]
+    return operands.length > 1 ? new ComparisonExpression(operands) : operands[0]
   }
 
   const parseOrExpression = (): Expression => {
