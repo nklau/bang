@@ -14,3 +14,5 @@ export const equalityOperators = [
   greaterThanOperator,
   greaterThanEqualOperator,
 ]
+
+export const orOperator = '||'
