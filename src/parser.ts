@@ -354,7 +354,7 @@ export const parse = (tokens: Token[]) => {
     throw new Error('unimplemented')
   }
 
-  const parseNegativeExpression = (): Expression => {
+  const parseNegativeOrSpreadExpression = (): Expression => {
     throw new Error('unimplemented')
   }
 
