@@ -122,6 +122,10 @@ export class MultiplicativeExpression implements NaryExpression {
   constructor(public operands: (Expression | string)[]) {}
 }
 
+export class ExponentialExpression implements NaryExpression {
+  constructor(public operands: (Expression | string)[]) {}
+}
+
 export class TernaryExpression implements Expression {
   constructor(
     public condition: Expression,
