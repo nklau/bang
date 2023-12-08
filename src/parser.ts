@@ -5,6 +5,7 @@ import {
   Block,
   BreakStatement,
   Category,
+  ComparisonExpression,
   Expression,
   ImmediateFunction,
   IndexExpression,
@@ -18,6 +19,7 @@ import {
   VariableAssignment,
   error,
 } from './core/core'
+import { equalityOperators } from './core/operators'
 import {
   breakKeyword,
   caseKeyword,
@@ -55,6 +57,10 @@ export const parse = (tokens: Token[]) => {
 
   const at = (expected: string | undefined) => {
     return token?.category === expected || token?.lexeme === expected
+  }
+
+  const atAny = (of: string[]) => {
+    return of.some(expected => token?.category === expected)
   }
 
   const lookUntil = (character: string) => {
@@ -253,7 +259,7 @@ export const parse = (tokens: Token[]) => {
       tokens.unshift(...expression)
     }
 
-    const left = parseCompareExpression(matchUntil('?'))
+    const left = parseCompareExpression()
     const trueBlock: Statement[] = []
     let trueBlockSourceCode: string[] = []
     const falseBlock = []
@@ -279,11 +285,21 @@ export const parse = (tokens: Token[]) => {
       : left
   }
 
-  const parseCompareExpression = (expression: Token[]): Expression => {
+  const parseImmediateFunction = (): ImmediateFunction => {
     throw new Error('unimplemented')
   }
 
-  const parseImmediateFunction = (): ImmediateFunction => {
+  const parseCompareExpression = (): Expression => {
+    const expressionPieces: (Expression | string)[] = [parseOrExpression()]
+
+    while (atAny(equalityOperators)) {
+      expressionPieces.push(match(Category.operator, true)!.lexeme, parseOrExpression())
+    }
+
+    return new ComparisonExpression(expressionPieces)
+  }
+
+  const parseOrExpression = () => {
     throw new Error('unimplemented')
   }
 
