@@ -2,6 +2,7 @@ import fs from 'fs'
 import { falseyFunction } from './core/constants'
 import {
   AccessExpression,
+  AdditiveExpression,
   AndExpression,
   Block,
   BreakStatement,
@@ -324,7 +325,13 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseAdditiveExpression = (): Expression => {
-    throw new Error('unimplemented')
+    const operands: (Expression | string)[] = [parseMultiplicativeExpression()]
+
+    while (atAny(additiveOperators)) {
+      operands.push(match(Category.operator, true)!.lexeme, parseMultiplicativeExpression())
+    }
+
+    return operands.length > 1 ? new AdditiveExpression(operands) : operands[0]
   }
 
   const parseMultiplicativeExpression = (): Expression => {
