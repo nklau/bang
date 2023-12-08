@@ -27,5 +27,7 @@ const divideOperator = '/'
 const modulusOperator = '%'
 export const multiplicativeOperators = [multiplyOperator, divideOperator, modulusOperator]
 
+export const exponentialOperator = '^'
+
 const spreadOperator = '@'
 export const negativeSpreadOperators = [subtractOperator, spreadOperator]
