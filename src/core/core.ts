@@ -85,6 +85,10 @@ export class MatchCase {
   ) {}
 }
 
+export class NegativeExpression implements UnaryExpression {
+  constructor(public operand: Expression) {}
+}
+
 export class AccessExpression implements BinaryExpression {
   constructor(
     public left: Variable,
