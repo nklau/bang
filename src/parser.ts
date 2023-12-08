@@ -21,7 +21,7 @@ import {
   VariableAssignment,
   error,
 } from './core/core'
-import { andOperator, equalityOperators, orOperator } from './core/operators'
+import { andOperator, equalityOperators, orOperator, additiveOperators } from './core/operators'
 import {
   breakKeyword,
   caseKeyword,
@@ -298,7 +298,7 @@ export const parse = (tokens: Token[]) => {
       expression.push(match(Category.operator, true)!.lexeme, parseOrExpression())
     }
 
-    return new ComparisonExpression(expression)
+    return expression.length > 1 ? new ComparisonExpression(expression) : expression[0]
   }
 
   const parseOrExpression = (): Expression => {
