@@ -21,3 +21,8 @@ export const andOperator = '&&'
 const addOperator = '+'
 const subtractOperator = '-'
 export const additiveOperators = [addOperator, subtractOperator]
+
+const multiplyOperator = '*'
+const divideOperator = '/'
+const modulusOperator = '%'
+export const multiplicativeOperators = [multiplyOperator, divideOperator, modulusOperator]
