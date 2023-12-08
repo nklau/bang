@@ -2,6 +2,7 @@ import fs from 'fs'
 import { falseyFunction } from './core/constants'
 import {
   AccessExpression,
+  AndExpression,
   Block,
   BreakStatement,
   Category,
@@ -20,7 +21,7 @@ import {
   VariableAssignment,
   error,
 } from './core/core'
-import { equalityOperators, orOperator } from './core/operators'
+import { andOperator, equalityOperators, orOperator } from './core/operators'
 import {
   breakKeyword,
   caseKeyword,
@@ -312,7 +313,14 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseAndExpression = (): Expression => {
-    throw new Error('unimplemented')
+    let left = parseAdditiveExpression()
+
+    while (match(andOperator)) {
+      const right = parseAdditiveExpression()
+      left = new AndExpression(left, right)
+    }
+
+    return left
   }
 
   const parseAdditiveExpression = (): Expression => {
