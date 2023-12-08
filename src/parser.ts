@@ -315,6 +315,10 @@ export const parse = (tokens: Token[]) => {
     throw new Error('unimplemented')
   }
 
+  const parseAdditiveExpression = (): Expression => {
+    throw new Error('unimplemented')
+  }
+
   const parseFunctionLiteral = (expression?: Token[]): FunctionLiteral => {
     throw new Error('unimplemented')
   }
