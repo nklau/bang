@@ -12,7 +12,9 @@ export default function tokenizeFile() {
       throw err
     }
 
-    tokenize(data)
+    for (const token of tokenize(data)) {
+      console.log(token)
+    }
   })
 }
 
@@ -68,3 +70,5 @@ const tokenizeLine = (line: string[], lineNumber: number, flags: { inComment: bo
 
   return tokens
 }
+
+tokenizeFile()
