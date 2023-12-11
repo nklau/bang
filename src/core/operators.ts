@@ -19,7 +19,7 @@ export const orOperator = '||'
 export const andOperator = '&&'
 
 const addOperator = '+'
-const subtractOperator = '-'
+export const subtractOperator = '-'
 export const additiveOperators = [addOperator, subtractOperator]
 
 const multiplyOperator = '*'
@@ -29,5 +29,4 @@ export const multiplicativeOperators = [multiplyOperator, divideOperator, modulu
 
 export const exponentialOperator = '^'
 
-const spreadOperator = '@'
-export const negativeSpreadOperators = [subtractOperator, spreadOperator]
+export const spreadOperator = '@'
