@@ -5,7 +5,9 @@ type AssignmentTarget = AccessExpression | IndexExpression | Variable
 
 export interface Statement {}
 export interface Expression extends Statement {}
-export interface UnaryExpression extends Expression {}
+export interface UnaryExpression extends Expression {
+  operand: Expression
+}
 export interface BinaryExpression extends Expression {
   left: Expression
   right: Expression
@@ -86,6 +88,10 @@ export class MatchCase {
 }
 
 export class NegativeExpression implements UnaryExpression {
+  constructor(public operand: Expression) {}
+}
+
+export class SpreadExpression implements UnaryExpression {
   constructor(public operand: Expression) {}
 }
 
