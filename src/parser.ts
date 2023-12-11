@@ -61,7 +61,7 @@ export default function parseFile() {
       throw err
     }
 
-    parse(tokenize(data))
+    console.log(parse(tokenize(data)))
   })
 }
 
@@ -366,3 +366,5 @@ export const parse = (tokens: Token[]) => {
 
   return parseBlock()
 }
+
+parseFile()
