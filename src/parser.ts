@@ -17,8 +17,10 @@ import {
   MatchExpression,
   MultiplicativeExpression,
   NaryExpression,
+  NegativeExpression,
   OrExpression,
   ReturnStatement,
+  SpreadExpression,
   Statement,
   TernaryExpression,
   Token,
@@ -33,6 +35,8 @@ import {
   additiveOperators,
   multiplicativeOperators,
   exponentialOperator,
+  subtractOperator,
+  spreadOperator,
 } from './core/operators'
 import {
   breakKeyword,
@@ -357,6 +361,18 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseNegativeOrSpreadExpression = (): Expression => {
+    let expression
+
+    if (match(subtractOperator)) {
+      expression = new NegativeExpression(parseNegativeOrSpreadExpression())
+    } else if (match(spreadOperator)) {
+      expression = new SpreadExpression(parseNegativeOrSpreadExpression())
+    }
+
+    return expression ?? parseIncrementDecrementExpression()
+  }
+
+  const parseIncrementDecrementExpression = (): Expression => {
     throw new Error('unimplemented')
   }
 
