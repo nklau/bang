@@ -416,7 +416,7 @@ export const parse = (tokens: Token[]) => {
           args.push(parseStatement())
         }
 
-        match(')'), true
+        match(')', true)
         expression = new CallExpression(expression, args)
       } else if (operator === '[') {
         if (match(':')) {
