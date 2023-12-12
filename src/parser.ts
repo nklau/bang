@@ -17,6 +17,7 @@ import {
   MatchExpression,
   MultiplicativeExpression,
   NaryExpression,
+  NegationExpression,
   NegativeExpression,
   OrExpression,
   PostDecrementExpression,
@@ -40,6 +41,7 @@ import {
   multiplicativeOperators,
   exponentialOperator,
   subtractOperator,
+  negateOperator,
   spreadOperator,
   incrementOperator,
   decrementOperator,
@@ -371,6 +373,8 @@ export const parse = (tokens: Token[]) => {
 
     if (match(subtractOperator)) {
       expression = new NegativeExpression(parseNegativeOrSpreadExpression())
+    } else if (match(negateOperator)) {
+      expression = new NegationExpression(parseNegativeOrSpreadExpression())
     } else if (match(spreadOperator)) {
       expression = new SpreadExpression(parseNegativeOrSpreadExpression())
     }
