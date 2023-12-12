@@ -29,6 +29,7 @@ export const multiplicativeOperators = [multiplyOperator, divideOperator, modulu
 
 export const exponentialOperator = '^'
 
+export const negateOperator = '!'
 export const spreadOperator = '@'
 
 export const incrementOperator = '++'
