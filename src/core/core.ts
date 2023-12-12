@@ -68,7 +68,7 @@ export class IndexExpression implements Expression {
   constructor(
     public target: Expression,
     public leftIndex: Expression,
-    public rightIndex: Expression
+    public rightIndex: Expression | null
   ) {}
 }
 
