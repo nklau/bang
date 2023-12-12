@@ -387,6 +387,7 @@ export const parse = (tokens: Token[]) => {
       expression = new PreDecrementExpression(parseCallExpression())
     } else {
       expression = parseCallExpression()
+
       if (match(incrementOperator)) {
         expression = new PostIncrementExpression(expression)
       } else if (match(decrementOperator)) {
