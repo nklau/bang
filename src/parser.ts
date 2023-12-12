@@ -386,11 +386,11 @@ export const parse = (tokens: Token[]) => {
     let expression
 
     if (match(incrementOperator)) {
-      expression = new PreIncrementExpression(parseCallExpression())
+      expression = new PreIncrementExpression(parseCallOrSelectExpression())
     } else if (match(decrementOperator)) {
-      expression = new PreDecrementExpression(parseCallExpression())
+      expression = new PreDecrementExpression(parseCallOrSelectExpression())
     } else {
-      expression = parseCallExpression()
+      expression = parseCallOrSelectExpression()
 
       if (match(incrementOperator)) {
         expression = new PostIncrementExpression(expression)
@@ -402,7 +402,7 @@ export const parse = (tokens: Token[]) => {
     return expression
   }
 
-  const parseCallExpression = (): Expression => {
+  const parseCallOrSelectExpression = (): Expression => {
     throw new Error('unimplemented')
   }
 
