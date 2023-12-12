@@ -115,6 +115,10 @@ export class PostDecrementExpression implements UnaryExpression {
   constructor(public operand: Expression) {}
 }
 
+export class CallExpression implements UnaryExpression {
+  constructor(public operand: Expression, public args: Expression[]) {}
+}
+
 export class AccessExpression implements BinaryExpression {
   constructor(
     public left: Variable,
