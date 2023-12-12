@@ -19,6 +19,10 @@ import {
   NaryExpression,
   NegativeExpression,
   OrExpression,
+  PostDecrementExpression,
+  PostIncrementExpression,
+  PreDecrementExpression,
+  PreIncrementExpression,
   ReturnStatement,
   SpreadExpression,
   Statement,
@@ -37,6 +41,8 @@ import {
   exponentialOperator,
   subtractOperator,
   spreadOperator,
+  incrementOperator,
+  decrementOperator,
 } from './core/operators'
 import {
   breakKeyword,
@@ -373,6 +379,25 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseIncrementDecrementExpression = (): Expression => {
+    let expression
+
+    if (match(incrementOperator)) {
+      expression = new PreIncrementExpression(parseCallExpression())
+    } else if (match(decrementOperator)) {
+      expression = new PreDecrementExpression(parseCallExpression())
+    } else {
+      expression = parseCallExpression()
+      if (match(incrementOperator)) {
+        expression = new PostIncrementExpression(expression)
+      } else if (match(decrementOperator)) {
+        expression = new PostDecrementExpression(expression)
+      }
+    }
+
+    return expression
+  }
+
+  const parseCallExpression = (): Expression => {
     throw new Error('unimplemented')
   }
 
