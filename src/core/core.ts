@@ -91,6 +91,10 @@ export class NegativeExpression implements UnaryExpression {
   constructor(public operand: Expression) {}
 }
 
+export class NegationExpression implements UnaryExpression {
+  constructor(public operand: Expression) {}
+}
+
 export class SpreadExpression implements UnaryExpression {
   constructor(public operand: Expression) {}
 }
