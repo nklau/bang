@@ -95,6 +95,22 @@ export class SpreadExpression implements UnaryExpression {
   constructor(public operand: Expression) {}
 }
 
+export class PreIncrementExpression implements UnaryExpression {
+  constructor(public operand: Expression) {}
+}
+
+export class PreDecrementExpression implements UnaryExpression {
+  constructor(public operand: Expression) {}
+}
+
+export class PostIncrementExpression implements UnaryExpression {
+  constructor(public operand: Expression) {}
+}
+
+export class PostDecrementExpression implements UnaryExpression {
+  constructor(public operand: Expression) {}
+}
+
 export class AccessExpression implements BinaryExpression {
   constructor(
     public left: Variable,
