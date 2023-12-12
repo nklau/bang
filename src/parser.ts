@@ -408,7 +408,7 @@ export const parse = (tokens: Token[]) => {
 
     while (at('(') || at('[') || at('.')) {
       const operator = next()!.lexeme
-      
+
       if (operator === '(') {
         const args: Expression[] = []
 
