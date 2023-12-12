@@ -7,6 +7,7 @@ import {
   BinaryExpression,
   Block,
   BreakStatement,
+  CallExpression,
   Category,
   ComparisonExpression,
   ExponentialExpression,
@@ -179,7 +180,7 @@ export const parse = (tokens: Token[]) => {
       }
 
       if (structure.lexeme === '.') {
-        return new AccessExpression(variable, new Variable(match(Category.id, true)!.lexeme, false, false))
+        return new AccessExpression(variable, match(Category.id, true)!.lexeme)
       } else if (structure.lexeme === '[') {
         const left = parseExpression(matchUntil(':')) ?? 0
         next()
@@ -403,7 +404,54 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseCallOrSelectExpression = (): Expression => {
-    throw new Error('unimplemented')
+    let expression = parseLiteralExpression()
+
+    while (at('(') || at('[') || at('.')) {
+      const operator = next()!.lexeme
+      
+      if (operator === '(') {
+        const args: Expression[] = []
+
+        while (!at(')')) {
+          args.push(parseStatement())
+        }
+
+        match(')'), true
+        expression = new CallExpression(expression, args)
+      } else if (operator === '[') {
+        if (match(':')) {
+          let rightIndex
+
+          if (match(']')) {
+            rightIndex = Infinity
+          } else {
+            rightIndex = parseStatement()
+            match(']', true)
+          }
+
+          expression = new IndexExpression(expression, 0, rightIndex)
+        } else {
+          const leftIndex = parseStatement()
+          let rightIndex = null
+
+          if (match(':')) {
+            if (match(']')) {
+              rightIndex = Infinity
+            } else {
+              rightIndex = parseStatement()
+              match(']', true)
+            }
+          }
+
+          expression = new IndexExpression(expression, leftIndex, rightIndex)
+        }
+      } else if (operator === '.') {
+        const selector = match(Category.id, true)!.lexeme
+        expression = new AccessExpression(expression, selector)
+      }
+    }
+
+    return expression ?? parseLiteralExpression()
   }
 
   const parseLiteralExpression = (): Expression => {

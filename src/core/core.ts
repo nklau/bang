@@ -121,8 +121,8 @@ export class CallExpression implements UnaryExpression {
 
 export class AccessExpression implements BinaryExpression {
   constructor(
-    public left: Variable,
-    public right: Variable
+    public left: Expression,
+    public right: string
   ) {}
 }
 
