@@ -66,7 +66,7 @@ export class BreakStatement implements Statement {}
 
 export class IndexExpression implements Expression {
   constructor(
-    public target: Variable,
+    public target: Expression,
     public leftIndex: Expression,
     public rightIndex: Expression
   ) {}
