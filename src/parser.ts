@@ -154,7 +154,7 @@ export const parse = (tokens: Token[]) => {
     const statementTypes = {
       [Category.id]: parseAssignment,
       [Category.keyword]: parseKeywordStatement,
-      [Category.number]: parseReturnStatement,
+      [Category.number]: parseNumberLiteral,
       [Category.object]: parseReturnStatement,
       [Category.operator]: parseReturnStatement,
       [Category.structure]: parseLiteralExpression, // TODO should this be a return?
@@ -473,6 +473,10 @@ export const parse = (tokens: Token[]) => {
     // match??
     // parenthesized exp??
     throw new Error('unimplemented')
+  }
+
+  const parseNumberLiteral = (): NumberLiteral => {
+    return new NumberLiteral(+match(Category.number, true)!.lexeme)
   }
 
   const parseFormattedStringLiteral = (): FormattedStringLiteral => {
