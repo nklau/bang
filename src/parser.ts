@@ -534,6 +534,20 @@ export const parse = (tokens: Token[]) => {
     return new ObjectLiteral(keyValuePairs)
   }
 
+  const parseListLiteral = (): ListLiteral => {
+    match('[', true)
+    tokens.unshift(new Token(Category.structure, ',', 0, 0))
+    const expressions: Expression[] = []
+
+    while (!at(']')) {
+      match(',', true)
+      expressions.push(parseExpression())
+    }
+
+    match(']', true)
+    return new ListLiteral(expressions)
+  }
+
   return parseBlock()
 }
 
