@@ -480,22 +480,6 @@ export const parse = (tokens: Token[]) => {
     return new NumberLiteral(+match(Category.number, true)!.lexeme)
   }
 
-  const parseObjectLiteral = (): ObjectLiteral => {
-    match('{', true)
-    tokens.unshift(new Token(Category.structure, ',', 0, 0))
-    const keyValuePairs: [StringLiteral, Expression][] = []
-
-    while (!at('}')) {
-      match(',', true)
-      const key = parseStringLiteral()
-      match(':', true)
-      keyValuePairs.push([key, parseExpression()])
-    }
-
-    match('}', true)
-    return new ObjectLiteral(keyValuePairs)
-  }
-
   const parseFormattedStringLiteral = (): FormattedStringLiteral => {
     if (match('$')) {
       const quoteType = match(Category.structure)?.lexeme
@@ -532,6 +516,22 @@ export const parse = (tokens: Token[]) => {
 
   const parseFunctionLiteral = (expression?: Token[]): FunctionLiteral => {
     throw new Error('unimplemented')
+  }
+
+  const parseObjectLiteral = (): ObjectLiteral => {
+    match('{', true)
+    tokens.unshift(new Token(Category.structure, ',', 0, 0))
+    const keyValuePairs: [StringLiteral, Expression][] = []
+
+    while (!at('}')) {
+      match(',', true)
+      const key = parseStringLiteral()
+      match(':', true)
+      keyValuePairs.push([key, parseExpression()])
+    }
+
+    match('}', true)
+    return new ObjectLiteral(keyValuePairs)
   }
 
   return parseBlock()
