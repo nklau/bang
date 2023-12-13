@@ -10,6 +10,10 @@ export class NumberLiteral implements Literal {
   constructor(public value: number) {}
 }
 
+export class StringLiteral implements Literal {
+  constructor(public value: string) {}
+}
+
 export class ListLiteral implements Literal {
   constructor(public value: Array<Literal | Expression>) {}
 }
