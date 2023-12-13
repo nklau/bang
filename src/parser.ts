@@ -60,7 +60,15 @@ import {
   returnKeyword,
   trueKeyword,
 } from './core/keywords'
-import { BooleanLiteral, FunctionLiteral, NumberLiteral, ListLiteral, nil } from './core/types'
+import {
+  BooleanLiteral,
+  FunctionLiteral,
+  NumberLiteral,
+  StringLiteral,
+  FormattedStringLiteral,
+  ListLiteral,
+  nil,
+} from './core/types'
 import { tokenize } from './lexer'
 
 export default function parseFile() {
@@ -149,7 +157,7 @@ export const parse = (tokens: Token[]) => {
       [Category.number]: parseReturnStatement,
       [Category.object]: parseReturnStatement,
       [Category.operator]: parseReturnStatement,
-      [Category.structure]: parseReturnStatement,
+      [Category.structure]: parseLiteralExpression, // TODO should this be a return?
     }
 
     return statementTypes[token.category]()
@@ -455,7 +463,50 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseLiteralExpression = (): Expression => {
+    // string
+    // number
+    // object
+    // immediate function
+    // list
+    // function
+    // id
+    // match??
+    // parenthesized exp??
     throw new Error('unimplemented')
+  }
+
+  const parseFormattedStringLiteral = (): FormattedStringLiteral => {
+    if (match('$')) {
+      const quoteType = match(Category.structure)?.lexeme
+
+      if (quoteType !== `'` && quoteType !== `"`) {
+        error(`formatted string must begin with one of either ' or "`, token?.line ?? 0, token?.column ?? 0)
+      }
+
+      const stringContents: (string | Expression)[] = []
+      while (!at(quoteType)) {
+        stringContents.push(parseStatement())
+      }
+
+      match(quoteType, true)
+
+      return new FormattedStringLiteral(stringContents)
+    }
+    error(`formatted string must start with $`, token?.line ?? 0, token?.column ?? 0)
+  }
+
+  const parseStringLiteral = (): StringLiteral => {
+    const quoteType = match(Category.structure)?.lexeme
+
+    if (quoteType !== `'` && quoteType !== `"`) {
+      error(`string must begin with one of either ' or "`, token?.line ?? 0, token?.column ?? 0)
+    }
+
+    const stringContents = match(Category.id)?.lexeme ?? ''
+
+    match(quoteType, true)
+
+    return new StringLiteral(stringContents)
   }
 
   const parseFunctionLiteral = (expression?: Token[]): FunctionLiteral => {
