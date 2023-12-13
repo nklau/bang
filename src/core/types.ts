@@ -14,12 +14,12 @@ export class StringLiteral implements Literal {
   constructor(public value: string) {}
 }
 
-export class ObjectLiteral implements Literal {
-  constructor(public value: [StringLiteral, Expression][]) {}
-}
-
 export class FormattedStringLiteral implements Literal {
   constructor(public value: (string | Expression)[]) {}
+}
+
+export class ObjectLiteral implements Literal {
+  constructor(public value: [StringLiteral, Expression][]) {}
 }
 
 export class ListLiteral implements Literal {
