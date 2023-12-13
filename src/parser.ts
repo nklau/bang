@@ -66,6 +66,7 @@ import {
   NumberLiteral,
   StringLiteral,
   FormattedStringLiteral,
+  ObjectLiteral,
   ListLiteral,
   nil,
 } from './core/types'
@@ -477,6 +478,22 @@ export const parse = (tokens: Token[]) => {
 
   const parseNumberLiteral = (): NumberLiteral => {
     return new NumberLiteral(+match(Category.number, true)!.lexeme)
+  }
+
+  const parseObjectLiteral = (): ObjectLiteral => {
+    match('{', true)
+    tokens.unshift(new Token(Category.structure, ',', 0, 0))
+    const keyValuePairs: [StringLiteral, Expression][] = []
+
+    while (!at('}')) {
+      match(',', true)
+      const key = parseStringLiteral()
+      match(':', true)
+      keyValuePairs.push([key, parseExpression()])
+    }
+
+    match('}', true)
+    return new ObjectLiteral(keyValuePairs)
   }
 
   const parseFormattedStringLiteral = (): FormattedStringLiteral => {
