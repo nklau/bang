@@ -155,7 +155,7 @@ export const parse = (tokens: Token[]) => {
     const statementTypes = {
       [Category.id]: parseAssignment,
       [Category.keyword]: parseKeywordStatement,
-      [Category.number]: parseNumberLiteral,
+      [Category.number]: parseReturnStatement,
       [Category.object]: parseReturnStatement,
       [Category.operator]: parseReturnStatement,
       [Category.structure]: parseLiteralExpression, // TODO should this be a return?
@@ -514,10 +514,6 @@ export const parse = (tokens: Token[]) => {
     return new StringLiteral(stringContents)
   }
 
-  const parseFunctionLiteral = (expression?: Token[]): FunctionLiteral => {
-    throw new Error('unimplemented')
-  }
-
   const parseObjectLiteral = (): ObjectLiteral => {
     match('{', true)
     tokens.unshift(new Token(Category.structure, ',', 0, 0))
@@ -546,6 +542,40 @@ export const parse = (tokens: Token[]) => {
 
     match(']', true)
     return new ListLiteral(expressions)
+  }
+
+  const parseFunctionLiteral = (expression?: Token[]): FunctionLiteral => {
+    const parameters: Variable[] = []
+
+    if (at(Category.id)) {
+      parameters.push(new Variable(match(Category.id, true)!.lexeme, true, false))
+    } else {
+      match('(', true)
+      tokens.unshift(new Token(Category.structure, ',', 0, 0))
+
+      while (!at(')')) {
+        match(',', true)
+        parameters.push(new Variable(match(Category.id, true)!.lexeme, true, false))
+      }
+
+      match(')', true)
+    }
+
+    match('->', true)
+
+    const functionStatements: Statement[] = []
+    if (match('{')) {
+      while (!at('}')) {
+        functionStatements.push(parseStatement())
+      }
+
+      match('}', true)
+    } else {
+      match(returnKeyword)
+      functionStatements.push(parseReturnStatement(matchUntil('\n')))
+    }
+
+    return new FunctionLiteral(parameters, functionStatements, `(${parameters.join(', ')}) -> {\n\t${functionStatements.join('\n\t')}\n}`)
   }
 
   return parseBlock()
