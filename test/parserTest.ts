@@ -1,6 +1,6 @@
 import assert from 'assert/strict'
 import { parse } from '../src/parser'
-import { Block, Variable, VariableAssignment } from '../src/core/core'
+import { Block, NegativeExpression, Variable, VariableAssignment } from '../src/core/core'
 import { NumberLiteral, StringLiteral } from '../src/core/types'
 import { tokenize } from '../src/lexer'
 
@@ -9,6 +9,11 @@ const programs = [
     'number assignment',
     'x = 5',
     new Block([new VariableAssignment(new Variable('x', false, false), '=', new NumberLiteral(5))]),
+  ],
+  [
+    'negative number assignment',
+    'x = -5',
+    new Block([new VariableAssignment(new Variable('x', false, false), '=', new NegativeExpression(new NumberLiteral(5)))]),
   ],
   [
     'string assignment (single quote)',
