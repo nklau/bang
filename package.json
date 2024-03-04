@@ -8,5 +8,8 @@
   "type": "module",
   "devDependencies": {
     "prettier": "^3.1.0"
+  },
+  "scripts": {
+    "test": "ts-node test/parserTest.ts"
   }
 }
