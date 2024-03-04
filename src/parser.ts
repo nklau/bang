@@ -119,9 +119,10 @@ export const parse = (tokens: Token[]) => {
   }
 
   const next = () => {
-    token = tokens.shift()
+    const prevToken = tokens.shift()
+    token = tokens[0]
     sourceCode.push(token?.lexeme ?? '')
-    return token
+    return prevToken
   }
 
   const contains = (tokens: Token[], character: string) => {
@@ -154,7 +155,7 @@ export const parse = (tokens: Token[]) => {
     }
 
     const statementTypes = {
-      [Category.id]: parseAssignment,
+      [Category.id]: parseAssignment, // this could also be a return
       [Category.keyword]: parseKeywordStatement,
       [Category.number]: parseReturnStatement,
       [Category.object]: parseReturnStatement,
@@ -465,7 +466,20 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseLiteralExpression = (): Expression => {
-    // string
+    switch (token?.category) {
+      case 'structure': {
+        throw new Error('unimplemented string, object, list, immediate function, or function literal parsing')
+      }
+      case 'number': {
+        return parseNumberLiteral()
+      }
+      case 'id': {
+        throw new Error('unimplemented function or variable literal parsing')
+      }
+
+    }
+    // TODO: what if I just try/catch every single one
+    // string (structure with ids inside)
     // number
     // object
     // immediate function
@@ -474,7 +488,7 @@ export const parse = (tokens: Token[]) => {
     // id
     // match??
     // parenthesized exp??
-    throw new Error('unimplemented')
+    throw new Error(`unexpected literal expression ${token?.category}`)
   }
 
   const parseNumberLiteral = (): NumberLiteral => {
