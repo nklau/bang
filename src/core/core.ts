@@ -23,6 +23,7 @@ export enum Category {
   structure = 'structure',
   object = 'object',
   operator = 'operator',
+  whitespace = 'whitespace',
 }
 
 export function error(message: string, line: number, column: number): never {
