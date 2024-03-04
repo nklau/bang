@@ -154,6 +154,10 @@ export const parse = (tokens: Token[]) => {
       error('Expected statement', 0, 0)
     }
 
+    while (token.category === Category.whitespace) {
+      next()
+    }
+
     const statementTypes = {
       [Category.id]: parseAssignment, // this could also be a return
       [Category.keyword]: parseKeywordStatement,
