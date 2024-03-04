@@ -83,7 +83,8 @@ export default function parseFile() {
       throw err
     }
 
-    console.log(parse(tokenize(data)))
+    console.log('Parser output:')
+    console.dir(parse(tokenize(data)), { depth: null })
   })
 }
 
