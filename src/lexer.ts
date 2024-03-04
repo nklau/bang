@@ -12,9 +12,13 @@ export default function tokenizeFile() {
       throw err
     }
 
+    console.log('Lexer output:')
+
     for (const token of tokenize(data)) {
       console.log(token)
     }
+    
+    console.log()
   })
 }
 
