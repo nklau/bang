@@ -15,7 +15,7 @@ export class StringLiteral implements Literal {
 }
 
 export class FormattedStringLiteral implements Literal {
-  constructor(public value: (string | Expression)[]) {}
+  constructor(public value: Expression[]) {}
 }
 
 export class ObjectLiteral implements Literal {
