@@ -543,7 +543,7 @@ export const parse = (tokens: Token[]) => {
         return parseNumberLiteral()
       }
       case Category.id: {
-        error('unimplemented function or variable literal parsing', token?.line, token?.column)
+        return parseAssignmentTarget(false, false)
       }
 
     }
