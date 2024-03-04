@@ -25,6 +25,11 @@ const programs = [
     `x = "hello world"`,
     new Block([new VariableAssignment(new Variable('x', false, false), '=', new StringLiteral('hello world'))]),
   ],
+  [
+    'variable to variable assignment',
+    'x = y',
+    new Block([new VariableAssignment(new Variable('x', false, false), '=', new Variable('y', false, false))]),
+  ],
 ]
 
 for (const [scenario, program, expected] of programs) {
