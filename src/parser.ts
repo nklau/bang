@@ -191,8 +191,6 @@ export const parse = (tokens: Token[]) => {
   const parseAssignmentTarget = (isLocal: boolean, isConst: boolean): AccessExpression | IndexExpression | Variable => {
     const variable = new Variable(match(Category.id, true)!.lexeme, isLocal, isConst)
 
-    skipWhitespace()
-
     const structure = match(Category.structure)
     if (structure) {
       if (isConst) {
@@ -202,8 +200,6 @@ export const parse = (tokens: Token[]) => {
           structure.column
         )
       }
-
-      skipWhitespace()
 
       if (structure.lexeme === '.') {
         return new AccessExpression(variable, match(Category.id, true)!.lexeme)
