@@ -97,7 +97,7 @@ export const parse = (tokens: Token[]) => {
   }
 
   const atAny = (of: string[]) => {
-    return of.some(expected => token?.category === expected)
+    return of.some(expected => token?.category === expected || token?.lexeme === expected)
   }
 
   const lookUntil = (character: string) => {
