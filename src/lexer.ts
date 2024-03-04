@@ -77,5 +77,3 @@ const tokenizeLine = (line: string[], lineNumber: number, flags: { inComment: bo
 
   return tokens
 }
-
-tokenizeFile()

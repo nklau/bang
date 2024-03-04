@@ -678,5 +678,3 @@ export const parse = (tokens: Token[]) => {
 
   return parseBlock()
 }
-
-parseFile()
