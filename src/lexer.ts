@@ -50,7 +50,7 @@ const tokenizeLine = (line: string[], lineNumber: number, flags: { inComment: bo
 
     if (`${line[i]}${line[i + 1]}` === '//' || flags.inComment) break
     if (line[i] === '\n') {
-      tokens.push(new Token(Category.structure, line[i], lineNumber + 1, i + 1))
+      tokens.push(new Token(Category.whitespace, line[i], lineNumber + 1, i + 1))
       return tokens
     }
 
