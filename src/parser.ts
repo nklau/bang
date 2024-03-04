@@ -467,13 +467,48 @@ export const parse = (tokens: Token[]) => {
 
   const parseLiteralExpression = (): Expression => {
     switch (token?.category) {
-      case 'structure': {
+      case Category.structure: {
+        // structure can be: '"$[]{}\(),?: ->
+        switch (token?.lexeme) {
+          case '"': 
+          case "'": {
+            let stringValue = ''
+            const quoteType = match(Category.structure, true)?.lexeme
+
+            while (!at(quoteType)) {
+              stringValue += next()?.lexeme ?? ''
+            }
+
+            match(quoteType, true)
+            return new StringLiteral(stringValue)
+          }
+          case '$': {
+            next()
+            if (!atAny(["'", '"'])) {
+              match("'", true)
+            }
+
+            let stringValue = []
+            const quoteType = match(Category.structure, true)?.lexeme
+
+            while (!at(quoteType)) {
+              if (at('{')) {
+                stringValue.push(parseExpression(matchUntil('}')))
+              }
+              stringValue.push(new StringLiteral(next()?.lexeme ?? ''))
+            }
+
+            match(quoteType, true)
+            return new FormattedStringLiteral(stringValue)
+          }
+        }
+
         throw new Error('unimplemented string, object, list, immediate function, or function literal parsing')
       }
-      case 'number': {
+      case Category.number: {
         return parseNumberLiteral()
       }
-      case 'id': {
+      case Category.id: {
         throw new Error('unimplemented function or variable literal parsing')
       }
 
