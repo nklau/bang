@@ -125,6 +125,12 @@ export const parse = (tokens: Token[]) => {
     return prevToken
   }
 
+  const skipWhitespace = () => {
+    while (token?.category === Category.whitespace) {
+      next()
+    }
+  }
+
   const contains = (tokens: Token[], character: string) => {
     return tokens.some(token => token.lexeme === character)
   }
@@ -154,9 +160,7 @@ export const parse = (tokens: Token[]) => {
       error('Expected statement', 0, 0)
     }
 
-    while (token.category === Category.whitespace) {
-      next()
-    }
+    skipWhitespace()
 
     const statementTypes = {
       [Category.id]: parseAssignment, // this could also be a return
@@ -165,6 +169,7 @@ export const parse = (tokens: Token[]) => {
       [Category.object]: parseReturnStatement,
       [Category.operator]: parseReturnStatement,
       [Category.structure]: parseLiteralExpression, // TODO should this be a return?
+      [Category.whitespace]: error(`Unexpected whitespace`, token?.line ?? 0, token?.column ?? 0),
     }
 
     return statementTypes[token.category]()
