@@ -32,7 +32,10 @@ const tokenizeLine = (line: string[], lineNumber: number, flags: { inComment: bo
   let fullStr = line.join('')
 
   for (let i = 0; i < line.length; ) {
-    while (/^[ \t]/.test(line[i])) i++
+    while (/^[ \t]/.test(line[i])) {
+      tokens.push(new Token(Category.whitespace, line[i], lineNumber + 1, i + 1))
+      i++
+    }
     let match
 
     if (`${line[i]}${line[i + 1]}` === '/*') {
