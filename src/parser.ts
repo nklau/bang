@@ -543,6 +543,9 @@ export const parse = (tokens: Token[]) => {
           case '[': {
             return parseListLiteral()
           }
+          case '{': {
+            return parseObjectLiteral()
+          }
           default: {
             error(`Unexpected token ${token?.lexeme}`, token?.line, token?.column)
           }
@@ -614,6 +617,11 @@ export const parse = (tokens: Token[]) => {
   const parseObjectLiteral = (): ObjectLiteral => {
     match('{', true)
     skipWhitespace()
+    if (at('}')) {
+      match('}', true)
+      return new ObjectLiteral([])
+    }
+    
     prependToTokens(new Token(Category.structure, ',', 0, 0))
     const keyValuePairs: [StringLiteral, Expression][] = []
 

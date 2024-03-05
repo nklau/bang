@@ -1,17 +1,13 @@
 import assert from 'assert/strict'
 import { parse } from '../src/parser'
 import { Block, NegativeExpression, Variable, VariableAssignment } from '../src/core/core'
-import { ListLiteral, NumberLiteral, StringLiteral } from '../src/core/types'
+import { ListLiteral, NumberLiteral, ObjectLiteral, StringLiteral } from '../src/core/types'
 import { tokenize } from '../src/lexer'
 
 const x = new Variable('x', false, false)
 
 const programs = [
-  [
-    'number assignment',
-    'x = 5',
-    new Block([new VariableAssignment(x, '=', new NumberLiteral(5))]),
-  ],
+  ['number assignment', 'x = 5', new Block([new VariableAssignment(x, '=', new NumberLiteral(5))])],
   [
     'negative number assignment',
     'x = -5',
@@ -32,11 +28,7 @@ const programs = [
     'x = y',
     new Block([new VariableAssignment(x, '=', new Variable('y', false, false))]),
   ],
-  [
-    'empty list assignment',
-    'x = []',
-    new Block([new VariableAssignment(x, '=', new ListLiteral([]))]),
-  ],
+  ['empty list assignment', 'x = []', new Block([new VariableAssignment(x, '=', new ListLiteral([]))])],
   [
     'empty list assignment with whitespace',
     'x = [  ]',
@@ -45,12 +37,39 @@ const programs = [
   [
     'list assignment with one number',
     'x = [ 5 ]',
-    new Block([new VariableAssignment(x, '=', new ListLiteral([new NumberLiteral(5)]))])
+    new Block([new VariableAssignment(x, '=', new ListLiteral([new NumberLiteral(5)]))]),
   ],
   [
     'list assignment with string and number',
     'x = [5,   "hello world" ]',
-    new Block([new VariableAssignment(x, '=', new ListLiteral([new NumberLiteral(5), new StringLiteral('hello world')]))]),
+    new Block([
+      new VariableAssignment(x, '=', new ListLiteral([new NumberLiteral(5), new StringLiteral('hello world')])),
+    ]),
+  ],
+  ['empty object assignment', 'x = {}', new Block([new VariableAssignment(x, '=', new ObjectLiteral([]))])],
+  [
+    'empty object assignment with whitespace',
+    'x = {  }',
+    new Block([new VariableAssignment(x, '=', new ObjectLiteral([]))]),
+  ],
+  [
+    'object assignment with one key-val pair',
+    `x = { 'one': 1 }`,
+    new Block([new VariableAssignment(x, '=', new ObjectLiteral([[new StringLiteral('one'), new NumberLiteral(1)]]))]),
+  ],
+  [
+    'object assignment with two key-val pairs',
+    `x = { 'one': 1, " two": '2' }`,
+    new Block([
+      new VariableAssignment(
+        x,
+        '=',
+        new ObjectLiteral([
+          [new StringLiteral('one'), new NumberLiteral(1)],
+          [new StringLiteral(' two'), new StringLiteral('2')],
+        ])
+      ),
+    ]),
   ],
 ]
 
