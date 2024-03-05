@@ -218,6 +218,8 @@ export const parse = (tokens: Token[]) => {
         return new IndexExpression(variable, left, right)
       }
     }
+    // think this might also catch x -> x?
+    // TODO check for function calls () and repeating . or [] ops
 
     return variable
   }
@@ -544,8 +546,21 @@ export const parse = (tokens: Token[]) => {
             return parseListLiteral()
           }
           case '{': {
-            // TODO this could be an immediate function
             return callFailable(parseObjectLiteral, parseImmediateFunction)
+          }
+          case '(': {
+            next()
+            skipWhitespace()
+            if (at(')')) {
+              error(`Unexpected token )`, token?.line, token?.column)
+            }
+
+            const exp = parseStatement()
+
+            skipWhitespace()
+            match(')', true)
+
+            return exp
           }
           default: {
             error(`Unexpected token ${token?.lexeme}`, token?.line, token?.column)

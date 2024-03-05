@@ -1,6 +1,13 @@
 import assert from 'assert/strict'
 import { parse } from '../src/parser'
-import { Block, NegativeExpression, Variable, VariableAssignment } from '../src/core/core'
+import {
+  AdditiveExpression,
+  Block,
+  NegativeExpression,
+  ReturnStatement,
+  Variable,
+  VariableAssignment,
+} from '../src/core/core'
 import { ListLiteral, NumberLiteral, ObjectLiteral, StringLiteral } from '../src/core/types'
 import { tokenize } from '../src/lexer'
 
@@ -23,11 +30,7 @@ const programs = [
     `x = "hello world"`,
     new Block([new VariableAssignment(x, '=', new StringLiteral('hello world'))]),
   ],
-  [
-    'new line string',
-    `x = '\\n'`,
-    new Block([new VariableAssignment(x, '=', new StringLiteral('\\n'))]),
-  ],
+  ['new line string', `x = '\\n'`, new Block([new VariableAssignment(x, '=', new StringLiteral('\\n'))])],
   [
     'variable to variable assignment',
     'x = y',
@@ -75,6 +78,17 @@ const programs = [
         ])
       ),
     ]),
+  ],
+  ['implicit number return', '5', new Block([new ReturnStatement(new NumberLiteral(5))])],
+  [
+    'number addition',
+    '5 + 3',
+    new Block([new ReturnStatement(new AdditiveExpression([new NumberLiteral(5), '+', new NumberLiteral(3)]))]),
+  ],
+  [
+    'parenthesized number addition',
+    '(5 + 3)',
+    new Block([new ReturnStatement(new AdditiveExpression([new NumberLiteral(5), '+', new NumberLiteral(3)]))]),
   ],
 ]
 
