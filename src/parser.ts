@@ -89,6 +89,7 @@ export default function parseFile() {
 }
 
 export const parse = (tokens: Token[]) => {
+  let editedTokens: Token[] = []
   let token: Token | undefined = tokens[0]
   let sourceCode: string[] = []
 
@@ -107,7 +108,9 @@ export const parse = (tokens: Token[]) => {
 
   const matchUntil = (character: string, subtokens?: Token[]) => {
     const index = (subtokens ?? tokens).findIndex(t => t.lexeme === character)
-    return (subtokens ?? tokens).splice(0, index)
+    const matched = (subtokens ?? tokens).splice(0, index)
+    editedTokens.push(...matched)
+    return matched
   }
 
   const match = (expected: string | undefined, throws = false) => {
@@ -122,6 +125,11 @@ export const parse = (tokens: Token[]) => {
     const prevToken = tokens.shift()
     token = tokens[0]
     sourceCode.push(token?.lexeme ?? '')
+
+    if (prevToken?.isFromSrcCode) {
+      editedTokens.push(prevToken)
+    }
+
     return prevToken
   }
 
@@ -141,9 +149,11 @@ export const parse = (tokens: Token[]) => {
   }
 
   const callFailable = (failable: (...args: any[]) => Statement, backup: (...args: any[]) => Statement): Statement => {
+    editedTokens = []
     try {
       return failable()
     } catch {
+      prependToTokens(...editedTokens)
       return backup()
     }
   }
@@ -298,7 +308,8 @@ export const parse = (tokens: Token[]) => {
       skipWhitespace()
       const openingCsBracket = match('{')
       skipWhitespace()
-      const caseFunction = parseFunctionLiteral(matchUntil('}')) // TODO what if they don't use brackets
+      const caseFnSrcCode = lookUntil('}').map(token => token.lexeme).join('') // TODO may not use brackets here
+      const caseFunction = new FunctionLiteral([], parseImmediateFunction().statements, caseFnSrcCode)
       if (openingCsBracket) {
         skipWhitespace()
         match('}', true)
@@ -316,7 +327,8 @@ export const parse = (tokens: Token[]) => {
       skipWhitespace()
       const openingDefaultBracket = match('{')
       skipWhitespace()
-      const caseFunction = parseFunctionLiteral(matchUntil('}')) // TODO may not use brackets here
+      const caseFnSrcCode = lookUntil('}').map(token => token.lexeme).join('') // TODO may not use brackets here
+      const caseFunction = new FunctionLiteral([], parseImmediateFunction().statements, caseFnSrcCode)
       if (openingDefaultBracket) {
         skipWhitespace()
         match('}', true)
@@ -550,7 +562,7 @@ export const parse = (tokens: Token[]) => {
             return callFailable(parseObjectLiteral, parseImmediateFunction)
           }
           case '(': {
-            return parseParenthesizedExpression()
+            return callFailable(parseFunctionLiteral, parseParenthesizedExpression)
           }
           default: {
             error(`Unexpected token ${token?.lexeme}`, token?.line, token?.column)
@@ -577,7 +589,7 @@ export const parse = (tokens: Token[]) => {
     // id
     // match??
     // parenthesized exp??
-    throw new Error(`unexpected literal expression ${token?.category}`)
+    throw new Error(`unexpected literal expression ${token?.category} ${token?.lexeme}`)
   }
 
   const parseNumberLiteral = (): NumberLiteral => {
@@ -628,7 +640,7 @@ export const parse = (tokens: Token[]) => {
       return new ObjectLiteral([])
     }
 
-    prependToTokens(new Token(Category.structure, ',', 0, 0))
+    prependToTokens(new Token(Category.structure, ',', 0, 0, false))
     const keyValuePairs: [StringLiteral, Expression][] = []
 
     while (!at('}')) {
@@ -654,7 +666,7 @@ export const parse = (tokens: Token[]) => {
       return new ListLiteral([])
     }
 
-    prependToTokens(new Token(Category.structure, ',', 0, 0))
+    prependToTokens(new Token(Category.structure, ',', 0, 0, false))
     const expressions: Expression[] = []
 
     while (!at(']')) {
@@ -683,14 +695,14 @@ export const parse = (tokens: Token[]) => {
     return exp
   }
 
-  const parseFunctionLiteral = (expression?: Token[]): FunctionLiteral => {
+  const parseFunctionLiteral = (): FunctionLiteral => {
     const parameters: Variable[] = []
 
     if (at(Category.id)) {
       parameters.push(new Variable(match(Category.id, true)!.lexeme, true, false))
     } else {
       match('(', true)
-      prependToTokens(new Token(Category.structure, ',', 0, 0))
+      prependToTokens(new Token(Category.structure, ',', 0, 0, false))
 
       while (!at(')')) {
         match(',', true)
