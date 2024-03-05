@@ -186,6 +186,7 @@ export const parse = (tokens: Token[]) => {
 
     let operator, expression
     if ((operator = match(Category.operator, isConst)?.lexeme)) {
+      // TODO allow for assignment operators
       skipWhitespace()
       expression = parseExpression()
     }
@@ -549,18 +550,7 @@ export const parse = (tokens: Token[]) => {
             return callFailable(parseObjectLiteral, parseImmediateFunction)
           }
           case '(': {
-            next()
-            skipWhitespace()
-            if (at(')')) {
-              error(`Unexpected token )`, token?.line, token?.column)
-            }
-
-            const exp = parseStatement()
-
-            skipWhitespace()
-            match(')', true)
-
-            return exp
+            return parseParenthesizedExpression()
           }
           default: {
             error(`Unexpected token ${token?.lexeme}`, token?.line, token?.column)
@@ -676,6 +666,21 @@ export const parse = (tokens: Token[]) => {
 
     match(']', true)
     return new ListLiteral(expressions)
+  }
+
+  const parseParenthesizedExpression = (): Expression => {
+    next()
+    skipWhitespace()
+    if (at(')')) {
+      error(`Unexpected token )`, token?.line ?? 0, token?.column ?? 0)
+    }
+
+    const exp = parseStatement()
+
+    skipWhitespace()
+    match(')', true)
+
+    return exp
   }
 
   const parseFunctionLiteral = (expression?: Token[]): FunctionLiteral => {
