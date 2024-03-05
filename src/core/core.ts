@@ -35,7 +35,8 @@ export class Token {
     public category: Category,
     public lexeme: string,
     public line: number,
-    public column: number
+    public column: number,
+    public isFromSrcCode: boolean = true,
   ) {}
 }
 
