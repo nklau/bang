@@ -3,8 +3,8 @@ import { FunctionLiteral, ListLiteral, nil } from './types'
 
 type AssignmentTarget = AccessExpression | IndexExpression | Variable
 
-export interface Statement {}
-export interface Expression extends Statement {}
+export interface StatementExpression extends Expression {}
+export interface Expression {}
 export interface UnaryExpression extends Expression {
   operand: Expression
 }
@@ -41,10 +41,10 @@ export class Token {
 }
 
 export class Block {
-  constructor(public statements: Statement[]) {}
+  constructor(public statements: StatementExpression[]) {}
 }
 
-export class VariableAssignment implements Statement {
+export class VariableAssignment implements StatementExpression {
   constructor(
     public target: AssignmentTarget,
     public operator: string = assignmentOperator,
@@ -52,7 +52,7 @@ export class VariableAssignment implements Statement {
   ) {}
 }
 
-export class Variable {
+export class Variable implements Expression {
   constructor(
     public id: string,
     public local: boolean,
@@ -60,11 +60,11 @@ export class Variable {
   ) {}
 }
 
-export class ReturnStatement implements Statement {
+export class ReturnStatement implements StatementExpression {
   constructor(public expression: Expression = nil) {}
 }
 
-export class BreakStatement implements Statement {}
+export class BreakStatement implements StatementExpression {}
 
 export class IndexExpression implements Expression {
   constructor(
@@ -124,7 +124,7 @@ export class CallExpression implements UnaryExpression {
 export class AccessExpression implements BinaryExpression {
   constructor(
     public left: Expression,
-    public right: string
+    public right: Expression
   ) {}
 }
 

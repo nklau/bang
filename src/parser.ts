@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { falseyFunction } from './core/constants'
+import { falseyFunction, inf } from './core/constants'
 import {
   AccessExpression,
   AdditiveExpression,
@@ -27,7 +27,7 @@ import {
   PreIncrementExpression,
   ReturnStatement,
   SpreadExpression,
-  Statement,
+  StatementExpression,
   TernaryExpression,
   Token,
   Variable,
@@ -148,7 +148,7 @@ export const parse = (tokens: Token[]) => {
     return tokens.some(token => token.lexeme === character)
   }
 
-  const callFailable = (failable: (...args: any[]) => Statement, backup: (...args: any[]) => Statement): Statement => {
+  const callFailable = (failable: (...args: any[]) => StatementExpression, backup: (...args: any[]) => StatementExpression): StatementExpression => {
     editedTokens = []
     try {
       return failable()
@@ -161,7 +161,7 @@ export const parse = (tokens: Token[]) => {
   const parseBlock = () => {
     skipWhitespace()
 
-    const statements: Statement[] = []
+    const statements: StatementExpression[] = []
     while (tokens.length > 0) {
       statements.push(parseStatement())
       skipWhitespace()
@@ -170,7 +170,7 @@ export const parse = (tokens: Token[]) => {
     return new Block(statements)
   }
 
-  const parseStatement = (): Statement => {
+  const parseStatement = (): StatementExpression => {
     if (!token) {
       error('Expected statement', 0, 0)
     }
@@ -189,7 +189,7 @@ export const parse = (tokens: Token[]) => {
     return statementTypes[token.category]()
   }
 
-  const parseAssignment = (isLocal = false, isConst = false): Statement => {
+  const parseAssignment = (isLocal = false, isConst = false): StatementExpression => {
     const variable = parseAssignmentTarget(isLocal, isConst)
 
     skipWhitespace()
@@ -218,12 +218,12 @@ export const parse = (tokens: Token[]) => {
       }
 
       if (structure.lexeme === '.') {
-        return new AccessExpression(variable, match(Category.id, true)!.lexeme)
+        return new AccessExpression(variable, new StringLiteral(match(Category.id, true)!.lexeme))
       } else if (structure.lexeme === '[') {
         const left = parseExpression(matchUntil(':')) ?? 0
         next()
         skipWhitespace()
-        const right = parseExpression(matchUntil(']')) ?? Infinity
+        const right = parseExpression(matchUntil(']')) ?? inf
         next()
 
         return new IndexExpression(variable, left, right)
@@ -235,7 +235,7 @@ export const parse = (tokens: Token[]) => {
     return variable
   }
 
-  const parseKeywordStatement = (): Statement => {
+  const parseKeywordStatement = (): StatementExpression => {
     return {
       [localKeyword]: () => parseAssignment(!!next(), !!match(constKeyword)),
       [constKeyword]: () => parseAssignment(false, !!next()),
@@ -247,7 +247,7 @@ export const parse = (tokens: Token[]) => {
       [breakKeyword]: () => new BreakStatement(),
       [trueKeyword]: () => new BooleanLiteral(true),
       [falseKeyword]: () => new BooleanLiteral(false),
-      [infinityKeyword]: () => new NumberLiteral(Infinity),
+      [infinityKeyword]: () => inf,
       [piKeyword]: () => new NumberLiteral(Math.PI),
       [matchKeyword]: () => {
         next()
@@ -263,11 +263,11 @@ export const parse = (tokens: Token[]) => {
     }[token!.lexeme]!()
   }
 
-  const parseReturnStatement = (expression?: Token[]): Statement => {
+  const parseReturnStatement = (expression?: Token[]): StatementExpression => {
     return new ReturnStatement(parseExpression(expression))
   }
 
-  const parseMatchExpression = (expression?: Token[]): Statement => {
+  const parseMatchExpression = (expression?: Token[]): StatementExpression => {
     const openingBracket = match('{', true)
     if (!expression) {
       error(
@@ -348,7 +348,7 @@ export const parse = (tokens: Token[]) => {
     skipWhitespace()
 
     const left = parseCompareExpression()
-    const trueBlock: Statement[] = []
+    const trueBlock: StatementExpression[] = []
     let trueBlockSourceCode: string[] = []
     const falseBlock = []
     let falseBlockSourceCode: string[] = []
@@ -409,7 +409,7 @@ export const parse = (tokens: Token[]) => {
       operands.push(operator, parseInnerExpression())
     }
 
-    return operands.length > 1 ? new expressionType(operands) : operands[0]
+    return operands.length > 1 ? new expressionType(operands) : operands[0] as Expression
   }
 
   const parseImmediateFunction = (): ImmediateFunction => {
@@ -506,7 +506,7 @@ export const parse = (tokens: Token[]) => {
 
           if (match(']')) {
             skipWhitespace()
-            rightIndex = Infinity
+            rightIndex = inf
           } else {
             skipWhitespace()
             rightIndex = parseStatement()
@@ -514,7 +514,7 @@ export const parse = (tokens: Token[]) => {
             match(']', true)
           }
 
-          expression = new IndexExpression(expression, 0, rightIndex)
+          expression = new IndexExpression(expression, new NumberLiteral(0), rightIndex)
         } else {
           const leftIndex = parseStatement()
           skipWhitespace()
@@ -523,7 +523,7 @@ export const parse = (tokens: Token[]) => {
           if (match(':')) {
             skipWhitespace()
             if (match(']')) {
-              rightIndex = Infinity
+              rightIndex = inf
             } else {
               rightIndex = parseStatement()
               skipWhitespace()
@@ -535,7 +535,7 @@ export const parse = (tokens: Token[]) => {
         }
       } else if (operator === '.') {
         const selector = match(Category.id, true)!.lexeme
-        expression = new AccessExpression(expression, selector)
+        expression = new AccessExpression(expression, new StringLiteral(selector))
       }
       skipWhitespace()
     }
@@ -706,15 +706,19 @@ export const parse = (tokens: Token[]) => {
 
       while (!at(')')) {
         match(',', true)
+        skipWhitespace()
         parameters.push(new Variable(match(Category.id, true)!.lexeme, true, false))
+        skipWhitespace()
       }
 
       match(')', true)
     }
 
+    skipWhitespace()
     match('->', true)
+    skipWhitespace()
 
-    const functionStatements: Statement[] = []
+    const functionStatements: StatementExpression[] = []
     if (match('{')) {
       skipWhitespace()
       while (!at('}')) {
@@ -729,7 +733,7 @@ export const parse = (tokens: Token[]) => {
       functionStatements.push(parseReturnStatement(matchUntil('\n')))
     }
 
-    return new FunctionLiteral(parameters, functionStatements, `(${parameters.join(', ')}) -> {\n\t${functionStatements.join('\n\t')}\n}`)
+    return new FunctionLiteral(parameters, functionStatements, `(${parameters.map(param => param.id).join(', ')}) -> {\n\t${functionStatements.join('\n\t')}\n}`)
   }
 
   return parseBlock()

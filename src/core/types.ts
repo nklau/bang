@@ -1,4 +1,4 @@
-import { Expression, Statement, Variable } from './core'
+import { Expression, StatementExpression, Variable } from './core'
 
 interface Literal extends Expression {}
 
