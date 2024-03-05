@@ -24,6 +24,11 @@ const programs = [
     new Block([new VariableAssignment(x, '=', new StringLiteral('hello world'))]),
   ],
   [
+    'new line string',
+    `x = '\\n'`,
+    new Block([new VariableAssignment(x, '=', new StringLiteral('\\n'))]),
+  ],
+  [
     'variable to variable assignment',
     'x = y',
     new Block([new VariableAssignment(x, '=', new Variable('y', false, false))]),
