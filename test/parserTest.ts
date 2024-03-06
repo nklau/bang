@@ -110,7 +110,16 @@ const programs = [
 chai.use(chaiExclude)
 
 for (const [scenario, program, expected] of programs) {
-  // @ts-expect-error
-  chai.assert.deepEqualExcludingEvery(parse(tokenize(program as string)), expected, ['srcCode'])
+  const actual = parse(tokenize(program as string))
+  try {
+    // @ts-expect-error
+    chai.assert.deepEqualExcludingEvery(actual, expected, ['srcCode'])
+  } catch {
+    console.log('Expected:')
+    console.dir(expected, { depth: null })
+    console.log('But got:')
+    console.dir(actual, { depth: null })
+    throw new Error(`${scenario} failed`)
+  }
   console.log(`${scenario} passes`)
 }
