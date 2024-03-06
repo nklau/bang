@@ -92,11 +92,11 @@ const programs = [
     '(5 + 3)',
     new Block([new AdditiveExpression([new NumberLiteral(5), '+', new NumberLiteral(3)])]),
   ],
-  // [
-  //   'identity function with parentheses',
-  //   '(x) -> { x }',
-  //   new Block([new ReturnStatement(new FunctionLiteral([localX], [new ReturnStatement(localX)]))]),
-  // ],
+  [
+    'identity function with parentheses',
+    '(x) -> { x }',
+    new Block([new FunctionLiteral([localX], [x])]),
+  ],
   // identity function (no parentheses)
   // empty function
   // identity function with {}

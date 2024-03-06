@@ -196,7 +196,7 @@ export const parse = (tokens: Token[]) => {
     skipWhitespace()
 
     let operator, expression
-    if ((operator = match(Category.operator, isConst)?.lexeme)) {
+    if ((operator = match(Category.operator, isConst)?.lexeme, true)) {
       // TODO allow for assignment operators
       skipWhitespace()
       expression = parseExpression()
