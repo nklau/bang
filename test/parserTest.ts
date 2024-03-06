@@ -103,6 +103,16 @@ const programs = [
     new Block([new FunctionLiteral([localX], [x])]),
   ],
   [
+    'identity function with no brackets',
+    '(x) -> x',
+    new Block([new FunctionLiteral([localX], [x])]),
+  ],
+  [
+    'identity function with no parentheses or brackets',
+    'x -> x',
+    new Block([new FunctionLiteral([localX], [x])]),
+  ],
+  [
     'empty function',
     '() -> {}',
     new Block([new FunctionLiteral([], [])]),
@@ -117,6 +127,8 @@ const programs = [
   // function w/ 2 params
   // function w/ 2 statements
   // functions that span multiple lines
+  // function w/ ret keyword and val
+  // function w/ ret keyword
 ]
 
 chai.use(chaiExclude)

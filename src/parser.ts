@@ -733,9 +733,12 @@ export const parse = (tokens: Token[]) => {
 
       match('}', true)
     } else {
-      match(returnKeyword)
-      skipWhitespace(false)
-      functionStatements.push(parseReturnStatement(matchUntil('\n')))
+      if (match(returnKeyword)) {
+        skipWhitespace(false)
+        functionStatements.push(at ('\n') ? new ReturnStatement() : parseReturnStatement())
+      }
+
+      functionStatements.push(parseStatement())
     }
 
     return new FunctionLiteral(parameters, functionStatements)
