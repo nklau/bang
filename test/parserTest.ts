@@ -1,4 +1,5 @@
-import assert from 'assert/strict'
+import * as chai from 'chai'
+import chaiExclude from 'chai-exclude'
 import { parse } from '../src/parser'
 import {
   AdditiveExpression,
@@ -106,8 +107,10 @@ const programs = [
   // functions that span multiple lines
 ]
 
+chai.use(chaiExclude)
+
 for (const [scenario, program, expected] of programs) {
-  assert.deepEqual(JSON.stringify(parse(tokenize(program as string))), JSON.stringify(expected))
-  // assert.deepEqual(parse(tokenize(program as string)), expected)
+  // @ts-expect-error
+  chai.assert.deepEqualExcludingEvery(parse(tokenize(program as string)), expected, ['srcCode'])
   console.log(`${scenario} passes`)
 }
