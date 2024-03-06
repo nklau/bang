@@ -703,7 +703,11 @@ export const parse = (tokens: Token[]) => {
       parameters.push(new Variable(match(Category.id, true)!.lexeme, true, false))
     } else {
       match('(', true)
-      prependToTokens(new Token(Category.structure, ',', 0, 0, false))
+      skipWhitespace()
+
+      if (!at(')')) {
+        prependToTokens(new Token(Category.structure, ',', 0, 0, false))
+      }
 
       while (!at(')')) {
         match(',', true)
