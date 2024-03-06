@@ -173,18 +173,21 @@ export const parse = (tokens: Token[]) => {
       error('Expected statement', 0, 0)
     }
 
-    const statementTypes = {
-      [Category.id]: parseAssignment, // this could also be a return
-      [Category.keyword]: parseKeywordStatement,
-      [Category.number]: parseReturnStatement,
-      [Category.object]: parseReturnStatement,
-      [Category.operator]: parseReturnStatement,
-      [Category.structure]: parseLiteralExpression, // TODO should this be a return?
-      [Category.whitespace]: () => error(`Unexpected whitespace`, token?.line ?? 0, token?.column ?? 0),
-    }
-
     skipWhitespace()
-    return statementTypes[token.category]()
+    return callFailable(parseAssignment, parseExpression)
+
+    // const statementTypes = {
+    //   [Category.id]: parseAssignment, // this could also be a return
+    //   [Category.keyword]: parseLiteralExpression,
+    //   [Category.number]: parseLiteralExpression,
+    //   [Category.object]: parseLiteralExpression,
+    //   [Category.operator]: parseLiteralExpression,
+    //   [Category.structure]: parseLiteralExpression, // TODO should this be a return?
+    //   [Category.whitespace]: () => error(`Unexpected whitespace`, token?.line ?? 0, token?.column ?? 0),
+    // }
+
+    // skipWhitespace()
+    // return statementTypes[token.category]()
   }
 
   const parseAssignment = (isLocal = false, isConst = false): StatementExpression => {

@@ -82,16 +82,15 @@ const programs = [
       ),
     ]),
   ],
-  ['implicit number return', '5', new Block([new ReturnStatement(new NumberLiteral(5))])],
   [
     'number addition',
     '5 + 3',
-    new Block([new ReturnStatement(new AdditiveExpression([new NumberLiteral(5), '+', new NumberLiteral(3)]))]),
+    new Block([new AdditiveExpression([new NumberLiteral(5), '+', new NumberLiteral(3)])]),
   ],
   [
     'parenthesized number addition',
     '(5 + 3)',
-    new Block([new ReturnStatement(new AdditiveExpression([new NumberLiteral(5), '+', new NumberLiteral(3)]))]),
+    new Block([new AdditiveExpression([new NumberLiteral(5), '+', new NumberLiteral(3)])]),
   ],
   // [
   //   'identity function with parentheses',
