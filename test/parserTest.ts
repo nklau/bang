@@ -5,13 +5,15 @@ import {
   Block,
   NegativeExpression,
   ReturnStatement,
+  StatementExpression,
   Variable,
   VariableAssignment,
 } from '../src/core/core'
-import { ListLiteral, NumberLiteral, ObjectLiteral, StringLiteral } from '../src/core/types'
+import { FunctionLiteral, ListLiteral, NumberLiteral, ObjectLiteral, StringLiteral } from '../src/core/types'
 import { tokenize } from '../src/lexer'
 
 const x = new Variable('x', false, false)
+const localX = new Variable('x', true, false)
 
 const programs = [
   ['number assignment', 'x = 5', new Block([new VariableAssignment(x, '=', new NumberLiteral(5))])],
@@ -90,9 +92,22 @@ const programs = [
     '(5 + 3)',
     new Block([new ReturnStatement(new AdditiveExpression([new NumberLiteral(5), '+', new NumberLiteral(3)]))]),
   ],
+  // [
+  //   'identity function with parentheses',
+  //   '(x) -> { x }',
+  //   new Block([new ReturnStatement(new FunctionLiteral([localX], [new ReturnStatement(localX)]))]),
+  // ],
+  // identity function (no parentheses)
+  // empty function
+  // identity function with {}
+  // indentity function (no {})
+  // function w/ 2 params
+  // function w/ 2 statements
+  // functions that span multiple lines
 ]
 
 for (const [scenario, program, expected] of programs) {
-  assert.deepEqual(parse(tokenize(program as string)), expected)
+  assert.deepEqual(JSON.stringify(parse(tokenize(program as string))), JSON.stringify(expected))
+  // assert.deepEqual(parse(tokenize(program as string)), expected)
   console.log(`${scenario} passes`)
 }

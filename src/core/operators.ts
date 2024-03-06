@@ -18,7 +18,7 @@ export const equalityOperators = [
 export const orOperator = '||'
 export const andOperator = '&&'
 
-const addOperator = '+'
+export const addOperator = '+'
 export const subtractOperator = '-'
 export const additiveOperators = [addOperator, subtractOperator]
 

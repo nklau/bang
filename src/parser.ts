@@ -91,7 +91,6 @@ export default function parseFile() {
 export const parse = (tokens: Token[]) => {
   let editedTokens: Token[] = []
   let token: Token | undefined = tokens[0]
-  let sourceCode: string[] = []
 
   const at = (expected: string | undefined) => {
     return token?.category === expected || token?.lexeme === expected
@@ -124,7 +123,6 @@ export const parse = (tokens: Token[]) => {
   const next = () => {
     const prevToken = tokens.shift()
     token = tokens[0]
-    sourceCode.push(token?.lexeme ?? '')
 
     if (prevToken?.isFromSrcCode) {
       editedTokens.push(prevToken)
@@ -308,8 +306,7 @@ export const parse = (tokens: Token[]) => {
       skipWhitespace()
       const openingCsBracket = match('{')
       skipWhitespace()
-      const caseFnSrcCode = lookUntil('}').map(token => token.lexeme).join('') // TODO may not use brackets here
-      const caseFunction = new FunctionLiteral([], parseImmediateFunction().statements, caseFnSrcCode)
+      const caseFunction = new FunctionLiteral([], parseImmediateFunction().statements)
       if (openingCsBracket) {
         skipWhitespace()
         match('}', true)
@@ -327,8 +324,7 @@ export const parse = (tokens: Token[]) => {
       skipWhitespace()
       const openingDefaultBracket = match('{')
       skipWhitespace()
-      const caseFnSrcCode = lookUntil('}').map(token => token.lexeme).join('') // TODO may not use brackets here
-      const caseFunction = new FunctionLiteral([], parseImmediateFunction().statements, caseFnSrcCode)
+      const caseFunction = new FunctionLiteral([], parseImmediateFunction().statements)
       if (openingDefaultBracket) {
         skipWhitespace()
         match('}', true)
@@ -349,19 +345,15 @@ export const parse = (tokens: Token[]) => {
 
     const left = parseCompareExpression()
     const trueBlock: StatementExpression[] = []
-    let trueBlockSourceCode: string[] = []
     const falseBlock = []
-    let falseBlockSourceCode: string[] = []
 
     skipWhitespace()
-    sourceCode = trueBlockSourceCode
     while (match('?') && !at(':')) {
       skipWhitespace()
       trueBlock.push(callFailable(parseImmediateFunction, parseStatement))
     }
 
     skipWhitespace()
-    sourceCode = falseBlockSourceCode
     while (match(':')) {
       skipWhitespace()
       falseBlock.push(callFailable(parseImmediateFunction, parseStatement))
@@ -369,11 +361,11 @@ export const parse = (tokens: Token[]) => {
 
     let falseFunction = falseyFunction
     if (falseBlock.length > 0) {
-      falseFunction = new FunctionLiteral([], falseBlock, falseBlockSourceCode.join(''))
+      falseFunction = new FunctionLiteral([], falseBlock)
     }
 
     return trueBlock.length > 0
-      ? new TernaryExpression(left, new FunctionLiteral([], trueBlock, trueBlockSourceCode.join('')), falseFunction)
+      ? new TernaryExpression(left, new FunctionLiteral([], trueBlock), falseFunction)
       : left
   }
 
@@ -733,7 +725,7 @@ export const parse = (tokens: Token[]) => {
       functionStatements.push(parseReturnStatement(matchUntil('\n')))
     }
 
-    return new FunctionLiteral(parameters, functionStatements, `(${parameters.map(param => param.id).join(', ')}) -> {\n\t${functionStatements.join('\n\t')}\n}`)
+    return new FunctionLiteral(parameters, functionStatements)
   }
 
   return parseBlock()
