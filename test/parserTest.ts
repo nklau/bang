@@ -97,6 +97,11 @@ const programs = [
     '(x) -> { x }',
     new Block([new FunctionLiteral([localX], [x])]),
   ],
+  [
+    'identity function with no parentheses',
+    'x -> { x }',
+    new Block([new FunctionLiteral([localX], [x])]),
+  ],
   // identity function (no parentheses)
   // empty function
   // identity function with {}

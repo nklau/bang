@@ -1,4 +1,5 @@
 export const assignmentOperator = '='
+export const arrow = '->'
 
 const equalityOperator = '=='
 const inequalityOperator = '!='

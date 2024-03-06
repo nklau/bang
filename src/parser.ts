@@ -46,6 +46,7 @@ import {
   spreadOperator,
   incrementOperator,
   decrementOperator,
+  arrow,
 } from './core/operators'
 import {
   breakKeyword,
@@ -196,6 +197,11 @@ export const parse = (tokens: Token[]) => {
     skipWhitespace()
 
     let operator, expression
+
+    if (operator = match(arrow)) {
+      error('Function detected', token?.line ?? 0, token?.column ?? 0)
+    }
+
     if ((operator = match(Category.operator, isConst)?.lexeme, true)) {
       // TODO allow for assignment operators
       skipWhitespace()
@@ -205,7 +211,7 @@ export const parse = (tokens: Token[]) => {
     return new VariableAssignment(variable, operator, expression)
   }
 
-  const parseAssignmentTarget = (isLocal: boolean, isConst: boolean): AccessExpression | IndexExpression | Variable => {
+  const parseAssignmentTarget = (isLocal: boolean = false, isConst: boolean = false): AccessExpression | IndexExpression | Variable => {
     const variable = new Variable(match(Category.id, true)!.lexeme, isLocal, isConst)
 
     const structure = match(Category.structure)
@@ -570,7 +576,7 @@ export const parse = (tokens: Token[]) => {
         return parseNumberLiteral()
       }
       case Category.id: {
-        return parseAssignmentTarget(false, false)
+        return callFailable(parseFunctionLiteral, parseAssignmentTarget)
       }
 
     }
@@ -710,7 +716,7 @@ export const parse = (tokens: Token[]) => {
     }
 
     skipWhitespace()
-    match('->', true)
+    match(arrow, true)
     skipWhitespace()
 
     const functionStatements: StatementExpression[] = []
