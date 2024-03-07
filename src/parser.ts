@@ -185,19 +185,6 @@ export const parse = (tokens: Token[]) => {
 
     skipWhitespace()
     return callFailable(parseAssignment, parseExpression)
-
-    // const statementTypes = {
-    //   [Category.id]: parseAssignment, // this could also be a return
-    //   [Category.keyword]: parseLiteralExpression,
-    //   [Category.number]: parseLiteralExpression,
-    //   [Category.object]: parseLiteralExpression,
-    //   [Category.operator]: parseLiteralExpression,
-    //   [Category.structure]: parseLiteralExpression, // TODO should this be a return?
-    //   [Category.whitespace]: () => error(`Unexpected whitespace`, token?.line ?? 0, token?.column ?? 0),
-    // }
-
-    // skipWhitespace()
-    // return statementTypes[token.category]()
   }
 
   const parseAssignment = (isLocal = false, isConst = false): StatementExpression => {
@@ -748,9 +735,9 @@ export const parse = (tokens: Token[]) => {
       if (match(returnKeyword)) {
         skipWhitespace(false)
         functionStatements.push(at('\n') ? new ReturnStatement() : parseReturnStatement(matchUntil('\n')))
+      } else {
+        functionStatements.push(parseStatement(matchUntil('\n')))
       }
-
-      functionStatements.push(parseStatement(matchUntil('\n')))
     }
 
     return new FunctionLiteral(parameters, functionStatements)

@@ -108,7 +108,24 @@ const programs = [
       ),
     ]),
   ],
-  // function w/ 2 params
+  [
+    'function that takes two parameters with ret keyword',
+    'add = (a, b) -> rtn a + b',
+    new Block([
+      new VariableAssignment(
+        new Variable('add', false, false),
+        '=',
+        new FunctionLiteral(
+          [new Variable('a', true, false), new Variable('b', true, false)],
+          [
+            new ReturnStatement(
+              new AdditiveExpression([new Variable('a', false, false), '+', new Variable('b', false, false)])
+            ),
+          ]
+        )
+      ),
+    ]),
+  ],
   // function w/ 2 statements
   // functions that span multiple lines
   // function w/ ret keyword and val
