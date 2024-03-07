@@ -82,48 +82,32 @@ const programs = [
       ),
     ]),
   ],
-  [
-    'number addition',
-    '5 + 3',
-    new Block([new AdditiveExpression([new NumberLiteral(5), '+', new NumberLiteral(3)])]),
-  ],
+  ['number addition', '5 + 3', new Block([new AdditiveExpression([new NumberLiteral(5), '+', new NumberLiteral(3)])])],
   [
     'parenthesized number addition',
     '(5 + 3)',
     new Block([new AdditiveExpression([new NumberLiteral(5), '+', new NumberLiteral(3)])]),
   ],
+  ['identity function with parentheses', '(x) -> { x }', new Block([new FunctionLiteral([localX], [x])])],
+  ['identity function with no parentheses', 'x -> { x }', new Block([new FunctionLiteral([localX], [x])])],
+  ['identity function with no brackets', '(x) -> x', new Block([new FunctionLiteral([localX], [x])])],
+  ['identity function with no parentheses or brackets', 'x -> x', new Block([new FunctionLiteral([localX], [x])])],
+  ['empty function', '() -> {}', new Block([new FunctionLiteral([], [])])],
+  ['empty function with spaces', '( ) -> {\n}', new Block([new FunctionLiteral([], [])])],
   [
-    'identity function with parentheses',
-    '(x) -> { x }',
-    new Block([new FunctionLiteral([localX], [x])]),
+    'function that takes two parameters',
+    'add = (a, b) -> a + b',
+    new Block([
+      new VariableAssignment(
+        new Variable('add', false, false),
+        '=',
+        new FunctionLiteral(
+          [new Variable('a', true, false), new Variable('b', true, false)],
+          [new AdditiveExpression([new Variable('a', false, false), '+', new Variable('b', false, false)])]
+        )
+      ),
+    ]),
   ],
-  [
-    'identity function with no parentheses',
-    'x -> { x }',
-    new Block([new FunctionLiteral([localX], [x])]),
-  ],
-  [
-    'identity function with no brackets',
-    '(x) -> x',
-    new Block([new FunctionLiteral([localX], [x])]),
-  ],
-  [
-    'identity function with no parentheses or brackets',
-    'x -> x',
-    new Block([new FunctionLiteral([localX], [x])]),
-  ],
-  [
-    'empty function',
-    '() -> {}',
-    new Block([new FunctionLiteral([], [])]),
-  ],
-  [
-    'empty function with spaces',
-    '( ) -> {\n}',
-    new Block([new FunctionLiteral([], [])]),
-  ],
-  // identity function with {}
-  // indentity function (no {})
   // function w/ 2 params
   // function w/ 2 statements
   // functions that span multiple lines

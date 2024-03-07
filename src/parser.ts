@@ -47,6 +47,8 @@ import {
   incrementOperator,
   decrementOperator,
   arrow,
+  assignmentOperator,
+  assignmentOperators,
 } from './core/operators'
 import {
   breakKeyword,
@@ -147,7 +149,10 @@ export const parse = (tokens: Token[]) => {
     return tokens.some(token => token.lexeme === character)
   }
 
-  const callFailable = (failable: (...args: any[]) => StatementExpression, backup: (...args: any[]) => StatementExpression): StatementExpression => {
+  const callFailable = (
+    failable: (...args: any[]) => StatementExpression,
+    backup: (...args: any[]) => StatementExpression
+  ): StatementExpression => {
     editedTokens = []
     try {
       return failable()
@@ -169,9 +174,13 @@ export const parse = (tokens: Token[]) => {
     return new Block(statements)
   }
 
-  const parseStatement = (): StatementExpression => {
+  const parseStatement = (expression?: Token[]): StatementExpression => {
     if (!token) {
       error('Expected statement', 0, 0)
+    }
+
+    if (expression) {
+      prependToTokens(...expression)
     }
 
     skipWhitespace()
@@ -198,12 +207,15 @@ export const parse = (tokens: Token[]) => {
 
     let operator, expression
 
-    if (operator = match(arrow)) {
+    if ((operator = match(arrow))) {
       error('Function detected', token?.line ?? 0, token?.column ?? 0)
     }
 
-    if ((operator = match(Category.operator, isConst)?.lexeme, true)) {
-      // TODO allow for assignment operators
+    if (!atAny(assignmentOperators)) {
+      error(`Invalid assignment operator ${token?.lexeme}`, token?.line ?? 0, token?.column ?? 0)
+    }
+
+    if (((operator = match(Category.operator, isConst)?.lexeme), true)) {
       skipWhitespace()
       expression = parseExpression()
     }
@@ -211,7 +223,10 @@ export const parse = (tokens: Token[]) => {
     return new VariableAssignment(variable, operator, expression)
   }
 
-  const parseAssignmentTarget = (isLocal: boolean = false, isConst: boolean = false): AccessExpression | IndexExpression | Variable => {
+  const parseAssignmentTarget = (
+    isLocal: boolean = false,
+    isConst: boolean = false
+  ): AccessExpression | IndexExpression | Variable => {
     const variable = new Variable(match(Category.id, true)!.lexeme, isLocal, isConst)
 
     const structure = match(Category.structure)
@@ -373,9 +388,7 @@ export const parse = (tokens: Token[]) => {
       falseFunction = new FunctionLiteral([], falseBlock)
     }
 
-    return trueBlock.length > 0
-      ? new TernaryExpression(left, new FunctionLiteral([], trueBlock), falseFunction)
-      : left
+    return trueBlock.length > 0 ? new TernaryExpression(left, new FunctionLiteral([], trueBlock), falseFunction) : left
   }
 
   const parseBinaryExpression = (
@@ -410,7 +423,7 @@ export const parse = (tokens: Token[]) => {
       operands.push(operator, parseInnerExpression())
     }
 
-    return operands.length > 1 ? new expressionType(operands) : operands[0] as Expression
+    return operands.length > 1 ? new expressionType(operands) : (operands[0] as Expression)
   }
 
   const parseImmediateFunction = (): ImmediateFunction => {
@@ -549,7 +562,7 @@ export const parse = (tokens: Token[]) => {
       case Category.structure: {
         // structure can be: '"$[]{}\(),?: ->
         switch (token?.lexeme) {
-          case '"': 
+          case '"':
           case "'": {
             return parseStringLiteral()
           }
@@ -578,7 +591,6 @@ export const parse = (tokens: Token[]) => {
       case Category.id: {
         return callFailable(parseFunctionLiteral, parseAssignmentTarget)
       }
-
     }
     // TODO: what if I just try/catch every single one
     // string (structure with ids inside)
@@ -735,10 +747,10 @@ export const parse = (tokens: Token[]) => {
     } else {
       if (match(returnKeyword)) {
         skipWhitespace(false)
-        functionStatements.push(at ('\n') ? new ReturnStatement() : parseReturnStatement())
+        functionStatements.push(at('\n') ? new ReturnStatement() : parseReturnStatement(matchUntil('\n')))
       }
 
-      functionStatements.push(parseStatement())
+      functionStatements.push(parseStatement(matchUntil('\n')))
     }
 
     return new FunctionLiteral(parameters, functionStatements)
