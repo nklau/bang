@@ -35,3 +35,28 @@ export const spreadOperator = '@'
 
 export const incrementOperator = '++'
 export const decrementOperator = '--'
+
+const spreadAssignmentOperator = `${spreadOperator}${assignmentOperator}`
+const negateAssignmentOperator = `${negateOperator}${assignmentOperator}`
+const exponentialAssignmentOperator = `${exponentialOperator}${assignmentOperator}`
+const multiplyAssignmentOperator = `${multiplyOperator}${assignmentOperator}`
+const divideAssignmentOperator = `${divideOperator}${assignmentOperator}`
+const modulusAssignmentOperator = `${modulusOperator}${assignmentOperator}`
+const addAssignmentOperator = `${addOperator}${assignmentOperator}`
+const subtractAssignmentOperator = `${subtractOperator}${assignmentOperator}`
+const andAssignmentOperator = `${andOperator}${assignmentOperator}`
+const orAssignmentOperator = `${orOperator}${assignmentOperator}`
+
+export const assignmentOperators = [
+  assignmentOperator,
+  spreadAssignmentOperator,
+  negateAssignmentOperator,
+  exponentialAssignmentOperator,
+  multiplyAssignmentOperator,
+  divideAssignmentOperator,
+  modulusAssignmentOperator,
+  addAssignmentOperator,
+  subtractAssignmentOperator,
+  andAssignmentOperator,
+  orAssignmentOperator,
+]
