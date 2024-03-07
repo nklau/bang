@@ -109,8 +109,26 @@ const programs = [
     ]),
   ],
   [
-    'function that takes two parameters with ret keyword',
+    'function that takes two parameters with rtn keyword',
     'add = (a, b) -> rtn a + b',
+    new Block([
+      new VariableAssignment(
+        new Variable('add', false, false),
+        '=',
+        new FunctionLiteral(
+          [new Variable('a', true, false), new Variable('b', true, false)],
+          [
+            new ReturnStatement(
+              new AdditiveExpression([new Variable('a', false, false), '+', new Variable('b', false, false)])
+            ),
+          ]
+        )
+      ),
+    ]),
+  ],
+  [
+    'function that takes two parameters with rtn keyword and brackets',
+    'add = (a, b) -> { rtn a + b }',
     new Block([
       new VariableAssignment(
         new Variable('add', false, false),

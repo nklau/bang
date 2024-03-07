@@ -354,7 +354,7 @@ export const parse = (tokens: Token[]) => {
 
     skipWhitespace()
 
-    const left = parseCompareExpression()
+    const left = callFailable(parseKeywordStatement, parseCompareExpression)
     const trueBlock: StatementExpression[] = []
     const falseBlock = []
 
@@ -404,10 +404,10 @@ export const parse = (tokens: Token[]) => {
     skipWhitespace()
 
     while (atAny(operators)) {
-      skipWhitespace()
       const operator = match(Category.operator, true)!.lexeme
       skipWhitespace()
       operands.push(operator, parseInnerExpression())
+      skipWhitespace()
     }
 
     return operands.length > 1 ? new expressionType(operands) : (operands[0] as Expression)
