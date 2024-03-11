@@ -259,8 +259,7 @@ export const parse = (tokens: Token[]) => {
       [infinityKeyword]: () => inf,
       [piKeyword]: () => new NumberLiteral(Math.PI),
       [matchKeyword]: () => {
-        next()
-        return parseMatchExpression(matchUntil('{'))
+        return parseMatchExpression()
       },
       [caseKeyword]: () => {
         error(`'cs' keyword cannot be used outside of a 'mtch' expression`, token!.line, token!.column)
@@ -276,9 +275,66 @@ export const parse = (tokens: Token[]) => {
     return new ReturnStatement(parseExpression(expression))
   }
 
-  const parseMatchExpression = (expression?: Token[]): StatementExpression => {
+  const parseMatchCase = (): MatchCase => {
+    match(caseKeyword, true)
+    skipWhitespace(false)
+
+    const testMatches: Expression[] = []
+    while (!at(':')) {
+      testMatches.push(parseExpression(matchUntil(':')))
+      skipWhitespace()
+    }
+
+    match(':', true)
+    skipWhitespace()
+
+    const statements: StatementExpression[] = []
+    if (match('{')) {
+      skipWhitespace()
+
+      while (!at('}')) {
+        statements.push(parseStatement())
+        skipWhitespace()
+      }
+
+      match('}', true)
+    } else {
+      statements.push(parseStatement())
+    }
+
+    return new MatchCase(new ListLiteral(testMatches), new ImmediateFunction(statements))
+  }
+
+  const parseDefaultMatchCase = (): ImmediateFunction => {
+    match(defaultKeyword, true)
+    skipWhitespace(false)
+    match(':', true)
+    skipWhitespace()
+
+    const statements: StatementExpression[] = []
+    if (match('{')) {
+      skipWhitespace()
+
+      while (!at('}')) {
+        statements.push(parseStatement())
+        skipWhitespace()
+      }
+
+      match('}', true)
+    } else {
+      statements.push(parseStatement())
+    }
+
+    return new ImmediateFunction(statements)
+  }
+
+  const parseMatchExpression = (): StatementExpression => {
+    match(matchKeyword, true)
+    skipWhitespace(false)
+    const condition = parseExpression()
+    skipWhitespace()
     const openingBracket = match('{', true)
-    if (!expression) {
+    if (!condition) {
       error(
         `Match expression requires a test expression following 'mtch'`,
         openingBracket!.line,
@@ -288,63 +344,20 @@ export const parse = (tokens: Token[]) => {
 
     skipWhitespace()
 
-    const condition = parseExpression(expression)
     const matchCases: MatchCase[] = []
-
-    skipWhitespace()
-
-    let cs = match(caseKeyword, true)
-    while (cs) {
-      let caseTestCondition = matchUntil(':')
-      const caseTestConditions = new ListLiteral([])
-
-      while (contains(caseTestCondition, ',')) {
-        skipWhitespace()
-        caseTestConditions.value.push(parseExpression(matchUntil(',', caseTestCondition)))
-      }
-
+    while (!at('}') && !at(defaultKeyword)) {
+      matchCases.push(parseMatchCase())
       skipWhitespace()
-      const lastCaseTest = parseExpression(caseTestCondition)
-      skipWhitespace()
-      const colon = match(':', true)
-
-      if (lastCaseTest === nil) {
-        error(`Match expression requires a test expression following 'cs'`, colon!.line, colon!.column)
-      }
-
-      caseTestConditions.value.push(lastCaseTest)
-
-      skipWhitespace()
-      const openingCsBracket = match('{')
-      skipWhitespace()
-      const caseFunction = new FunctionLiteral([], parseImmediateFunction().statements)
-      if (openingCsBracket) {
-        skipWhitespace()
-        match('}', true)
-      }
-
-      matchCases.push(new MatchCase(caseTestConditions, caseFunction))
-
-      skipWhitespace()
-      cs = match(caseKeyword)
     }
 
-    if (match(defaultKeyword)) {
-      skipWhitespace()
-      match(':', true)
-      skipWhitespace()
-      const openingDefaultBracket = match('{')
-      skipWhitespace()
-      const caseFunction = new FunctionLiteral([], parseImmediateFunction().statements)
-      if (openingDefaultBracket) {
-        skipWhitespace()
-        match('}', true)
-      }
+    let defaultCase
+    try {
+      defaultCase = parseDefaultMatchCase()
+    } catch {}
 
-      return new MatchExpression(condition, matchCases, caseFunction)
-    }
+    match('}', true)
 
-    return new MatchExpression(condition, matchCases)
+    return new MatchExpression(condition, matchCases, defaultCase)
   }
 
   const parseExpression = (expression?: Token[]): Expression | typeof nil => {
@@ -356,7 +369,7 @@ export const parse = (tokens: Token[]) => {
 
     const left = callFailable(parseKeywordStatement, parseCompareExpression)
     const trueBlock: StatementExpression[] = []
-    const falseBlock = []
+    const falseBlock: StatementExpression[] = []
 
     skipWhitespace()
     while (match('?') && !at(':')) {
@@ -365,10 +378,19 @@ export const parse = (tokens: Token[]) => {
     }
 
     skipWhitespace()
-    while (match(':')) {
-      skipWhitespace()
-      falseBlock.push(callFailable(parseImmediateFunction, parseStatement))
-    }
+
+    // TODO: fix ternaries
+    // while (match(':')) {
+    //   skipWhitespace()
+    //   try {
+    //     falseBlock.push(callFailable(parseImmediateFunction, parseStatement))
+    //     console.log('block pushed')
+    //   } catch {
+    //     console.log('pushing tokens')
+    //     prependToTokens(...editedTokens)
+    //     editedTokens = []
+    //   }
+    // }
 
     let falseFunction = falseyFunction
     if (falseBlock.length > 0) {

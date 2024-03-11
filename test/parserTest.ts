@@ -5,6 +5,8 @@ import {
   AdditiveExpression,
   Block,
   ImmediateFunction,
+  MatchCase,
+  MatchExpression,
   NegativeExpression,
   ReturnStatement,
   StatementExpression,
@@ -149,6 +151,19 @@ const programs = [
     'basic immediate function that returns a number',
     '{ 5 }',
     new Block([new ImmediateFunction([new NumberLiteral(5)])]),
+  ],
+  [
+    'basic match expression',
+    `x = 5
+    mtch x {
+      cs 5: 5
+    }`,
+    new Block([
+      new VariableAssignment(x, '=', new NumberLiteral(5)),
+      new MatchExpression(x, [
+        new MatchCase(new ListLiteral([new NumberLiteral(5)]), new ImmediateFunction([new NumberLiteral(5)])),
+      ]),
+    ]),
   ],
   // function w/ 2 statements
   // functions that span multiple lines
