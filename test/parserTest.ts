@@ -165,6 +165,22 @@ const programs = [
       ]),
     ]),
   ],
+  [
+    'match expression with default case',
+    `x = 5
+    mtch x {
+      cs 5: 5
+      dft: 'other'
+    }`,
+    new Block([
+      new VariableAssignment(x, '=', new NumberLiteral(5)),
+      new MatchExpression(
+        x,
+        [new MatchCase(new ListLiteral([new NumberLiteral(5)]), new FunctionLiteral([], [new NumberLiteral(5)]))],
+        new FunctionLiteral([], [new StringLiteral('other')])
+      ),
+    ]),
+  ],
   // function w/ 2 statements
   // functions that span multiple lines
   // function w/ ret keyword and val
