@@ -109,7 +109,7 @@ export class MatchExpression implements Expression {
   constructor(
     public condition: Expression,
     public cases: MatchCase[],
-    public defaultCase: ImmediateFunction = new ImmediateFunction([new ReturnStatement(nil)])
+    public defaultCase: FunctionLiteral = new FunctionLiteral([], [new ReturnStatement(nil)])
   ) {}
 
   srcCode = () => {
@@ -120,7 +120,7 @@ export class MatchExpression implements Expression {
 export class MatchCase {
   constructor(
     public matchValue: ListLiteral,
-    public functionValue: ImmediateFunction
+    public functionValue: FunctionLiteral
   ) {}
 }
 

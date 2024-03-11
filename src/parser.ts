@@ -302,10 +302,10 @@ export const parse = (tokens: Token[]) => {
       statements.push(parseStatement())
     }
 
-    return new MatchCase(new ListLiteral(testMatches), new ImmediateFunction(statements))
+    return new MatchCase(new ListLiteral(testMatches), new FunctionLiteral([], statements))
   }
 
-  const parseDefaultMatchCase = (): ImmediateFunction => {
+  const parseDefaultMatchCase = (): FunctionLiteral => {
     match(defaultKeyword, true)
     skipWhitespace(false)
     match(':', true)
@@ -325,7 +325,7 @@ export const parse = (tokens: Token[]) => {
       statements.push(parseStatement())
     }
 
-    return new ImmediateFunction(statements)
+    return new FunctionLiteral([], statements)
   }
 
   const parseMatchExpression = (): StatementExpression => {

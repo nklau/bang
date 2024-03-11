@@ -161,7 +161,7 @@ const programs = [
     new Block([
       new VariableAssignment(x, '=', new NumberLiteral(5)),
       new MatchExpression(x, [
-        new MatchCase(new ListLiteral([new NumberLiteral(5)]), new ImmediateFunction([new NumberLiteral(5)])),
+        new MatchCase(new ListLiteral([new NumberLiteral(5)]), new FunctionLiteral([], [new NumberLiteral(5)])),
       ]),
     ]),
   ],
