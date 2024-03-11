@@ -414,7 +414,17 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseImmediateFunction = (): ImmediateFunction => {
-    throw new Error('unimplemented')
+    match('{', true)
+
+    skipWhitespace()
+    const statements: StatementExpression[] = []
+    while (!at('}')) {
+      statements.push(parseStatement())
+      skipWhitespace()
+    }
+
+    match('}', true)
+    return new ImmediateFunction(statements)
   }
 
   const parseCompareExpression = (): Expression => {

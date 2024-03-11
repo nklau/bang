@@ -4,6 +4,7 @@ import { parse } from '../src/parser'
 import {
   AdditiveExpression,
   Block,
+  ImmediateFunction,
   NegativeExpression,
   ReturnStatement,
   StatementExpression,
@@ -143,6 +144,11 @@ const programs = [
         )
       ),
     ]),
+  ],
+  [
+    'basic immediate function that returns a number',
+    '{ 5 }',
+    new Block([new ImmediateFunction([new NumberLiteral(5)])]),
   ],
   // function w/ 2 statements
   // functions that span multiple lines
