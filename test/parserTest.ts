@@ -4,6 +4,7 @@ import { parse } from '../src/parser'
 import {
   AdditiveExpression,
   Block,
+  CallExpression,
   ImmediateFunction,
   MatchCase,
   MatchExpression,
@@ -181,6 +182,110 @@ const programs = [
       ),
     ]),
   ],
+  [
+    'match expression with two cases',
+    `x = 5
+    mtch x {
+      cs '5': {
+        y = 'string'
+        y
+      }
+      cs 5: 5
+    }`,
+    new Block([
+      new VariableAssignment(x, '=', new NumberLiteral(5)),
+      new MatchExpression(x, [
+        new MatchCase(
+          new ListLiteral([new StringLiteral('5')]),
+          new FunctionLiteral(
+            [],
+            [
+              new VariableAssignment(new Variable('y', false, false), '=', new StringLiteral('string')),
+              new Variable('y', false, false),
+            ]
+          )
+        ),
+        new MatchCase(new ListLiteral([new NumberLiteral(5)]), new FunctionLiteral([], [new NumberLiteral(5)])),
+      ]),
+    ]),
+  ],
+  [
+    'match expression with two cases + default case',
+    `x = 5
+    mtch x {
+      cs '5': {
+        y = 'string'
+        y
+      }
+      cs 5: 5
+      dft: 'other'
+    }`,
+    new Block([
+      new VariableAssignment(x, '=', new NumberLiteral(5)),
+      new MatchExpression(
+        x,
+        [
+          new MatchCase(
+            new ListLiteral([new StringLiteral('5')]),
+            new FunctionLiteral(
+              [],
+              [
+                new VariableAssignment(new Variable('y', false, false), '=', new StringLiteral('string')),
+                new Variable('y', false, false),
+              ]
+            )
+          ),
+          new MatchCase(new ListLiteral([new NumberLiteral(5)]), new FunctionLiteral([], [new NumberLiteral(5)])),
+        ],
+        new FunctionLiteral([], [new StringLiteral('other')])
+      ),
+    ]),
+  ],
+  [
+    'match expression with multi-value cases',
+    `x = 5
+    mtch x {
+      cs 5, '5': {
+        y = 5
+        y
+      }
+      cs 1, '1': 1
+      dft: {
+        y = 'other'
+        y
+      }
+    }`,
+    new Block([
+      new VariableAssignment(x, '=', new NumberLiteral(5)),
+      new MatchExpression(
+        x,
+        [
+          new MatchCase(
+            new ListLiteral([new NumberLiteral(5), new StringLiteral('5')]),
+            new FunctionLiteral(
+              [],
+              [
+                new VariableAssignment(new Variable('y', false, false), '=', new NumberLiteral(5)),
+                new Variable('y', false, false),
+              ]
+            )
+          ),
+          new MatchCase(
+            new ListLiteral([new NumberLiteral(1), new StringLiteral('1')]),
+            new FunctionLiteral([], [new NumberLiteral(1)])
+          ),
+        ],
+        new FunctionLiteral(
+          [],
+          [
+            new VariableAssignment(new Variable('y', false, false), '=', new StringLiteral('other')),
+            new Variable('y', false, false),
+          ]
+        )
+      ),
+    ]),
+  ],
+  // match w/ multiple test cases (i.e. cs 3, 5:)
   // function w/ 2 statements
   // functions that span multiple lines
   // function w/ ret keyword and val

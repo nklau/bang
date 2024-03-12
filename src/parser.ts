@@ -99,6 +99,12 @@ export const parse = (tokens: Token[]) => {
     return token?.category === expected || token?.lexeme === expected
   }
 
+  const assertNotAt = (expected: string) => {
+    if (at(expected)) {
+      error(`Unexpected token ${token?.lexeme}`, token?.line ?? 0, token?.column ?? 0)
+    }
+  }
+
   const atAny = (of: string[]) => {
     return of.some(expected => token?.category === expected || token?.lexeme === expected)
   }
@@ -280,8 +286,17 @@ export const parse = (tokens: Token[]) => {
     skipWhitespace(false)
 
     const testMatches: Expression[] = []
+    
     while (!at(':')) {
-      testMatches.push(parseExpression(matchUntil(':')))
+      testMatches.push(callFailable(() => parseExpression(matchUntil(':')), () => parseExpression(matchUntil(','))))
+      skipWhitespace(false)
+
+      if (!at(':')) {
+        match(',', true)
+        skipWhitespace()
+        assertNotAt(':')
+      }
+
       skipWhitespace()
     }
 
@@ -353,6 +368,7 @@ export const parse = (tokens: Token[]) => {
     let defaultCase
     try {
       defaultCase = parseDefaultMatchCase()
+      skipWhitespace()
     } catch {}
 
     match('}', true)
