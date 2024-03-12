@@ -285,7 +285,12 @@ const programs = [
       ),
     ]),
   ],
-  // match w/ multiple test cases (i.e. cs 3, 5:)
+  [
+    'function call',
+    'prt(5)',
+    new Block([new CallExpression(new Variable('prt', false, false), [new NumberLiteral(5)])]),
+  ],
+  // call with multiple args
   // function w/ 2 statements
   // functions that span multiple lines
   // function w/ ret keyword and val

@@ -4,6 +4,7 @@ import {
   AccessExpression,
   AdditiveExpression,
   AndExpression,
+  AssignmentTarget,
   BinaryExpression,
   Block,
   BreakStatement,
@@ -216,38 +217,25 @@ export const parse = (tokens: Token[]) => {
     return new VariableAssignment(variable, operator, expression)
   }
 
-  const parseAssignmentTarget = (
-    isLocal: boolean = false,
-    isConst: boolean = false
-  ): AccessExpression | IndexExpression | Variable => {
-    const variable = new Variable(match(Category.id, true)!.lexeme, isLocal, isConst)
+  const parseAssignmentTarget = (isLocal: boolean = false, isConst: boolean = false): AssignmentTarget => {
+    let expression: AssignmentTarget = new Variable(match(Category.id, true)!.lexeme, isLocal, isConst)
 
-    const structure = match(Category.structure)
-    if (structure) {
+    while (atAny(['.', '['])) {
       if (isConst) {
         error(
-          `Cannot make ${structure.lexeme === '[' ? 'list element' : 'object field'} constant`,
-          structure.line,
-          structure.column
+          `Cannot make ${token!.lexeme === '[' ? 'list element' : 'object field'} constant`,
+          token!.line,
+          token!.column
         )
       }
 
-      if (structure.lexeme === '.') {
-        return new AccessExpression(variable, new StringLiteral(match(Category.id, true)!.lexeme))
-      } else if (structure.lexeme === '[') {
-        const left = parseExpression(matchUntil(':')) ?? 0
-        next()
-        skipWhitespace()
-        const right = parseExpression(matchUntil(']')) ?? inf
-        next()
-
-        return new IndexExpression(variable, left, right)
+      if (at('[')) {
+        expression = parseIndexArgs(expression)
+      } else if (match('.')) {
+        expression = new AccessExpression(expression, parseLiteralExpression())
       }
     }
-    // think this might also catch x -> x?
-    // TODO check for function calls () and repeating . or [] ops
-
-    return variable
+    return expression
   }
 
   const parseKeywordStatement = (): StatementExpression => {
@@ -286,9 +274,9 @@ export const parse = (tokens: Token[]) => {
     skipWhitespace(false)
 
     const testMatches: Expression[] = []
-    
+
     while (!at(':')) {
-      testMatches.push(callFailable(() => parseExpression(matchUntil(':')), () => parseExpression(matchUntil(','))))
+      testMatches.push(parseExpression())
       skipWhitespace(false)
 
       if (!at(':')) {
@@ -530,61 +518,62 @@ export const parse = (tokens: Token[]) => {
     return expression
   }
 
-  const parseCallOrSelectExpression = (): Expression => {
-    let expression = parseLiteralExpression()
+  const parseCallArgs = (): Expression[] => {
+    match('(', true)
     skipWhitespace()
+    const args: Expression[] = []
 
-    while (at('(') || at('[') || at('.')) {
-      const operator = next()!.lexeme
+    while (!at(')')) {
+      args.push(parseStatement())
       skipWhitespace()
 
-      if (operator === '(') {
-        const args: Expression[] = []
+      if (!at(')')) {
+        match(',', true)
+        skipWhitespace()
+        assertNotAt(')')
+      }
 
-        while (!at(')')) {
-          args.push(parseStatement())
-          skipWhitespace()
+      skipWhitespace()
+    }
+
+    match(')', true)
+    return args
+  }
+
+  const parseIndexArgs = (expression: Expression): IndexExpression => {
+    match('[', true)
+    skipWhitespace()
+    let left: Expression = new NumberLiteral(0)
+    let right: Expression = inf
+
+    if (!at(':')) {
+      left = parseExpression()
+      skipWhitespace()
+
+      if (match(':')) {
+        skipWhitespace()
+        if (!at(']')) {
+          right = parseExpression()
         }
+      }
 
-        match(')', true)
-        expression = new CallExpression(expression, args)
-      } else if (operator === '[') {
-        if (match(':')) {
-          skipWhitespace()
-          let rightIndex
+      skipWhitespace()
+      match(']', true)
+    }
 
-          if (match(']')) {
-            skipWhitespace()
-            rightIndex = inf
-          } else {
-            skipWhitespace()
-            rightIndex = parseStatement()
-            skipWhitespace()
-            match(']', true)
-          }
+    return new IndexExpression(expression, left, right)
+  }
 
-          expression = new IndexExpression(expression, new NumberLiteral(0), rightIndex)
-        } else {
-          const leftIndex = parseStatement()
-          skipWhitespace()
-          let rightIndex = null
+  const parseCallOrSelectExpression = (): Expression => {
+    let expression: Expression = parseLiteralExpression()
 
-          if (match(':')) {
-            skipWhitespace()
-            if (match(']')) {
-              rightIndex = inf
-            } else {
-              rightIndex = parseStatement()
-              skipWhitespace()
-              match(']', true)
-            }
-          }
-
-          expression = new IndexExpression(expression, leftIndex, rightIndex)
-        }
-      } else if (operator === '.') {
-        const selector = match(Category.id, true)!.lexeme
-        expression = new AccessExpression(expression, new StringLiteral(selector))
+    while (atAny(['(', '[', '.'])) {
+      if (at('(')) {
+        expression = new CallExpression(expression, parseCallArgs())
+      } else if (at('[')) {
+        expression = parseIndexArgs(expression)
+      } else if (match('.')) {
+        expression = new AccessExpression(expression, parseLiteralExpression())
       }
       skipWhitespace()
     }
@@ -617,26 +606,15 @@ export const parse = (tokens: Token[]) => {
             error(`Unexpected token ${token?.lexeme}`, token?.line, token?.column)
           }
         }
-
-        // throw new Error('unimplemented object, list, immediate function, or function literal parsing')
       }
       case Category.number: {
         return parseNumberLiteral()
       }
       case Category.id: {
-        return callFailable(parseFunctionLiteral, parseAssignmentTarget)
+        return callFailable(parseFunctionLiteral, () => new Variable(next()!.lexeme, false, false))
       }
     }
-    // TODO: what if I just try/catch every single one
-    // string (structure with ids inside)
-    // number
-    // object
-    // immediate function
-    // list
-    // function
-    // id
-    // match??
-    // parenthesized exp??
+
     throw new Error(`unexpected literal expression ${token?.category} ${token?.lexeme}`)
   }
 
