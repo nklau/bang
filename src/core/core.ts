@@ -12,7 +12,7 @@ import {
 } from './operators'
 import { FunctionLiteral, ListLiteral, StringLiteral, nil } from './types'
 
-type AssignmentTarget = AccessExpression | IndexExpression | Variable
+export type AssignmentTarget = AccessExpression | IndexExpression | Variable
 
 export interface StatementExpression {
   srcCode: () => StringLiteral
