@@ -498,19 +498,15 @@ export const parse = (tokens: Token[]) => {
     let expression
 
     if (match(incrementOperator)) {
-      skipWhitespace()
       expression = new PreIncrementExpression(parseCallOrSelectExpression())
     } else if (match(decrementOperator)) {
-      skipWhitespace()
       expression = new PreDecrementExpression(parseCallOrSelectExpression())
     } else {
       expression = parseCallOrSelectExpression()
 
       if (match(incrementOperator)) {
-        skipWhitespace()
         expression = new PostIncrementExpression(expression)
       } else if (match(decrementOperator)) {
-        skipWhitespace()
         expression = new PostDecrementExpression(expression)
       }
     }

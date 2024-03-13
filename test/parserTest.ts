@@ -2,6 +2,7 @@ import * as chai from 'chai'
 import chaiExclude from 'chai-exclude'
 import { parse } from '../src/parser'
 import {
+  AccessExpression,
   AdditiveExpression,
   Block,
   CallExpression,
@@ -19,6 +20,7 @@ import { tokenize } from '../src/lexer'
 
 const x = new Variable('x', false, false)
 const localX = new Variable('x', true, false)
+const print = new Variable('prt', false, false)
 
 const programs = [
   ['number assignment', 'x = 5', new Block([new VariableAssignment(x, '=', new NumberLiteral(5))])],
@@ -285,16 +287,31 @@ const programs = [
       ),
     ]),
   ],
+  ['function call', 'prt(5)', new Block([new CallExpression(print, [new NumberLiteral(5)])])],
   [
-    'function call',
-    'prt(5)',
-    new Block([new CallExpression(new Variable('prt', false, false), [new NumberLiteral(5)])]),
+    'function call with multiple args',
+    `prt(
+      5, "string",
+    'new line'
+    )`,
+    new Block([
+      new CallExpression(print, [new NumberLiteral(5), new StringLiteral('string'), new StringLiteral('new line')]),
+    ]),
   ],
-  // call with multiple args
+  ['function call with no args', 'prt( )', new Block([new CallExpression(print, [])])],
+  // ['. operator', 'x.y', new Block([new AccessExpression(x, new Variable('y', false, false))])],
+  // [
+  //   'repeated . operator',
+  //   `x.(z + 3).y`,
+  //   new Block([])
+  // ],
+  // repeated ()
+  // repeated []
+  // combination of ., (), and []
   // function w/ 2 statements
   // functions that span multiple lines
-  // function w/ ret keyword and val
-  // function w/ ret keyword
+  // function w/ rtn keyword and val
+  // function w/ rtn keyword
 ]
 
 chai.use(chaiExclude)
