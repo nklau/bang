@@ -23,6 +23,7 @@ import {
   NumberLiteral,
   ObjectLiteral,
   StringLiteral,
+  nil,
 } from '../src/core/types'
 import { tokenize } from '../src/lexer'
 
@@ -113,6 +114,7 @@ const programs = [
     'prt(T + 6)',
     new Block([new CallExpression(print, [new NaryExpression([new BooleanLiteral(true), '+', new NumberLiteral(6)])])]),
   ],
+  ['number + nil', '5 + nil', new Block([new AdditiveExpression([new NumberLiteral(5), '+', nil])])],
   ['identity function with parentheses', '(x) -> { x }', new Block([new FunctionLiteral([localX], [x])])],
   ['identity function with no parentheses', 'x -> { x }', new Block([new FunctionLiteral([localX], [x])])],
   ['identity function with no brackets', '(x) -> x', new Block([new FunctionLiteral([localX], [x])])],

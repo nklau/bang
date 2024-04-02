@@ -276,7 +276,10 @@ export const parse = (tokens: Token[]) => {
       [defaultKeyword]: () => {
         error(`'dft' keyword cannot be used outside of a 'mtch' expression`, token!.line, token!.column)
       },
-      nil: () => new ReturnStatement(),
+      nil: () => {
+        next()
+        return nil
+      },
     }[token!.lexeme]!()
   }
 
