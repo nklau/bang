@@ -192,7 +192,7 @@ export const run = (program: Block) => {
       return booleanAddition(operands)
     }
 
-    return expression
+    return nil
   }
 
   const containsType = (operands: (Expression | string)[], type: StringLiteral | string) => {
