@@ -1,9 +1,23 @@
 import { Expression, StatementExpression, Variable } from './core'
 
-interface Literal extends Expression {}
+export interface Literal extends Expression {}
+
+export const isLiteral = (expression: any): expression is Literal => {
+  return (
+    expression instanceof BooleanLiteral ||
+    expression instanceof NumberLiteral ||
+    expression instanceof StringLiteral ||
+    expression instanceof FormattedStringLiteral ||
+    expression instanceof ObjectLiteral ||
+    expression instanceof ListLiteral ||
+    expression instanceof FunctionLiteral
+  )
+}
 
 export class BooleanLiteral implements Literal {
   constructor(public value: boolean) {}
+
+  static type = 'bool'
 
   srcCode = () => new StringLiteral(this.value ? 'T' : 'F')
 }
@@ -11,17 +25,23 @@ export class BooleanLiteral implements Literal {
 export class NumberLiteral implements Literal {
   constructor(public value: number) {}
 
+  static type = 'num'
+
   srcCode = () => new StringLiteral(String(this.value))
 }
 
 export class StringLiteral implements Literal {
   constructor(public value: string) {}
 
+  static type = 'str'
+
   srcCode = () => this
 }
 
 export class FormattedStringLiteral implements Literal {
   constructor(public value: Expression[]) {}
+
+  static type = 'str'
 
   srcCode = () =>
     new StringLiteral(
@@ -34,12 +54,16 @@ export class FormattedStringLiteral implements Literal {
 export class ObjectLiteral implements Literal {
   constructor(public value: [StringLiteral, Expression][]) {}
 
+  static type = 'obj'
+
   srcCode = () =>
     new StringLiteral(`{ ${this.value.map(([key, val]) => `${key.value}: ${val.srcCode()}`).join(', ')} }`)
 }
 
 export class ListLiteral implements Literal {
   constructor(public value: (Literal | Expression)[]) {}
+
+  static type = 'list'
 
   srcCode = () => new StringLiteral(`[${this.value.map(val => val.srcCode()).join(', ')}]`)
 }
@@ -49,6 +73,8 @@ export class FunctionLiteral implements Literal {
     public parameters: Variable[],
     public statements: StatementExpression[]
   ) {}
+
+  static type = 'func'
 
   srcCode = () =>
     new StringLiteral(
