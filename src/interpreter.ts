@@ -183,39 +183,43 @@ export const run = (program: Block) => {
     }
 
     if (containsType(expression.operands, NumberLiteral.type)) {
-      const first = expression.operands[0]
-
-      let sum: number
-      if (first instanceof NumberLiteral) {
-        sum = first.value
-      } else if (first instanceof BooleanLiteral) {
-        sum = first.value ? 1 : 0
-      } else {
-        throw new Error(`unexpected type ${first.constructor} in numerical additive expression`)
-      }
-
-      for (let i = 1; i < expression.operands.length; i += 2) {
-        const [operator, operand] = [expression.operands[i], expression.operands[i + 1]]
-
-        if (operator !== addOperator && operator !== subtractOperator) {
-          throw new Error(`unexpected operator ${operator} in numerical additive expression`)
-        }
-
-        if (operand instanceof NumberLiteral) {
-          sum = addNums(sum, operand.value, operator)
-        } else if (operand instanceof BooleanLiteral) {
-          if (operand.value) {
-            sum = addNums(sum, 1, operator)
-          }
-        } else {
-          throw new Error(`unexpected type ${operand.constructor} in numerical additive expression`)
-        }
-      }
-
-      return new NumberLiteral(sum)
+      return numericalAddition(expression.operands)
     }
 
     return expression
+  }
+
+  const numericalAddition = (operands: (Expression | string)[]): NumberLiteral => {
+    const first = operands[0]
+
+    let sum: number
+    if (first instanceof NumberLiteral) {
+      sum = first.value
+    } else if (first instanceof BooleanLiteral) {
+      sum = first.value ? 1 : 0
+    } else {
+      throw new Error(`unexpected type ${first.constructor} in numerical additive expression`)
+    }
+
+    for (let i = 1; i < operands.length; i += 2) {
+      const [operator, operand] = [operands[i], operands[i + 1]]
+
+      if (operator !== addOperator && operator !== subtractOperator) {
+        throw new Error(`unexpected operator ${operator} in numerical additive expression`)
+      }
+
+      if (operand instanceof NumberLiteral) {
+        sum = addNums(sum, operand.value, operator)
+      } else if (operand instanceof BooleanLiteral) {
+        if (operand.value) {
+          sum = addNums(sum, 1, operator)
+        }
+      } else {
+        throw new Error(`unexpected type ${operand.constructor} in numerical additive expression`)
+      }
+    }
+
+    return new NumberLiteral(sum)
   }
 
   const addNums = (sum: number, toAdd: number, operator: string): number => {
