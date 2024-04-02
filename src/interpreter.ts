@@ -24,6 +24,7 @@ import {
 import {
   addAssignmentOperator,
   addOperator,
+  additiveOperators,
   andAssignmentOperator,
   divideAssignmentOperator,
   exponentialAssignmentOperator,
@@ -194,8 +195,19 @@ export const run = (program: Block) => {
     return expression
   }
 
+  const containsType = (operands: (Expression | string)[], type: StringLiteral | string) => {
+    if (type instanceof StringLiteral) {
+      type = type.value
+    }
+
+    return operands.filter(operand => isLiteral(operand)).some(operand => getType(operand as Literal).value === type)
+  }
+
+  const isOperator = (operator: Expression | string, operators: string[]): operator is string => {
+    return operators.some(op => op === operator)
+  }
+
   const numericalAddition = (operands: (Expression | string)[]): NumberLiteral => {
-    // TODO allow for nil
     const first = operands[0]
 
     let sum: number
@@ -212,7 +224,7 @@ export const run = (program: Block) => {
     for (let i = 1; i < operands.length; i += 2) {
       const [operator, operand] = [operands[i], operands[i + 1]]
 
-      if (operator !== addOperator && operator !== subtractOperator) {
+      if (!isOperator(operator, additiveOperators)) {
         throw new Error(`unexpected operator ${operator} in numerical additive expression`)
       }
 
@@ -235,16 +247,44 @@ export const run = (program: Block) => {
   }
 
   const booleanAddition = (operands: (Expression | string)[]): BooleanLiteral => {
+    const first = operands[0]
 
-    throw new Error('unimplemented boolean addition')
-  }
+    let sum: boolean | typeof nil
 
-  const containsType = (operands: (Expression | string)[], type: StringLiteral | string) => {
-    if (type instanceof StringLiteral) {
-      type = type.value
+    if (first instanceof BooleanLiteral) {
+      sum = first.value
+    } else if (first === nil) {
+      sum = nil
+    } else {
+      throw new Error(`unexpected type ${first.constructor} in boolean additive expression`)
     }
 
-    return operands.filter(operand => isLiteral(operand)).some(operand => getType(operand as Literal).value === type)
+    for (let i = 1; i < operands.length; i += 2) {
+      let [operator, operand] = [operands[i], operands[i + 1]]
+
+      if (!isOperator(operator, additiveOperators)) {
+        throw new Error(`unexpected operator ${operator} in numerical additive expression`)
+      }
+
+      if (sum === nil) {
+        sum = false
+        if (operator === subtractOperator) {
+          continue
+        }
+      }
+
+      if (operand === nil) {
+        operand = new BooleanLiteral(false)
+      }
+
+      if (operand instanceof BooleanLiteral) {
+        sum = operator === addOperator ? sum || operand.value : sum !== operand.value
+      } else {
+        throw new Error(`unexpected type ${operand.constructor} in boolean additive expression`)
+      }
+    }
+    
+    return new BooleanLiteral(sum as boolean)
   }
 
   const getType = (expression: Literal): StringLiteral => {
