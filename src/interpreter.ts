@@ -148,7 +148,7 @@ export const run = (program: Block) => {
     if (operand instanceof Variable) {
       if (operand.id === 'print') {
         console.log(runStatement(args[0]).value)
-        
+
         // TODO allow multiple args
 
         // const output: string[] = []
@@ -203,8 +203,10 @@ export const run = (program: Block) => {
 
         if (operand instanceof NumberLiteral) {
           sum = addNums(sum, operand.value, operator)
-        } else if (operand instanceof BooleanLiteral && operand.value) {
-          sum = addNums(sum, 1, operator)
+        } else if (operand instanceof BooleanLiteral) {
+          if (operand.value) {
+            sum = addNums(sum, 1, operator)
+          }
         } else {
           throw new Error(`unexpected type ${operand.constructor} in numerical additive expression`)
         }
