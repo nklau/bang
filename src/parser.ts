@@ -386,7 +386,7 @@ export const parse = (tokens: Token[]) => {
 
     skipWhitespace()
 
-    const left = callFailable(parseKeywordStatement, parseCompareExpression)
+    const left = callFailable(parseCompareExpression, parseKeywordStatement)
     const trueBlock: StatementExpression[] = []
     const falseBlock: StatementExpression[] = []
 

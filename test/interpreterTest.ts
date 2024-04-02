@@ -8,7 +8,7 @@ const programs = [
   ['number subtraction', 'print(3 - 5)', '-2'],
   ['number + true', 'print(5 + T)', '6'],
   ['number - true', 'print(5 - T)', '4'],
-  // ['true + number', 'print(T + 6)', '7'],
+  ['true + number', 'print(T + 6)', '7'],
   // ['true - number', 'print(T - 6)', '-5'],
   // ['number + false', 'print(5 + F)']
   // ['false + number']
