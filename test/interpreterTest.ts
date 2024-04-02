@@ -14,6 +14,10 @@ const programs = [
   ['number - false', 'print(5 - F)', '5'],
   ['false + number', 'print(F + 5)', '5'],
   ['false - number', 'print(F - 5)', '-5'],
+  ['number + nil', 'print(5 + nil)', '5'],
+  ['number - nil', 'print(5 - nil)', '5'],
+  ['nil + number', 'print(nil + 5)', '5'],
+  ['nil - number', 'print(nil - 5)', '-5'],
 ]
 
 for (const [scenario, program, expected] of programs) {

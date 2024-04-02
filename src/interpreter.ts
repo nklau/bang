@@ -175,21 +175,27 @@ export const run = (program: Block) => {
     // constructor(public operands: (Expression | string)[]) {}
     // for (const operand of expression.operands) {
     // }
-    if (containsType(expression.operands, FunctionLiteral.type)) {
+    const operands = expression.operands
+    if (containsType(operands, FunctionLiteral.type)) {
       throw new Error('unimplemented function addition')
     }
 
-    if (containsType(expression.operands, ListLiteral.type)) {
+    if (containsType(operands, ListLiteral.type)) {
     }
 
-    if (containsType(expression.operands, NumberLiteral.type)) {
-      return numericalAddition(expression.operands)
+    if (containsType(operands, NumberLiteral.type)) {
+      return numericalAddition(operands)
+    }
+
+    if (containsType(operands, BooleanLiteral.type)) {
+      return booleanAddition(operands)
     }
 
     return expression
   }
 
   const numericalAddition = (operands: (Expression | string)[]): NumberLiteral => {
+    // TODO allow for nil
     const first = operands[0]
 
     let sum: number
@@ -197,6 +203,8 @@ export const run = (program: Block) => {
       sum = first.value
     } else if (first instanceof BooleanLiteral) {
       sum = first.value ? 1 : 0
+    } else if (first === nil) {
+      sum = 0
     } else {
       throw new Error(`unexpected type ${first.constructor} in numerical additive expression`)
     }
@@ -214,7 +222,7 @@ export const run = (program: Block) => {
         if (operand.value) {
           sum = addNums(sum, 1, operator)
         }
-      } else {
+      } else if (operand !== nil) {
         throw new Error(`unexpected type ${operand.constructor} in numerical additive expression`)
       }
     }
@@ -224,6 +232,11 @@ export const run = (program: Block) => {
 
   const addNums = (sum: number, toAdd: number, operator: string): number => {
     return sum + (operator === addOperator ? toAdd : -toAdd)
+  }
+
+  const booleanAddition = (operands: (Expression | string)[]): BooleanLiteral => {
+
+    throw new Error('unimplemented boolean addition')
   }
 
   const containsType = (operands: (Expression | string)[], type: StringLiteral | string) => {
