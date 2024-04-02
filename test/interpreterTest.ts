@@ -9,11 +9,11 @@ const programs = [
   ['number + true', 'print(5 + T)', '6'],
   ['number - true', 'print(5 - T)', '4'],
   ['true + number', 'print(T + 6)', '7'],
-  // ['true - number', 'print(T - 6)', '-5'],
-  // ['number + false', 'print(5 + F)']
-  // ['false + number']
-  // ['number - false']
-  // ['false - number']
+  ['true - number', 'print(T - 6)', '-5'],
+  ['number + false', 'print(5 + F)', '5'],
+  ['number - false', 'print(5 - F)', '5'],
+  ['false + number', 'print(F + 5)', '5'],
+  ['false - number', 'print(F - 5)', '-5'],
 ]
 
 for (const [scenario, program, expected] of programs) {
