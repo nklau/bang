@@ -247,11 +247,26 @@ export const parse = (tokens: Token[]) => {
         skipWhitespace(false)
         return parseReturnStatement(matchUntil('\n'))
       },
-      [breakKeyword]: () => new BreakStatement(),
-      [trueKeyword]: () => new BooleanLiteral(true),
-      [falseKeyword]: () => new BooleanLiteral(false),
-      [infinityKeyword]: () => inf,
-      [piKeyword]: () => new NumberLiteral(Math.PI),
+      [breakKeyword]: () => {
+        next()
+        return new BreakStatement()
+      },
+      [trueKeyword]: () => {
+        next()
+        return new BooleanLiteral(true)
+      },
+      [falseKeyword]: () => {
+        next()
+        return new BooleanLiteral(false)
+      },
+      [infinityKeyword]: () => {
+        next()
+        return inf
+      },
+      [piKeyword]: () => {
+        next()
+        return new NumberLiteral(Math.PI)
+      },
       [matchKeyword]: () => {
         return parseMatchExpression()
       },
@@ -608,6 +623,9 @@ export const parse = (tokens: Token[]) => {
       }
       case Category.id: {
         return callFailable(parseFunctionLiteral, () => new Variable(next()!.lexeme, false, false))
+      }
+      case Category.keyword: {
+        return parseKeywordStatement()
       }
     }
 

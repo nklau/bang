@@ -15,7 +15,14 @@ import {
   Variable,
   VariableAssignment,
 } from '../src/core/core'
-import { FunctionLiteral, ListLiteral, NumberLiteral, ObjectLiteral, StringLiteral } from '../src/core/types'
+import {
+  BooleanLiteral,
+  FunctionLiteral,
+  ListLiteral,
+  NumberLiteral,
+  ObjectLiteral,
+  StringLiteral,
+} from '../src/core/types'
 import { tokenize } from '../src/lexer'
 
 const x = new Variable('x', false, false)
@@ -93,6 +100,12 @@ const programs = [
     'parenthesized number addition',
     '(5 + 3)',
     new Block([new AdditiveExpression([new NumberLiteral(5), '+', new NumberLiteral(3)])]),
+  ],
+  ['boolean', 'T', new Block([new BooleanLiteral(true)])],
+  [
+    'number + boolean',
+    '5 + T',
+    new Block([new AdditiveExpression([new NumberLiteral(5), '+', new BooleanLiteral(true)])]),
   ],
   ['identity function with parentheses', '(x) -> { x }', new Block([new FunctionLiteral([localX], [x])])],
   ['identity function with no parentheses', 'x -> { x }', new Block([new FunctionLiteral([localX], [x])])],

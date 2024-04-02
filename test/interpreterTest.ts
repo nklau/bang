@@ -3,7 +3,18 @@ import { parse } from '../src/parser'
 import { tokenize } from '../src/lexer'
 import { run } from '../src/interpreter'
 
-const programs = [['number addition', 'print(5 + 3)', '8']]
+const programs = [
+  ['number addition', 'print(5 + 3)', '8'],
+  ['number subtraction', 'print(3 - 5)', '-2'],
+  ['number + true', 'print(5 + T)', '6'],
+  ['number - true', 'print(5 - T)', '4'],
+  // ['true + number', 'print(T + 6)', '7'],
+  // ['true - number', 'print(T - 6)', '-5'],
+  // ['number + false', 'print(5 + F)']
+  // ['false + number']
+  // ['number - false']
+  // ['false - number']
+]
 
 for (const [scenario, program, expected] of programs) {
   const actual: string[] = []
