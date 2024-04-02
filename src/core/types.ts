@@ -85,5 +85,6 @@ export class FunctionLiteral implements Literal {
 }
 
 export const nil = {
+  type: 'nil',
   srcCode: () => new StringLiteral('nil'),
 }
