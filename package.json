@@ -13,7 +13,7 @@
     "prettier": "^3.1.0"
   },
   "scripts": {
-    "test": "ts-node test/parserTest.ts"
+    "test": "ts-node test/parserTest.ts; ts-node test/interpreterTest.ts"
   },
   "dependencies": {}
 }
