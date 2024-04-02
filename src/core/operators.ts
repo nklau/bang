@@ -36,16 +36,16 @@ export const spreadOperator = '@'
 export const incrementOperator = '++'
 export const decrementOperator = '--'
 
-const spreadAssignmentOperator = `${spreadOperator}${assignmentOperator}`
-const negateAssignmentOperator = `${negateOperator}${assignmentOperator}`
-const exponentialAssignmentOperator = `${exponentialOperator}${assignmentOperator}`
-const multiplyAssignmentOperator = `${multiplyOperator}${assignmentOperator}`
-const divideAssignmentOperator = `${divideOperator}${assignmentOperator}`
-const modulusAssignmentOperator = `${modulusOperator}${assignmentOperator}`
-const addAssignmentOperator = `${addOperator}${assignmentOperator}`
-const subtractAssignmentOperator = `${subtractOperator}${assignmentOperator}`
-const andAssignmentOperator = `${andOperator}${assignmentOperator}`
-const orAssignmentOperator = `${orOperator}${assignmentOperator}`
+export const spreadAssignmentOperator = `${spreadOperator}${assignmentOperator}`
+export const negateAssignmentOperator = `${negateOperator}${assignmentOperator}`
+export const exponentialAssignmentOperator = `${exponentialOperator}${assignmentOperator}`
+export const multiplyAssignmentOperator = `${multiplyOperator}${assignmentOperator}`
+export const divideAssignmentOperator = `${divideOperator}${assignmentOperator}`
+export const modulusAssignmentOperator = `${modulusOperator}${assignmentOperator}`
+export const addAssignmentOperator = `${addOperator}${assignmentOperator}`
+export const subtractAssignmentOperator = `${subtractOperator}${assignmentOperator}`
+export const andAssignmentOperator = `${andOperator}${assignmentOperator}`
+export const orAssignmentOperator = `${orOperator}${assignmentOperator}`
 
 export const assignmentOperators = [
   assignmentOperator,
