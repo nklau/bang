@@ -14,6 +14,11 @@ export const isLiteral = (expression: any): expression is Literal => {
   )
 }
 
+export const isBooleanLiteral = (expression: any): expression is BooleanLiteral => {
+  return expression instanceof BooleanLiteral
+}
+// TODO
+
 export class BooleanLiteral implements Literal {
   constructor(public value: boolean) {}
 

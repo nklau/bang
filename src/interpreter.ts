@@ -184,6 +184,10 @@ export const run = (program: Block) => {
     if (containsType(operands, ListLiteral.type)) {
     }
 
+    if (containsType(operands, StringLiteral.type)) {
+      return stringAddition(operands)
+    }
+
     if (containsType(operands, NumberLiteral.type)) {
       return numericalAddition(operands)
     }
@@ -201,6 +205,14 @@ export const run = (program: Block) => {
     }
 
     return operands.filter(operand => isLiteral(operand)).some(operand => getType(operand as Literal).value === type)
+  }
+
+  const isType = (expression: any, types: string | string[]): boolean => {
+    if (typeof types === 'string') {
+      types = [types]
+    }
+
+    return types.some(type => getType(expression).value === type)
   }
 
   const isOperator = (operator: Expression | string, operators: string[]): operator is string => {
@@ -283,8 +295,86 @@ export const run = (program: Block) => {
         throw new Error(`unexpected type ${operand.constructor} in boolean additive expression`)
       }
     }
-    
+
     return new BooleanLiteral(sum as boolean)
+  }
+
+  const stringAddition = (operands: (Expression | string)[]): StringLiteral | NumberLiteral | typeof nil => {
+    const first = operands[0]
+    const allowedTypes = [StringLiteral.type, NumberLiteral.type, BooleanLiteral.type, nil.type]
+    if (!isType(first, allowedTypes)) {
+      throw new Error(`unexpected type ${first.constructor} in string additive expression`)
+    }
+
+    let sum = ''
+    let acc = first
+
+    for (let i = 1; i < operands.length; i += 2) {
+      let [operator, rhs] = [operands[i], operands[i + 1]]
+
+      if (!isOperator(operator, additiveOperators)) {
+        throw new Error(`unexpected operator ${operator} in numerical additive expression`)
+      }
+
+      if (isType(acc, StringLiteral.type)) {
+        if (isType(rhs, StringLiteral.type)) {
+          if (operator === addOperator) {
+            ;(acc as StringLiteral).value = `${(acc as StringLiteral).value}${(rhs as StringLiteral).value}`
+          } else {
+            ;(acc as StringLiteral).value = (acc as StringLiteral).value.replace((rhs as StringLiteral).value, '')
+          }
+        } else if (isType(rhs, NumberLiteral.type)) {
+          acc = new NumberLiteral(
+            (acc as StringLiteral).value.length +
+              (operator === addOperator ? (rhs as NumberLiteral).value : -(rhs as NumberLiteral).value)
+          )
+        } else if (isType(rhs, BooleanLiteral.type)) {
+          // rhs = (rhs as BooleanLiteral)
+          // add
+          // subtract
+        }
+        // nil
+        // err
+      } else if (isType(acc, NumberLiteral.type)) {
+        // string
+        // number
+        // bool
+        // nil
+        // err
+      } else if (isType(acc, BooleanLiteral.type)) {
+        // string
+        // number
+        // bool
+        // nil
+        // err
+      } else if (isType(acc, nil.type)) {
+        // string
+        // number
+        // bool
+        // nil
+        // err
+      } else {
+        throw new Error(`unexpected type ${acc.constructor} in string additive expression`)
+      }
+    }
+
+    // string + nil = append/prepend space to string
+    // same as nil + string
+    // string + bool = `string${bool.value}`
+    // bool + string = `${bool.value}string`
+    // string + number = string.length + number
+    // same as number + string
+    // string + string = string concatenation
+
+    // string - nil = remove one whitespace character from start/end of string, if any
+    // nil - string = nil
+    // string - bool = convert bool to string 'T' or 'F'
+    // same as bool - string
+    // string - number = string.length - number
+    // number - string = number - string.length
+    // string - string = remove first instance of rhs from lhs, if any
+
+    return new StringLiteral(sum as string)
   }
 
   const getType = (expression: Literal): StringLiteral => {
