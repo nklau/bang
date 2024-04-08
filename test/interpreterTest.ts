@@ -41,6 +41,12 @@ const programs = [
   ['string - string', `prt('hello world' + 'my world' - 'world')`, 'hello my world'],
   ['string + number', `prt('hello' + 4)`, '9'],
   ['string - number', `prt('hello' - 4)`, '1'],
+  ['string + T', `prt('true is ' + T)`, 'true is T'],
+  ['string + F', `prt('false is ' + F)`, 'false is F'],
+  ['string - T', `prt('TT' - T)`, 'T'],
+  ['string - F', `prt('FF' - F)`, 'F'],
+  ['string + nil', `prt('hello' + nil)`, ' hello '],
+  ['string - nil', `prt('  hello \n' - nil)`, ' hello '],
 ]
 
 for (const [scenario, program, expected] of programs) {
