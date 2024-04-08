@@ -1,0 +1,29 @@
+x = -5
+x = 'hello world'
+x = "hello world"
+x = '\\n'
+x = y
+x = []
+x = [  ]
+x = [ 5 ]
+x = [5,   "hello world" ]
+x = {}
+x = {  }
+x = { 'one': 1 }
+x = { 'one': 1, " two": '2' }
+prt(T + 6)
+add = (a, b) -> a + b
+add = (a, b) -> rtn a + b
+add = (a, b) -> { rtn a + b }
+mtch x {
+  cs 5, '5': {
+    y = 5
+    y
+  }
+  cs 1, '1': 1
+  dft: {
+    y = 'other'
+    y
+  }
+}
+prt(5)
