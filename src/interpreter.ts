@@ -139,9 +139,7 @@ export const run = (program: Block) => {
     const [operand, args] = [expression.operand, expression.args]
     if (operand instanceof Variable) {
       if (operand.id === 'prt') {
-        console.log(getPrtValue(runStatement(args[0])))
-
-        // TODO allow multiple args
+        console.log(args.map(arg => getPrtValue(runStatement(arg))).join(' '))
 
         // const output: string[] = []
         // args.forEach(arg => {

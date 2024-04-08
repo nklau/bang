@@ -35,6 +35,7 @@ const programs = [
   ['false - nil', 'prt(F - nil)', 'F'],
   ['nil - false', 'prt(nil - F)', 'F'],
   ['print string', `prt('hi')`, 'hi'],
+  ['print multiple strings', `prt('hello', 'world')`, 'hello world']
 ]
 
 for (const [scenario, program, expected] of programs) {
