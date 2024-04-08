@@ -147,7 +147,7 @@ export const run = (program: Block) => {
   const runCallExpression = (expression: CallExpression): Expression => {
     const [operand, args] = [expression.operand, expression.args]
     if (operand instanceof Variable) {
-      if (operand.id === 'print') {
+      if (operand.id === 'prt') {
         console.log(runStatement(args[0]).srcCode().value)
 
         // TODO allow multiple args
