@@ -373,7 +373,15 @@ export const run = (program: Block) => {
     // number - string = number - string.length
     // string - string = remove first instance of rhs from lhs, if any
 
-    return acc as StringLiteral
+    if (acc instanceof StringLiteral) {
+      return acc as StringLiteral
+    } else if (acc instanceof NumberLiteral) {
+      return acc as NumberLiteral
+    } else if (isType(acc, nil.type)) {
+      return nil
+    }
+
+    throw new Error(`unexpected output type ${acc.constructor} in string additive expression`)
   }
 
   const getType = (expression: Literal): StringLiteral => {

@@ -38,6 +38,9 @@ const programs = [
   ['print multiple strings', `prt('hello', 'world')`, 'hello world'],
   ['string + string', `prt('hello ' + 'world')`, 'hello world'],
   ['string + string + string', `prt('hello' + ' ' + 'world')`, 'hello world'],
+  ['string - string', `prt('hello world' + 'my world' - 'world')`, 'hello my world'],
+  ['string + number', `prt('hello' + 4)`, '9'],
+  ['string - number', `prt('hello' - 4)`, '1'],
 ]
 
 for (const [scenario, program, expected] of programs) {
