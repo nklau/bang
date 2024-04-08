@@ -38,6 +38,7 @@ import {
 } from './core/operators'
 import { parse } from './parser'
 import { tokenize } from './lexer'
+import { falseKeyword, trueKeyword } from './core/keywords'
 
 export default function runFile(fileName: string) {
   fs.readFile(fileName, 'utf8', (err, data) => {
@@ -82,11 +83,6 @@ export const run = (program: Block) => {
 
     if (expression instanceof NaryExpression) {
       return interpretNaryExpression(expression)
-    }
-
-    if (isLiteral(expression)) {
-      console.log(`found literal value ${getLiteralValue(expression)}`)
-      return getLiteralValue(expression)
     }
 
     return expression
@@ -143,7 +139,7 @@ export const run = (program: Block) => {
     const [operand, args] = [expression.operand, expression.args]
     if (operand instanceof Variable) {
       if (operand.id === 'prt') {
-        console.log(runStatement(args[0]).srcCode().value)
+        console.log(getPrtValue(runStatement(args[0])))
 
         // TODO allow multiple args
 
@@ -377,12 +373,11 @@ export const run = (program: Block) => {
     return new StringLiteral(expression.constructor.type ?? nil.srcCode().value)
   }
 
-  const getLiteralValue = (expression: Literal) => {
-    if (
-      expression instanceof BooleanLiteral ||
-      expression instanceof NumberLiteral ||
-      expression instanceof StringLiteral
-    ) {
+  const getPrtValue = (expression: Literal) => {
+    if (expression instanceof BooleanLiteral) {
+      return expression.value ? trueKeyword : falseKeyword
+    }
+    if (expression instanceof NumberLiteral || expression instanceof StringLiteral) {
       return expression.value
     }
 
