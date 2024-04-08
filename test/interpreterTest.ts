@@ -54,7 +54,12 @@ const programs = [
   ['number + boolean + string', `prt(5 + T + 'hello')`, '11'],
   ['number - boolean + string', `prt(5 - T + 'hello')`, '9'],
   ['number + nil + string', `prt(5 + nil + 'hello')`, '10'],
-  // ['number + (nil + string)', `prt(5 + (nil + 'hello'))`, '12'],
+  ['T + string', `prt(T + ' is true')`, 'T is true'],
+  ['F + string', `prt(F + ' is false')`, 'F is false'],
+  ['T - random string', `prt(T - 'TT')`, 'T'],
+  ['F - random string', `prt(F - 'FF')`, 'F'],
+  ['T - T string', `prt(T - 'T')`, ''],
+  ['F - F string', `prt(F - 'F')`, ''],
 ]
 
 for (const [scenario, program, expected] of programs) {

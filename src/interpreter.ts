@@ -349,11 +349,16 @@ export const run = (program: Block) => {
           acc = numericalAddition([acc, operator, rhs])
         }
       } else if (isType(acc, BooleanLiteral.type)) {
-        // string
-        // number
-        // bool
-        // nil
-        // err
+        if (isType(rhs, StringLiteral.type)) {
+          if (operator === addOperator) {
+            acc = new StringLiteral(`${getPrtValue(acc as BooleanLiteral)}${(rhs as StringLiteral).value}`)
+          } else {
+            const boolVal = getPrtValue(acc as BooleanLiteral)
+            acc = ((rhs as StringLiteral).value === boolVal) ? '' : new StringLiteral(boolVal as string)
+          }
+        } else {
+          acc = interpretAdditiveExpression(new AdditiveExpression([acc, operator, rhs]))
+        }
       } else if (isType(acc, nil.type)) {
         // string
         // number
