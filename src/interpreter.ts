@@ -295,7 +295,6 @@ export const run = (program: Block) => {
       throw new Error(`unexpected type ${first.constructor} in string additive expression`)
     }
 
-    let sum = ''
     let acc = first
 
     for (let i = 1; i < operands.length; i += 2) {
@@ -318,12 +317,23 @@ export const run = (program: Block) => {
               (operator === addOperator ? (rhs as NumberLiteral).value : -(rhs as NumberLiteral).value)
           )
         } else if (isType(rhs, BooleanLiteral.type)) {
-          // rhs = (rhs as BooleanLiteral)
-          // add
-          // subtract
+          if (operator === addOperator) {
+            ;(acc as StringLiteral).value = `${(acc as StringLiteral).value}${getPrtValue(rhs as BooleanLiteral)}`
+          } else {
+            ;(acc as StringLiteral).value = (acc as StringLiteral).value.replace(
+              getPrtValue(rhs as BooleanLiteral) as string,
+              ''
+            )
+          }
+        } else if (isType(rhs, nil.type)) {
+          if (operator === addOperator) {
+            ;(acc as StringLiteral).value = ` ${(acc as StringLiteral).value} `
+          } else {
+            ;(acc as StringLiteral).value = (acc as StringLiteral).value.replace(/^\s|\s$/g, '')
+          }
+        } else {
+          throw new Error(`unexpected type ${rhs.constructor} in string additive expression`)
         }
-        // nil
-        // err
       } else if (isType(acc, NumberLiteral.type)) {
         // string
         // number
@@ -363,7 +373,7 @@ export const run = (program: Block) => {
     // number - string = number - string.length
     // string - string = remove first instance of rhs from lhs, if any
 
-    return new StringLiteral(sum as string)
+    return acc as StringLiteral
   }
 
   const getType = (expression: Literal): StringLiteral => {
