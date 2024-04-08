@@ -60,6 +60,9 @@ const programs = [
   ['F - random string', `prt(F - 'FF')`, 'F'],
   ['T - T string', `prt(T - 'T')`, ''],
   ['F - F string', `prt(F - 'F')`, ''],
+  ['nil + string', `prt(nil + 'hello')`, ' hello '],
+  ['printing nil', 'prt(nil)', 'nil'],
+  ['nil - string', `prt(nil - 'hello')`, 'nil'],
 ]
 
 for (const [scenario, program, expected] of programs) {

@@ -330,11 +330,8 @@ export const run = (program: Block) => {
             )
           }
         } else if (isType(rhs, nil.type)) {
-          if (operator === addOperator) {
-            ;(acc as StringLiteral).value = ` ${(acc as StringLiteral).value} `
-          } else {
-            ;(acc as StringLiteral).value = (acc as StringLiteral).value.replace(/^\s|\s$/g, '')
-          }
+          // TODO this is the cleanest way to organize addition to avoid all the type casting
+          acc = nilStringAddition(operator, acc as StringLiteral)
         } else {
           throw new Error(`unexpected type ${rhs.constructor} in string additive expression`)
         }
@@ -354,17 +351,17 @@ export const run = (program: Block) => {
             acc = new StringLiteral(`${getPrtValue(acc as BooleanLiteral)}${(rhs as StringLiteral).value}`)
           } else {
             const boolVal = getPrtValue(acc as BooleanLiteral)
-            acc = ((rhs as StringLiteral).value === boolVal) ? '' : new StringLiteral(boolVal as string)
+            acc = new StringLiteral((rhs as StringLiteral).value === boolVal ? '' : boolVal as string)
           }
         } else {
           acc = interpretAdditiveExpression(new AdditiveExpression([acc, operator, rhs]))
         }
       } else if (isType(acc, nil.type)) {
-        // string
-        // number
-        // bool
-        // nil
-        // err
+        if (isType(rhs, StringLiteral.type)) {
+          acc = operator === addOperator ? nilStringAddition(operator, rhs as StringLiteral) : nil
+        } else {
+          acc = interpretAdditiveExpression(new AdditiveExpression([acc, operator, rhs]))
+        }
       } else {
         throw new Error(`unexpected type ${acc.constructor} in string additive expression`)
       }
@@ -397,12 +394,19 @@ export const run = (program: Block) => {
     throw new Error(`unexpected output type ${acc.constructor} in string additive expression`)
   }
 
+  const nilStringAddition = (operator: string, operand: StringLiteral): StringLiteral => {
+    return new StringLiteral(operator === addOperator ? ` ${operand.value} ` : operand.value.replace(/^\s|\s$/g, ''))
+  }
+
   const getType = (expression: Literal): StringLiteral => {
     // @ts-ignore: all Literals have a static attribute 'type'
     return new StringLiteral(expression.constructor.type ?? nil.srcCode().value)
   }
 
   const getPrtValue = (expression: Literal) => {
+    if (expression === nil) {
+      return nil.type
+    }
     if (expression instanceof BooleanLiteral) {
       return expression.value ? trueKeyword : falseKeyword
     }
