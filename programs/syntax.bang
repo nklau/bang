@@ -1,0 +1,50 @@
+/*
+hi
+*/
+x = nil
+x++
+++x
+--x
+x--
+y = -x
+y = '\'hi'
+str = "hello\""
+z = $'{str} you'
+cst add = (a, b) -> a + b
+_sub = (a, b) -> {
+  locl c = a - b
+  rtn c
+}
+// testing comments
+oneParam = a -> a + 1
+
+5.lp {
+  brk
+}
+5.lp { prt($0) }
+x = T
+x = F
+x = !x
+x = inf
+x = -inf
+x = pi
+x = -pi
+/* testing more comments */
+obj = { 'key0': 1, 'key1': 'hello', /* midline comment */'dog': 'Spot', 'function': a -> a++ }
+myList = [1, 'str', { 'key': 1.5 }, a -> a++]
+a = myList[1]
+a = myList[:2]/*
+multiline
+comment
+*/add(1, 3)
+b = [@myList]
+a = 3
+b = 5
+c = a ^ b
+c = a * b
+c = a / b
+c = a % b
+d = mtch c {
+  cs 3: 3
+  dft: 5
+}
