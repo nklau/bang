@@ -40,7 +40,7 @@ prt("'hello' + nil outputs:", 'hello' + nil)
 prt("'  hello \n' - nil outputs:", '  hello 
 ' - nil)
 prt("4 + 'hello' outputs:", 4 + 'hello')
-prt(4 - 'hello')
+prt("4 - 'hello' outputs:", 4 - 'hello')
 prt("1 + 2 + 'hello' outputs:", 1 + 2 + 'hello')
 prt("1 - 2 + 'hello' outputs:", 1 - 2 + 'hello')
 prt("5 + T + 'hello' outputs:", 5 + T + 'hello')
