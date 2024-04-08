@@ -1,13 +1,9 @@
 import fs from 'fs'
 import { Category, Token, error } from './core/core'
+import util from 'util'
 
-export default function tokenizeFile() {
-  if (process.argv.length < 3) {
-    console.log(`Usage: ts-node ${process.argv[1]} <filename.bang>`)
-    process.exit(1)
-  }
-
-  fs.readFile(process.argv[2], 'utf8', (err, data) => {
+export default function tokenizeFile(fileName: string) {
+  fs.readFile(fileName, 'utf8', (err, data) => {
     if (err) {
       throw err
     }
@@ -15,10 +11,8 @@ export default function tokenizeFile() {
     console.log('Lexer output:')
 
     for (const token of tokenize(data)) {
-      console.log(token)
+      console.log(`${util.inspect(token, { colors: true, breakLength: Infinity })},`)
     }
-    
-    console.log()
   })
 }
 
