@@ -223,7 +223,7 @@ export const run = (program: Block) => {
     }
 
     for (let i = 1; i < operands.length; i += 2) {
-      const [operator, operand] = [operands[i], operands[i + 1]]
+      let [operator, operand] = [operands[i], operands[i + 1]]
 
       if (!isOperator(operator, additiveOperators)) {
         throw new Error(`unexpected operator ${operator} in numerical additive expression`)
@@ -236,7 +236,11 @@ export const run = (program: Block) => {
           sum = addNums(sum, 1, operator)
         }
       } else if (operand !== nil) {
-        throw new Error(`unexpected type ${operand.constructor} in numerical additive expression`)
+        if (typeof operand !== 'string') {
+          sum = numericalAddition([new NumberLiteral(sum), operator, runStatement(operand)]).value
+        } else {
+          throw new Error(`unexpected type ${operand.constructor} in numerical additive expression`)
+        }
       }
     }
 
@@ -335,11 +339,15 @@ export const run = (program: Block) => {
           throw new Error(`unexpected type ${rhs.constructor} in string additive expression`)
         }
       } else if (isType(acc, NumberLiteral.type)) {
-        // string
-        // number
-        // bool
-        // nil
-        // err
+        if (isType(rhs, StringLiteral.type)) {
+          if (operator === addOperator) {
+            ;(acc as NumberLiteral).value += (rhs as StringLiteral).value.length
+          } else {
+            ;(acc as NumberLiteral).value -= (rhs as StringLiteral).value.length
+          }
+        } else {
+          acc = numericalAddition([acc, operator, rhs])
+        }
       } else if (isType(acc, BooleanLiteral.type)) {
         // string
         // number
