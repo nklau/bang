@@ -1,3 +1,4 @@
+import { isEqual } from '../interpreter'
 import { Expression, StatementExpression, Variable } from './core'
 
 export interface Literal extends Expression {}
@@ -71,6 +72,10 @@ export class ListLiteral implements Literal {
   static type = 'list'
 
   srcCode = () => new StringLiteral(`[${this.value.map(val => val.srcCode()).join(', ')}]`)
+
+  idxOf = (expression: Literal): NumberLiteral => {
+    return new NumberLiteral(this.value.findIndex(e => isEqual(e, expression)))
+  }
 }
 
 export class FunctionLiteral implements Literal {
