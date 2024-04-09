@@ -416,7 +416,7 @@ export const run = (program: Block) => {
           }
         } else if (rhs === nil) {
           if (operator === addOperator) {
-            acc.value = acc.value.reduce((acc: Literal[], expression) => {
+            acc.value = acc.value.reduce((acc: Expression[], expression) => {
               if (expression instanceof ListLiteral) {
                 expression.value.forEach(e => acc.push(e))
               } else {
@@ -472,7 +472,7 @@ export const run = (program: Block) => {
     return new StringLiteral(expression.constructor.type ?? nil.srcCode().value)
   }
 
-  const getPrtValue = (expression: Literal): string => {
+  const getPrtValue = (expression: Expression): string => {
     if (expression === nil) {
       return nil.type
     }
@@ -506,7 +506,7 @@ export const run = (program: Block) => {
     throw new Error(`unimplemented print call ${expression.constructor.name}`)
   }
 
-  const getNestedPrtValue = (expression: Literal): string => {
+  const getNestedPrtValue = (expression: Expression): string => {
     return expression instanceof StringLiteral ? `'${expression.value}'` : getPrtValue(expression)
   }
 
@@ -515,7 +515,7 @@ export const run = (program: Block) => {
   // program.statements.forEach(statement => console.log(runStatement(statement).value))
 }
 
-export const isEqual = (lhs: Literal, rhs: Literal): boolean => {
+export const isEqual = (lhs: Expression, rhs: Expression): boolean => {
   // TODO allow variables
   // if (lhs.constructor.name !== rhs.constructor.name) {
   //   return false
