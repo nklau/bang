@@ -465,18 +465,30 @@ export const run = (program: Block) => {
     }
 
     if (expression instanceof ObjectLiteral) {
+      if (expression.value.length === 0) {
+        return `{ }`
+      }
+
+      return `{\n${expression.value
+        .map(keyValPair => {
+          const [key, value] = keyValPair
+          return `\t'${key.value}': ${getNestedPrtValue(value)}`
+        })
+        .join(',\n')}\n}`
     }
 
     if (expression instanceof ListLiteral) {
-      return `[${expression.value
-        .map(e => (e instanceof StringLiteral ? `'${e.value}'` : getPrtValue(e)))
-        .join(', ')}]`
+      return `[${expression.value.map(getNestedPrtValue).join(', ')}]`
     }
 
     if (expression instanceof FunctionLiteral) {
     }
 
     throw new Error('unimplemented print call')
+  }
+
+  const getNestedPrtValue = (expression: Literal): string => {
+    return expression instanceof StringLiteral ? `'${expression.value}'` : getPrtValue(expression)
   }
 
   // TODO use this instead of last line

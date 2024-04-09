@@ -65,8 +65,9 @@ const programs = [
   ['nil - string', `prt(nil - 'hello')`, 'nil'],
   ['printing list', 'prt([1, 2])', '[1, 2]'],
   ['printing list with strings', `prt([1, 'hello', 2])`, `[1, 'hello', 2]`],
-
-  // list + list
+  ['list + list', `prt([1] + ['hello', 2])`, `[1, 'hello', 2]`],
+  ['list + nested list', `prt([1] + ['hello', [2]])`, `[1, 'hello', [2]]`],
+  ['printing object', `prt({'key': 1, 'key2': 'hello'})`, `{\n\t'key': 1,\n\t'key2': 'hello'\n}`],
   // list + obj
   // list + string
   // list + num
