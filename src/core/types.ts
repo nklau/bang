@@ -85,6 +85,10 @@ export class ListLiteral implements Literal {
 
     return new BooleanLiteral(false)
   }
+
+  del = (expression: Literal): BooleanLiteral => {
+    return this.delIdx(this.idxOf(expression))
+  }
 }
 
 export class FunctionLiteral implements Literal {
