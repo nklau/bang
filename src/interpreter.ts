@@ -3,6 +3,7 @@ import {
   AdditiveExpression,
   Block,
   CallExpression,
+  ComparisonExpression,
   Expression,
   NaryExpression,
   StatementExpression,
@@ -158,6 +159,11 @@ export const run = (program: Block) => {
     if (expression instanceof AdditiveExpression) {
       return interpretAdditiveExpression(expression)
     }
+
+    if (expression instanceof ComparisonExpression) {
+      return interpretComparison(expression.operands)
+    }
+
     return expression
   }
 
@@ -452,6 +458,38 @@ export const run = (program: Block) => {
     throw new Error(`unexpected output type ${acc.constructor.name} in list additive expression`)
   }
 
+  const interpretComparison = (operands: (Expression | string)[]) => {
+    // TODO this is hard-coded for debug purposes
+    if (operands[1] === '==') {
+      return new BooleanLiteral(isEqual(operands[0] as Literal, operands[2] as Literal))
+    } else if (operands[1] === '!=') {
+      return new BooleanLiteral(!isEqual(operands[0] as Literal, operands[2] as Literal))
+    }
+
+    throw new Error('unimplemented comparison expression')
+  }
+
+  const isEqual = (lhs: Literal, rhs: Literal): boolean => {
+    // TODO allow variables
+    // if (lhs.constructor.name !== rhs.constructor.name) {
+    //   return false
+    // }
+
+    if (lhs instanceof ListLiteral && rhs instanceof ListLiteral) {
+      return lhs.value.every((e, index) => {
+        return isEqual(e, rhs.value[index])
+      })
+    } else if (lhs instanceof ObjectLiteral && rhs instanceof ObjectLiteral) {
+      lhs.value.every(([key, value], index) => {
+        return isEqual(key, rhs.value[index][0]) && isEqual(value, rhs.value[index][1])
+      })
+    } else if (lhs.constructor.name === rhs.constructor.name && lhs !== nil) {
+      return (lhs as any).value && (lhs as any).value === (rhs as any).value
+    }
+
+    return lhs === nil && rhs === nil
+  }
+
   const getType = (expression: Literal): StringLiteral => {
     // @ts-ignore: all Literals have a static attribute 'type'
     return new StringLiteral(expression.constructor.type ?? nil.srcCode().value)
@@ -477,10 +515,7 @@ export const run = (program: Block) => {
       }
 
       return `{\n${expression.value
-        .map(keyValPair => {
-          const [key, value] = keyValPair
-          return `  '${key.value}': ${getNestedPrtValue(value)}`
-        })
+        .map(([key, value]) => `  '${key.value}': ${getNestedPrtValue(value)}`)
         .join(',\n')}\n}`
     }
 
@@ -491,7 +526,7 @@ export const run = (program: Block) => {
     if (expression instanceof FunctionLiteral) {
     }
 
-    throw new Error('unimplemented print call')
+    throw new Error(`unimplemented print call ${expression.constructor.name}`)
   }
 
   const getNestedPrtValue = (expression: Literal): string => {

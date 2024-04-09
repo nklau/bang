@@ -73,6 +73,8 @@ const programs = [
   ['list + number', `prt([1] + 5)`, `[1, 5]`],
   ['list + boolean', `prt([1] + T)`, `[1, T]`],
   ['list + nil', `prt(['hello', [3, [2]]] + nil)`, `['hello', 3, [2]]`],
+  ['nil equality', 'prt(nil == nil)', 'T'],
+  ['nil inequality', 'prt(nil != nil)', 'F'],
   // list + obj
   // list + string
   // list + num
