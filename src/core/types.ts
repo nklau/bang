@@ -76,6 +76,15 @@ export class ListLiteral implements Literal {
   idxOf = (expression: Literal): NumberLiteral => {
     return new NumberLiteral(this.value.findIndex(e => isEqual(e, expression)))
   }
+
+  delIdx = (index: NumberLiteral): BooleanLiteral => {
+    if (index.value > -1 && index.value < this.value.length) {
+      this.value.splice(index.value, 1)
+      return new BooleanLiteral(true)
+    }
+
+    return new BooleanLiteral(false)
+  }
 }
 
 export class FunctionLiteral implements Literal {
