@@ -85,6 +85,10 @@ const programs = [
   ['number equality false', 'prt(5 == -5)', 'F'],
   ['number inequality', 'prt(5 != -5)', 'T'],
   ['number inequality false', 'prt(5 != 5)', 'F'],
+  ['string equality', `prt('hello' == 'hello')`, 'T'],
+  ['string equality false', `prt('hello' == 'helo')`, 'F'],
+  ['string inequality', `prt('hello' != 'helo')`, 'T'],
+  ['string inequality false', `prt('hello' != 'hello')`, 'F'],
   // list + obj
   // list + string
   // list + num
