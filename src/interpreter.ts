@@ -171,7 +171,10 @@ export const run = (program: Block) => {
     }
 
     if (containsType(operands, ListLiteral.type)) {
+      return listAddition(operands)
     }
+
+    // TODO object addtion/subtraction
 
     if (containsType(operands, StringLiteral.type)) {
       return stringAddition(operands)
@@ -219,7 +222,7 @@ export const run = (program: Block) => {
     } else if (first === nil) {
       sum = 0
     } else {
-      throw new Error(`unexpected type ${first.constructor} in numerical additive expression`)
+      throw new Error(`unexpected type ${first.constructor.name} in numerical additive expression`)
     }
 
     for (let i = 1; i < operands.length; i += 2) {
@@ -239,7 +242,7 @@ export const run = (program: Block) => {
         if (typeof operand !== 'string') {
           sum = numericalAddition([new NumberLiteral(sum), operator, runStatement(operand)]).value
         } else {
-          throw new Error(`unexpected type ${operand.constructor} in numerical additive expression`)
+          throw new Error(`unexpected type ${operand.constructor.name} in numerical additive expression`)
         }
       }
     }
@@ -261,7 +264,7 @@ export const run = (program: Block) => {
     } else if (first === nil) {
       sum = nil
     } else {
-      throw new Error(`unexpected type ${first.constructor} in boolean additive expression`)
+      throw new Error(`unexpected type ${first.constructor.name} in boolean additive expression`)
     }
 
     for (let i = 1; i < operands.length; i += 2) {
@@ -285,7 +288,7 @@ export const run = (program: Block) => {
       if (operand instanceof BooleanLiteral) {
         sum = operator === addOperator ? sum || operand.value : sum !== operand.value
       } else {
-        throw new Error(`unexpected type ${operand.constructor} in boolean additive expression`)
+        throw new Error(`unexpected type ${operand.constructor.name} in boolean additive expression`)
       }
     }
 
@@ -296,7 +299,7 @@ export const run = (program: Block) => {
     const first = operands[0]
     const allowedTypes = [StringLiteral.type, NumberLiteral.type, BooleanLiteral.type, nil.type]
     if (!isType(first, allowedTypes)) {
-      throw new Error(`unexpected type ${first.constructor} in string additive expression`)
+      throw new Error(`unexpected type ${first.constructor.name} in string additive expression`)
     }
 
     let acc = first
@@ -305,7 +308,7 @@ export const run = (program: Block) => {
       let [operator, rhs] = [operands[i], operands[i + 1]]
 
       if (!isOperator(operator, additiveOperators)) {
-        throw new Error(`unexpected operator ${operator} in numerical additive expression`)
+        throw new Error(`unexpected operator ${operator} in string additive expression`)
       }
 
       if (isType(acc, StringLiteral.type)) {
@@ -333,7 +336,7 @@ export const run = (program: Block) => {
           // TODO this is the cleanest way to organize addition to avoid all the type casting
           acc = nilStringAddition(operator, acc as StringLiteral)
         } else {
-          throw new Error(`unexpected type ${rhs.constructor} in string additive expression`)
+          throw new Error(`unexpected type ${rhs.constructor.name} in string additive expression`)
         }
       } else if (isType(acc, NumberLiteral.type)) {
         if (isType(rhs, StringLiteral.type)) {
@@ -351,7 +354,7 @@ export const run = (program: Block) => {
             acc = new StringLiteral(`${getPrtValue(acc as BooleanLiteral)}${(rhs as StringLiteral).value}`)
           } else {
             const boolVal = getPrtValue(acc as BooleanLiteral)
-            acc = new StringLiteral((rhs as StringLiteral).value === boolVal ? '' : boolVal as string)
+            acc = new StringLiteral((rhs as StringLiteral).value === boolVal ? '' : (boolVal as string))
           }
         } else {
           acc = interpretAdditiveExpression(new AdditiveExpression([acc, operator, rhs]))
@@ -363,39 +366,83 @@ export const run = (program: Block) => {
           acc = interpretAdditiveExpression(new AdditiveExpression([acc, operator, rhs]))
         }
       } else {
-        throw new Error(`unexpected type ${acc.constructor} in string additive expression`)
+        throw new Error(`unexpected type ${acc.constructor.name} in string additive expression`)
       }
     }
 
-    // string + nil = append/prepend space to string
-    // same as nil + string
-    // string + bool = `string${bool.value}`
-    // bool + string = `${bool.value}string`
-    // string + number = string.length + number
-    // same as number + string
-    // string + string = string concatenation
-
-    // string - nil = remove one whitespace character from start/end of string, if any
-    // nil - string = nil
-    // string - bool = convert bool to string 'T' or 'F'
-    // same as bool - string
-    // string - number = string.length - number
-    // number - string = number - string.length
-    // string - string = remove first instance of rhs from lhs, if any
-
     if (acc instanceof StringLiteral) {
-      return acc as StringLiteral
+      return acc
     } else if (acc instanceof NumberLiteral) {
-      return acc as NumberLiteral
+      return acc
     } else if (isType(acc, nil.type)) {
       return nil
     }
 
-    throw new Error(`unexpected output type ${acc.constructor} in string additive expression`)
+    throw new Error(`unexpected output type ${acc.constructor.name} in string additive expression`)
   }
 
   const nilStringAddition = (operator: string, operand: StringLiteral): StringLiteral => {
     return new StringLiteral(operator === addOperator ? ` ${operand.value} ` : operand.value.replace(/^\s|\s$/g, ''))
+  }
+
+  const listAddition = (operands: (Expression | string)[]): ListLiteral => {
+    const first = operands[0]
+    const allowedTypes = [ListLiteral.type, StringLiteral.type, NumberLiteral.type, BooleanLiteral.type, nil.type]
+    if (!isType(first, allowedTypes)) {
+      throw new Error(`unexpected type ${first.constructor.name} in list additive expression`)
+    }
+
+    let acc = first
+
+    for (let i = 1; i < operands.length; i += 2) {
+      let [operator, rhs] = [operands[i], operands[i + 1]]
+
+      if (!isOperator(operator, additiveOperators)) {
+        throw new Error(`unexpected operator ${operator} in list additive expression`)
+      }
+
+      if (acc instanceof ListLiteral) {
+        if (rhs instanceof ListLiteral) {
+          if (operator === addOperator) {
+            acc.value = [...acc.value, ...rhs.value]
+          } else {
+            // TODO this requires an isEqual function
+            // subtraction
+          }
+        } else if (rhs === nil) {
+          if (operator === addOperator) {
+            acc.value = acc.value.flat()
+          } else {
+            // TODO this requires an isTruthy function
+            // removes first falsey value from acc
+          }
+        } else if (isLiteral(rhs)) {
+          if (operator === addOperator) {
+            acc.value.push(rhs)
+          } else {
+            // TODO this requires an isEqual function
+            // subtraction
+          }
+        } else {
+          throw new Error(`unexpected type ${rhs.constructor.name} in list additive expression`)
+        }
+      }
+
+      // string
+      // list
+      // number
+      // list
+      // boolean
+      // list
+      // nil
+      // list
+    }
+
+    if (acc instanceof ListLiteral) {
+      return acc
+    }
+
+    throw new Error(`unexpected output type ${acc.constructor.name} in list additive expression`)
   }
 
   const getType = (expression: Literal): StringLiteral => {
@@ -403,7 +450,7 @@ export const run = (program: Block) => {
     return new StringLiteral(expression.constructor.type ?? nil.srcCode().value)
   }
 
-  const getPrtValue = (expression: Literal) => {
+  const getPrtValue = (expression: Literal): string => {
     if (expression === nil) {
       return nil.type
     }
@@ -411,7 +458,7 @@ export const run = (program: Block) => {
       return expression.value ? trueKeyword : falseKeyword
     }
     if (expression instanceof NumberLiteral || expression instanceof StringLiteral) {
-      return expression.value
+      return expression.value as string
     }
 
     if (expression instanceof FormattedStringLiteral) {
@@ -421,10 +468,15 @@ export const run = (program: Block) => {
     }
 
     if (expression instanceof ListLiteral) {
+      return `[${expression.value
+        .map(e => (e instanceof StringLiteral ? `'${e.value}'` : getPrtValue(e)))
+        .join(', ')}]`
     }
 
     if (expression instanceof FunctionLiteral) {
     }
+
+    throw new Error('unimplemented print call')
   }
 
   // TODO use this instead of last line

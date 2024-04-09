@@ -63,6 +63,15 @@ const programs = [
   ['nil + string', `prt(nil + 'hello')`, ' hello '],
   ['printing nil', 'prt(nil)', 'nil'],
   ['nil - string', `prt(nil - 'hello')`, 'nil'],
+  ['printing list', 'prt([1, 2])', '[1, 2]'],
+  ['printing list with strings', `prt([1, 'hello', 2])`, `[1, 'hello', 2]`],
+
+  // list + list
+  // list + obj
+  // list + string
+  // list + num
+  // list + bool
+  // list + nil
 ]
 
 for (const [scenario, program, expected] of programs) {
