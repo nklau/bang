@@ -69,6 +69,10 @@ const programs = [
   ['list + nested list', `prt([1] + ['hello', [2]])`, `[1, 'hello', [2]]`],
   ['printing object', `prt({'key': 1, 'key2': 'hello'})`, `{\n  'key': 1,\n  'key2': 'hello'\n}`],
   ['list + object', `prt([1] + {'key': 1, 'key2': 'hello'})`, `[1, {\n  'key': 1,\n  'key2': 'hello'\n}]`],
+  ['list + string', `prt([1] + 'hello')`, `[1, 'hello']`],
+  ['list + number', `prt([1] + 5)`, `[1, 5]`],
+  ['list + boolean', `prt([1] + T)`, `[1, T]`],
+  ['list + nil', `prt(['hello', [3, [2]]] + nil)`, `['hello', 3, [2]]`],
   // list + obj
   // list + string
   // list + num

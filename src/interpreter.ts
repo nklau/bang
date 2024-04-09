@@ -411,7 +411,14 @@ export const run = (program: Block) => {
           }
         } else if (rhs === nil) {
           if (operator === addOperator) {
-            acc.value = acc.value.flat()
+            acc.value = acc.value.reduce((acc: Literal[], expression) => {
+              if (expression instanceof ListLiteral) {
+                expression.value.forEach(e => acc.push(e))
+              } else {
+                acc.push(expression)
+              }
+              return acc
+            }, [])
           } else {
             // TODO this requires an isTruthy function
             // removes first falsey value from acc
