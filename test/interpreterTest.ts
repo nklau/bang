@@ -115,11 +115,12 @@ const programs = [
     `prt([1, {'key': 1, 'key2': 'h'}] - {'key': 1, 'key2': 'hello'})`,
     `[1, {\n  'key': 1,\n  'key2': 'h'\n}]`,
   ],
-  // list + obj
-  // list + string
-  // list + num
-  // list + bool
-  // list + nil
+  ['list - string successful', `prt(['hello', 1, 'hello'] - 'hello')`, `[1, 'hello']`],
+  ['list - string unsuccessful', `prt(['hello', 1, 'hello'] - 'h')`, `['hello', 1, 'hello']`],
+  ['list - number successful', `prt([1, 'hello', 1] - 1)`, `['hello', 1]`],
+  ['list - number unsuccessful', `prt(['hello', 1, 'hello'] - 2)`, `['hello', 1, 'hello']`],
+  ['list - boolean successful', `prt([F, 1, F] - F)`, `[1, F]`],
+  ['list - boolean unsuccessful', `prt(['hello', F, 'hello'] - T)`, `['hello', F, 'hello']`],
 ]
 
 for (const [scenario, program, expected] of programs) {
