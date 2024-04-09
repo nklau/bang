@@ -81,6 +81,10 @@ const programs = [
   ['F equality', 'prt(F == F)', 'T'],
   ['T/F equality', 'prt(T == F)', 'F'],
   ['T/F inequality', 'prt(T != F)', 'T'],
+  ['number equality', 'prt(5 == 5)', 'T'],
+  ['number equality false', 'prt(5 == -5)', 'F'],
+  ['number inequality', 'prt(5 != -5)', 'T'],
+  ['number inequality false', 'prt(5 != 5)', 'F'],
   // list + obj
   // list + string
   // list + num
