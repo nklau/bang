@@ -432,8 +432,7 @@ export const run = (program: Block) => {
           if (operator === addOperator) {
             acc.value.push(rhs)
           } else {
-            // TODO this requires an isEqual function
-            // subtraction
+            acc.del(rhs)
           }
         } else {
           throw new Error(`unexpected type ${rhs.constructor.name} in list additive expression`)

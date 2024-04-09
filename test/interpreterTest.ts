@@ -104,6 +104,17 @@ const programs = [
     'F',
   ],
   ['list - list', `prt([1, 'hello', 'world'] - [1, 'world', 4])`, `['hello']`],
+  [
+    'list - list with duplicate elements',
+    `prt([1, 'world', 1, 'hello', 'world'] - ['world', 1, 'world', 4])`,
+    `[1, 'hello']`,
+  ],
+  ['list - object successful', `prt([1, {'key': 1, 'key2': 'hello'}] - {'key': 1, 'key2': 'hello'})`, '[1]'],
+  [
+    'list - object unsuccessful',
+    `prt([1, {'key': 1, 'key2': 'h'}] - {'key': 1, 'key2': 'hello'})`,
+    `[1, {\n  'key': 1,\n  'key2': 'h'\n}]`,
+  ],
   // list + obj
   // list + string
   // list + num
