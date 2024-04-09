@@ -472,7 +472,7 @@ export const run = (program: Block) => {
       return `{\n${expression.value
         .map(keyValPair => {
           const [key, value] = keyValPair
-          return `\t'${key.value}': ${getNestedPrtValue(value)}`
+          return `  '${key.value}': ${getNestedPrtValue(value)}`
         })
         .join(',\n')}\n}`
     }

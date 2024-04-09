@@ -67,7 +67,8 @@ const programs = [
   ['printing list with strings', `prt([1, 'hello', 2])`, `[1, 'hello', 2]`],
   ['list + list', `prt([1] + ['hello', 2])`, `[1, 'hello', 2]`],
   ['list + nested list', `prt([1] + ['hello', [2]])`, `[1, 'hello', [2]]`],
-  ['printing object', `prt({'key': 1, 'key2': 'hello'})`, `{\n\t'key': 1,\n\t'key2': 'hello'\n}`],
+  ['printing object', `prt({'key': 1, 'key2': 'hello'})`, `{\n  'key': 1,\n  'key2': 'hello'\n}`],
+  ['list + object', `prt([1] + {'key': 1, 'key2': 'hello'})`, `[1, {\n  'key': 1,\n  'key2': 'hello'\n}]`],
   // list + obj
   // list + string
   // list + num
