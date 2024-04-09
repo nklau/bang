@@ -412,8 +412,7 @@ export const run = (program: Block) => {
           if (operator === addOperator) {
             acc.value = [...acc.value, ...rhs.value]
           } else {
-            // TODO this requires an isEqual function
-            // subtraction
+            rhs.value.forEach(acc.del)
           }
         } else if (rhs === nil) {
           if (operator === addOperator) {
@@ -469,27 +468,6 @@ export const run = (program: Block) => {
     throw new Error('unimplemented comparison expression')
   }
 
-  const isEqual = (lhs: Literal, rhs: Literal): boolean => {
-    // TODO allow variables
-    // if (lhs.constructor.name !== rhs.constructor.name) {
-    //   return false
-    // }
-
-    if (lhs instanceof ListLiteral && rhs instanceof ListLiteral) {
-      return lhs.value.every((e, index) => {
-        return isEqual(e, rhs.value[index])
-      })
-    } else if (lhs instanceof ObjectLiteral && rhs instanceof ObjectLiteral) {
-      return lhs.value.every(([key, value], index) => {
-        return isEqual(key, rhs.value[index][0]) && isEqual(value, rhs.value[index][1])
-      })
-    } else if (lhs.constructor.name === rhs.constructor.name && lhs !== nil) {
-      return (lhs as any).value !== undefined && (lhs as any).value === (rhs as any).value
-    }
-
-    return lhs === nil && rhs === nil
-  }
-
   const getType = (expression: Literal): StringLiteral => {
     // @ts-ignore: all Literals have a static attribute 'type'
     return new StringLiteral(expression.constructor.type ?? nil.srcCode().value)
@@ -536,4 +514,25 @@ export const run = (program: Block) => {
   // TODO use this instead of last line
   program.statements.forEach(runStatement)
   // program.statements.forEach(statement => console.log(runStatement(statement).value))
+}
+
+export const isEqual = (lhs: Literal, rhs: Literal): boolean => {
+  // TODO allow variables
+  // if (lhs.constructor.name !== rhs.constructor.name) {
+  //   return false
+  // }
+
+  if (lhs instanceof ListLiteral && rhs instanceof ListLiteral) {
+    return lhs.value.every((e, index) => {
+      return isEqual(e, rhs.value[index])
+    })
+  } else if (lhs instanceof ObjectLiteral && rhs instanceof ObjectLiteral) {
+    return lhs.value.every(([key, value], index) => {
+      return isEqual(key, rhs.value[index][0]) && isEqual(value, rhs.value[index][1])
+    })
+  } else if (lhs.constructor.name === rhs.constructor.name && lhs !== nil) {
+    return (lhs as any).value !== undefined && (lhs as any).value === (rhs as any).value
+  }
+
+  return lhs === nil && rhs === nil
 }

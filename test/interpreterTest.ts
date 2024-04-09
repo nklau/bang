@@ -98,7 +98,12 @@ const programs = [
   ['list equality false by order', `prt([[], {'key': 1, 'key2': 'hello'}] == [{'key': 1, 'key2': 'hello'}, []])`, 'F'],
   ['list inequality', `prt(['hi', {'key': 1, 'key2': 'hello'}] != ['hii', {'key': 1, 'key2': 'hello'}])`, 'T'],
   ['list inequality false', `prt([1, {'key': 1, 'key2': 'hello'}] != [1, {'key': 1, 'key2': 'hello'}])`, 'F'],
-  ['list equality false by nested object', `prt([[], {'key': 1, 'key2': 'h'}] == [[], {'key': 1, 'key2': 'hello'}])`, 'F'],
+  [
+    'list equality false by nested object',
+    `prt([[], {'key': 1, 'key2': 'h'}] == [[], {'key': 1, 'key2': 'hello'}])`,
+    'F',
+  ],
+  ['list - list', `prt([1, 'hello', 'world'] - [1, 'world', 4])`, `['hello']`],
   // list + obj
   // list + string
   // list + num
