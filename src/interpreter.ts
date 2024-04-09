@@ -484,7 +484,7 @@ export const run = (program: Block) => {
         return isEqual(key, rhs.value[index][0]) && isEqual(value, rhs.value[index][1])
       })
     } else if (lhs.constructor.name === rhs.constructor.name && lhs !== nil) {
-      return (lhs as any).value && (lhs as any).value === (rhs as any).value
+      return (lhs as any).value !== undefined && (lhs as any).value === (rhs as any).value
     }
 
     return lhs === nil && rhs === nil
