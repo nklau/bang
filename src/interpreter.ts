@@ -480,7 +480,7 @@ export const run = (program: Block) => {
         return isEqual(e, rhs.value[index])
       })
     } else if (lhs instanceof ObjectLiteral && rhs instanceof ObjectLiteral) {
-      lhs.value.every(([key, value], index) => {
+      return lhs.value.every(([key, value], index) => {
         return isEqual(key, rhs.value[index][0]) && isEqual(value, rhs.value[index][1])
       })
     } else if (lhs.constructor.name === rhs.constructor.name && lhs !== nil) {

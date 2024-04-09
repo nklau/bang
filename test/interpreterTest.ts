@@ -89,6 +89,11 @@ const programs = [
   ['string equality false', `prt('hello' == 'helo')`, 'F'],
   ['string inequality', `prt('hello' != 'helo')`, 'T'],
   ['string inequality false', `prt('hello' != 'hello')`, 'F'],
+  ['object equality', `prt({'key': 1, 'key2': 'hello'} == {'key': 1, 'key2': 'hello'})`, 'T'],
+  ['object equality false by order', `prt({'key': 1, 'key2': 'hello'} == {'key2': 'hello', 'key': 1})`, 'F'],
+  ['object inequality by key', `prt({'key': 1, 'key2': 'hello'} != {'key1': 1, 'key2': 'hello'})`, 'T'],
+  ['object inequality by value', `prt({'key': 1, 'key2': 'hello'} != {'key': '1', 'key2': 'hello'})`, 'T'],
+  ['object inequality false', `prt({'key': 1, 'key2': 'hello'} != {'key': 1, 'key2': 'hello'})`, 'F'],
   // list + obj
   // list + string
   // list + num
