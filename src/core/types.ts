@@ -127,6 +127,19 @@ export class ListLiteral implements Literal {
     this.value.push(expression)
   }
 
+  flat = (): ListLiteral => {
+    return new ListLiteral(
+      this.value.reduce((acc: Expression[], expression) => {
+        if (expression instanceof ListLiteral) {
+          expression.value.forEach(e => acc.push(e))
+        } else {
+          acc.push(expression)
+        }
+        return acc
+      }, [])
+    )
+  }
+
   get bool() {
     return new BooleanLiteral(this.value.length > 0)
   }
