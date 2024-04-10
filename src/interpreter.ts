@@ -393,7 +393,7 @@ export const run = (program: Block) => {
 
   const listAddition = (operands: (Expression | string)[]): ListLiteral => {
     const first = operands[0]
-    const allowedTypes = [ListLiteral.type, StringLiteral.type, NumberLiteral.type, BooleanLiteral.type, nil.type]
+    const allowedTypes = [ListLiteral.type, ObjectLiteral.type, StringLiteral.type, NumberLiteral.type, BooleanLiteral.type, nil.type]
     if (!isType(first, allowedTypes)) {
       throw new Error(`unexpected type ${first.constructor.name} in list additive expression`)
     }
@@ -429,7 +429,15 @@ export const run = (program: Block) => {
           throw new Error(`unexpected type ${rhs.constructor.name} in list additive expression`)
         }
       } else if (acc instanceof ObjectLiteral) {
-        // TODO
+        if (rhs instanceof ListLiteral) {
+          if (operator === addOperator) {
+            acc = new ListLiteral([acc, ...rhs.value])
+          } else {
+            // TODO subtraction
+          }
+        } else {
+          // TODO
+        }
       } else if (acc instanceof StringLiteral) {
         if (rhs instanceof ListLiteral) {
           if (operator === addOperator) {

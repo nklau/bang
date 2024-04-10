@@ -126,8 +126,15 @@ const programs = [
   ['list - nil removes empty string', `prt(['hi', '', F, 0, [], {}] - nil)`, `['hi', F, 0, [], { }]`],
   ['list - nil removes number', `prt(['hi', 0, F, [], '', {}] - nil)`, `['hi', F, [], '', { }]`],
   ['list - nil removes boolean', `prt(['hi', F, [], 0, '', {}] - nil)`, `['hi', [], 0, '', { }]`],
-  ['list - nil unsuccessful', `prt(['hi', [''], T, 1, ' ', {'key': 1}] - nil)`, `['hi', [''], T, 1, ' ', {\n  'key': 1\n}]`],
+  [
+    'list - nil unsuccessful',
+    `prt(['hi', [''], T, 1, ' ', {'key': 1}] - nil)`,
+    `['hi', [''], T, 1, ' ', {\n  'key': 1\n}]`,
+  ],
   ['list addition ordering', `prt(T + [1] + 'hello' + 5)`, `[T, 1, 'hello', 5]`],
+  ['object + list', `prt({'key': 1, 'key2': 'hi'} + [5])`, `[{\n  'key': 1,\n  'key2': 'hi'\n}, 5]`],
+  // TODO
+  // all types (excluding objects for now) +/- list
 ]
 
 for (const [scenario, program, expected] of programs) {
