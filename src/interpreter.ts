@@ -425,8 +425,10 @@ export const run = (program: Block) => {
               return acc
             }, [])
           } else {
-            // TODO this requires an isTruthy function
-            // removes first falsey value from acc
+            const index = acc.value.findIndex(e => isLiteral(e) && !e.bool.value)
+            if (index > -1) {
+              acc.value.splice(index, 1)
+            }
           }
         } else if (isLiteral(rhs)) {
           if (operator === addOperator) {

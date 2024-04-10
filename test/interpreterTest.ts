@@ -121,6 +121,12 @@ const programs = [
   ['list - number unsuccessful', `prt(['hello', 1, 'hello'] - 2)`, `['hello', 1, 'hello']`],
   ['list - boolean successful', `prt([F, 1, F] - F)`, `[1, F]`],
   ['list - boolean unsuccessful', `prt(['hello', F, 'hello'] - T)`, `['hello', F, 'hello']`],
+  ['list - nil removes empty list', `prt(['hi', [], F, 0, '', {}] - nil)`, `['hi', F, 0, '', { }]`],
+  ['list - nil removes empty object', `prt(['hi', {}, F, 0, '', []] - nil)`, `['hi', F, 0, '', []]`],
+  ['list - nil removes empty string', `prt(['hi', '', F, 0, [], {}] - nil)`, `['hi', F, 0, [], { }]`],
+  ['list - nil removes number', `prt(['hi', 0, F, [], '', {}] - nil)`, `['hi', F, [], '', { }]`],
+  ['list - nil removes boolean', `prt(['hi', F, [], 0, '', {}] - nil)`, `['hi', [], 0, '', { }]`],
+  ['list - nil unsuccessful', `prt(['hi', [''], T, 1, ' ', {'key': 1}] - nil)`, `['hi', [''], T, 1, ' ', {\n  'key': 1\n}]`],
 ]
 
 for (const [scenario, program, expected] of programs) {
