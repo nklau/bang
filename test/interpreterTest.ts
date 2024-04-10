@@ -127,6 +127,7 @@ const programs = [
   ['list - nil removes number', `prt(['hi', 0, F, [], '', {}] - nil)`, `['hi', F, [], '', { }]`],
   ['list - nil removes boolean', `prt(['hi', F, [], 0, '', {}] - nil)`, `['hi', [], 0, '', { }]`],
   ['list - nil unsuccessful', `prt(['hi', [''], T, 1, ' ', {'key': 1}] - nil)`, `['hi', [''], T, 1, ' ', {\n  'key': 1\n}]`],
+  ['list addition ordering', `prt(T + [1] + 'hello' + 5)`, `[T, 1, 'hello', 5]`],
 ]
 
 for (const [scenario, program, expected] of programs) {

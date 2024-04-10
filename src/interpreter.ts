@@ -416,14 +416,7 @@ export const run = (program: Block) => {
           }
         } else if (rhs === nil) {
           if (operator === addOperator) {
-            acc.value = acc.value.reduce((acc: Expression[], expression) => {
-              if (expression instanceof ListLiteral) {
-                expression.value.forEach(e => acc.push(e))
-              } else {
-                acc.push(expression)
-              }
-              return acc
-            }, [])
+            acc = acc.flat()
           } else {
             const index = acc.value.findIndex(e => isLiteral(e) && !e.bool.value)
             if (index > -1) {
@@ -431,24 +424,57 @@ export const run = (program: Block) => {
             }
           }
         } else if (isLiteral(rhs)) {
-          if (operator === addOperator) {
-            acc.value.push(rhs)
-          } else {
-            acc.del(rhs)
-          }
+          acc[operator === addOperator ? 'add' : 'del'](rhs)
         } else {
           throw new Error(`unexpected type ${rhs.constructor.name} in list additive expression`)
         }
+      } else if (acc instanceof ObjectLiteral) {
+        // TODO
+      } else if (acc instanceof StringLiteral) {
+        if (rhs instanceof ListLiteral) {
+          if (operator === addOperator) {
+            acc = new ListLiteral([acc, ...rhs.value])
+          } else {
+            // TODO Subtracting a list from a string will remove all substrings in the list from the string.
+            // Any other types will be ignored.
+          }
+        } else {
+          // TODO call objectAddition, neither acc nor rhs is a list
+        }
+      } else if (acc instanceof NumberLiteral) {
+        if (rhs instanceof ListLiteral) {
+          if (operator === addOperator) {
+            acc = new ListLiteral([acc, ...rhs.value])
+          } else {
+            if (rhs.has(acc)) {
+              acc.value = 0
+            }
+          }
+        } else {
+          // TODO call objectAddition, neither acc nor rhs is a list
+        }
+      } else if (acc instanceof BooleanLiteral) {
+        if (rhs instanceof ListLiteral) {
+          if (operator === addOperator) {
+            acc = new ListLiteral([acc, ...rhs.value])
+          } else {
+            const first = rhs.get(new NumberLiteral(0))
+            if (isLiteral(first)) {
+              acc = acc.value ? first.bool : first.bool.not()
+            } else {
+              acc.value = true
+            }
+          }
+        } else {
+          // TODO call objectAddition, neither acc nor rhs is a list
+        }
+      } else if (acc === nil) {
+        if (rhs instanceof ListLiteral) {
+          acc = operator === addOperator ? rhs.flat() : nil
+        } else {
+          // TODO call objectAddition, neither acc nor rhs is a list
+        }
       }
-
-      // string
-      // list
-      // number
-      // list
-      // boolean
-      // list
-      // nil
-      // list
     }
 
     if (acc instanceof ListLiteral) {
