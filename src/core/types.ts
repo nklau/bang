@@ -99,6 +99,10 @@ export class ListLiteral implements Literal {
     return new NumberLiteral(this.value.findIndex(e => isEqual(e, expression)))
   }
 
+  has = (expression: Expression): BooleanLiteral => {
+    return new BooleanLiteral(this.idxOf(expression).value > -1)
+  }
+
   delIdx = (index: NumberLiteral): BooleanLiteral => {
     if (index.value > -1 && index.value < this.value.length) {
       this.value.splice(index.value, 1)
