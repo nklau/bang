@@ -17,17 +17,16 @@ export const isLiteral = (expression: any): expression is Literal => {
   )
 }
 
-export const isBooleanLiteral = (expression: any): expression is BooleanLiteral => {
-  return expression instanceof BooleanLiteral
-}
-// TODO
-
 export class BooleanLiteral implements Literal {
   constructor(public value: boolean) {}
 
   static type = 'bool'
 
   srcCode = () => new StringLiteral(this.value ? 'T' : 'F')
+
+  not = (): BooleanLiteral => {
+    return new BooleanLiteral(!this.value)
+  }
 
   get bool() {
     return this
@@ -94,6 +93,10 @@ export class ListLiteral implements Literal {
   static type = 'list'
 
   srcCode = () => new StringLiteral(`[${this.value.map(val => val.srcCode()).join(', ')}]`)
+
+  get = (index: NumberLiteral): Expression => {
+    return this.value[index.value] ?? nil
+  }
 
   idxOf = (expression: Expression): NumberLiteral => {
     return new NumberLiteral(this.value.findIndex(e => isEqual(e, expression)))
