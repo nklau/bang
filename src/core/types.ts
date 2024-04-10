@@ -2,7 +2,7 @@ import { isEqual } from '../interpreter'
 import { Expression, StatementExpression, Variable } from './core'
 
 export interface Literal extends Expression {
-  bool: () => BooleanLiteral
+  bool: BooleanLiteral
 }
 
 export const isLiteral = (expression: any): expression is Literal => {
@@ -29,7 +29,9 @@ export class BooleanLiteral implements Literal {
 
   srcCode = () => new StringLiteral(this.value ? 'T' : 'F')
 
-  bool = () => this
+  get bool() {
+    return this
+  }
 }
 
 export class NumberLiteral implements Literal {
@@ -39,7 +41,9 @@ export class NumberLiteral implements Literal {
 
   srcCode = () => new StringLiteral(String(this.value))
 
-  bool = () => new BooleanLiteral(this.value !== 0)
+  get bool() {
+    return new BooleanLiteral(this.value !== 0)
+  }
 }
 
 export class StringLiteral implements Literal {
@@ -49,7 +53,9 @@ export class StringLiteral implements Literal {
 
   srcCode = () => this
 
-  bool = () => new BooleanLiteral(this.value.length > 0)
+  get bool() {
+    return new BooleanLiteral(this.value.length > 0)
+  }
 }
 
 export class FormattedStringLiteral implements Literal {
@@ -64,7 +70,9 @@ export class FormattedStringLiteral implements Literal {
         .join('')
     )
 
-  bool = () => new BooleanLiteral(this.value.length > 0)
+  get bool() {
+    return new BooleanLiteral(this.value.length > 0)
+  }
 }
 
 export class ObjectLiteral implements Literal {
@@ -75,7 +83,9 @@ export class ObjectLiteral implements Literal {
   srcCode = () =>
     new StringLiteral(`{ ${this.value.map(([key, val]) => `${key.value}: ${val.srcCode()}`).join(', ')} }`)
 
-  bool = (): BooleanLiteral => new BooleanLiteral(this.value.length > 0)
+  get bool() {
+    return new BooleanLiteral(this.value.length > 0)
+  }
 }
 
 export class ListLiteral implements Literal {
@@ -102,7 +112,9 @@ export class ListLiteral implements Literal {
     return this.delIdx(this.idxOf(expression))
   }
 
-  bool = () => new BooleanLiteral(this.value.length > 0)
+  get bool() {
+    return new BooleanLiteral(this.value.length > 0)
+  }
 }
 
 export class FunctionLiteral implements Literal {
@@ -120,7 +132,9 @@ export class FunctionLiteral implements Literal {
         .join('\n\t')}\n}`
     )
 
-  bool = () => new BooleanLiteral(this.parameters.length > 0 && this.statements.length > 0)
+  get bool() {
+    return new BooleanLiteral(this.parameters.length > 0 && this.statements.length > 0)
+  }
 }
 
 export const nil = {
