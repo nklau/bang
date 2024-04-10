@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { falseyFunction, inf } from './core/constants'
+import { inf } from './core/types'
 import {
   AccessExpression,
   AdditiveExpression,
@@ -409,7 +409,7 @@ export const parse = (tokens: Token[]) => {
     //   }
     // }
 
-    let falseFunction = falseyFunction
+    let falseFunction = new FunctionLiteral([], [])
     if (falseBlock.length > 0) {
       falseFunction = new FunctionLiteral([], falseBlock)
     }

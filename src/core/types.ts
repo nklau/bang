@@ -142,3 +142,5 @@ export const nil = {
   srcCode: () => new StringLiteral('nil'),
   bool: () => new BooleanLiteral(false),
 }
+
+export const inf = new NumberLiteral(Infinity)
