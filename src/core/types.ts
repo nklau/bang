@@ -112,6 +112,14 @@ export class ListLiteral implements Literal {
     return this.delIdx(this.idxOf(expression))
   }
 
+  prepend = (expression: Expression): void => {
+    this.value.unshift(expression)
+  }
+
+  add = (expression: Expression): void => {
+    this.value.push(expression)
+  }
+
   get bool() {
     return new BooleanLiteral(this.value.length > 0)
   }
